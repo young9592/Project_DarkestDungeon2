@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_lost_soul
+  m_EditorClassIdentifier: 
+  _id: enemy_lost_soul
+  _name: "\uC78A\uD78C \uC601\uD63C"
+  _maxHealth: 11
+  _currentHealth: 11
+  _speed: 1
+  _resistance:
+    Bleed: 10
+    Blight: 40
+    Burn: 10
+    Stun: 20
+    Move: 10
+    Debuff: 10
+  _deathDoorCount: 0
