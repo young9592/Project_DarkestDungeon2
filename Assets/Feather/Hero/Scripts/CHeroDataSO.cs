@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Data/Entity/Hero", fileName = "HeroSO_")]
@@ -20,6 +21,9 @@ public class CHeroDataSO : CEntityDataSO
     [Header("Movement")]
     [SerializeField] private int _forwardMovement = 2;
     [SerializeField] private int _backwardMovement = 2;
+
+    [Header("Skills")]
+    [SerializeField] private List <CSkillDataSO> _availableSkills = new List<CSkillDataSO>();
     #endregion
 
     #region Property
@@ -30,7 +34,7 @@ public class CHeroDataSO : CEntityDataSO
     public int MaxStress => _maxStress;
     public int ForwardMovement => _forwardMovement;
     public int BackwardMovement => _backwardMovement;
-
+    public IReadOnlyList<CSkillDataSO> AvailableSkills => _availableSkills;
     #endregion
 
     protected override void OnValidate()
