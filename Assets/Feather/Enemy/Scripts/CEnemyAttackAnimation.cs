@@ -22,7 +22,7 @@ public class CEnemyAttackAnimation : MonoBehaviour
     private bool _isReady;
     private EAnimationState _state;
 
-    // 비활성화로 중단된 연출은 완료 알림을 보내지 않는다.
+    // 비활성화로 중단된 연출은 완료 알림을 보내지 않습니다.
     public event Action OnAttackCompleted;
     public event Action OnHitCompleted;
 
