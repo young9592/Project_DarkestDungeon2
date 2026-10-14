@@ -93,19 +93,19 @@ public class CBasicCombatManager : MonoBehaviour
         // 일단 선택정렬 [ 무려 시간복잡도 O^2 와! ]
         for (int i = 0; i < _turnList.Count - 1; i++)
         {
-            (int index, int value) min = (i, _turnList[i].Speed);
+            (int index, int value) max = (i, _turnList[i].Speed);
 
             for (int j = i + 1; j < _turnList.Count; j++)
             {
-                if (min.value > _turnList[j].Speed)
+                if (max.value < _turnList[j].Speed)
                 {
                     // 최소나 최대를 찾아서 체크
-                    min = (j, _turnList[j].Speed);
+                    max = (j, _turnList[j].Speed);
                 }
             }
 
             // 순서 변경
-            (_turnList[i], _turnList[min.index]) = (_turnList[min.index], _turnList[i]);
+            (_turnList[i], _turnList[max.index]) = (_turnList[max.index], _turnList[i]);
         }
 
         // Debug
