@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class CEntityDataSO : ScriptableObject
@@ -27,6 +28,9 @@ public abstract class CEntityDataSO : ScriptableObject
     [SerializeField] private int _maxHealth = 10;
     [SerializeField] private int _speed = 1;
     [SerializeField] private CResistanceStats _resistance;
+
+    [Header("Skills")]
+    [SerializeField] private List<CSkillDataSO> _availableSkills = new List<CSkillDataSO>();
     #endregion
 
     #region Property
@@ -35,6 +39,11 @@ public abstract class CEntityDataSO : ScriptableObject
     public int MaxHealth => _maxHealth;
     public int Speed => _speed;
     public CResistanceStats Resistance => _resistance;
+
+    public IReadOnlyList<CSkillDataSO> AvailableSkills
+    {
+        get { return _availableSkills; }
+    }
     #endregion
 
     protected virtual void OnValidate()
