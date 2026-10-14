@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1751318784478889724}
   - component: {fileID: 6129772968282661593}
+  - component: {fileID: 4091325714474303996}
   m_Layer: 0
   m_Name: Enemy_LostSoul
   m_TagString: Untagged
@@ -46,6 +47,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1723720852140390094}
+--- !u!114 &4091325714474303996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171229778027904805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a81c2332493ad74985f944818015c82, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _enemyData: {fileID: 11400000, guid: d2083d203ae670b4db3984ccf80c57de, type: 2}
+  _attackAnimation: {fileID: 6129772968282661593}
+  _currentHp: 0
+  _currentRank: 1
 --- !u!1001 &6445775728383455917
 PrefabInstance:
   m_ObjectHideFlags: 0
