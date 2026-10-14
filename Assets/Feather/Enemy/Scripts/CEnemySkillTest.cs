@@ -16,6 +16,7 @@ public class CEnemySkillTest : MonoBehaviour
     private string _requestedSkillName;
     private string _lastRequest = "No skill request yet";
     private int _completedAttackCount;
+    private bool _showDetails = true;
 
     private void OnEnable()
     {
@@ -53,8 +54,14 @@ public class CEnemySkillTest : MonoBehaviour
     {
         if (_needsRefresh) RefreshCandidates();
 
-        GUILayout.BeginArea(new Rect(360.0f, 20.0f, 300.0f, 340.0f), GUI.skin.box);
-        GUILayout.Label("Enemy Skill Candidates");
+        float panelHeight = _showDetails ? 340.0f : 30.0f;
+        GUILayout.BeginArea(new Rect(360.0f, 20.0f, 300.0f, panelHeight), GUI.skin.box);
+        if (GUILayout.Button("Enemy Skill Candidates" + (_showDetails ? " [-]" : " [+]"))) _showDetails = !_showDetails;
+        if (!_showDetails)
+        {
+            GUILayout.EndArea();
+            return;
+        }
         GUILayout.Label("Enemy: " + (_enemyData != null ? _enemyData.Name : "Not assigned"));
         GUILayout.Label("Current rank");
 
