@@ -1,5 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using JetBrains.Annotations;
+
+[Flags]
+public enum ERank
+{
+    None = 0,
+    Rank1 = 1 << 0, // 0001 → 1
+    Rank2 = 1 << 1, // 0010 → 2
+    Rank3 = 1 << 2, // 0100 → 4
+    Rank4 = 1 << 3  // 1000 → 8
+}
 
 [CreateAssetMenu(menuName = "Data/Skill/SkillData", fileName = "SkillSO_")]
 public class CSkillDataSO : ScriptableObject
@@ -11,9 +23,9 @@ public class CSkillDataSO : ScriptableObject
 
     [Header("Targeting Rules")]
     // 스킬 사용자가 위치해야 하는 열
-    [SerializeField] private int _useableRank;
+    [SerializeField] private ERank _useableRank;
     // 스킬이 타겟을 잡을 수 있는 적의 열
-    [SerializeField] private int _targetableRank;
+    [SerializeField] private ERank _targetableRank;
 
     [Header("Settings")]
     [SerializeField] private int _cooldown = 0;
@@ -26,8 +38,8 @@ public class CSkillDataSO : ScriptableObject
     #region Property
     public string SkillName => _skillName;
     public Sprite SkillIcon => _skillIcon;
-    public int UsableRank => _useableRank;
-    public int TargetableRank => _targetableRank;
+    public ERank UsableRank => _useableRank;
+    public ERank TargetableRank => _targetableRank;
     public int Cooldown => _cooldown;
     public IReadOnlyList<CEffectSO> EffectList => _effectList; 
     #endregion
