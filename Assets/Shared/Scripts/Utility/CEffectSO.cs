@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// 미완성입니다.
+[CreateAssetMenu(menuName = "Data/Effect/EffectData", fileName = "EffectSO_")]
 public class CEffectSO : ScriptableObject
 {
     #region Inspector
@@ -8,7 +8,9 @@ public class CEffectSO : ScriptableObject
     [SerializeField] private EEffectType _effectType;
     [SerializeField] private int _damage = 1;
     [SerializeField] private int _duration = 3;
-    //[SerializeField] private CEffectStrategy _strategy;
+
+    // 효과가 발동될 때 실행될 실제 로직
+    [SerializeField] private CEffectStrategy _strategy;
     #endregion
 
     #region Property
@@ -16,6 +18,6 @@ public class CEffectSO : ScriptableObject
     public EEffectType EffectType => _effectType;
     public int Damage => _damage;
     public int Duration => _duration;
-    //public CEffectStrategy Strategy => _strategy;
+    public CEffectStrategy Strategy => _strategy;
     #endregion
 }
