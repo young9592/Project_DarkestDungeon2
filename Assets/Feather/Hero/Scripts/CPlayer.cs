@@ -7,6 +7,7 @@ public class CPlayer : CEntity
 	#region Inspector
 	[Header("Data")]
 	[SerializeField] private CHeroDataSO _heroData;
+    [SerializeField] private CHeroSkillLoadoutSO _skillLoadout;
 
 	[Header("Runtime Status")]
 	[SerializeField] private int _currentHp;
@@ -53,6 +54,17 @@ public class CPlayer : CEntity
             && CSkillRankUtility.CanTargetSkill(ActionSkill, ActionTarget.CurrentRank);
     }
 
+    public bool TryEquipLoadout(CHeroSkillLoadoutSO loadout)
+    {
+        if (!isActiveAndEnabled || _isRequesting || (IsActionActive && ActionState != EEntityActionState.Selecting) || loadout == null
+            || !loadout.TryValidate(_heroData, out _)) return false;
+        _equippedSkills.Clear();
+        for (int i = 0; i < loadout.Skills.Count; i++) _equippedSkills.Add(loadout.Skills[i]);
+        _skillLoadout = loadout;
+        CancelSkillSelection();
+        return true;
+    }
+
     protected override void OnDisable()
     {
         base.OnDisable();
@@ -83,15 +95,24 @@ public class CPlayer : CEntity
 		_currentHp = _heroData.MaxHealth;
 		_currentStress = 0;
 
-		// TODO : 실제 게임시 여관이나 메뉴에서 장착한 스킬만 가져와야 함
-		// 현재는 SO에 등록되어있는 모든 스킬을 장착했다고 설정함
-		if (_heroData.AvailableSkills != null)
-		{
-			foreach(var skill in _heroData.AvailableSkills)
-			{
-				_equippedSkills.Add(skill);
-			}
-		}
+        _equippedSkills.Clear();
+        if (_skillLoadout != null)
+        {
+            if (!TryEquipLoadout(_skillLoadout))
+            {
+                CPrint.Warn(name + ": 장착 스킬 목록을 확인해야 합니다.");
+                enabled = false;
+            }
+            return;
+        }
+
+        // 장착 목록이 없는 기존 캐릭터는 보유 스킬을 사용합니다.
+        if (_heroData.AvailableSkills == null) return;
+        for (int i = 0; i < _heroData.AvailableSkills.Count; i++)
+        {
+            CSkillDataSO skill = _heroData.AvailableSkills[i];
+            if (skill != null && !_equippedSkills.Contains(skill)) _equippedSkills.Add(skill);
+        }
 	}
 
 	#region Skill Usage
