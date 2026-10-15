@@ -11,6 +11,12 @@ public class CEnemyIntentTest : MonoBehaviour
     private Renderer _modelRenderer;
     private CSkillDataSO _plannedSkill;
     private bool _isExecuting;
+    private CEnemyAI _autoAction;
+
+    public void BindAutoAction(CEnemyAI autoAction)
+    {
+        _autoAction = autoAction;
+    }
 
     public CSkillDataSO PlannedSkill
     {
@@ -33,11 +39,13 @@ public class CEnemyIntentTest : MonoBehaviour
     private void OnEnable()
     {
         if (_animation != null) _animation.OnAttackCompleted += ClearIntent;
+        if (_animation != null) _animation.OnAttackInterrupted += ClearIntent;
     }
 
     private void OnDisable()
     {
         if (_animation != null) _animation.OnAttackCompleted -= ClearIntent;
+        if (_animation != null) _animation.OnAttackInterrupted -= ClearIntent;
         ClearIntent();
     }
 
@@ -110,7 +118,10 @@ public class CEnemyIntentTest : MonoBehaviour
 
     private void OnGUI()
     {
-        if (_plannedSkill == null || _camera == null || _enemy == null || !_enemy.isActiveAndEnabled) return;
+        CSkillDataSO skill = _autoAction != null && _autoAction.PlannedSkill != null ? _autoAction.PlannedSkill : _plannedSkill;
+        CEntity target = _autoAction != null ? _autoAction.PlannedTarget : null;
+        bool executing = _autoAction != null && _autoAction.PlannedSkill != null ? _autoAction.IsExecuting : _isExecuting;
+        if (skill == null || _camera == null || _enemy == null || !_enemy.isActiveAndEnabled) return;
         Vector3 anchor = _enemy.transform.position;
         if (_modelRenderer != null)
         {
@@ -120,10 +131,14 @@ public class CEnemyIntentTest : MonoBehaviour
         Vector3 position = _camera.WorldToScreenPoint(anchor);
         if (position.z <= 0.0f) return;
 
+        float height = target != null ? 66.0f : 46.0f;
         Rect area = new Rect(position.x - 120.0f + _labelOffset.x,
-            Screen.height - position.y - 46.0f - _labelOffset.y, 240.0f, 46.0f);
+            Screen.height - position.y - height - _labelOffset.y, 240.0f, height);
+        // 가장자리 열에서도 스킬 이름이 화면 밖으로 잘리지 않게 합니다.
+        area.x = Mathf.Clamp(area.x, 0.0f, Mathf.Max(0.0f, Screen.width - area.width));
+        area.y = Mathf.Clamp(area.y, 0.0f, Mathf.Max(0.0f, Screen.height - area.height));
         GUI.Box(area, GUIContent.none);
-        Sprite icon = _plannedSkill.SkillIcon;
+        Sprite icon = skill.SkillIcon;
         float left = area.x + 8.0f;
         if (icon != null)
         {
@@ -133,7 +148,8 @@ public class CEnemyIntentTest : MonoBehaviour
             GUI.DrawTextureWithTexCoords(new Rect(left, area.y + 7.0f, 32.0f, 32.0f), icon.texture, uv);
             left += 40.0f;
         }
-        GUI.Label(new Rect(left, area.y + 3.0f, area.xMax - left - 4.0f, 20.0f), _isExecuting ? "Playing" : "Next skill");
-        GUI.Label(new Rect(left, area.y + 23.0f, area.xMax - left - 4.0f, 20.0f), _plannedSkill.SkillName);
+        GUI.Label(new Rect(left, area.y + 3.0f, area.xMax - left - 4.0f, 20.0f), executing ? "Playing" : "Next skill");
+        GUI.Label(new Rect(left, area.y + 23.0f, area.xMax - left - 4.0f, 20.0f), skill.SkillName);
+        if (target != null) GUI.Label(new Rect(left, area.y + 43.0f, area.xMax - left - 4.0f, 20.0f), "Target: " + target.name);
     }
 }

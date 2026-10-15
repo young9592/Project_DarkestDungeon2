@@ -5,7 +5,7 @@ using UnityEngine;
 public class CEnemyGroupSO : ScriptableObject
 {
     [Header("Enemy Formation")]
-    [Tooltip("한 칸을 차지하는 적을 최대 네 마리까지 설정합니다. 목록 순서 대신 Rank를 배치 열로 사용합니다.")]
+    [Tooltip("Rank는 시작 열이고 적 데이터의 Formation Size만큼 자리를 차지합니다.")]
     [SerializeField] private List<CEnemyGroupEntry> _entries = new List<CEnemyGroupEntry>();
 
     public IReadOnlyList<CEnemyGroupEntry> Entries
@@ -58,13 +58,19 @@ public class CEnemyGroupSO : ScriptableObject
                 return false;
             }
 
-            if ((occupiedRanks & entry.Rank) != ERank.None)
+            if (!entry.TryGetOccupiedRanks(out ERank entryRanks))
+            {
+                message = prefix + "차지하는 칸 수가 잘못됐거나 배치가 4열을 넘어갑니다.";
+                return false;
+            }
+
+            if ((occupiedRanks & entryRanks) != ERank.None)
             {
                 message = prefix + "다른 적과 배치 열이 겹칩니다.";
                 return false;
             }
 
-            occupiedRanks |= entry.Rank;
+            occupiedRanks |= entryRanks;
         }
 
         message = string.Empty;
