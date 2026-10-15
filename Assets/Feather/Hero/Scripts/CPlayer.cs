@@ -86,7 +86,7 @@ public class CPlayer : CEntity
 	/// </summary>
 	public void ExecuteSkillToTarget(CEntity target, ERank targetRank)
 	{
-		if (_selectedSkill != null)
+		if (_selectedSkill == null)
 		{
             CPrint.Warn("선택된 스킬이 없습니다. 먼저 스킬을 선택해주세요.");
             return;
