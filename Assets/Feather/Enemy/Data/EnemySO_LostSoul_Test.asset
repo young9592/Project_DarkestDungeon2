@@ -26,3 +26,4 @@ MonoBehaviour:
   _deathDoorCount: 0
   _availableSkills:
   - {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
+  - {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
