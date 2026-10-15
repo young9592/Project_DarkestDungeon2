@@ -67,8 +67,9 @@ public class CPlayer : CEntity
 		}
 
 		CSkillDataSO skillToUse = _equippedSkills[skillIndex];
+		if (skillToUse == null) return;
 
-		if (skillToUse.UsableRank.HasFlag(_currentRank))
+		if (CSkillRankUtility.CanUseSkill(skillToUse, _currentRank))
 		{
 			_selectedSkill = skillToUse;
 			CPrint.Log($"[{_heroData.DefaultName}] : <{_selectedSkill.SkillName}> 스킬 선택  완료. 타겟 지정해주세요.");
@@ -92,7 +93,7 @@ public class CPlayer : CEntity
             return;
         }
 
-		if (_selectedSkill.TargetableRank.HasFlag(targetRank))
+		if (CSkillRankUtility.CanTargetSkill(_selectedSkill, targetRank))
 		{
 			CPrint.Log($"[{_heroData.DefaultName}]가 {target.name}({target.name})에게 <{_selectedSkill.SkillName}> 스킬 사용");
 

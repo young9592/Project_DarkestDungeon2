@@ -59,13 +59,13 @@ public class CEnemy : CEntity
     private void Initialize()
     {
         _currentHp = _enemyData.MaxHealth;
-        if (!IsSingleRank(_currentRank)) _currentRank = ERank.Rank1;
+        if (!CSkillRankUtility.IsSingleRank(_currentRank)) _currentRank = ERank.Rank1;
         _isInitialized = true;
     }
 
     public bool TrySetRank(ERank rank)
     {
-        if (!IsSingleRank(rank)) return false;
+        if (!CSkillRankUtility.IsSingleRank(rank)) return false;
 
         _currentRank = rank;
         return true;
@@ -126,21 +126,25 @@ public class CEnemy : CEntity
         return _attackAnimation.TryPlayAttack(skill);
     }
 
-    public override void TakeDamage(int damage, List<CEffect> effectList)
+    public override void TakeDamage(int finalDamage)
     {
-        if (!_isInitialized || !isActiveAndEnabled || damage <= 0) return;
+        if (!_isInitialized || !isActiveAndEnabled || finalDamage == 0) return;
 
-        _currentHp = Mathf.Max(0, _currentHp - damage);
+        // 음수는 회복으로 받고 체력은 최대 체력을 넘지 않게 합니다.
+        long nextHp = (long)_currentHp - finalDamage;
+        _currentHp = (int)Math.Max(0L, Math.Min(_enemyData.MaxHealth, nextHp));
 
         // 체력은 바로 반영하고 다른 연출이 재생 중이면 피격 연출은 시작하지 않습니다.
-        if (_attackAnimation != null) _attackAnimation.TryPlayHit();
+        if (finalDamage > 0 && _attackAnimation != null) _attackAnimation.TryPlayHit();
 
-        // TODO: 상태이상과 사망 및 죽음의 문 처리는 전투 규칙을 연결할 때 추가합니다.
+        // TODO: 사망과 죽음의 문 처리는 전투 규칙을 연결할 때 추가합니다.
     }
 
-    private bool IsSingleRank(ERank rank)
+    public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        return rank == ERank.Rank1 || rank == ERank.Rank2
-            || rank == ERank.Rank3 || rank == ERank.Rank4;
+        if (!_isInitialized || !isActiveAndEnabled || statusEffect == null || statusEffect.Data == null) return;
+
+        // TODO: 상태이상 보관과 갱신 규칙을 정한 뒤 연결합니다. 아직 실제 효과는 적용하지 않습니다.
+        CPrint.Warn(name + ": Enemy 상태이상 처리는 아직 연결되지 않았습니다.");
     }
 }
