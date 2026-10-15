@@ -85,8 +85,8 @@ public class CEnemy : CEntity
     {
         if (!_isInitialized || !isActiveAndEnabled) return null;
 
-        // 현재 열 기준으로만 선택합니다. 대상 열까지 검사할 때는 행동 요청을 사용합니다.
-        return CEnemySkillSelector.SelectRandom(GetSkillCandidates());
+        // 현재 열과 자신의 체력을 기준으로 선택합니다. 대상 열까지 검사할 때는 행동 요청을 사용합니다.
+        return CEnemySkillSelector.SelectSkill(_enemyData, GetSkillCandidates(), _currentHp);
     }
 
     // 대상 열은 호출한 쪽에서 현재 값을 전달합니다. true는 요청 전달 성공을 뜻합니다.
@@ -97,7 +97,7 @@ public class CEnemy : CEntity
         if (_attackAnimation == null || _attackAnimation.IsBusy) return false;
         if (OnSkillActionRequested == null) return false;
 
-        CSkillDataSO skill = CEnemySkillSelector.SelectRandom(GetSkillCandidates(targetRank));
+        CSkillDataSO skill = CEnemySkillSelector.SelectSkill(_enemyData, GetSkillCandidates(targetRank), _currentHp);
         if (skill == null) return false;
 
         // 요청을 받는 코드에서 같은 요청이 다시 들어오는 것을 막습니다.
@@ -123,7 +123,7 @@ public class CEnemy : CEntity
         if (!candidates.Contains(skill)) return false;
 
         // 현재 열에 맞는 스킬의 연출만 요청하고 효과는 적용하지 않습니다.
-        return _attackAnimation.TryPlayAttack();
+        return _attackAnimation.TryPlayAttack(skill);
     }
 
     public override void TakeDamage(int damage, List<CEffect> effectList)

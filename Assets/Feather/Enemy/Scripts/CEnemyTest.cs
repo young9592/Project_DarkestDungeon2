@@ -102,7 +102,7 @@ public class CEnemyTest : MonoBehaviour
         GUILayout.Label("Skill attack completions: " + _completedAttackCount);
         RefreshCandidates();
         GUILayout.Label("Rank candidates: " + _candidates.Count);
-        if (GUILayout.Button("Random Skill Attack", GUILayout.Height(30.0f))) RequestRandomAttack();
+        if (GUILayout.Button("Select Skill Attack", GUILayout.Height(30.0f))) RequestRandomAttack();
         _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
         if (_candidates.Count == 0) GUILayout.Label("No skills match the current rank.");
         for (int i = 0; i < _candidates.Count; i++)
@@ -111,10 +111,11 @@ public class CEnemyTest : MonoBehaviour
             if (skill == null) continue;
 
             if (GUILayout.Button(skill.SkillName, GUILayout.Height(30.0f))) RequestAttack(skill);
-            GUILayout.Label("Targets: " + skill.TargetableRank);
+            int weight = CEnemySkillSelector.GetSelectionWeight(_selectedEnemy.EnemyData, skill, _selectedEnemy.CurrentHp);
+            GUILayout.Label("Targets: " + skill.TargetableRank + " / Weight: " + weight);
         }
         GUILayout.EndScrollView();
-        GUILayout.Label("Rank-only selection / shared attack animation");
+        GUILayout.Label("Auto: rank + HP / Buttons: skill animation");
         GUILayout.EndArea();
     }
 
@@ -201,7 +202,7 @@ public class CEnemyTest : MonoBehaviour
         CSkillDataSO skill = _selectedEnemy.SelectSkill();
         if (skill == null)
         {
-            _lastRequest = "No skill selected: no candidates / unavailable";
+            _lastRequest = "No skill selected: rank / HP / weight";
             return;
         }
 

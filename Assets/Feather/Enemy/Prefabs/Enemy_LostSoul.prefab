@@ -47,6 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1723720852140390094}
+  _skillAnimations:
+  - _skill: {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
+    _attackState: Base Layer.Attack
+    _completionState: Base Layer.AttackPose
+  - _skill: {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+    _attackState: Base Layer.Swipe
+    _completionState: Base Layer.SwipePose
 --- !u!114 &4091325714474303996
 MonoBehaviour:
   m_ObjectHideFlags: 0
