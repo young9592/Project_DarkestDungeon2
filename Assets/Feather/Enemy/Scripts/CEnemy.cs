@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ public class CEnemy : CEntity
     [SerializeField] private ERank _currentRank = ERank.Rank1;
 
     private bool _isInitialized;
+    private bool _isRequestingSkill;
+
+    public event Action<CEnemy, CEntity, CSkillDataSO> OnSkillActionRequested;
 
     public CEnemyDataSO EnemyData
     {
@@ -70,6 +74,44 @@ public class CEnemy : CEntity
     public List<CSkillDataSO> GetSkillCandidates()
     {
         return CEnemySkillFilter.GetCandidates(_enemyData, _currentRank);
+    }
+
+    public List<CSkillDataSO> GetSkillCandidates(ERank targetRank)
+    {
+        return CEnemySkillFilter.GetCandidates(_enemyData, _currentRank, targetRank);
+    }
+
+    public CSkillDataSO SelectSkill()
+    {
+        if (!_isInitialized || !isActiveAndEnabled) return null;
+
+        // 현재 열 기준으로만 선택합니다. 대상 열까지 검사할 때는 행동 요청을 사용합니다.
+        return CEnemySkillSelector.SelectRandom(GetSkillCandidates());
+    }
+
+    // 대상 열은 호출한 쪽에서 현재 값을 전달합니다. true는 요청 전달 성공을 뜻합니다.
+    public bool TryRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        if (!_isInitialized || !isActiveAndEnabled || _isRequestingSkill) return false;
+        if (target == null || target == this || !target.isActiveAndEnabled) return false;
+        if (_attackAnimation == null || _attackAnimation.IsBusy) return false;
+        if (OnSkillActionRequested == null) return false;
+
+        CSkillDataSO skill = CEnemySkillSelector.SelectRandom(GetSkillCandidates(targetRank));
+        if (skill == null) return false;
+
+        // 요청을 받는 코드에서 같은 요청이 다시 들어오는 것을 막습니다.
+        _isRequestingSkill = true;
+        try
+        {
+            OnSkillActionRequested.Invoke(this, target, skill);
+        }
+        finally
+        {
+            _isRequestingSkill = false;
+        }
+
+        return true;
     }
 
     public bool TryPlayAttack(CSkillDataSO skill)

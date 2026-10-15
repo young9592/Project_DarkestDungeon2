@@ -25,4 +25,5 @@ MonoBehaviour:
     Debuff: 0
   _availableSkills:
   - {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
+  - {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
   _deathDoorCount: 0
