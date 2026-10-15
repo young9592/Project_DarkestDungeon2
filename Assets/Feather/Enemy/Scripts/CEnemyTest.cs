@@ -8,7 +8,12 @@ public class CEnemyTest : MonoBehaviour
     [SerializeField] private int _selectedEnemyIndex;
     [SerializeField, Min(1)] private int _testDamage = 3;
 
+    [Header("Action Request Test")]
+    [SerializeField] private CEnemyActionRequestTest _actionRequestTest;
+
     private readonly string[] _rankLabels = { "1", "2", "3", "4" };
+    private readonly string[] _testModeLabels = { "Animation", "Action Request" };
+    private int _selectedTestMode = 1;
     private string[] _enemyLabels;
     private CEnemy _selectedEnemy;
     private CEnemyAttackAnimation _subscribedAnimation;
@@ -60,6 +65,17 @@ public class CEnemyTest : MonoBehaviour
             return;
         }
 
+        if (_actionRequestTest != null)
+        {
+            _selectedTestMode = GUILayout.Toolbar(_selectedTestMode, _testModeLabels);
+            if (_selectedTestMode == 1)
+            {
+                _actionRequestTest.DrawControls();
+                GUILayout.EndArea();
+                return;
+            }
+        }
+
         if (_enemyLabels != null && _enemyLabels.Length > 0)
         {
             int selectedIndex = GUILayout.Toolbar(_selectedEnemyIndex, _enemyLabels);
@@ -86,6 +102,7 @@ public class CEnemyTest : MonoBehaviour
         GUILayout.Label("Skill attack completions: " + _completedAttackCount);
         RefreshCandidates();
         GUILayout.Label("Rank candidates: " + _candidates.Count);
+        if (GUILayout.Button("Random Skill Attack", GUILayout.Height(30.0f))) RequestRandomAttack();
         _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
         if (_candidates.Count == 0) GUILayout.Label("No skills match the current rank.");
         for (int i = 0; i < _candidates.Count; i++)
@@ -93,12 +110,11 @@ public class CEnemyTest : MonoBehaviour
             CSkillDataSO skill = _candidates[i];
             if (skill == null) continue;
 
-            GUILayout.Label(skill.SkillName);
+            if (GUILayout.Button(skill.SkillName, GUILayout.Height(30.0f))) RequestAttack(skill);
             GUILayout.Label("Targets: " + skill.TargetableRank);
-            if (GUILayout.Button("Test Attack", GUILayout.Height(30.0f))) RequestAttack(skill);
         }
         GUILayout.EndScrollView();
-        GUILayout.Label("Damage + rank + animation test only");
+        GUILayout.Label("Rank-only selection / shared attack animation");
         GUILayout.EndArea();
     }
 
@@ -171,6 +187,25 @@ public class CEnemyTest : MonoBehaviour
         _requestedSkillName = skill.SkillName;
         _isWaitingForAttack = true;
         _lastRequest = "Playing: " + _requestedSkillName;
+    }
+
+    private void RequestRandomAttack()
+    {
+        if (!isActiveAndEnabled || _selectedEnemy == null) return;
+        if (_isWaitingForAttack)
+        {
+            _lastRequest = "Rejected: attack in progress";
+            return;
+        }
+
+        CSkillDataSO skill = _selectedEnemy.SelectSkill();
+        if (skill == null)
+        {
+            _lastRequest = "No skill selected: no candidates / unavailable";
+            return;
+        }
+
+        RequestAttack(skill);
     }
 
     private void RequestDamage()
