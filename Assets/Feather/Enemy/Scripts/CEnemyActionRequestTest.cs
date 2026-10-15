@@ -60,13 +60,14 @@ public class CEnemyActionRequestTest : MonoBehaviour
 
         CEnemy target = GetEnemy(_selectedTargetIndex);
         DrawRankControls("Target rank", target);
-        if (actor == null || target == null)
+        if (actor == null || actor.EnemyData == null || target == null)
         {
             GUILayout.Label("Assign actor and target enemies.");
             return;
         }
 
-        GUILayout.Label("Rank matches: " + actor.GetSkillCandidates(target.CurrentRank).Count);
+        GUILayout.Label("Actor HP: " + actor.CurrentHp + " / " + actor.EnemyData.MaxHealth
+            + " | Rank matches: " + actor.GetSkillCandidates(target.CurrentRank).Count);
         if (GUILayout.Button("Send Request (no combat)", GUILayout.Height(30.0f))) RequestAction();
         GUILayout.Label(_lastRequest);
         GUILayout.Label("Requests received: " + _receivedCount);
@@ -131,7 +132,7 @@ public class CEnemyActionRequestTest : MonoBehaviour
         CEnemy actor = GetEnemy(_selectedActorIndex);
         CEnemy target = GetEnemy(_selectedTargetIndex);
         bool sent = actor != null && target != null && actor.TryRequestSkillAction(target, target.CurrentRank);
-        _lastRequest = sent ? "Request sent" : "Not sent: check actor / target / ranks";
+        _lastRequest = sent ? "Request sent" : "Not sent: check state / ranks / HP / weight";
     }
 
     private void HandleSkillActionRequested(CEnemy actor, CEntity target, CSkillDataSO skill)

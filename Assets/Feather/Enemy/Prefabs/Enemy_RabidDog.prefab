@@ -47,6 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 6490489829312127798}
+  _skillAnimations:
+  - _skill: {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
+    _attackState: Base Layer.Attack
+    _completionState: Base Layer.AttackPose
+  - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
+    _attackState: Base Layer.Howl
+    _completionState: Base Layer.HowlPose
 --- !u!114 &2481291059542486020
 MonoBehaviour:
   m_ObjectHideFlags: 0
