@@ -5,6 +5,10 @@ using UnityEngine;
 public class CEnemyDataSO : CEntityDataSO
 {
     #region Inspector
+    [Header("Formation")]
+    [Range(1, 4)]
+    [SerializeField] private int _formationSize = 1;
+
     [Header("DeathDoorCount")]
     [SerializeField] private int _deathDoorCount = 0;
 
@@ -15,6 +19,10 @@ public class CEnemyDataSO : CEntityDataSO
 
     #region Property
     public int DeathDoorCount => _deathDoorCount;
+    public int FormationSize
+    {
+        get { return _formationSize; }
+    }
     #endregion
 
     public CEnemySkillRule GetSkillRule(CSkillDataSO skill)
@@ -34,6 +42,8 @@ public class CEnemyDataSO : CEntityDataSO
     protected override void OnValidate()
     {
         base.OnValidate();
+
+        _formationSize = Mathf.Clamp(_formationSize, 1, 4);
 
         _deathDoorCount = Mathf.Max(0, _deathDoorCount);
         if (_skillRules == null) return;
