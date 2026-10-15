@@ -13,6 +13,7 @@ public class CTempEntity : MonoBehaviour
     [SerializeField] private EntityType _type;
     [SerializeField] private int _speed;
     [SerializeField] private int _randSpeed;
+    [SerializeField] private Sprite _entityTurnImage;
     // 일단 임시로
     [SerializeField] private bool _isDead = false;
     #endregion
@@ -25,6 +26,8 @@ public class CTempEntity : MonoBehaviour
 
     #region Property
     public int Speed => _speed + _randSpeed;
+    public EntityType Type => _type;
+    public Sprite EntityTurnIamge => _entityTurnImage;
     #endregion
 
     private void Awake()
