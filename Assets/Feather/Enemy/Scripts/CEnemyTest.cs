@@ -16,6 +16,7 @@ public class CEnemyTest : MonoBehaviour
     private int _selectedTestMode = 1;
     private string[] _enemyLabels;
     private CEnemy _selectedEnemy;
+    private CEnemyIntentTest _selectedIntent;
     private CEnemyAttackAnimation _subscribedAnimation;
     private List<CSkillDataSO> _candidates = new List<CSkillDataSO>();
     private Vector2 _scrollPosition;
@@ -56,7 +57,7 @@ public class CEnemyTest : MonoBehaviour
 
     private void OnGUI()
     {
-        float panelHeight = _showDetails ? 340.0f : 30.0f;
+        float panelHeight = _showDetails ? 430.0f : 30.0f;
         GUILayout.BeginArea(new Rect(360.0f, 20.0f, 300.0f, panelHeight), GUI.skin.box);
         if (GUILayout.Button("Enemy Runtime Test" + (_showDetails ? " [-]" : " [+]"))) _showDetails = !_showDetails;
         if (!_showDetails)
@@ -100,6 +101,16 @@ public class CEnemyTest : MonoBehaviour
 
         GUILayout.Label(_lastRequest);
         GUILayout.Label("Skill attack completions: " + _completedAttackCount);
+        if (_selectedIntent != null)
+        {
+            CSkillDataSO planned = _selectedIntent.PlannedSkill;
+            GUILayout.Label("Intent: " + (planned != null ? planned.SkillName : "None"));
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Plan Skill")) _selectedIntent.TryPrepareIntent();
+            if (GUILayout.Button("Play Intent")) RequestIntentAttack();
+            if (GUILayout.Button("Cancel")) _selectedIntent.CancelIntent();
+            GUILayout.EndHorizontal();
+        }
         RefreshCandidates();
         GUILayout.Label("Rank candidates: " + _candidates.Count);
         if (GUILayout.Button("Select Skill Attack", GUILayout.Height(30.0f))) RequestRandomAttack();
@@ -126,6 +137,7 @@ public class CEnemyTest : MonoBehaviour
         UnsubscribeAnimation();
         _selectedEnemyIndex = index;
         _selectedEnemy = _enemies[index];
+        _selectedIntent = _selectedEnemy != null ? _selectedEnemy.GetComponent<CEnemyIntentTest>() : null;
         _isWaitingForAttack = false;
         _completedAttackCount = 0;
         _lastRequest = "No skill request yet";
@@ -179,6 +191,12 @@ public class CEnemyTest : MonoBehaviour
             return;
         }
 
+        if (_selectedIntent != null && _selectedIntent.PlannedSkill != null)
+        {
+            _lastRequest = "Use Play Intent or cancel the planned skill";
+            return;
+        }
+
         if (!_selectedEnemy.TryPlayAttack(skill))
         {
             _lastRequest = "Rejected: rank / busy / unavailable";
@@ -209,12 +227,27 @@ public class CEnemyTest : MonoBehaviour
         RequestAttack(skill);
     }
 
+    private void RequestIntentAttack()
+    {
+        if (_selectedIntent == null || _isWaitingForAttack) return;
+        CSkillDataSO skill = _selectedIntent.PlannedSkill;
+        if (!_selectedIntent.TryExecuteIntent())
+        {
+            _lastRequest = "Intent rejected: plan again";
+            return;
+        }
+
+        _requestedSkillName = skill.SkillName;
+        _isWaitingForAttack = true;
+        _lastRequest = "Playing intent: " + _requestedSkillName;
+    }
+
     private void RequestDamage()
     {
         if (!isActiveAndEnabled || _selectedEnemy == null) return;
 
         // 피해 처리 확인용이고 공격 대상에게 스킬 효과를 적용하는 버튼은 아닙니다.
-        _selectedEnemy.TakeDamage(_testDamage, null);
+        _selectedEnemy.TakeDamage(_testDamage);
     }
 
     private void HandleAttackCompleted()

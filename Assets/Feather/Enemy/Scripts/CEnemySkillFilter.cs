@@ -8,8 +8,7 @@ public static class CEnemySkillFilter
         List<CSkillDataSO> candidates = new List<CSkillDataSO>();
         if (enemyData == null) return candidates;
 
-        if (currentRank != ERank.Rank1 && currentRank != ERank.Rank2
-            && currentRank != ERank.Rank3 && currentRank != ERank.Rank4)
+        if (!CSkillRankUtility.IsSingleRank(currentRank))
         {
             return candidates;
         }
@@ -21,7 +20,7 @@ public static class CEnemySkillFilter
         {
             CSkillDataSO skill = skills[i];
             if (skill == null) continue;
-            if ((skill.UsableRank & currentRank) == ERank.None) continue;
+            if (!CSkillRankUtility.CanUseSkill(skill, currentRank)) continue;
 
             candidates.Add(skill);
         }
@@ -33,8 +32,7 @@ public static class CEnemySkillFilter
     public static List<CSkillDataSO> GetCandidates(CEnemyDataSO enemyData, ERank currentRank, ERank targetRank)
     {
         List<CSkillDataSO> candidates = new List<CSkillDataSO>();
-        if (targetRank != ERank.Rank1 && targetRank != ERank.Rank2
-            && targetRank != ERank.Rank3 && targetRank != ERank.Rank4)
+        if (!CSkillRankUtility.IsSingleRank(targetRank))
         {
             return candidates;
         }
@@ -43,7 +41,7 @@ public static class CEnemySkillFilter
         for (int i = 0; i < rankCandidates.Count; i++)
         {
             CSkillDataSO skill = rankCandidates[i];
-            if ((skill.TargetableRank & targetRank) == ERank.None) continue;
+            if (!CSkillRankUtility.CanTargetSkill(skill, targetRank)) continue;
 
             candidates.Add(skill);
         }
