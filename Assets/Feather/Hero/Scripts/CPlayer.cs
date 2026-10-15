@@ -118,19 +118,26 @@ public class CPlayer : CEntity
 	#endregion
 
 	#region CEntity Overrides
-	public override void TakeDamage(int damage, List<CEffect> effectList)
+	// Effect Core 파이프라인에서 최종 연산된 데미지를 받음
+	public override void TakeDamage(int finalDamage)
 	{
-		_currentHp -= damage;
-		CPrint.Log($"[{_heroData.DefaultName}] 피격 \n 데미지 : {damage}, 남은 체력: {_currentHp}");
+		_currentHp -= finalDamage;
+		CPrint.Log($"[{_heroData.DefaultName}] 피격 \n 데미지 : {finalDamage}, 남은 체력: {_currentHp}");
 
 		if (_currentHp <= 0)
 		{
 			_currentHp = 0;
 			EnterDeathsDoor();
 		}
-
-		// TODO : 전달받은 effectList 내부 순회하며 출혈, 스트레스 증가등 상태이상 적용
 	}
+
+	// Effect Core 파이프라인에서 필터링시킨 상태이상을 적용받음
+    public override void ApplyStatusEffect(CEffect statusEffect)
+    {
+		CPrint.Log($"[{_heroData.DefaultName}] 에게 상태이상 [{statusEffect.Data.Name}] 적용!");
+
+		// TODO : 전달받은 상태이상 타입인 EffectType을 확인하여 부착시키거나 토큰을 누적시키는 로직 구현 필요
+    }
 
 	private void EnterDeathsDoor()
 	{
