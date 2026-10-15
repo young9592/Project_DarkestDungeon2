@@ -34,7 +34,17 @@ public class CEnemy : CEntity
         get { return _currentHp; }
     }
 
-    public ERank CurrentRank
+    public override CEntityDataSO EntityData
+    {
+        get { return _enemyData; }
+    }
+
+    public override EEntityType EntityType
+    {
+        get { return EEntityType.Enemy; }
+    }
+
+    public override ERank CurrentRank
     {
         get { return _currentRank; }
     }
@@ -61,6 +71,57 @@ public class CEnemy : CEntity
         _currentHp = _enemyData.MaxHealth;
         if (!CSkillRankUtility.IsSingleRank(_currentRank)) _currentRank = ERank.Rank1;
         _isInitialized = true;
+    }
+
+    private void OnEnable()
+    {
+        if (_attackAnimation == null) return;
+        _attackAnimation.OnAttackCompleted += HandleAttackCompleted;
+        _attackAnimation.OnAttackInterrupted += HandleAttackInterrupted;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_attackAnimation == null) return;
+        _attackAnimation.OnAttackCompleted -= HandleAttackCompleted;
+        _attackAnimation.OnAttackInterrupted -= HandleAttackInterrupted;
+    }
+
+    private void HandleAttackCompleted()
+    {
+        TryCompleteAction();
+    }
+
+    private void HandleAttackInterrupted()
+    {
+        CancelAction();
+    }
+
+    protected override bool CanBeginAction()
+    {
+        return _isInitialized && _attackAnimation != null && _attackAnimation.isActiveAndEnabled && !_attackAnimation.IsBusy;
+    }
+
+    protected override bool CanCompleteAction()
+    {
+        return _attackAnimation != null && !_attackAnimation.IsBusy;
+    }
+
+    protected override bool CanExecuteRequestedAction()
+    {
+        return ActionSkill != null && GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
+            && CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) > 0;
+    }
+
+    protected override bool TryStartActionPresentation()
+    {
+        return TryPlayAttack(ActionSkill);
+    }
+
+    protected override void OnActionCancelled()
+    {
+        if (_attackAnimation != null) _attackAnimation.CancelPlayback();
     }
 
     public bool TrySetRank(ERank rank)
@@ -90,21 +151,46 @@ public class CEnemy : CEntity
     }
 
     // 대상 열은 호출한 쪽에서 현재 값을 전달합니다. true는 요청 전달 성공을 뜻합니다.
-    public bool TryRequestSkillAction(CEntity target, ERank targetRank)
+    public override bool TryRequestSkillAction(CEntity target, ERank targetRank)
     {
-        if (!_isInitialized || !isActiveAndEnabled || _isRequestingSkill) return false;
-        if (target == null || target == this || !target.isActiveAndEnabled) return false;
-        if (_attackAnimation == null || _attackAnimation.IsBusy) return false;
-        if (OnSkillActionRequested == null) return false;
-
+        if (!CanRequestSkillAction(target, targetRank)) return false;
         CSkillDataSO skill = CEnemySkillSelector.SelectSkill(_enemyData, GetSkillCandidates(targetRank), _currentHp);
-        if (skill == null) return false;
+        return TryRequestSkillAction(target, targetRank, skill);
+    }
+
+    public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        if (!CanSendRequest(target)) return false;
+        List<CSkillDataSO> candidates = GetSkillCandidates(targetRank);
+        for (int i = 0; i < candidates.Count; i++)
+            if (CEnemySkillSelector.GetSelectionWeight(_enemyData, candidates[i], _currentHp) > 0) return true;
+        return false;
+    }
+
+    public bool CanRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
+    {
+        return CanSendRequest(target) && skill != null && GetSkillCandidates(targetRank).Contains(skill)
+            && CEnemySkillSelector.GetSelectionWeight(_enemyData, skill, _currentHp) > 0;
+    }
+
+    private bool CanSendRequest(CEntity target)
+    {
+        return _isInitialized && isActiveAndEnabled && !_isRequestingSkill && CanIssueActionRequest
+            && target != null && target != this && target.isActiveAndEnabled
+            && _attackAnimation != null && _attackAnimation.isActiveAndEnabled
+            && !_attackAnimation.IsBusy && (OnSkillActionRequested != null || HasCommonRequestReceiver);
+    }
+
+    // 의도에서 정한 스킬을 다시 추첨하지 않고 전달합니다.
+    public bool TryRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
+    {
+        if (!CanRequestSkillAction(target, targetRank, skill)) return false;
 
         // 요청을 받는 코드에서 같은 요청이 다시 들어오는 것을 막습니다.
         _isRequestingSkill = true;
         try
         {
-            OnSkillActionRequested.Invoke(this, target, skill);
+            if (!NotifyActionRequest(target, skill)) OnSkillActionRequested?.Invoke(this, target, skill);
         }
         finally
         {

@@ -30,6 +30,8 @@ public class CEnemyAttackAnimation : MonoBehaviour
     // 비활성화로 중단된 연출은 완료 알림을 보내지 않습니다.
     public event Action OnAttackCompleted;
     public event Action OnHitCompleted;
+    public event Action OnAttackInterrupted;
+    public event Action OnHitInterrupted;
 
     public bool IsAttacking
     {
@@ -84,12 +86,32 @@ public class CEnemyAttackAnimation : MonoBehaviour
 
     private void OnDisable()
     {
+        InterruptAnimation();
+    }
+
+    private void InterruptAnimation()
+    {
+        EAnimationState previousState = _state;
         _state = EAnimationState.Idle;
         _currentAttackCompletionHash = 0;
+        if (previousState == EAnimationState.Attack) OnAttackInterrupted?.Invoke();
+        if (previousState == EAnimationState.Hit) OnHitInterrupted?.Invoke();
+    }
+
+    public void CancelPlayback()
+    {
+        InterruptAnimation();
+        if (_isReady && _animator != null && _animator.isActiveAndEnabled) PlayIdle();
     }
 
     private void LateUpdate()
     {
+        if (_state != EAnimationState.Idle && (_animator == null || !_animator.isActiveAndEnabled
+            || _animator.runtimeAnimatorController == null))
+        {
+            InterruptAnimation();
+            return;
+        }
         switch (_state)
         {
             case EAnimationState.Attack:
