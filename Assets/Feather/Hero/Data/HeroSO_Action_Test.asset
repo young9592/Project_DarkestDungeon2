@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a396532fedb703e41b8f6231ddea3bc7, type: 3}
+  m_Name: HeroSO_Action_Test
+  m_EditorClassIdentifier: 
+  _id: hero_action_test
+  _name: Hero Test
+  _maxHealth: 10
+  _speed: 1
+  _resistance:
+    Bleed: 0
+    Blight: 0
+    Burn: 0
+    Stun: 0
+    Move: 0
+    Debuff: 0
+  _availableSkills:
+  - {fileID: 11400000, guid: 72591fa857534ab42838f366ea81e5f7, type: 2}
+  - {fileID: 11400000, guid: 2118c6e1042edd24bbe538e30d9d3e4a, type: 2}
+  _defaultName: Hero Test
+  _diseaseResistance: 30
+  _deathDoorResistance: 60
+  _stressResistance: 0
+  _maxStress: 10
+  _forwardMovement: 2
+  _backwardMovement: 2
