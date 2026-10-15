@@ -27,6 +27,46 @@ public class CPlayer : CEntity
 	public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
     #endregion
 
+    private bool _isRequesting;
+    public CHeroDataSO HeroData { get { return _heroData; } }
+    public override ERank CurrentRank { get { return _currentRank; } }
+    public CSkillDataSO SelectedSkill { get { return _selectedSkill; } }
+    public IReadOnlyList<CSkillDataSO> EquippedSkills { get { return _equippedSkills; } }
+
+    public override CEntityDataSO EntityData { get { return _heroData; } }
+    public override EEntityType EntityType { get { return EEntityType.Hero; } }
+
+    protected override void OnActionBeginning()
+    {
+        CancelSkillSelection();
+    }
+
+    protected override void OnActionEnded()
+    {
+        CancelSkillSelection();
+    }
+
+    protected override bool CanExecuteRequestedAction()
+    {
+        return ActionSkill != null && _equippedSkills.Contains(ActionSkill)
+            && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
+            && CSkillRankUtility.CanTargetSkill(ActionSkill, ActionTarget.CurrentRank);
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        CancelSkillSelection();
+    }
+
+    public bool TrySetRank(ERank rank)
+    {
+        if (!CSkillRankUtility.IsSingleRank(rank)) return false;
+        _currentRank = rank;
+        CancelSkillSelection();
+        return true;
+    }
+
     private void Awake()
     {
         if (CPrint.NullUnityObjectCheck(gameObject.name, _heroData))
@@ -58,59 +98,64 @@ public class CPlayer : CEntity
 	/// </summary>
 	/// 1. 유저가 스킬 버튼 클릭시 호출
 	/// </summary>
-	public void SelectSkill(int skillIndex)
-	{
-		if (skillIndex < 0 || skillIndex >= _equippedSkills.Count)
-		{
-			CPrint.Warn("유효하지 않은 스킬 인덱스입니다.");
-			return;
-		}
+    public void SelectSkill(int skillIndex)
+    {
+        TrySelectSkill(skillIndex);
+    }
 
-		CSkillDataSO skillToUse = _equippedSkills[skillIndex];
-		if (skillToUse == null) return;
+    public bool TrySelectSkill(int skillIndex)
+    {
+        if (_isRequesting || !CanIssueActionRequest) return false;
+        _selectedSkill = null;
+        if (!isActiveAndEnabled || _heroData == null || _equippedSkills == null
+            || skillIndex < 0 || skillIndex >= _equippedSkills.Count) return false;
+        CSkillDataSO skill = _equippedSkills[skillIndex];
+        if (!CSkillRankUtility.CanUseSkill(skill, _currentRank)) return false;
+        _selectedSkill = skill;
+        return true;
+    }
 
-		if (CSkillRankUtility.CanUseSkill(skillToUse, _currentRank))
-		{
-			_selectedSkill = skillToUse;
-			CPrint.Log($"[{_heroData.DefaultName}] : <{_selectedSkill.SkillName}> 스킬 선택  완료. 타겟 지정해주세요.");
+    public void ExecuteSkillToTarget(CEntity target, ERank targetRank)
+    {
+        TryRequestSkillAction(target, targetRank);
+    }
 
-			// TODO : UI 매니저로 TargetableRank에 해당하는 적들의 발밑 하이라이트 처리
-		}
-		else
-		{
-			CPrint.Warn($"현재 위치({_currentRank})에서는 <{skillToUse.SkillName}> 스킬을 사용할 수 없습니다.");
-		}
-	}
+    public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        return isActiveAndEnabled && !_isRequesting && CanIssueActionRequest && _selectedSkill != null
+            && target != null && target != this && target.isActiveAndEnabled
+            && (OnSkillActionRequested != null || HasCommonRequestReceiver)
+            && CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank)
+            && CSkillRankUtility.CanTargetSkill(_selectedSkill, targetRank);
+    }
 
-	/// <summary>
-	/// 2. 스킬이 선택된 상태에서 적 클릭했을 때의 호출
-	/// </summary>
-	public void ExecuteSkillToTarget(CEntity target, ERank targetRank)
-	{
-		if (_selectedSkill == null)
-		{
-            CPrint.Warn("선택된 스킬이 없습니다. 먼저 스킬을 선택해주세요.");
-            return;
+    public override bool TryRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        if (!isActiveAndEnabled || _isRequesting || !CanIssueActionRequest || _selectedSkill == null
+            || target == null || target == this || !target.isActiveAndEnabled
+            || (OnSkillActionRequested == null && !HasCommonRequestReceiver)) return false;
+        if (!CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank))
+        {
+            CancelSkillSelection();
+            return false;
         }
+        if (!CanRequestSkillAction(target, targetRank)) return false;
 
-		if (CSkillRankUtility.CanTargetSkill(_selectedSkill, targetRank))
-		{
-			CPrint.Log($"[{_heroData.DefaultName}]가 {target.name}({target.name})에게 <{_selectedSkill.SkillName}> 스킬 사용");
+        // 요청 중 같은 스킬이 다시 전달되지 않도록 선택을 먼저 비웁니다.
+        CSkillDataSO skill = _selectedSkill;
+        _selectedSkill = null;
+        _isRequesting = true;
+        try
+        {
+            if (!NotifyActionRequest(target, skill)) OnSkillActionRequested?.Invoke(this, target, skill);
+        }
+        finally
+        {
+            _isRequesting = false;
+        }
+        return true;
+    }
 
-			// 데미지 수치 연산 처리 이벤트
-			OnSkillActionRequested?.Invoke(this, target, _selectedSkill);
-
-			_selectedSkill = null;
-		}
-		else
-		{
-			CPrint.Warn($"대상의 위치({targetRank})는 <{_selectedSkill.SkillName}> 스킬의 타겟이 될 수 없습니다.");
-		}
-	}
-
-	/// <summary>
-	/// 우클릭이나 취소 키 눌렀을 때 스킬 선택 취소
-	/// </summary>
 	public void CancelSkillSelection()
 	{
 		_selectedSkill = null;
