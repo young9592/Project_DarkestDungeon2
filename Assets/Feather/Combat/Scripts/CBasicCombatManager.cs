@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 #region 전투
 /*
@@ -25,9 +26,17 @@ public class CBasicCombatManager : MonoBehaviour
     }
 
     #region Inspector
-    [SerializeField] List<GameObject> _turnImageList;
-    [SerializeField] List<CTempEntity> _entityList;
+    [SerializeField] private List<CTempEntity> _entityList;
     [SerializeField] private State _state = State.None;
+
+    // 턴 이미지 프리팹과 보관할 위치
+    [Header("Turnorder Prefab")]
+    [SerializeField] private GameObject _turnOrderPrefab;
+    [SerializeField] private GameObject _turnOrderRoot;
+
+    // 턴오더 위치
+    [Header("Turnorder Data")]
+    [SerializeField] private List<Vector2> _turnOrderPos;
     #endregion
 
     #region Field
@@ -35,6 +44,9 @@ public class CBasicCombatManager : MonoBehaviour
     private Coroutine _coroutine = null;
     private string _message = "";
     private int _round = 0;
+
+    // UI 가지고 있다가 삭제
+    private List<GameObject> _turnOrdertList = new List<GameObject>();
     #endregion
 
     private void Update()
@@ -79,7 +91,7 @@ public class CBasicCombatManager : MonoBehaviour
     private void SetTurnList()
     {
         // 공격 모션이 끝날때까지 기다리기
-        if(_coroutine != null)
+        if (_coroutine != null)
         {
             return;
         }
@@ -106,6 +118,24 @@ public class CBasicCombatManager : MonoBehaviour
 
             // 순서 변경
             (_turnList[i], _turnList[max.index]) = (_turnList[max.index], _turnList[i]);
+        }
+
+        // 턴 이미지 세팅 및 생성
+        for (int i = 0; i < _turnList.Count; i++)
+        {
+            GameObject obj = Instantiate(_turnOrderPrefab, _turnOrderRoot.transform);
+
+            CTurnImage cTurnImage = obj.GetComponent<CTurnImage>();
+
+            int posIdx = i > 3 ? 0 : 1;
+            cTurnImage.Init(_turnOrderPos[posIdx], _turnList[i].Type, _turnList[i].EntityTurnIamge);
+
+            if (i < 3)
+            {
+                cTurnImage.Move(_turnOrderPos[4 - i], false);
+            }
+
+            _turnOrdertList.Add(obj);
         }
 
         // Debug
@@ -154,8 +184,24 @@ public class CBasicCombatManager : MonoBehaviour
         yield return new WaitForSeconds(3.5f);
         _message = "";
         _coroutine = null;
+        SetTurnOrderPos();
+        Destroy(_turnOrdertList[0], _turnOrdertList[0].GetComponent<CTurnImage>().MoveTime + 1f);
+        _turnOrdertList.RemoveAt(0);
     }
 
+    private void SetTurnOrderPos()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            if(_turnOrdertList.Count - 1 < i)
+            {
+                break;
+            }
+
+            CTurnImage cTurnImage = _turnOrdertList[i].GetComponent<CTurnImage>();
+            cTurnImage.Move(_turnOrderPos[_turnOrderPos.Count - 1 - i], false);
+        }
+    }
 
     private void OnGUI()
     {
@@ -163,13 +209,13 @@ public class CBasicCombatManager : MonoBehaviour
         gUIStyle.alignment = TextAnchor.MiddleRight;
         gUIStyle.fontSize = 50;
         gUIStyle.fontStyle = FontStyle.Bold;
-        GUI.color = Color.black;
 
 
-        GUI.Label(new Rect(Screen.width - 350, 70, 300, 120), $"라운드 : {_round}", gUIStyle);
+        GUI.Label(new Rect(Screen.width - 700, 20, 300, 120), $"라운드 : {_round}", gUIStyle);
 
-        if(_message != "")
+        if (_message != "")
         {
+            GUI.color = Color.black;
             gUIStyle.alignment = TextAnchor.MiddleCenter;
             GUI.Label(new Rect(0, Screen.height * 0.2f, Screen.width, 100), $"{_message}", gUIStyle);
         }
