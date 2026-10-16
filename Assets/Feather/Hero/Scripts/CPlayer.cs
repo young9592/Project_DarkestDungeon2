@@ -30,6 +30,7 @@ public class CPlayer : CEntity
     #endregion
 
     private bool _isRequesting;
+    private CEntityActionExecution _actionExecution;
     private bool _isGroupRequest;
     private readonly List<CEntity> _actionTargets = new List<CEntity>();
     public IReadOnlyList<CEntity> ActionTargets { get { return _actionTargets; } }
@@ -129,10 +130,17 @@ public class CPlayer : CEntity
 
     protected override bool CanCompleteAction()
     {
-        return _actionAnimation == null || !_actionAnimation.IsBusy;
+        return (_actionExecution == null || !_actionExecution.IsRunning)
+            && (_actionAnimation == null || !_actionAnimation.IsBusy);
     }
 
     protected override bool TryStartActionPresentation()
+    {
+        return _actionExecution != null && _actionExecution.TryExecute(ActionSkill,
+            _actionTargets, StartAttackPresentation);
+    }
+
+    private bool StartAttackPresentation()
     {
         return _actionAnimation == null || _actionAnimation.TryPlayAttack(ActionSkill);
     }
@@ -181,6 +189,12 @@ public class CPlayer : CEntity
     protected override void Awake()
     {
         base.Awake();
+        _actionExecution = GetComponent<CEntityActionExecution>();
+        if (_actionExecution == null)
+        {
+            _actionExecution = gameObject.AddComponent<CEntityActionExecution>();
+        }
+
 
         if (_actionAnimation == null) _actionAnimation = GetComponent<CHeroAnimation>();
         if (CPrint.NullUnityObjectCheck(gameObject.name, _heroData))
