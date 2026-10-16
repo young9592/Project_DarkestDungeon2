@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 612a553e2c1b4bb28f4421faa201258b, type: 3}
+  m_Name: HeroLoadoutSO_ManAtArms_Default
+  m_EditorClassIdentifier: 
+  _heroData: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+  _skills:
+  - {fileID: 11400000, guid: 8146b6833e2446840957d746a4d6e4f8, type: 2}
+  - {fileID: 11400000, guid: 59dc5dcfae1a0684cb60502b2f8c65bd, type: 2}
+  - {fileID: 11400000, guid: 5aa77621179604c41bdd91c3fa4a008b, type: 2}
+  - {fileID: 11400000, guid: 9a3b4507d7cf16e4b9084b45a2e58ee4, type: 2}
+  - {fileID: 11400000, guid: 6a9d61d2019098e4f89485594724e3e0, type: 2}

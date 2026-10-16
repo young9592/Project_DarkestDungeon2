@@ -30,6 +30,9 @@ public class CPlayer : CEntity
     #endregion
 
     private bool _isRequesting;
+    private bool _isGroupRequest;
+    private readonly List<CEntity> _actionTargets = new List<CEntity>();
+    public IReadOnlyList<CEntity> ActionTargets { get { return _actionTargets; } }
     public CHeroDataSO HeroData { get { return _heroData; } }
     public override ERank CurrentRank { get { return _currentRank; } }
     public CSkillDataSO SelectedSkill { get { return _selectedSkill; } }
@@ -40,17 +43,20 @@ public class CPlayer : CEntity
 
     protected override void OnActionBeginning()
     {
+        _actionTargets.Clear();
         CancelSkillSelection();
     }
 
     protected override void OnActionEnded()
     {
+        _actionTargets.Clear();
         CancelSkillSelection();
     }
 
     protected override bool CanExecuteRequestedAction()
     {
-        return ActionSkill != null && _equippedSkills.Contains(ActionSkill)
+        return ActionTarget != null && AreActionTargetsValid() && CanChooseTarget(ActionSkill, ActionTarget)
+            && ActionSkill != null && _equippedSkills.Contains(ActionSkill)
             && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
             && CSkillRankUtility.CanTargetSkill(ActionSkill, ActionTarget.CurrentRank);
     }
@@ -66,9 +72,52 @@ public class CPlayer : CEntity
         return true;
     }
 
+    // 전투 쪽에서 효과 처리와 별개로 캐릭터 연출 상태를 확인할 수 있습니다.
+    public bool IsPresentationBusy { get { return _actionAnimation != null && _actionAnimation.IsBusy; } }
+    public bool IsAttackPresentationPlaying { get { return _actionAnimation != null && _actionAnimation.IsAttacking; } }
+    public bool IsHitPresentationPlaying { get { return _actionAnimation != null && _actionAnimation.IsHitReacting; } }
+
+    public event Action<CEntity> OnAttackPresentationStarted;
+    public event Action<CEntity> OnAttackPresentationCompleted;
+    public event Action<CEntity> OnAttackPresentationInterrupted;
+    public event Action<CEntity> OnHitPresentationStarted;
+    public event Action<CEntity> OnHitPresentationCompleted;
+    public event Action<CEntity> OnHitPresentationInterrupted;
+
+    public bool CanPlayAttackPresentation(CSkillDataSO skill)
+    {
+        return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayAttack(skill);
+    }
+
+    public bool CanPlayHitPresentation()
+    {
+        return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayHit();
+    }
+
+    private void HandleAttackStarted()
+    {
+        OnAttackPresentationStarted?.Invoke(this);
+    }
+    private void HandleHitStarted()
+    {
+        OnHitPresentationStarted?.Invoke(this);
+    }
+    private void HandleHitCompleted()
+    {
+        OnHitPresentationCompleted?.Invoke(this);
+    }
+    private void HandleHitInterrupted()
+    {
+        OnHitPresentationInterrupted?.Invoke(this);
+    }
+
     private void OnEnable()
     {
         if (_actionAnimation == null) return;
+        _actionAnimation.OnAttackStarted += HandleAttackStarted;
+        _actionAnimation.OnHitStarted += HandleHitStarted;
+        _actionAnimation.OnHitCompleted += HandleHitCompleted;
+        _actionAnimation.OnHitInterrupted += HandleHitInterrupted;
         _actionAnimation.OnAttackCompleted += HandleAttackCompleted;
         _actionAnimation.OnAttackInterrupted += HandleAttackInterrupted;
     }
@@ -95,11 +144,13 @@ public class CPlayer : CEntity
 
     private void HandleAttackCompleted()
     {
+        OnAttackPresentationCompleted?.Invoke(this);
         TryCompleteAction();
     }
 
     private void HandleAttackInterrupted()
     {
+        OnAttackPresentationInterrupted?.Invoke(this);
         CancelAction();
     }
 
@@ -109,6 +160,10 @@ public class CPlayer : CEntity
         if (_actionAnimation != null)
         {
             _actionAnimation.CancelPlayback();
+            _actionAnimation.OnAttackStarted -= HandleAttackStarted;
+            _actionAnimation.OnHitStarted -= HandleHitStarted;
+            _actionAnimation.OnHitCompleted -= HandleHitCompleted;
+            _actionAnimation.OnHitInterrupted -= HandleHitInterrupted;
             _actionAnimation.OnAttackCompleted -= HandleAttackCompleted;
             _actionAnimation.OnAttackInterrupted -= HandleAttackInterrupted;
         }
@@ -123,7 +178,7 @@ public class CPlayer : CEntity
         return true;
     }
 
-    private void Awake()
+    protected override void Awake()
     {
         base.Awake();
 
@@ -188,10 +243,56 @@ public class CPlayer : CEntity
         TryRequestSkillAction(target, targetRank);
     }
 
+    private bool AreActionTargetsValid()
+    {
+        if (_actionTargets.Count == 0) return false;
+        for (int i = 0; i < _actionTargets.Count; i++)
+        {
+            CEntity target = _actionTargets[i];
+            if (target == null || !target.isActiveAndEnabled || !CanChooseTarget(ActionSkill, target)
+                || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
+        }
+        return true;
+    }
+
+    public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets)
+    {
+        CHeroSkillSO skill = _selectedSkill as CHeroSkillSO;
+        if (_isRequesting || _isGroupRequest || skill == null || skill.Target != EHeroSkillTarget.AllEnemies
+            || targets == null || targets.Count == 0) return false;
+        List<CEntity> uniqueTargets = new List<CEntity>();
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CEntity target = targets[i];
+            if (target == null || !CanRequestSkillAction(target, target.CurrentRank)) return false;
+            if (!uniqueTargets.Contains(target)) uniqueTargets.Add(target);
+        }
+        _actionTargets.Clear();
+        _actionTargets.AddRange(uniqueTargets);
+        _isGroupRequest = true;
+        try
+        {
+            bool requested = TryRequestSkillAction(uniqueTargets[0], uniqueTargets[0].CurrentRank);
+            if (!requested) _actionTargets.Clear();
+            return requested;
+        }
+        finally
+        {
+            _isGroupRequest = false;
+        }
+    }
+
+    private bool CanChooseTarget(CSkillDataSO skill, CEntity target)
+    {
+        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
+    }
+
     public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
     {
         return isActiveAndEnabled && !_isRequesting && CanIssueActionRequest && _selectedSkill != null
-            && target != null && target != this && target.isActiveAndEnabled
+            && target != null && target.isActiveAndEnabled
+            && CanChooseTarget(_selectedSkill, target)
             && (OnSkillActionRequested != null || HasCommonRequestReceiver)
             && CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank)
             && CSkillRankUtility.CanTargetSkill(_selectedSkill, targetRank);
@@ -200,7 +301,7 @@ public class CPlayer : CEntity
     public override bool TryRequestSkillAction(CEntity target, ERank targetRank)
     {
         if (!isActiveAndEnabled || _isRequesting || !CanIssueActionRequest || _selectedSkill == null
-            || target == null || target == this || !target.isActiveAndEnabled
+            || target == null || !target.isActiveAndEnabled
             || (OnSkillActionRequested == null && !HasCommonRequestReceiver)) return false;
         if (!CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank))
         {
@@ -210,6 +311,13 @@ public class CPlayer : CEntity
         if (!CanRequestSkillAction(target, targetRank)) return false;
 
         // 요청 중 같은 스킬이 다시 전달되지 않도록 선택을 먼저 비웁니다.
+        CHeroSkillSO heroSkill = _selectedSkill as CHeroSkillSO;
+        if (heroSkill != null && heroSkill.Target == EHeroSkillTarget.AllEnemies && !_isGroupRequest) return false;
+        if (!_isGroupRequest)
+        {
+            _actionTargets.Clear();
+            _actionTargets.Add(target);
+        }
         CSkillDataSO skill = _selectedSkill;
         _selectedSkill = null;
         _isRequesting = true;
