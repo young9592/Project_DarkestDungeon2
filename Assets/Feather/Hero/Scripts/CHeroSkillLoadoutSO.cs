@@ -12,6 +12,30 @@ public class CHeroSkillLoadoutSO : ScriptableObject
         get { return _skills; }
     }
 
+    public static CHeroSkillLoadoutSO CreateRuntime(CHeroDataSO heroData, IReadOnlyList<CSkillDataSO> skills)
+    {
+        if (heroData == null || skills == null)
+        {
+            return null;
+        }
+
+        CHeroSkillLoadoutSO loadout = CreateInstance<CHeroSkillLoadoutSO>();
+        loadout.hideFlags = HideFlags.DontSave;
+        loadout._heroData = heroData;
+        for (int i = 0; i < skills.Count; i++)
+        {
+            loadout._skills.Add(skills[i]);
+        }
+
+        if (loadout.TryValidate(heroData, out _))
+        {
+            return loadout;
+        }
+
+        Destroy(loadout);
+        return null;
+    }
+
     public bool TryValidate(CHeroDataSO heroData, out string message)
     {
         if (heroData == null || _heroData != heroData)
