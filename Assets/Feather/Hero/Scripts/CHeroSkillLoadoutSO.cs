@@ -24,6 +24,11 @@ public class CHeroSkillLoadoutSO : ScriptableObject
             message = "장착 스킬 목록이 없습니다.";
             return false;
         }
+        if (_skills.Count > 5)
+        {
+            message = "스킬은 최대 5개까지 장착할 수 있습니다.";
+            return false;
+        }
         for (int i = 0; i < _skills.Count; i++)
         {
             CSkillDataSO skill = _skills[i];

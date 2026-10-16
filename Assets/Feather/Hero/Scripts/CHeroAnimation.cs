@@ -11,19 +11,32 @@ public class CHeroAnimation : MonoBehaviour
     [SerializeField] private List<CSkillDataSO> _attackSkills = new List<CSkillDataSO>();
 
     private EAnimationState _state;
+    private bool _needsIdle;
+    private int _currentAttackEndHash;
     private static readonly int _idleHash = Animator.StringToHash("Base Layer.Idle");
     private static readonly int _attackHash = Animator.StringToHash("Base Layer.AttackAntic");
     private static readonly int _attackEndHash = Animator.StringToHash("Base Layer.AttackRecover");
     private static readonly int _hitHash = Animator.StringToHash("Base Layer.Hit");
     private static readonly int _hitEndHash = Animator.StringToHash("Base Layer.HitRecover");
 
+    public event Action OnAttackStarted;
     public event Action OnAttackCompleted;
     public event Action OnAttackInterrupted;
+    public event Action OnHitStarted;
     public event Action OnHitCompleted;
     public event Action OnHitInterrupted;
 
     public bool IsBusy { get { return _state != EAnimationState.Idle; } }
     public bool IsAttacking { get { return _state == EAnimationState.Attack; } }
+    public bool IsHitReacting { get { return _state == EAnimationState.Hit; } }
+    public bool IsReady
+    {
+        get
+        {
+            return isActiveAndEnabled && _animator != null && _animator.isActiveAndEnabled
+                && _animator.runtimeAnimatorController != null && _animator.HasState(0, _idleHash);
+        }
+    }
 
     private void Awake()
     {
@@ -37,29 +50,47 @@ public class CHeroAnimation : MonoBehaviour
 
     public bool TryPlayAttack(CSkillDataSO skill)
     {
-        if (!CanPlay() || skill == null || _attackSkills == null || !_attackSkills.Contains(skill)) return false;
-        if (!_animator.HasState(0, _attackHash) || !_animator.HasState(0, _attackEndHash)) return false;
+        if (!CanPlayAttack(skill)) return false;
+        _needsIdle = false;
         _state = EAnimationState.Attack;
-        _animator.Play(_attackHash, 0, 0.0f);
+        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        int startHash = heroSkill != null ? Animator.StringToHash(heroSkill.StartState) : _attackHash;
+        _currentAttackEndHash = heroSkill != null ? Animator.StringToHash(heroSkill.EndState) : _attackEndHash;
+        _animator.Play(startHash, 0, 0.0f);
+        OnAttackStarted?.Invoke();
         return true;
     }
 
     public bool TryPlayHit()
     {
-        if (!CanPlay() || !_animator.HasState(0, _hitHash) || !_animator.HasState(0, _hitEndHash)) return false;
+        if (!CanPlayHit()) return false;
+        _needsIdle = false;
         _state = EAnimationState.Hit;
         _animator.Play(_hitHash, 0, 0.0f);
+        OnHitStarted?.Invoke();
         return true;
     }
 
-    private bool CanPlay()
+    public bool CanPlayAttack(CSkillDataSO skill)
     {
-        return isActiveAndEnabled && !IsBusy && _animator != null && _animator.isActiveAndEnabled
-            && _animator.runtimeAnimatorController != null && _animator.HasState(0, _idleHash);
+        if (!IsReady || IsBusy || skill == null || _attackSkills == null || !_attackSkills.Contains(skill)) return false;
+        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        if (heroSkill == null) return _animator.HasState(0, _attackHash) && _animator.HasState(0, _attackEndHash);
+        if (string.IsNullOrEmpty(heroSkill.StartState) || string.IsNullOrEmpty(heroSkill.EndState)) return false;
+        int startHash = Animator.StringToHash(heroSkill.StartState);
+        int endHash = Animator.StringToHash(heroSkill.EndState);
+        return startHash != _idleHash && startHash != _hitHash && endHash != _idleHash && endHash != _hitEndHash
+            && _animator.HasState(0, startHash) && _animator.HasState(0, endHash);
+    }
+
+    public bool CanPlayHit()
+    {
+        return IsReady && !IsBusy && _animator.HasState(0, _hitHash) && _animator.HasState(0, _hitEndHash);
     }
 
     private void LateUpdate()
     {
+        if (_needsIdle && IsReady) PlayIdle();
         if (!IsBusy) return;
         if (_animator == null || !_animator.isActiveAndEnabled || _animator.runtimeAnimatorController == null)
         {
@@ -67,7 +98,7 @@ public class CHeroAnimation : MonoBehaviour
             return;
         }
         AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
-        int endHash = IsAttacking ? _attackEndHash : _hitEndHash;
+        int endHash = IsAttacking ? _currentAttackEndHash : _hitEndHash;
         if (info.fullPathHash != endHash || info.normalizedTime < 1.0f || _animator.IsInTransition(0)) return;
         EAnimationState finished = _state;
         PlayIdle();
@@ -86,8 +117,12 @@ public class CHeroAnimation : MonoBehaviour
     private void PlayIdle()
     {
         _state = EAnimationState.Idle;
-        if (_animator != null && _animator.isActiveAndEnabled && _animator.runtimeAnimatorController != null)
+        _needsIdle = true;
+        if (IsReady)
+        {
             _animator.Play(_idleHash, 0, 0.0f);
+            _needsIdle = false;
+        }
     }
 
     private void OnEnable()

@@ -10,6 +10,11 @@ public class CHeroBattleInputTest : MonoBehaviour
     [SerializeField] private MonoBehaviour[] _otherPanels;
     [SerializeField] private Vector3 _rankStep = new Vector3(0.01f, 0.0f, 0.0f);
 
+    [Header("Hero Presets")]
+    [SerializeField] private CHeroSkillLoadoutSO[] _loadouts;
+    [SerializeField] private CPlayer[] _allies;
+
+    private int _loadoutIndex;
     private bool _isOpen;
     private bool[] _panelStates;
     private int _receivedCount;
@@ -41,7 +46,11 @@ public class CHeroBattleInputTest : MonoBehaviour
                 _otherPanels[i].enabled = false;
             }
         }
+        _loadoutIndex = 0;
         _hero.gameObject.SetActive(true);
+        if (_allies != null)
+            for (int i = 0; i < _allies.Length; i++)
+                if (_allies[i] != null) _allies[i].gameObject.SetActive(true);
         _viewRoot.SetActive(true);
         _groupTest.enabled = true;
         _groupTest.ShowControls = false;
@@ -57,6 +66,7 @@ public class CHeroBattleInputTest : MonoBehaviour
         if (!_groupTest.TryLoadGroup(_groups[index])) return false;
         _hero.CancelAction();
         _input.SetTargets(_groupTest.SpawnedEnemies, _rankStep);
+        _input.AddAllyTargets(_allies, _rankStep);
         return _hero.TryBeginAction();
     }
 
@@ -75,7 +85,7 @@ public class CHeroBattleInputTest : MonoBehaviour
     {
         if (!_isOpen) return;
         _receivedCount++;
-        _lastRequest = skill.SkillName + " -> " + target.name;
+        _lastRequest = skill.SkillName + " -> " + target.name + (_hero.ActionTargets.Count > 1 ? " + " + (_hero.ActionTargets.Count - 1) : "");
         // 입력 테스트에서는 대상 피해 없이 Hero 공격 연출을 시작합니다.
         actor.TryStartRequestedAction();
     }
@@ -87,12 +97,23 @@ public class CHeroBattleInputTest : MonoBehaviour
         _input.SetTargets(null, _rankStep);
         _viewRoot.SetActive(false);
         _hero.gameObject.SetActive(false);
+        if (_allies != null)
+            for (int i = 0; i < _allies.Length; i++)
+                if (_allies[i] != null) _allies[i].gameObject.SetActive(false);
         _groupTest.ClearGroup();
         _groupTest.enabled = false;
         if (_otherPanels != null)
             for (int i = 0; i < _otherPanels.Length; i++)
                 if (_otherPanels[i] != null) _otherPanels[i].enabled = _panelStates[i];
         _isOpen = false;
+    }
+
+    public bool TrySetLoadout(int index)
+    {
+        if (!_isOpen || _loadouts == null || index < 0 || index >= _loadouts.Length) return false;
+        if (!_hero.TryEquipLoadout(_loadouts[index])) return false;
+        _loadoutIndex = index;
+        return true;
     }
 
     private void OnGUI()
@@ -115,6 +136,14 @@ public class CHeroBattleInputTest : MonoBehaviour
         GUILayout.EndHorizontal();
         GUILayout.Label(_lastRequest);
         GUILayout.EndArea();
+        if (_loadouts != null && _loadouts.Length > 0)
+        {
+            if (GUI.Button(new Rect(Screen.width - 150, 15, 65, 25), "< Preset")) TrySetLoadout((_loadoutIndex + _loadouts.Length - 1) % _loadouts.Length);
+            if (GUI.Button(new Rect(Screen.width - 80, 15, 70, 25), "Preset >")) TrySetLoadout((_loadoutIndex + 1) % _loadouts.Length);
+            GUI.Label(new Rect(Screen.width - 150, 45, 140, 45), _loadouts[_loadoutIndex].name.Replace("HeroLoadoutSO_ManAtArms_", ""));
+            for (int i = 0; i < 4; i++)
+                if (GUI.Button(new Rect(Screen.width - 150 + i * 35, 105, 33, 25), (i + 1).ToString()) && _input.CanChooseSkill) _hero.TrySetRank((ERank)(1 << i));
+        }
         if (GUI.Button(new Rect(Screen.width - 150.0f, Screen.height - 120.0f, 140.0f, 25.0f), "Hit Hero (1 damage)")) _hero.TakeDamage(1);
     }
 }
