@@ -125,6 +125,8 @@ public class CPlayer : CEntity
 
     private void Awake()
     {
+        base.Awake();
+
         if (_actionAnimation == null) _actionAnimation = GetComponent<CHeroAnimation>();
         if (CPrint.NullUnityObjectCheck(gameObject.name, _heroData))
 		{

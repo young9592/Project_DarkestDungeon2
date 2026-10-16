@@ -37,6 +37,15 @@ public abstract class CEntity : MonoBehaviour
     public CEntity ActionTarget { get { return _actionTarget; } }
     public CSkillDataSO ActionSkill { get { return _actionSkill; } }
 
+    public CTokenManager TokenManager { get; private set ; }
+
+    protected virtual void Awake()
+    {
+        // 생성될 때 토큰 주머니 생성
+        TokenManager = new CTokenManager();
+    }
+
+
     public event Action<CEntity> OnActionStarted;
     public event Action<CEntity, CEntity, CSkillDataSO> OnActionRequested;
     public event Action<CEntity> OnActionCompleted;

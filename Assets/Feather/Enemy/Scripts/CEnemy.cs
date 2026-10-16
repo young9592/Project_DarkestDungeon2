@@ -51,6 +51,8 @@ public class CEnemy : CEntity
 
     private void Awake()
     {
+        base.Awake();
+
         if (_attackAnimation == null)
         {
             _attackAnimation = GetComponent<CEnemyAttackAnimation>();
