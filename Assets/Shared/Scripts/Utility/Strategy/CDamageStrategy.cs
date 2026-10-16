@@ -28,11 +28,30 @@ public class CDamageStrategy : CEffectStrategy
         }
 
        // 4. 공격자 및 방어자의 토큰 연산 (파이프라인 : Intercept)
-       // TODO : TokenManager 구현 후, 사용 예정
-       // ex : 공격자 힘 토큰 소모 데미지 몇 배 증가
+       // 공격자가 힘 토큰 가지고 있을때
+       if (context.Caster.TokenManager.ConsumeToken(EEffectType.Strength))
+        {
+            finalDamage *= 1.5f;
+            CPrint.Log($"[{context.Caster.name}] 의 [힘] 토큰 소모 \n 데미지 50% 증가");
+        }
 
-       // 5. 최종 산출 된 수치를 정수로 변환시켜 대상의 HP 반영
-       int calculatedDamage = Mathf.RoundToInt(finalDamage);
+        // 방어 토큰 가지고 있을때
+        if (context.Target.TokenManager.ConsumeToken(EEffectType.Block))
+        {
+            finalDamage *= 0.5f;
+            CPrint.Log($"[{context.Target.name}] 의 [방어] 토큰 소모 \n 데미지 50% 감소");
+        }
+
+        // 취약 토큰 가지고 있을때
+        if (context.Target.TokenManager.ConsumeToken(EEffectType.Vulnerable))
+        {
+            finalDamage *= 1.5f;
+            CPrint.Log($"[{context.Target.name}] 의 [취약] 토큰 소모 \n 받는 데미지 50% 증가");
+        }
+
+
+        // 5. 최종 산출 된 수치를 정수로 변환시켜 대상의 HP 반영
+        int calculatedDamage = Mathf.RoundToInt(finalDamage);
 
         // 계산이 다 끝난 최종 데미지 수치만 전달받음
         context.Target.TakeDamage(calculatedDamage);
