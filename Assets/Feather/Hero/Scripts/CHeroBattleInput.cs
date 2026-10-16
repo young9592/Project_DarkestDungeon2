@@ -133,7 +133,7 @@ public class CHeroBattleInput : MonoBehaviour
                 if (hovered != null && mouse.leftButton.wasPressedThisFrame)
                 {
                     CHeroSkillSO skill = _hero.SelectedSkill as CHeroSkillSO;
-                    if (skill != null && skill.Target == EHeroSkillTarget.AllEnemies)
+                    if (skill != null && skill.IsGroupTarget)
                     {
                         _groupTargets.Clear();
                         for (int i = 0; i < _targets.Count; i++)
