@@ -48,12 +48,40 @@ public class CHeroBattleInput : MonoBehaviour
         ClearHighlights();
     }
 
+    public bool SetHero(CPlayer hero)
+    {
+        if (_hero != null && (_hero.ActionState == EEntityActionState.Requested || _hero.ActionState == EEntityActionState.Executing))
+        {
+            return false;
+        }
+
+        if (_hero != null)
+        {
+            _hero.OnActionRequested -= HandleRequested;
+            _hero.OnActionCompleted -= HandleEnded;
+            _hero.OnActionInterrupted -= HandleEnded;
+            _hero.CancelSkillSelection();
+        }
+
+        ClearHighlights();
+        _targets.Clear();
+        _hero = hero;
+        if (isActiveAndEnabled && _hero != null)
+        {
+            _hero.OnActionRequested += HandleRequested;
+            _hero.OnActionCompleted += HandleEnded;
+            _hero.OnActionInterrupted += HandleEnded;
+        }
+
+        return true;
+    }
+
     public void SetTargets(IReadOnlyList<CEnemy> enemies, Vector3 rankStep)
     {
         ClearHighlights();
         _targets.Clear();
         if (CanChooseSkill) _hero.CancelSkillSelection();
-        if (enemies == null) return;
+        if (enemies == null || _hero == null) return;
         for (int i = 0; i < enemies.Count; i++)
         {
             CEnemy enemy = enemies[i];
