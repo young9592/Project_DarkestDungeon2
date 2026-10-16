@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a396532fedb703e41b8f6231ddea3bc7, type: 3}
+  m_Name: HeroSO_PlagueDoctor
+  m_EditorClassIdentifier: 
+  _id: hero_plague_doctor
+  _name: PlagueDoctor
+  _maxHealth: 28
+  _speed: 4
+  _resistance:
+    Bleed: 30
+    Blight: 40
+    Burn: 30
+    Stun: 10
+    Move: 20
+    Debuff: 20
+  _availableSkills:
+  - {fileID: 11400000, guid: 0a559ca5dc2faa74ea3030581c4e517f, type: 2}
+  - {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}
+  - {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}
+  - {fileID: 11400000, guid: 04bc96820433e2b46993c138de9a0f12, type: 2}
+  - {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
+  - {fileID: 11400000, guid: ea4adf269c67c5549adad2a559a8cda7, type: 2}
+  - {fileID: 11400000, guid: 31a2ca9b6b988da4a8c0cb99b1478647, type: 2}
+  - {fileID: 11400000, guid: fc255f61bf463f7428a5cbfb08cb82bf, type: 2}
+  - {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
+  - {fileID: 11400000, guid: ee8e939fb2e07bf40a8d10280fac0047, type: 2}
+  - {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
+  _defaultName: PlagueDoctor
+  _diseaseResistance: 40
+  _deathDoorResistance: 60
+  _stressResistance: 0
+  _maxStress: 10
+  _forwardMovement: 1
+  _backwardMovement: 1

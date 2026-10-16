@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a396532fedb703e41b8f6231ddea3bc7, type: 3}
+  m_Name: HeroSO_GraveRobber
+  m_EditorClassIdentifier: 
+  _id: hero_grave_robber
+  _name: GraveRobber
+  _maxHealth: 29
+  _speed: 5
+  _resistance:
+    Bleed: 30
+    Blight: 30
+    Burn: 30
+    Stun: 20
+    Move: 20
+    Debuff: 30
+  _availableSkills:
+  - {fileID: 11400000, guid: b643f1de7f9cfe944871afeb5ec44d86, type: 2}
+  - {fileID: 11400000, guid: a808e3b236e695f41a4a16f32e606218, type: 2}
+  - {fileID: 11400000, guid: 6a38b5c54da4a094abf966160a111573, type: 2}
+  - {fileID: 11400000, guid: 2157bec6dae0d1149b5a5cbb9e0a9f31, type: 2}
+  - {fileID: 11400000, guid: 0e912bca270b98646aeba9a3e4529409, type: 2}
+  - {fileID: 11400000, guid: 2cef150618dbd024298265fc65c52af6, type: 2}
+  - {fileID: 11400000, guid: fa04fd01907f2934bb5de0f93497b447, type: 2}
+  - {fileID: 11400000, guid: b7db3cd899fc5cb4aa31893126fdc649, type: 2}
+  - {fileID: 11400000, guid: 7e14355942de5694ca9377ae89055bdb, type: 2}
+  - {fileID: 11400000, guid: 9f4e744f78fd0a84e81b4d9baa8ea205, type: 2}
+  - {fileID: 11400000, guid: 5eaf1ab69225dbf4d8bac9a3c58198a0, type: 2}
+  _defaultName: GraveRobber
+  _diseaseResistance: 30
+  _deathDoorResistance: 60
+  _stressResistance: 0
+  _maxStress: 10
+  _forwardMovement: 2
+  _backwardMovement: 2
