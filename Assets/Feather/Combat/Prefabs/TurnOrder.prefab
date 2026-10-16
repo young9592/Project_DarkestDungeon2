@@ -276,8 +276,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entityImage: {fileID: 4915383613303770179}
   _markerImage: {fileID: 6875093607393216545}
-  _heroMakerColor: {r: 0.62352943, g: 0.5647059, b: 0.40784314, a: 0}
-  _enemyMakerColor: {r: 0.30588236, g: 0.41960785, b: 0.5058824, a: 0}
+  _heroMakerColor: {r: 0.62352943, g: 0.5647059, b: 0.40784314, a: 1}
+  _enemyMakerColor: {r: 0.30588236, g: 0.41960785, b: 0.5058824, a: 1}
   _moveTime: 3
 --- !u!1 &9036535137160689385
 GameObject:
