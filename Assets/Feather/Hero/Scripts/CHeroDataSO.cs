@@ -30,7 +30,6 @@ public class CHeroDataSO : CEntityDataSO
     public int MaxStress => _maxStress;
     public int ForwardMovement => _forwardMovement;
     public int BackwardMovement => _backwardMovement;
-
     #endregion
 
     protected override void OnValidate()
