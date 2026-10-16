@@ -58,7 +58,7 @@ public class CPlayer : CEntity
         return ActionTarget != null && AreActionTargetsValid() && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null && _equippedSkills.Contains(ActionSkill)
             && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
-            && CSkillRankUtility.CanTargetSkill(ActionSkill, ActionTarget.CurrentRank);
+            && CanTargetRank(ActionSkill, ActionTarget, ActionTarget.CurrentRank);
     }
 
     public bool TryEquipLoadout(CHeroSkillLoadoutSO loadout)
@@ -250,7 +250,7 @@ public class CPlayer : CEntity
         {
             CEntity target = _actionTargets[i];
             if (target == null || !target.isActiveAndEnabled || !CanChooseTarget(ActionSkill, target)
-                || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
+                || !CanTargetRank(ActionSkill, target, target.CurrentRank)) return false;
         }
         return true;
     }
@@ -258,7 +258,7 @@ public class CPlayer : CEntity
     public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets)
     {
         CHeroSkillSO skill = _selectedSkill as CHeroSkillSO;
-        if (_isRequesting || _isGroupRequest || skill == null || skill.Target != EHeroSkillTarget.AllEnemies
+        if (_isRequesting || _isGroupRequest || skill == null || !skill.IsGroupTarget
             || targets == null || targets.Count == 0) return false;
         List<CEntity> uniqueTargets = new List<CEntity>();
         for (int i = 0; i < targets.Count; i++)
@@ -282,6 +282,40 @@ public class CPlayer : CEntity
         }
     }
 
+    private bool CanTargetRank(CSkillDataSO skill, CEntity target, ERank targetRank)
+    {
+        CEnemy enemy = target as CEnemy;
+        if (enemy == null || enemy.EnemyData == null)
+        {
+            return CSkillRankUtility.CanTargetSkill(skill, targetRank);
+        }
+
+        int start = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            if ((int)targetRank == (1 << i))
+            {
+                start = i + 1;
+            }
+        }
+
+        if (start == 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < enemy.EnemyData.FormationSize && start + i <= 4; i++)
+        {
+            if (CSkillRankUtility.CanTargetSkill(skill, (ERank)(1 << (start + i - 1))))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     private bool CanChooseTarget(CSkillDataSO skill, CEntity target)
     {
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
@@ -295,7 +329,7 @@ public class CPlayer : CEntity
             && CanChooseTarget(_selectedSkill, target)
             && (OnSkillActionRequested != null || HasCommonRequestReceiver)
             && CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank)
-            && CSkillRankUtility.CanTargetSkill(_selectedSkill, targetRank);
+            && CanTargetRank(_selectedSkill, target, targetRank);
     }
 
     public override bool TryRequestSkillAction(CEntity target, ERank targetRank)
@@ -312,7 +346,7 @@ public class CPlayer : CEntity
 
         // 요청 중 같은 스킬이 다시 전달되지 않도록 선택을 먼저 비웁니다.
         CHeroSkillSO heroSkill = _selectedSkill as CHeroSkillSO;
-        if (heroSkill != null && heroSkill.Target == EHeroSkillTarget.AllEnemies && !_isGroupRequest) return false;
+        if (heroSkill != null && heroSkill.IsGroupTarget && !_isGroupRequest) return false;
         if (!_isGroupRequest)
         {
             _actionTargets.Clear();

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 612a553e2c1b4bb28f4421faa201258b, type: 3}
+  m_Name: HeroLoadoutSO_Highwayman_Default
+  m_EditorClassIdentifier: 
+  _heroData: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+  _skills:
+  - {fileID: 11400000, guid: 42297f9ce4e12b04ea3aba5e192a2fcd, type: 2}
+  - {fileID: 11400000, guid: 5014933490c21d14e8e06d3df48d5448, type: 2}
+  - {fileID: 11400000, guid: 55e552ab72f9039429cf816d2c5e838b, type: 2}
+  - {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
+  - {fileID: 11400000, guid: 4aa2c7c4a443f234795f0b0fab7ec27b, type: 2}

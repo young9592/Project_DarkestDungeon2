@@ -46,6 +46,10 @@ public class CHeroSkillBar : MonoBehaviour
             case EHeroSkillTarget.Self: return "Click yourself";
             case EHeroSkillTarget.Ally: return "Other ally";
             case EHeroSkillTarget.AllEnemies: return "All enemies";
+            case EHeroSkillTarget.AllyOrSelf:
+                return "Ally or self";
+            case EHeroSkillTarget.AllAllies:
+                return "All allies";
             default: return "Enemy";
         }
     }
