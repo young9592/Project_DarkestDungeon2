@@ -15,7 +15,9 @@ public class CTurnImage : MonoBehaviour
     [SerializeField] private Color _enemyMakerColor;
 
     [Header("Option")]
-    [SerializeField] private float _moveTime = 1f;
+    // 오른쪽 상단 턴이 진행될 때 움직이는 애니메이션 진행 시간
+    // 2초면 2초간 Lerp가 실행되면서 목표위치로 이동합니다.
+    [SerializeField] private float _moveTime = 2f;
     #endregion
 
     #region Field
@@ -52,7 +54,7 @@ public class CTurnImage : MonoBehaviour
     // 보간작업 해야겠지?
     public void Move(Vector2 vec, bool direct)
     {
-        // 즉발이동도 필요할거같아요 [ 엔티티가 여러마리 한방에 죽었을 때?]
+        // 즉발이동도 필요할거같아요 [ 엔티티가 여러마리 한방에 죽었을 때? ]
         if (direct)
         {
             _rectTr.anchoredPosition = vec;
@@ -76,7 +78,6 @@ public class CTurnImage : MonoBehaviour
 
             yield return null;
         }
-
         _coroutine = null;
     }
 }
