@@ -7,6 +7,8 @@ public class CPlayer : CEntity
 	#region Inspector
 	[Header("Data")]
 	[SerializeField] private CHeroDataSO _heroData;
+    [SerializeField] private CHeroSkillLoadoutSO _skillLoadout;
+    [SerializeField] private CHeroAnimation _actionAnimation;
 
 	[Header("Runtime Status")]
 	[SerializeField] private int _currentHp;
@@ -27,8 +29,160 @@ public class CPlayer : CEntity
 	public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
     #endregion
 
-    private void Awake()
+    private bool _isRequesting;
+    private bool _isGroupRequest;
+    private readonly List<CEntity> _actionTargets = new List<CEntity>();
+    public IReadOnlyList<CEntity> ActionTargets { get { return _actionTargets; } }
+    public CHeroDataSO HeroData { get { return _heroData; } }
+    public override ERank CurrentRank { get { return _currentRank; } }
+    public CSkillDataSO SelectedSkill { get { return _selectedSkill; } }
+    public IReadOnlyList<CSkillDataSO> EquippedSkills { get { return _equippedSkills; } }
+
+    public override CEntityDataSO EntityData { get { return _heroData; } }
+    public override EEntityType EntityType { get { return EEntityType.Hero; } }
+
+    protected override void OnActionBeginning()
     {
+        _actionTargets.Clear();
+        CancelSkillSelection();
+    }
+
+    protected override void OnActionEnded()
+    {
+        _actionTargets.Clear();
+        CancelSkillSelection();
+    }
+
+    protected override bool CanExecuteRequestedAction()
+    {
+        return ActionTarget != null && AreActionTargetsValid() && CanChooseTarget(ActionSkill, ActionTarget)
+            && ActionSkill != null && _equippedSkills.Contains(ActionSkill)
+            && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
+            && CanTargetRank(ActionSkill, ActionTarget, ActionTarget.CurrentRank);
+    }
+
+    public bool TryEquipLoadout(CHeroSkillLoadoutSO loadout)
+    {
+        if (!isActiveAndEnabled || _isRequesting || (IsActionActive && ActionState != EEntityActionState.Selecting) || loadout == null
+            || !loadout.TryValidate(_heroData, out _)) return false;
+        _equippedSkills.Clear();
+        for (int i = 0; i < loadout.Skills.Count; i++) _equippedSkills.Add(loadout.Skills[i]);
+        _skillLoadout = loadout;
+        CancelSkillSelection();
+        return true;
+    }
+
+    // 전투 쪽에서 효과 처리와 별개로 캐릭터 연출 상태를 확인할 수 있습니다.
+    public bool IsPresentationBusy { get { return _actionAnimation != null && _actionAnimation.IsBusy; } }
+    public bool IsAttackPresentationPlaying { get { return _actionAnimation != null && _actionAnimation.IsAttacking; } }
+    public bool IsHitPresentationPlaying { get { return _actionAnimation != null && _actionAnimation.IsHitReacting; } }
+
+    public event Action<CEntity> OnAttackPresentationStarted;
+    public event Action<CEntity> OnAttackPresentationCompleted;
+    public event Action<CEntity> OnAttackPresentationInterrupted;
+    public event Action<CEntity> OnHitPresentationStarted;
+    public event Action<CEntity> OnHitPresentationCompleted;
+    public event Action<CEntity> OnHitPresentationInterrupted;
+
+    public bool CanPlayAttackPresentation(CSkillDataSO skill)
+    {
+        return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayAttack(skill);
+    }
+
+    public bool CanPlayHitPresentation()
+    {
+        return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayHit();
+    }
+
+    private void HandleAttackStarted()
+    {
+        OnAttackPresentationStarted?.Invoke(this);
+    }
+    private void HandleHitStarted()
+    {
+        OnHitPresentationStarted?.Invoke(this);
+    }
+    private void HandleHitCompleted()
+    {
+        OnHitPresentationCompleted?.Invoke(this);
+    }
+    private void HandleHitInterrupted()
+    {
+        OnHitPresentationInterrupted?.Invoke(this);
+    }
+
+    private void OnEnable()
+    {
+        if (_actionAnimation == null) return;
+        _actionAnimation.OnAttackStarted += HandleAttackStarted;
+        _actionAnimation.OnHitStarted += HandleHitStarted;
+        _actionAnimation.OnHitCompleted += HandleHitCompleted;
+        _actionAnimation.OnHitInterrupted += HandleHitInterrupted;
+        _actionAnimation.OnAttackCompleted += HandleAttackCompleted;
+        _actionAnimation.OnAttackInterrupted += HandleAttackInterrupted;
+    }
+
+    protected override bool CanBeginAction()
+    {
+        return _actionAnimation == null || !_actionAnimation.IsBusy;
+    }
+
+    protected override bool CanCompleteAction()
+    {
+        return _actionAnimation == null || !_actionAnimation.IsBusy;
+    }
+
+    protected override bool TryStartActionPresentation()
+    {
+        return _actionAnimation == null || _actionAnimation.TryPlayAttack(ActionSkill);
+    }
+
+    protected override void OnActionCancelled()
+    {
+        if (_actionAnimation != null) _actionAnimation.CancelPlayback();
+    }
+
+    private void HandleAttackCompleted()
+    {
+        OnAttackPresentationCompleted?.Invoke(this);
+        TryCompleteAction();
+    }
+
+    private void HandleAttackInterrupted()
+    {
+        OnAttackPresentationInterrupted?.Invoke(this);
+        CancelAction();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_actionAnimation != null)
+        {
+            _actionAnimation.CancelPlayback();
+            _actionAnimation.OnAttackStarted -= HandleAttackStarted;
+            _actionAnimation.OnHitStarted -= HandleHitStarted;
+            _actionAnimation.OnHitCompleted -= HandleHitCompleted;
+            _actionAnimation.OnHitInterrupted -= HandleHitInterrupted;
+            _actionAnimation.OnAttackCompleted -= HandleAttackCompleted;
+            _actionAnimation.OnAttackInterrupted -= HandleAttackInterrupted;
+        }
+        CancelSkillSelection();
+    }
+
+    public bool TrySetRank(ERank rank)
+    {
+        if (!CSkillRankUtility.IsSingleRank(rank)) return false;
+        _currentRank = rank;
+        CancelSkillSelection();
+        return true;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        if (_actionAnimation == null) _actionAnimation = GetComponent<CHeroAnimation>();
         if (CPrint.NullUnityObjectCheck(gameObject.name, _heroData))
 		{
 			enabled = false;
@@ -43,74 +197,175 @@ public class CPlayer : CEntity
 		_currentHp = _heroData.MaxHealth;
 		_currentStress = 0;
 
-		// TODO : 실제 게임시 여관이나 메뉴에서 장착한 스킬만 가져와야 함
-		// 현재는 SO에 등록되어있는 모든 스킬을 장착했다고 설정함
-		if (_heroData.AvailableSkills != null)
-		{
-			foreach(var skill in _heroData.AvailableSkills)
-			{
-				_equippedSkills.Add(skill);
-			}
-		}
+        _equippedSkills.Clear();
+        if (_skillLoadout != null)
+        {
+            if (!TryEquipLoadout(_skillLoadout))
+            {
+                CPrint.Warn(name + ": 장착 스킬 목록을 확인해야 합니다.");
+                enabled = false;
+            }
+            return;
+        }
+
+        // 장착 목록이 없는 기존 캐릭터는 보유 스킬을 사용합니다.
+        if (_heroData.AvailableSkills == null) return;
+        for (int i = 0; i < _heroData.AvailableSkills.Count; i++)
+        {
+            CSkillDataSO skill = _heroData.AvailableSkills[i];
+            if (skill != null && !_equippedSkills.Contains(skill)) _equippedSkills.Add(skill);
+        }
 	}
 
 	#region Skill Usage
 	/// </summary>
 	/// 1. 유저가 스킬 버튼 클릭시 호출
 	/// </summary>
-	public void SelectSkill(int skillIndex)
-	{
-		if (skillIndex < 0 || skillIndex >= _equippedSkills.Count)
-		{
-			CPrint.Warn("유효하지 않은 스킬 인덱스입니다.");
-			return;
-		}
+    public void SelectSkill(int skillIndex)
+    {
+        TrySelectSkill(skillIndex);
+    }
 
-		CSkillDataSO skillToUse = _equippedSkills[skillIndex];
-		if (skillToUse == null) return;
+    public bool TrySelectSkill(int skillIndex)
+    {
+        if (_isRequesting || !CanIssueActionRequest) return false;
+        _selectedSkill = null;
+        if (!isActiveAndEnabled || _heroData == null || _equippedSkills == null
+            || skillIndex < 0 || skillIndex >= _equippedSkills.Count) return false;
+        CSkillDataSO skill = _equippedSkills[skillIndex];
+        if (!CSkillRankUtility.CanUseSkill(skill, _currentRank)) return false;
+        _selectedSkill = skill;
+        return true;
+    }
 
-		if (CSkillRankUtility.CanUseSkill(skillToUse, _currentRank))
-		{
-			_selectedSkill = skillToUse;
-			CPrint.Log($"[{_heroData.DefaultName}] : <{_selectedSkill.SkillName}> 스킬 선택  완료. 타겟 지정해주세요.");
+    public void ExecuteSkillToTarget(CEntity target, ERank targetRank)
+    {
+        TryRequestSkillAction(target, targetRank);
+    }
 
-			// TODO : UI 매니저로 TargetableRank에 해당하는 적들의 발밑 하이라이트 처리
-		}
-		else
-		{
-			CPrint.Warn($"현재 위치({_currentRank})에서는 <{skillToUse.SkillName}> 스킬을 사용할 수 없습니다.");
-		}
-	}
+    private bool AreActionTargetsValid()
+    {
+        if (_actionTargets.Count == 0) return false;
+        for (int i = 0; i < _actionTargets.Count; i++)
+        {
+            CEntity target = _actionTargets[i];
+            if (target == null || !target.isActiveAndEnabled || !CanChooseTarget(ActionSkill, target)
+                || !CanTargetRank(ActionSkill, target, target.CurrentRank)) return false;
+        }
+        return true;
+    }
 
-	/// <summary>
-	/// 2. 스킬이 선택된 상태에서 적 클릭했을 때의 호출
-	/// </summary>
-	public void ExecuteSkillToTarget(CEntity target, ERank targetRank)
-	{
-		if (_selectedSkill == null)
-		{
-            CPrint.Warn("선택된 스킬이 없습니다. 먼저 스킬을 선택해주세요.");
-            return;
+    public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets)
+    {
+        CHeroSkillSO skill = _selectedSkill as CHeroSkillSO;
+        if (_isRequesting || _isGroupRequest || skill == null || !skill.IsGroupTarget
+            || targets == null || targets.Count == 0) return false;
+        List<CEntity> uniqueTargets = new List<CEntity>();
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CEntity target = targets[i];
+            if (target == null || !CanRequestSkillAction(target, target.CurrentRank)) return false;
+            if (!uniqueTargets.Contains(target)) uniqueTargets.Add(target);
+        }
+        _actionTargets.Clear();
+        _actionTargets.AddRange(uniqueTargets);
+        _isGroupRequest = true;
+        try
+        {
+            bool requested = TryRequestSkillAction(uniqueTargets[0], uniqueTargets[0].CurrentRank);
+            if (!requested) _actionTargets.Clear();
+            return requested;
+        }
+        finally
+        {
+            _isGroupRequest = false;
+        }
+    }
+
+    private bool CanTargetRank(CSkillDataSO skill, CEntity target, ERank targetRank)
+    {
+        CEnemy enemy = target as CEnemy;
+        if (enemy == null || enemy.EnemyData == null)
+        {
+            return CSkillRankUtility.CanTargetSkill(skill, targetRank);
         }
 
-		if (CSkillRankUtility.CanTargetSkill(_selectedSkill, targetRank))
-		{
-			CPrint.Log($"[{_heroData.DefaultName}]가 {target.name}({target.name})에게 <{_selectedSkill.SkillName}> 스킬 사용");
+        int start = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            if ((int)targetRank == (1 << i))
+            {
+                start = i + 1;
+            }
+        }
 
-			// 데미지 수치 연산 처리 이벤트
-			OnSkillActionRequested?.Invoke(this, target, _selectedSkill);
+        if (start == 0)
+        {
+            return false;
+        }
 
-			_selectedSkill = null;
-		}
-		else
-		{
-			CPrint.Warn($"대상의 위치({targetRank})는 <{_selectedSkill.SkillName}> 스킬의 타겟이 될 수 없습니다.");
-		}
-	}
+        for (int i = 0; i < enemy.EnemyData.FormationSize && start + i <= 4; i++)
+        {
+            if (CSkillRankUtility.CanTargetSkill(skill, (ERank)(1 << (start + i - 1))))
+            {
+                return true;
+            }
+        }
 
-	/// <summary>
-	/// 우클릭이나 취소 키 눌렀을 때 스킬 선택 취소
-	/// </summary>
+        return false;
+    }
+
+
+    private bool CanChooseTarget(CSkillDataSO skill, CEntity target)
+    {
+        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
+    }
+
+    public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        return isActiveAndEnabled && !_isRequesting && CanIssueActionRequest && _selectedSkill != null
+            && target != null && target.isActiveAndEnabled
+            && CanChooseTarget(_selectedSkill, target)
+            && (OnSkillActionRequested != null || HasCommonRequestReceiver)
+            && CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank)
+            && CanTargetRank(_selectedSkill, target, targetRank);
+    }
+
+    public override bool TryRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        if (!isActiveAndEnabled || _isRequesting || !CanIssueActionRequest || _selectedSkill == null
+            || target == null || !target.isActiveAndEnabled
+            || (OnSkillActionRequested == null && !HasCommonRequestReceiver)) return false;
+        if (!CSkillRankUtility.CanUseSkill(_selectedSkill, _currentRank))
+        {
+            CancelSkillSelection();
+            return false;
+        }
+        if (!CanRequestSkillAction(target, targetRank)) return false;
+
+        // 요청 중 같은 스킬이 다시 전달되지 않도록 선택을 먼저 비웁니다.
+        CHeroSkillSO heroSkill = _selectedSkill as CHeroSkillSO;
+        if (heroSkill != null && heroSkill.IsGroupTarget && !_isGroupRequest) return false;
+        if (!_isGroupRequest)
+        {
+            _actionTargets.Clear();
+            _actionTargets.Add(target);
+        }
+        CSkillDataSO skill = _selectedSkill;
+        _selectedSkill = null;
+        _isRequesting = true;
+        try
+        {
+            if (!NotifyActionRequest(target, skill)) OnSkillActionRequested?.Invoke(this, target, skill);
+        }
+        finally
+        {
+            _isRequesting = false;
+        }
+        return true;
+    }
+
 	public void CancelSkillSelection()
 	{
 		_selectedSkill = null;
@@ -123,6 +378,7 @@ public class CPlayer : CEntity
 	public override void TakeDamage(int finalDamage)
 	{
 		_currentHp -= finalDamage;
+        if (finalDamage > 0 && _actionAnimation != null) _actionAnimation.TryPlayHit();
 		CPrint.Log($"[{_heroData.DefaultName}] 피격 \n 데미지 : {finalDamage}, 남은 체력: {_currentHp}");
 
 		if (_currentHp <= 0)

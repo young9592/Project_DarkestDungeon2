@@ -5,6 +5,7 @@ public class CEnemyGroupTest : MonoBehaviour
 {
     [Header("Temp_Lee Group Test")]
     [SerializeField] private CEnemyGroupSO _group;
+    [SerializeField] private CEnemyGroupSO[] _groupOptions;
     [SerializeField] private Transform _spawnRoot;
     [SerializeField] private Transform[] _rankSlots = new Transform[4];
     [SerializeField] private Camera _camera;
@@ -17,11 +18,46 @@ public class CEnemyGroupTest : MonoBehaviour
     private bool[] _enemyActiveStates;
     private bool[] _panelEnabledStates;
     private bool _isShowingGroup;
+    private CEnemy _selectedEnemy;
+    private CEnemyIntentTest _selectedIntent;
     private string _message = "Load a group to preview its ranks";
+    private int _groupOptionIndex;
+    public bool ShowControls { get; set; } = true;
 
     public IReadOnlyList<CEnemy> SpawnedEnemies
     {
         get { return _spawnedEnemies; }
+    }
+
+    public CEnemy SelectedEnemy
+    {
+        get { return _selectedEnemy; }
+    }
+
+    public bool TrySelectEnemy(int index)
+    {
+        if (!isActiveAndEnabled || index < 0 || index >= _spawnedEnemies.Count) return false;
+        CEnemy enemy = _spawnedEnemies[index];
+        if (enemy == null || !enemy.isActiveAndEnabled) return false;
+        _selectedEnemy = enemy;
+        _selectedIntent = enemy.GetComponent<CEnemyIntentTest>();
+        return _selectedIntent != null;
+    }
+
+    public bool TryPlanSelectedSkill()
+    {
+        if (!isActiveAndEnabled || _selectedIntent == null) return false;
+        bool accepted = _selectedIntent.TryPrepareIntent();
+        _message = accepted ? "Skill planned / ready to play" : "No available skill or enemy is busy";
+        return accepted;
+    }
+
+    public bool TryPlaySelectedIntent()
+    {
+        if (!isActiveAndEnabled || _selectedIntent == null) return false;
+        bool accepted = _selectedIntent.TryExecuteIntent();
+        _message = accepted ? "Playing the planned skill" : "Cannot play / check skill and animation binding";
+        return accepted;
     }
 
     private void Awake()
@@ -68,10 +104,19 @@ public class CEnemyGroupTest : MonoBehaviour
         {
             CEnemyGroupEntry entry = group.Entries[i];
             Transform slot = _rankSlots[GetRankIndex(entry.Rank)];
-            CEnemy enemy = Instantiate(entry.EnemyPrefab, slot.position, slot.rotation, _spawnRoot);
+            int endIndex = GetRankIndex(entry.Rank) + entry.EnemyPrefab.EnemyData.FormationSize - 1;
+            Vector3 center = (slot.position + _rankSlots[endIndex].position) * 0.5f;
+            CEnemy enemy = Instantiate(entry.EnemyPrefab, center, slot.rotation, _spawnRoot);
             enemy.name = entry.EnemyPrefab.name + "_" + entry.Rank;
             enemy.TrySetRank(entry.Rank);
+            if (enemy.GetComponent<CEnemyIntentTest>() == null) enemy.gameObject.AddComponent<CEnemyIntentTest>();
             _spawnedEnemies.Add(enemy);
+        }
+        TrySelectEnemy(0);
+        if (_groupOptions != null)
+        {
+            for (int i = 0; i < _groupOptions.Length; i++)
+                if (_groupOptions[i] == group) _groupOptionIndex = i;
         }
         _message = group.name + " / " + _spawnedEnemies.Count + " enemies";
         return true;
@@ -123,6 +168,9 @@ public class CEnemyGroupTest : MonoBehaviour
 
     private void DestroySpawnedEnemies()
     {
+        // 조합을 교체할 때 이전 적의 선택도 함께 정리합니다.
+        _selectedEnemy = null;
+        _selectedIntent = null;
         for (int i = 0; i < _spawnedEnemies.Count; i++)
         {
             if (_spawnedEnemies[i] == null) continue;
@@ -146,8 +194,20 @@ public class CEnemyGroupTest : MonoBehaviour
 
     private void OnGUI()
     {
-        GUILayout.BeginArea(new Rect(20.0f, Screen.height - 95.0f, 320.0f, 85.0f), GUI.skin.box);
+        if (!ShowControls) return;
+        GUILayout.BeginArea(new Rect(20.0f, Screen.height - 120.0f, 320.0f, 110.0f), GUI.skin.box);
         GUILayout.Label("Enemy Group Test");
+        if (_groupOptions != null && _groupOptions.Length > 0)
+        {
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < _groupOptions.Length; i++)
+                if (_groupOptions[i] != null && GUILayout.Button((_groupOptionIndex == i ? "> " : "") + (i + 1)))
+                {
+                    _groupOptionIndex = i;
+                    _group = _groupOptions[i];
+                }
+            GUILayout.EndHorizontal();
+        }
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Load Group")) TryLoadGroup(_group);
         if (GUILayout.Button("Clear Group")) ClearGroup();
@@ -156,12 +216,45 @@ public class CEnemyGroupTest : MonoBehaviour
         GUILayout.EndArea();
 
         if (!_isShowingGroup || _camera == null) return;
+        DrawSelectionPanel();
         for (int i = 0; i < _rankSlots.Length; i++)
         {
             if (_rankSlots[i] == null) continue;
             Vector3 position = _camera.WorldToScreenPoint(_rankSlots[i].position);
             if (position.z <= 0.0f) continue;
-            GUI.Box(new Rect(position.x - 32.0f, Screen.height - position.y - 24.0f, 64.0f, 22.0f), "Rank " + (i + 1));
+            GUI.Box(new Rect(position.x - 32.0f, Screen.height - position.y - 48.0f, 64.0f, 22.0f), "Rank " + (i + 1));
         }
+    }
+
+    private void DrawSelectionPanel()
+    {
+        GUILayout.BeginArea(new Rect(20.0f, 20.0f, 310.0f, 170.0f), GUI.skin.box);
+        GUILayout.Label("Group Enemy / select a rank");
+        GUILayout.BeginHorizontal();
+        for (int i = 0; i < _spawnedEnemies.Count; i++)
+        {
+            CEnemy enemy = _spawnedEnemies[i];
+            if (enemy == null) continue;
+            int startRank = GetRankIndex(enemy.CurrentRank) + 1;
+            int size = enemy.EnemyData.FormationSize;
+            string label = size == 1 ? "Rank " + startRank : "Rank " + startRank + "-" + (startRank + size - 1);
+            if (enemy == _selectedEnemy) label = "> " + label;
+            if (GUILayout.Button(label)) TrySelectEnemy(i);
+        }
+        GUILayout.EndHorizontal();
+        bool available = _selectedEnemy != null && _selectedEnemy.isActiveAndEnabled && _selectedIntent != null;
+        GUILayout.Label(available ? _selectedEnemy.name : "Select an active enemy");
+        CSkillDataSO skill = available ? _selectedIntent.PlannedSkill : null;
+        GUILayout.Label(skill == null ? "No planned skill" : "Skill: " + skill.SkillName);
+        bool previousEnabled = GUI.enabled;
+        GUI.enabled = previousEnabled && available && !_selectedIntent.IsExecuting;
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Plan Skill")) TryPlanSelectedSkill();
+        if (GUILayout.Button("Play Intent")) TryPlaySelectedIntent();
+        if (GUILayout.Button("Cancel")) _selectedIntent.CancelIntent();
+        GUILayout.EndHorizontal();
+        GUI.enabled = previousEnabled;
+        GUILayout.Label(available && _selectedIntent.IsExecuting ? "Playing" : "Ready");
+        GUILayout.EndArea();
     }
 }
