@@ -21,3 +21,8 @@ MonoBehaviour:
   _target: 3
   _startState: Base Layer.Skill1Start
   _endState: Base Layer.Skill1End
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill1Start
+  _selectionHoldState: Base Layer.Ready_Skill1Start
+  _feedback: {fileID: 11400000, guid: e554b015ffa02d34d829eece038d22fd, type: 2}

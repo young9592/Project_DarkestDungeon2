@@ -21,3 +21,8 @@ MonoBehaviour:
   _target: 3
   _startState: Base Layer.YellStart
   _endState: Base Layer.YellEnd
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_YellStart
+  _selectionHoldState: Base Layer.Ready_YellStart
+  _feedback: {fileID: 11400000, guid: 0c3994292cf90d14da377d450e5ec284, type: 2}

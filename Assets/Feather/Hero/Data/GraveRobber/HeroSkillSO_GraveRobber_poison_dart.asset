@@ -17,7 +17,13 @@ MonoBehaviour:
   _useableRank: 14
   _targetableRank: 15
   _cooldown: 0
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 218aa0ecbd9454943a5316f6b98928df, type: 2}
   _target: 0
   _startState: Base Layer.Skill3Start
   _endState: Base Layer.Skill3End
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill3Start
+  _selectionHoldState: Base Layer.Ready_Skill3Start
+  _feedback: {fileID: 11400000, guid: 1ad418725bf6fe14c835550bc3ec5250, type: 2}

@@ -24,6 +24,8 @@ public class CHeroPreparationPanel : MonoBehaviour
     private readonly List<List<CSkillDataSO>> _skills = new List<List<CSkillDataSO>>();
     private readonly List<ScriptableObject> _runtimeAssets = new List<ScriptableObject>();
     private int _selectedIndex;
+    private readonly List<CEntityHealthView> _hiddenHealthViews = new List<CEntityHealthView>();
+    private readonly List<bool> _healthVisibility = new List<bool>();
     private bool _isOpen;
     public bool IsOpen
     {
@@ -125,6 +127,7 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
 
         _isOpen = true;
+        HideHealthViews();
         _selectedIndex = 0;
         _panelRoot.SetActive(true);
         _panelRoot.transform.SetAsLastSibling();
@@ -300,6 +303,7 @@ public class CHeroPreparationPanel : MonoBehaviour
         Release(_runtimeAssets);
         _runtimeAssets.AddRange(nextAssets);
         _panelRoot.SetActive(false);
+        RestoreHealthViews();
         _partyTest.EndPreparation();
         _partyTest.TrySelectHero(_selectedIndex);
         return true;
@@ -331,6 +335,7 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
 
         _isOpen = false;
+        RestoreHealthViews();
         if (_panelRoot != null)
         {
             _panelRoot.SetActive(false);
@@ -342,6 +347,34 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
 
     }
+
+    private void HideHealthViews()
+    {
+        _hiddenHealthViews.Clear();
+        _healthVisibility.Clear();
+        CEntityHealthView[] views = FindObjectsOfType<CEntityHealthView>();
+        for (int i = 0; i < views.Length; i++)
+        {
+            _hiddenHealthViews.Add(views[i]);
+            _healthVisibility.Add(views[i].ShowBar);
+            views[i].ShowBar = false;
+        }
+    }
+
+    private void RestoreHealthViews()
+    {
+        for (int i = 0; i < _hiddenHealthViews.Count; i++)
+        {
+            if (_hiddenHealthViews[i] != null)
+            {
+                _hiddenHealthViews[i].ShowBar = _healthVisibility[i];
+            }
+        }
+
+        _hiddenHealthViews.Clear();
+        _healthVisibility.Clear();
+    }
+
 
     private void Update()
     {

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum EHeroSkillTarget
 {
@@ -20,6 +20,16 @@ public class CHeroSkillSO : CSkillDataSO
     [SerializeField] private string _endState;
     [SerializeField] private string _presentationNote;
     [SerializeField] private bool _requiresCorpse;
+    [Header("Selection Presentation")]
+    [SerializeField] private string _selectionStartState;
+    [SerializeField] private string _selectionHoldState;
+    [Header("Skill Feedback")]
+    [SerializeField] private CHeroSkillFeedbackSO _feedback;
+
+    public CHeroSkillFeedbackSO Feedback
+    {
+        get { return _feedback; }
+    }
     public bool IsGroupTarget
     {
         get { return _target == EHeroSkillTarget.AllEnemies || _target == EHeroSkillTarget.AllAllies; }
@@ -40,6 +50,16 @@ public class CHeroSkillSO : CSkillDataSO
         get { return _endState; }
     }
 
+    public string SelectionStartState
+    {
+        get { return _selectionStartState; }
+    }
+
+    public string SelectionHoldState
+    {
+        get { return _selectionHoldState; }
+    }
+
     public string PresentationNote
     {
         get { return _presentationNote; }
@@ -53,6 +73,12 @@ public class CHeroSkillSO : CSkillDataSO
     public bool CanChooseTarget(CEntity actor, CEntity target)
     {
         if (actor == null || target == null)
+        {
+            return false;
+        }
+
+        CEnemy enemy = target as CEnemy;
+        if (enemy != null && enemy.CurrentHp <= 0)
         {
             return false;
         }
