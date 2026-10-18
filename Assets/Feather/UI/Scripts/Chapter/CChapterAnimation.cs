@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CChapterAnimation : MonoBehaviour
@@ -17,6 +16,7 @@ public class CChapterAnimation : MonoBehaviour
     [SerializeField] private float _moveDuration = 1.0f;
     #endregion
 
+    //챕터 메뉴 등장
     private IEnumerator MoveChapterMenuEnter()
     {
         float elapsedTime = 0f;
@@ -42,6 +42,7 @@ public class CChapterAnimation : MonoBehaviour
         _text.SetActive(true);
     }
 
+    //챕터 메뉴 퇴장
     private IEnumerator MoveChapterMenuExit()
     {
         float elapsedTime = 0f;
@@ -67,17 +68,14 @@ public class CChapterAnimation : MonoBehaviour
         _text.SetActive(false);
         _chapterButton.ResetSignature();
     }
-   
-    void Start()
-    {
-        ChapterMenuEnter();
-    }   
 
+    //챕터 코루틴 시작 함수
     public void ChapterMenuEnter()
     {
-        StartCoroutine(MoveChapterMenuEnter());       
+        StartCoroutine(MoveChapterMenuEnter());
     }
 
+    //챕터 코루틴 퇴장
     public void ChapterMenuExit()
     {
         StartCoroutine(MoveChapterMenuExit());
