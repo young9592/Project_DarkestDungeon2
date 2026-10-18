@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4087536820225854173}
   - component: {fileID: 5519386416895905209}
   - component: {fileID: 2481291059542486020}
+  - component: {fileID: 7169177544536148637}
   m_Layer: 0
   m_Name: Enemy_RabidDog
   m_TagString: Untagged
@@ -64,8 +65,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a81c2332493ad74985f944818015c82, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _turnImage: {fileID: 0}
   _enemyData: {fileID: 11400000, guid: 69ebaa157ae7eee459532e9d0a536cc5, type: 2}
   _attackAnimation: {fileID: 5519386416895905209}
   _currentHp: 0
@@ -165,3 +167,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3214fc80d39d7284aa8e27f908f3fc9d, type: 3}
   m_PrefabInstance: {fileID: 1105535979355796806}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7169177544536148637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5023986341876909045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 007f086012b24de7acec5220908f5b6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _width: 72
+  _heroColor: {r: 0.25, g: 0.72, b: 0.44, a: 1}
+  _enemyColor: {r: 0.78, g: 0.29, b: 0.25, a: 1}

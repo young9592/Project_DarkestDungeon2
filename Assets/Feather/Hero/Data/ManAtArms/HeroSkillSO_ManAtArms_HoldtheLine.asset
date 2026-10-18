@@ -17,7 +17,13 @@ MonoBehaviour:
   _useableRank: 14
   _targetableRank: 3
   _cooldown: 0
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 2de3dbe290149d843a9877d20330974c, type: 2}
   _target: 0
   _startState: Base Layer.RamStart
   _endState: Base Layer.RamEnd
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_RamStart
+  _selectionHoldState: Base Layer.Ready_RamStart
+  _feedback: {fileID: 11400000, guid: 5566992a02bc11b4f99a206a81092098, type: 2}

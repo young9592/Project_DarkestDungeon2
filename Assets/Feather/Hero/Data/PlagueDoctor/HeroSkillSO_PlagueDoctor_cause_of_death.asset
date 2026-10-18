@@ -23,3 +23,6 @@ MonoBehaviour:
   _endState: Base Layer.Skill9End
   _presentationNote: Shares the knife motion.
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill9Start
+  _selectionHoldState: Base Layer.Ready_Skill9Start
+  _feedback: {fileID: 11400000, guid: b50286b47e9d64d46a0e65e203aa03bb, type: 2}
