@@ -23,3 +23,4 @@ MonoBehaviour:
   _endState: Base Layer.Skill7End
   _presentationNote: Shares the throw motion.
   _requiresCorpse: 0
+  _feedback: {fileID: 11400000, guid: f25a3179c1d7ecc4ea682ba104b13311, type: 2}

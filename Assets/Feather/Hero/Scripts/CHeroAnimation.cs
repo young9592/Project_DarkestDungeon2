@@ -88,6 +88,18 @@ public class CHeroAnimation : MonoBehaviour
         return IsReady && !IsBusy && _animator.HasState(0, _hitHash) && _animator.HasState(0, _hitEndHash);
     }
 
+    public bool TryGetAttackRecovery(out float progress, out float remaining)
+    {
+        progress = 0.0f;
+        remaining = 0.0f;
+        if (!IsReady || !IsAttacking) return false;
+        AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+        if (info.fullPathHash != _currentAttackEndHash) return false;
+        progress = Mathf.Clamp01(info.normalizedTime);
+        remaining = Mathf.Max(0.0f, info.length * (1.0f - progress) / Mathf.Max(0.01f, _animator.speed));
+        return true;
+    }
+
     private void LateUpdate()
     {
         if (_needsIdle && IsReady) PlayIdle();

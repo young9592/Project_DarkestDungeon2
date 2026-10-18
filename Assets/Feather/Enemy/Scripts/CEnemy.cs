@@ -87,7 +87,13 @@ public class CEnemy : CEntity
         get { return _attackAnimation != null && _attackAnimation.IsBusy; }
     }
 
+    public event Action<CEntity> OnHitPresentationStarted;
     public event Action<CEntity> OnHitPresentationInterrupted;
+
+    private void HandleHitStarted()
+    {
+        OnHitPresentationStarted?.Invoke(this);
+    }
 
     private void HandleHitInterrupted()
     {
@@ -97,6 +103,7 @@ public class CEnemy : CEntity
     private void OnEnable()
     {
         if (_attackAnimation == null) return;
+        _attackAnimation.OnHitStarted += HandleHitStarted;
         _attackAnimation.OnHitInterrupted += HandleHitInterrupted;
         _attackAnimation.OnAttackCompleted += HandleAttackCompleted;
         _attackAnimation.OnAttackInterrupted += HandleAttackInterrupted;
@@ -106,6 +113,7 @@ public class CEnemy : CEntity
     {
         base.OnDisable();
         if (_attackAnimation == null) return;
+        _attackAnimation.OnHitStarted -= HandleHitStarted;
         _attackAnimation.OnHitInterrupted -= HandleHitInterrupted;
         _attackAnimation.OnAttackCompleted -= HandleAttackCompleted;
         _attackAnimation.OnAttackInterrupted -= HandleAttackInterrupted;

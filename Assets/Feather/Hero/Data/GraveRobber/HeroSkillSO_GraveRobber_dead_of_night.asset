@@ -24,3 +24,4 @@ MonoBehaviour:
   _presentationNote: Shares the pickaxe motion. Corpse targeting awaits the death
     system.
   _requiresCorpse: 1
+  _feedback: {fileID: 11400000, guid: 678bf21fb5cd83f429096462e86a941b, type: 2}

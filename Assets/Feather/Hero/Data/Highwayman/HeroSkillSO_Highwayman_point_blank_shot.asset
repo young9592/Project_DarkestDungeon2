@@ -17,9 +17,11 @@ MonoBehaviour:
   _useableRank: 1
   _targetableRank: 1
   _cooldown: 0
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 2d867b567533c8942978b8c63ca04c0f, type: 2}
   _target: 0
   _startState: Base Layer.Skill5Start
   _endState: Base Layer.Skill5End
   _presentationNote: Shares the hip-shot motion.
   _requiresCorpse: 0
+  _feedback: {fileID: 11400000, guid: 47025efd39a553545a300d090ff1f35d, type: 2}

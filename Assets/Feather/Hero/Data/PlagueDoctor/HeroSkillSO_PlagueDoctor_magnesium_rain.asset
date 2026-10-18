@@ -23,3 +23,4 @@ MonoBehaviour:
   _endState: Base Layer.Skill10End
   _presentationNote: Shares the ignition motion.
   _requiresCorpse: 0
+  _feedback: {fileID: 11400000, guid: 9c913b3007d48ee4bba39252a385781f, type: 2}

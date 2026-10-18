@@ -17,7 +17,11 @@ MonoBehaviour:
   _useableRank: 1
   _targetableRank: 1
   _cooldown: 2
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 52e87ebe1387762419e02578df6bfe95, type: 2}
   _target: 0
   _startState: Base Layer.AttackAntic
   _endState: Base Layer.AttackRecover
+  _presentationNote: 
+  _requiresCorpse: 0
+  _feedback: {fileID: 11400000, guid: fed0aef3142320b458c2bcbd6e1028e1, type: 2}

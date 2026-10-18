@@ -17,9 +17,11 @@ MonoBehaviour:
   _useableRank: 3
   _targetableRank: 3
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 3dea74326a637a841b0e2f5a5e2ac5f9, type: 2}
   _target: 3
   _startState: Base Layer.Skill8Start
   _endState: Base Layer.Skill8End
   _presentationNote: Shares the Flashing Daggers motion.
   _requiresCorpse: 0
+  _feedback: {fileID: 11400000, guid: d23a0dbf09253c346ab2a0ea4704df5c, type: 2}

@@ -29,6 +29,7 @@ public class CEnemyAttackAnimation : MonoBehaviour
 
     // 비활성화로 중단된 연출은 완료 알림을 보내지 않습니다.
     public event Action OnAttackCompleted;
+    public event Action OnHitStarted;
     public event Action OnHitCompleted;
     public event Action OnAttackInterrupted;
     public event Action OnHitInterrupted;
@@ -180,6 +181,7 @@ public class CEnemyAttackAnimation : MonoBehaviour
 
         _state = EAnimationState.Hit;
         _animator.Play(_hitStateHash, 0, 0.0f);
+        OnHitStarted?.Invoke();
         return true;
     }
 
