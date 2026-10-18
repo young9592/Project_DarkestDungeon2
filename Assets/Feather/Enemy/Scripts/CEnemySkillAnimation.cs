@@ -9,6 +9,12 @@ public class CEnemySkillAnimation
     [SerializeField] private string _attackState = "Base Layer.Attack";
     [Tooltip("이 상태의 재생이 끝나면 공격 완료를 알립니다.")]
     [SerializeField] private string _completionState = "Base Layer.AttackPose";
+    [SerializeField] private CEnemySkillFeedbackSO _feedback;
+
+    public CEnemySkillFeedbackSO Feedback
+    {
+        get { return _feedback; }
+    }
 
     public CSkillDataSO Skill
     {

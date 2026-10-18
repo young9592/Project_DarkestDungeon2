@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c55bd18edac412e8a8c281438f784a6, type: 3}
+  m_Name: EnemyGroupSO_BackLine
+  m_EditorClassIdentifier: 
+  _entries:
+  - _enemyPrefab: {fileID: 2481291059542486020, guid: 7070c8cad223112408e443156453e4c0, type: 3}
+    _rank: 1
+  - _enemyPrefab: {fileID: 4091325714474303996, guid: 53cfd4189e65b254faea99e5f7b07ddb, type: 3}
+    _rank: 2
+  - _enemyPrefab: {fileID: 7106212797590461559, guid: cd44d6c5c3510e243b4f94b75380d289, type: 3}
+    _rank: 4
+  - _enemyPrefab: {fileID: 2052442247830175294, guid: d01a15099c0607f4f955eafa6e128fae, type: 3}
+    _rank: 8
+  _displayName: Back line
