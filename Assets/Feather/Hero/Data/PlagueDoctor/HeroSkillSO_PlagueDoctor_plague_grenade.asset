@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.Skill5End
   _presentationNote: Shares the throw motion.
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill5Start
+  _selectionHoldState: Base Layer.Ready_Skill5Start
   _feedback: {fileID: 11400000, guid: 2f66297d3896ddf41927f723b2065a44, type: 2}

@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.Skill7End
   _presentationNote: Shares the Wicked Slice motion.
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill7Start
+  _selectionHoldState: Base Layer.Ready_Skill7Start
   _feedback: {fileID: 11400000, guid: 112e8eddcfc6773409039aba2cf72de7, type: 2}

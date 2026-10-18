@@ -20,6 +20,9 @@ public class CHeroSkillSO : CSkillDataSO
     [SerializeField] private string _endState;
     [SerializeField] private string _presentationNote;
     [SerializeField] private bool _requiresCorpse;
+    [Header("Selection Presentation")]
+    [SerializeField] private string _selectionStartState;
+    [SerializeField] private string _selectionHoldState;
     [Header("Skill Feedback")]
     [SerializeField] private CHeroSkillFeedbackSO _feedback;
 
@@ -45,6 +48,16 @@ public class CHeroSkillSO : CSkillDataSO
     public string EndState
     {
         get { return _endState; }
+    }
+
+    public string SelectionStartState
+    {
+        get { return _selectionStartState; }
+    }
+
+    public string SelectionHoldState
+    {
+        get { return _selectionHoldState; }
     }
 
     public string PresentationNote

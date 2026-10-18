@@ -145,6 +145,7 @@ public class CPlayer : CEntity
     }
     private void HandleHitStarted()
     {
+        CancelSkillSelection();
         OnHitPresentationStarted?.Invoke(this);
     }
     private void HandleHitCompleted()
@@ -300,23 +301,24 @@ public class CPlayer : CEntity
 
     public bool TrySelectSkill(int skillIndex)
     {
-        if (_isRequesting || !CanIssueActionRequest)
+        if (_isRequesting || !CanIssueActionRequest) return false;
+        if (!isActiveAndEnabled || _heroData == null || _equippedSkills == null
+            || skillIndex < 0 || skillIndex >= _equippedSkills.Count)
         {
-            return false;
-        }
-
-        _selectedSkill = null;
-        if (!isActiveAndEnabled || _heroData == null || _equippedSkills == null || skillIndex < 0 || skillIndex >= _equippedSkills.Count)
-        {
+            CancelSkillSelection();
             return false;
         }
 
         CSkillDataSO skill = _equippedSkills[skillIndex];
         if (!CSkillRankUtility.CanUseSkill(skill, _currentRank))
         {
+            CancelSkillSelection();
             return false;
         }
 
+        if (_selectedSkill == skill && (_actionAnimation == null || _actionAnimation.IsSelecting)) return true;
+        CancelSkillSelection();
+        if (_actionAnimation != null && !_actionAnimation.TryPlaySelection(skill)) return false;
         _selectedSkill = skill;
         return true;
     }
@@ -502,6 +504,7 @@ public class CPlayer : CEntity
 
 	public void CancelSkillSelection()
 	{
+        if (_actionAnimation != null) _actionAnimation.CancelSelection();
 		_selectedSkill = null;
 		CPrint.Log("스킬 선택을 취소하였습니다.");
 	}

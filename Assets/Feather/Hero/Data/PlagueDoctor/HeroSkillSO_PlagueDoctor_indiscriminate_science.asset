@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.Skill8End
   _presentationNote: Shares the support motion.
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill8Start
+  _selectionHoldState: Base Layer.Ready_Skill8Start
   _feedback: {fileID: 11400000, guid: 1907f8dfcf44c4640a7e88ee9c7fee52, type: 2}

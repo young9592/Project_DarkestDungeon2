@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.AttackRecover
   _presentationNote: 
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_AttackAntic
+  _selectionHoldState: Base Layer.Ready_AttackAntic
   _feedback: {fileID: 11400000, guid: fed0aef3142320b458c2bcbd6e1028e1, type: 2}

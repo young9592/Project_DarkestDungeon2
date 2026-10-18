@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.Skill5End
   _presentationNote: Shares the hip-shot motion.
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill5Start
+  _selectionHoldState: Base Layer.Ready_Skill5Start
   _feedback: {fileID: 11400000, guid: 47025efd39a553545a300d090ff1f35d, type: 2}

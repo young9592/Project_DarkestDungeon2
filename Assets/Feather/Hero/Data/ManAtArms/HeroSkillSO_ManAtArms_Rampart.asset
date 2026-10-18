@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.RamEnd
   _presentationNote: 
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_RamStart
+  _selectionHoldState: Base Layer.Ready_RamStart
   _feedback: {fileID: 11400000, guid: 94bb84939874be046b6ba95f63e2056b, type: 2}

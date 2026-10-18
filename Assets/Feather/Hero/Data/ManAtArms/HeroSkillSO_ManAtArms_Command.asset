@@ -23,4 +23,6 @@ MonoBehaviour:
   _endState: Base Layer.BuffEnd
   _presentationNote: 
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_BuffStart
+  _selectionHoldState: Base Layer.Ready_BuffStart
   _feedback: {fileID: 11400000, guid: 2376b7d920e3d6c46b31a196af2ecb05, type: 2}

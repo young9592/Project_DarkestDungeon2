@@ -24,4 +24,6 @@ MonoBehaviour:
   _endState: Base Layer.CrushEnd
   _presentationNote: 
   _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_CrushStart
+  _selectionHoldState: Base Layer.Ready_CrushStart
   _feedback: {fileID: 11400000, guid: 4586fe5c47c671345b8f01fdc3f68264, type: 2}
