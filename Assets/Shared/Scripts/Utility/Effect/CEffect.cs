@@ -8,13 +8,12 @@ public class CEffect
 	#region Fields
 	private CEffectSO _effectSO = null;
 	private int _remainingTurns = 0;
-	private int _currentDamage = 0; // 중첩 도트 데미지 관리
 	#endregion
 
 	#region Property
 	public EEffectType EffectType => _effectSO.EffectType;
 	public int RemainingTurns => _remainingTurns;
-	public int CurrentDamage => _currentDamage;
+	public int Damage => _effectSO.Damage; // 개별 도트 데미지 참조
 	public CEffectSO Data => _effectSO;
 	#endregion
 
@@ -22,14 +21,6 @@ public class CEffect
 	{
 		_effectSO = effectSO;
 		_remainingTurns = effectSO.Duration;
-		_currentDamage = effectSO.Damage;
-	}
-
-	// 동일한 DOT가 또 걸렸을 시 데미지를 합산하고 지속 시간을 초기화하는 함수
-	public void StackEffect(CEffectSO newEffectSO)
-	{
-		_currentDamage += newEffectSO.Damage;
-		_remainingTurns = Mathf.Max(_remainingTurns, newEffectSO.Duration);
 	}
 
 	private void Execute(CEffectContext context)
