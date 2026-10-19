@@ -23,6 +23,7 @@ public class CHeroSkillSO : CSkillDataSO
     [Header("Selection Presentation")]
     [SerializeField] private string _selectionStartState;
     [SerializeField] private string _selectionHoldState;
+    [SerializeField] private string _executionStartState;
     [Header("Skill Feedback")]
     [SerializeField] private CHeroSkillFeedbackSO _feedback;
 
@@ -58,6 +59,11 @@ public class CHeroSkillSO : CSkillDataSO
     public string SelectionHoldState
     {
         get { return _selectionHoldState; }
+    }
+
+    public string ExecutionStartState
+    {
+        get { return _executionStartState; }
     }
 
     public string PresentationNote

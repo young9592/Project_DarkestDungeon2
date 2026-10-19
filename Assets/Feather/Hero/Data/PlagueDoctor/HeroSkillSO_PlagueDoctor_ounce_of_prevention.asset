@@ -19,10 +19,11 @@ MonoBehaviour:
   _cooldown: 0
   _effectList: []
   _target: 5
-  _startState: Base Layer.Skill4Start
-  _endState: Base Layer.Skill4End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_ounce_of_prevention
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_ounce_of_prevention
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill4Start
-  _selectionHoldState: Base Layer.Ready_Skill4Start
+  _selectionStartState: Base Layer.SourceSelect_poison
+  _selectionHoldState: Base Layer.SourceReady_poison
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_ounce_of_prevention
   _feedback: {fileID: 11400000, guid: 065b65b8c36d80241a41861fa5abfa58, type: 2}

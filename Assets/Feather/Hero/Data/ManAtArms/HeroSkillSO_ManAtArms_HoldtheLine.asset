@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 2de3dbe290149d843a9877d20330974c, type: 2}
   _target: 0
-  _startState: Base Layer.RamStart
-  _endState: Base Layer.RamEnd
+  _startState: Base Layer.OriginalAntic_ManAtArms_HoldtheLine
+  _endState: Base Layer.OriginalRecover_ManAtArms_HoldtheLine
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_RamStart
-  _selectionHoldState: Base Layer.Ready_RamStart
+  _selectionStartState: Base Layer.SourceSelect_ram
+  _selectionHoldState: Base Layer.SourceReady_ram
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_HoldtheLine
   _feedback: {fileID: 11400000, guid: 5566992a02bc11b4f99a206a81092098, type: 2}

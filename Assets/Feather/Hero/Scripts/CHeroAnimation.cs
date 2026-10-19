@@ -13,6 +13,7 @@ public class CHeroAnimation : MonoBehaviour
     private EAnimationState _state;
     private bool _needsIdle;
     private int _currentAttackEndHash;
+    private int _currentExecutionStartHash;
     private CSkillDataSO _selectionSkill;
     private int _selectionStartHash;
     private int _selectionHoldHash;
@@ -89,6 +90,8 @@ public class CHeroAnimation : MonoBehaviour
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         int startHash = heroSkill != null ? Animator.StringToHash(heroSkill.StartState) : _attackHash;
         _currentAttackEndHash = heroSkill != null ? Animator.StringToHash(heroSkill.EndState) : _attackEndHash;
+        _currentExecutionStartHash = heroSkill != null && !string.IsNullOrEmpty(heroSkill.ExecutionStartState)
+            ? Animator.StringToHash(heroSkill.ExecutionStartState) : _currentAttackEndHash;
         _waitForSelection = prepared;
         _selectionSkill = null;
         if (!prepared)
@@ -98,7 +101,7 @@ public class CHeroAnimation : MonoBehaviour
         else if (_animator.GetCurrentAnimatorStateInfo(0).fullPathHash == _selectionHoldHash)
         {
             _waitForSelection = false;
-            _animator.Play(_currentAttackEndHash, 0, 0.0f);
+            _animator.Play(_currentExecutionStartHash, 0, 0.0f);
         }
         OnAttackStarted?.Invoke();
         return true;
@@ -124,8 +127,11 @@ public class CHeroAnimation : MonoBehaviour
         if (string.IsNullOrEmpty(heroSkill.StartState) || string.IsNullOrEmpty(heroSkill.EndState)) return false;
         int startHash = Animator.StringToHash(heroSkill.StartState);
         int endHash = Animator.StringToHash(heroSkill.EndState);
+        int executionHash = string.IsNullOrEmpty(heroSkill.ExecutionStartState)
+            ? endHash : Animator.StringToHash(heroSkill.ExecutionStartState);
         return startHash != _idleHash && startHash != _hitHash && endHash != _idleHash && endHash != _hitEndHash
-            && _animator.HasState(0, startHash) && _animator.HasState(0, endHash);
+            && executionHash != _idleHash && executionHash != _hitHash && executionHash != _hitEndHash
+            && _animator.HasState(0, startHash) && _animator.HasState(0, endHash) && _animator.HasState(0, executionHash);
     }
 
     public bool CanPlayHit()
@@ -163,7 +169,7 @@ public class CHeroAnimation : MonoBehaviour
                 && !_animator.IsInTransition(0));
             if (!prepared) return;
             _waitForSelection = false;
-            _animator.Play(_currentAttackEndHash, 0, 0.0f);
+            _animator.Play(_currentExecutionStartHash, 0, 0.0f);
             return;
         }
 

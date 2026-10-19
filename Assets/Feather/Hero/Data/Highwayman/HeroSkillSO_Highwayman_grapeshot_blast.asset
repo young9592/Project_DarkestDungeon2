@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 1c6e67680e03f154ea93f28189ec5540, type: 2}
   _target: 3
-  _startState: Base Layer.Skill6Start
-  _endState: Base Layer.Skill6End
+  _startState: Base Layer.OriginalAntic_Highwayman_grapeshot_blast
+  _endState: Base Layer.OriginalRecover_Highwayman_grapeshot_blast
   _presentationNote: Shares the hip-shot motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill6Start
-  _selectionHoldState: Base Layer.Ready_Skill6Start
+  _selectionStartState: Base Layer.SourceSelect_point_blank_shot
+  _selectionHoldState: Base Layer.SourceReady_point_blank_shot
+  _executionStartState: Base Layer.OriginalAction_Highwayman_grapeshot_blast
   _feedback: {fileID: 11400000, guid: c5b834575daa3b541a173467c29e4e32, type: 2}

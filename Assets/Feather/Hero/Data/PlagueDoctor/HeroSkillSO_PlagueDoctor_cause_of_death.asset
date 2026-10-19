@@ -19,10 +19,11 @@ MonoBehaviour:
   _cooldown: 2
   _effectList: []
   _target: 0
-  _startState: Base Layer.Skill9Start
-  _endState: Base Layer.Skill9End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_cause_of_death
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_cause_of_death
   _presentationNote: Shares the knife motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill9Start
-  _selectionHoldState: Base Layer.Ready_Skill9Start
+  _selectionStartState: Base Layer.SourceSelect_knifeslash
+  _selectionHoldState: Base Layer.SourceReady_knifeslash
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_cause_of_death
   _feedback: {fileID: 11400000, guid: b50286b47e9d64d46a0e65e203aa03bb, type: 2}

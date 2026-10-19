@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 702f0a63389a6bc4a8c4ecd72412f7a5, type: 2}
   _target: 0
-  _startState: Base Layer.Skill2Start
-  _endState: Base Layer.Skill2End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_incision
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_incision
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill2Start
-  _selectionHoldState: Base Layer.Ready_Skill2Start
+  _selectionStartState: Base Layer.SourceSelect_knifeslash
+  _selectionHoldState: Base Layer.SourceReady_knifeslash
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_incision
   _feedback: {fileID: 11400000, guid: 1d28a5469177c964484454010f3a4098, type: 2}
