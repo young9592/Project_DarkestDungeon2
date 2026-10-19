@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: d011635b80cfd724baeea0311471dd1c, type: 2}
   _target: 2
-  _startState: Base Layer.Skill4Start
-  _endState: Base Layer.Skill4End
+  _startState: Base Layer.OriginalAntic_GraveRobber_artemisia
+  _endState: Base Layer.OriginalRecover_GraveRobber_artemisia
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill4Start
-  _selectionHoldState: Base Layer.Ready_Skill4Start
+  _selectionStartState: Base Layer.SourceSelect_potion
+  _selectionHoldState: Base Layer.SourceReady_potion
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_artemisia
   _feedback: {fileID: 11400000, guid: 6935f6d402ab39d488c19d9bc9780308, type: 2}

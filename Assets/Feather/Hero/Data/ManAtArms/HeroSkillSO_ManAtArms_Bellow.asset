@@ -14,15 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Bellow
   _skillIcon: {fileID: 21300000, guid: 5b62467fbd9f51249aab73bbb18a5259, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
   _cooldown: 1
   _effectList: []
   _target: 3
-  _startState: Base Layer.YellStart
-  _endState: Base Layer.YellEnd
+  _startState: Base Layer.OriginalAntic_ManAtArms_Bellow
+  _endState: Base Layer.OriginalRecover_ManAtArms_Bellow
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_YellStart
-  _selectionHoldState: Base Layer.Ready_YellStart
+  _selectionStartState: Base Layer.SourceSelect_yell
+  _selectionHoldState: Base Layer.SourceReady_yell
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_Bellow
   _feedback: {fileID: 11400000, guid: 0c3994292cf90d14da377d450e5ec284, type: 2}

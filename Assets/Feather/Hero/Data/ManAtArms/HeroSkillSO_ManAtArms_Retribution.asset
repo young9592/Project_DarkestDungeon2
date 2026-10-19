@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 2682e8e19961aaa40a240910a09f4fe1, type: 2}
   _target: 2
-  _startState: Base Layer.YellStart
-  _endState: Base Layer.YellEnd
+  _startState: Base Layer.OriginalAntic_ManAtArms_Retribution
+  _endState: Base Layer.OriginalRecover_ManAtArms_Retribution
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_YellStart
-  _selectionHoldState: Base Layer.Ready_YellStart
+  _selectionStartState: Base Layer.SourceSelect_yell
+  _selectionHoldState: Base Layer.SourceReady_yell
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_Retribution
   _feedback: {fileID: 11400000, guid: 34e664a499f54db479a00e706583dbe9, type: 2}

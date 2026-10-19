@@ -4,29 +4,31 @@ using System;
 
 public class CPlayer : CEntity
 {
-	#region Inspector
-	[Header("Data")]
-	[SerializeField] private CHeroDataSO _heroData;
+    #region Inspector
+    [Header("Data")]
+    [SerializeField] private CHeroDataSO _heroData;
     [SerializeField] private CHeroSkillLoadoutSO _skillLoadout;
     [SerializeField] private CHeroAnimation _actionAnimation;
 
-	[Header("Runtime Status")]
-	[SerializeField] private int _currentHp;
-	[SerializeField] private int _currentStress;
-	// 현재 플레이어가 위치한 열 테스트로 1로 설정함
-	[SerializeField] private ERank _currentRank = ERank.Rank1;
-	#endregion
+    [Header("Runtime Status")]
+    [SerializeField] private int _currentHp;
+    [SerializeField] private int _currentStress;
+    // 현재 플레이어가 위치한 열 테스트로 1로 설정함
+    [SerializeField] private ERank _currentRank = ERank.Rank1;
+    #endregion
 
-	#region Field
-	// 전투에 들고 온 장착할 스킬 리스트
-	private List<CSkillDataSO> _equippedSkills = new List<CSkillDataSO>();
-	// 유저가 클릭해서 실행 대기 중인 스킬
-	private CSkillDataSO _selectedSkill;
-	#endregion
+    #region Field
+    // 전투에 들고 온 장착할 스킬 리스트
+    private List<CSkillDataSO> _equippedSkills = new List<CSkillDataSO>();
+    // 유저가 클릭해서 실행 대기 중인 스킬
+    private CSkillDataSO _selectedSkill;
+    // 몸에 걸리는 상태이상 인스턴스 목록
+    private List<CEffect> _activeStatusEffects = new List<CEffect>();
+    #endregion
 
-	#region Events
-	// 스킬 타케팅까지 완료되었을시 BattleCore에 '행동 실행' 요청 이벤트
-	public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
+    #region Events
+    // 스킬 타케팅까지 완료되었을시 BattleCore에 '행동 실행' 요청 이벤트
+    public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
     #endregion
 
     private bool _isRequesting;
@@ -257,18 +259,18 @@ public class CPlayer : CEntity
         _skillFeedback = GetComponent<CHeroSkillFeedback>();
         if (_actionAnimation == null) _actionAnimation = GetComponent<CHeroAnimation>();
         if (CPrint.NullUnityObjectCheck(gameObject.name, _heroData))
-		{
-			enabled = false;
-			return;
-		}
+        {
+            enabled = false;
+            return;
+        }
 
-		Initialize();
+        Initialize();
     }
 
-	private void Initialize()
-	{
-		_currentHp = _heroData.MaxHealth;
-		_currentStress = 0;
+    private void Initialize()
+    {
+        _currentHp = _heroData.MaxHealth;
+        _currentStress = 0;
 
         _equippedSkills.Clear();
         if (_skillLoadout != null)
@@ -288,12 +290,12 @@ public class CPlayer : CEntity
             CSkillDataSO skill = _heroData.AvailableSkills[i];
             if (skill != null && !_equippedSkills.Contains(skill)) _equippedSkills.Add(skill);
         }
-	}
+    }
 
-	#region Skill Usage
-	/// </summary>
-	/// 1. 유저가 스킬 버튼 클릭시 호출
-	/// </summary>
+    #region Skill Usage
+    /// </summary>
+    /// 1. 유저가 스킬 버튼 클릭시 호출
+    /// </summary>
     public void SelectSkill(int skillIndex)
     {
         TrySelectSkill(skillIndex);
@@ -502,16 +504,16 @@ public class CPlayer : CEntity
         return true;
     }
 
-	public void CancelSkillSelection()
-	{
+    public void CancelSkillSelection()
+    {
         if (_actionAnimation != null) _actionAnimation.CancelSelection();
-		_selectedSkill = null;
-		CPrint.Log("스킬 선택을 취소하였습니다.");
-	}
-	#endregion
+        _selectedSkill = null;
+        CPrint.Log("스킬 선택을 취소하였습니다.");
+    }
+    #endregion
 
-	#region CEntity Overrides
-	// Effect Core 파이프라인에서 최종 연산된 데미지를 받음
+    #region CEntity Overrides & DOT Logic
+    // Effect Core 파이프라인에서 최종 연산된 데미지를 받음
     public override void TakeDamage(int finalDamage)
     {
         if (!isActiveAndEnabled || _heroData == null || finalDamage == 0)
@@ -537,12 +539,83 @@ public class CPlayer : CEntity
         }
     }
 
-	// Effect Core 파이프라인에서 필터링시킨 상태이상을 적용받음
+    // 상태이상 부여 (합치지 않고 리스트에 개별 인스턴스로 추가)
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-		CPrint.Log($"[{_heroData.DefaultName}] 에게 상태이상 [{statusEffect.Data.Name}] 적용!");
+        if (statusEffect == null || statusEffect.Data == null) return;
 
-		// TODO : 전달받은 상태이상 타입인 EffectType을 확인하여 부착시키거나 토큰을 누적시키는 로직 구현 필요
+        if (IsDotEffect(statusEffect.EffectType))
+        {
+            _activeStatusEffects.Add(statusEffect);
+
+            int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
+            CPrint.Log($"[{_heroData.DefaultName}] 에게 [{statusEffect.EffectType}] 추가 부여 \n" +
+                $"(이번 효과 : {statusEffect.Damage} 데미지 / {statusEffect.RemainingTurns}턴 |" +
+                $"다음 턴 예정 {statusEffect.EffectType} 합산 데미지 : {currentTotalDamage})");
+        }
+    }
+
+    public void OnTurnStart()
+    {
+        if (_activeStatusEffects.Count > 0)
+        {
+            int bleedDamage = 0;
+            int blightDamage = 0;
+            int burnDamage = 0;
+
+            for (int i = _activeStatusEffects.Count - 1 ; i >= 0 ; i--)
+            {
+                CEffect effect = _activeStatusEffects[i];
+
+                switch (effect.EffectType)
+                {
+                    case EEffectType.Bleed: bleedDamage += effect.Damage; break;
+                    case EEffectType.Blight: blightDamage += effect.Damage; break;
+                    case EEffectType.Burn: burnDamage += effect.Damage; break;
+                }
+
+                effect.DecreaseTurn();
+
+                if (effect.RemainingTurns <= 0)
+                {
+                    CPrint.Log($"[{_heroData.DefaultName} 의 [{effect.Data.Name}({effect.Damage}데미지)] 지속 시간이 끝났습니다.");
+                    _activeStatusEffects.RemoveAt(i);
+                }
+            }
+
+            int totlaTickDamage = bleedDamage + blightDamage + burnDamage;
+            if (totlaTickDamage > 0)
+            {
+                CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
+                    $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totlaTickDamage}] 데미지");
+            }
+        }
+
+        if (TokenManager.ConsumeToken(EEffectType.Stun))
+        {
+            CPrint.Log($"[{_heroData.DefaultName}] 기절 토큰 소모\n" +
+                $"이번 턴 행동을 못합니다.");
+            // TODO : Battle Core부분에 턴 종료 알리기
+        }
+    }
+
+    // 특정 도트 합산 데미지 반환
+    public int GetTotalDotDamageByType(EEffectType dotType)
+    {
+        int total = 0;
+        for (int i = 0; i < _activeStatusEffects.Count; i++)
+        {
+            if (_activeStatusEffects[i].EffectType == dotType)
+            {
+                total += _activeStatusEffects[i].Damage;
+            }
+        }
+        return total;
+    }
+
+    private bool IsDotEffect(EEffectType type)
+    {
+        return type == EEffectType.Bleed || type == EEffectType.Blight || type == EEffectType.Burn;
     }
 
 	private void EnterDeathsDoor()

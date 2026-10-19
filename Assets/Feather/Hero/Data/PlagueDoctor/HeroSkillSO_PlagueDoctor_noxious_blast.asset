@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 22f68d69468b28d45b4b57818e87424c, type: 2}
   _target: 0
-  _startState: Base Layer.Skill0Start
-  _endState: Base Layer.Skill0End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_noxious_blast
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_noxious_blast
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill0Start
-  _selectionHoldState: Base Layer.Ready_Skill0Start
+  _selectionStartState: Base Layer.SourceSelect_explosion
+  _selectionHoldState: Base Layer.SourceReady_explosion
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_noxious_blast
   _feedback: {fileID: 11400000, guid: 0b702003d52908d458de8591b947d5f7, type: 2}

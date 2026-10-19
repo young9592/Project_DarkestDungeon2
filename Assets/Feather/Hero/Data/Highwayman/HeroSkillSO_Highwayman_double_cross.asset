@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 189e12d3fb6f7c04087847528342d6bc, type: 2}
   _target: 0
-  _startState: Base Layer.Skill10Start
-  _endState: Base Layer.Skill10End
+  _startState: Base Layer.OriginalAntic_Highwayman_double_cross
+  _endState: Base Layer.OriginalRecover_Highwayman_double_cross
   _presentationNote: Shares the Double Tap motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill10Start
-  _selectionHoldState: Base Layer.Ready_Skill10Start
+  _selectionStartState: Base Layer.SourceSelect_double
+  _selectionHoldState: Base Layer.SourceReady_double
+  _executionStartState: Base Layer.OriginalAction_Highwayman_double_cross
   _feedback: {fileID: 11400000, guid: 0a24657226b264149bb4c55036aa2788, type: 2}

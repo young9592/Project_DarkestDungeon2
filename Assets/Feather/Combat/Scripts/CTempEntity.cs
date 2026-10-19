@@ -12,7 +12,7 @@ public class CTempEntity : MonoBehaviour
         Enemy
     }
 
-    // Ãß°¡Çàµ¿ ¾Ç¼¼»ç¸® Âø¿ë¿©ºÎ
+    // ì¶”ê°€í–‰ë™ ì•…ì„¸ì‚¬ë¦¬ ì°©ìš©ì—¬ë¶€
     public enum EJewelryType
     {
         None,
@@ -27,16 +27,16 @@ public class CTempEntity : MonoBehaviour
     [SerializeField] private int _speed;
     [SerializeField] private Sprite _portraitImage;
     [SerializeField] private CTokenManager _tokenManager;
-    // Çàµ¿±Ç : 1È¸ ±âº» / 2È¸ ~ 3È¸ º¸½º
+    // í–‰ë™ê¶Œ : 1íšŒ ê¸°ë³¸ / 2íšŒ ~ 3íšŒ ë³´ìŠ¤
     [SerializeField] private int _actions = 1;
 
     [Header("ExtraTurn")]
     [SerializeField] private bool _hasExtraTurn = false;
-    // ÀÓ½Ã ¾Ç¼¼»ç¸® ¿©ºÎ Ã¼Å©
+    // ì„ì‹œ ì•…ì„¸ì‚¬ë¦¬ ì—¬ë¶€ ì²´í¬
     [SerializeField] private EJewelryType _equipJewelry = EJewelryType.None;
 
     [Header("Test State")]
-    // ÀÓ½Ã µµÆ®µ¥¹ÌÁö »óÅÂÀÌ»ó Ã³¸®
+    // ì„ì‹œ ë„íŠ¸ë°ë¯¸ì§€ ìƒíƒœì´ìƒ ì²˜ë¦¬
     [SerializeField] private List<CEffect> _dotEffectList;
     [SerializeField] private float _testDelay = 3.0f;
     #endregion
@@ -56,7 +56,7 @@ public class CTempEntity : MonoBehaviour
         _tokenManager = new CTokenManager();
     }
 
-    // Çàµ¿
+    // í–‰ë™
     public bool Action()
     {
         if (_type == EEntityType.Player)
@@ -67,7 +67,7 @@ public class CTempEntity : MonoBehaviour
             }
         }
 
-        // Çàµ¿ ¼º°ø
+        // í–‰ë™ ì„±ê³µ
         StartCoroutine(CoActionColorDelay(3f));
         return true;
     }
@@ -78,7 +78,7 @@ public class CTempEntity : MonoBehaviour
     }
 
 
-    // ÀÓ½Ã »óÅÂÀÌ»ó °É±â
+    // ì„ì‹œ ìƒíƒœì´ìƒ ê±¸ê¸°
     public void TempInitState()
     {
         int rand = Random.Range(0, 100);
@@ -87,7 +87,7 @@ public class CTempEntity : MonoBehaviour
         {
             // none
         }
-        // TODO : DOT °ø°İ Ãß°¡
+        // TODO : DOT ê³µê²© ì¶”ê°€
         else if (rand < 90)
         {
             _tokenManager.AddToken(EEffectType.Daze);
@@ -98,7 +98,7 @@ public class CTempEntity : MonoBehaviour
         }
     }
 
-    // ¾ÆÁ÷ ½ÇÁ¦ »ó¼Ó°ú ¿¬°áÇÒ ¼ø ¾øÀ¸´Ï ÀÓ½Ã·Î..
+    // ì•„ì§ ì‹¤ì œ ìƒì†ê³¼ ì—°ê²°í•  ìˆœ ì—†ìœ¼ë‹ˆ ì„ì‹œë¡œ..
     public void Attack(int damage)
     {
 
