@@ -1,41 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CBasicCombatManager : MonoBehaviour
 {
-    public enum State
+    public enum RoundState
     {
         None,
         Ready,
-        Active
+        Start
+    }
+
+    public enum EntityState
+    {
+        Success,
+        Dead,
+        Stun,
+        Daze,
     }
 
     #region Inspector
-    [SerializeField] private List<CTempEntity> _entityList;
-    [SerializeField] private State _state = State.None;
+    // 현재 필드에 서있는 엔티티 리스트
+    [SerializeField] private List<CTempEntity> _fieldEntityList;
+    // 현재 라운드 상태
+    [SerializeField] private RoundState _state = RoundState.None;
 
-    // 턴 이미지 프리팹과 보관할 위치
+    // 턴 초상화 이미지 프리팹과 보관 위치
     [Header("Turnorder Prefab")]
     [SerializeField] private GameObject _turnOrderPrefab;
     [SerializeField] private GameObject _turnOrderRoot;
 
-    // 턴오더 배치 위치
-    [Header("Turnorder Data")]
-    [SerializeField] private List<Vector2> _turnOrderPos;
-
     [Header("Option")]
-    [SerializeField] private float _subDelay = 0.5f;
+    [SerializeField] private float _actionDelay = 3.5f;
     #endregion
 
     #region Field
-    private List<(CTempEntity entity, int extraTurn)> _turnList = new List<(CTempEntity, int)>();
+    private List<(CTempEntity entity, int turnSpeed)> _turnList = new List<(CTempEntity, int)>();
     private Coroutine _coroutine = null;
     private string _message = "";
     private int _round = 0;
 
     // UI 가지고 있다가 삭제
-    private List<GameObject> _turnOrdertList = new List<GameObject>();
+    private List<GameObject> _turnPortraitList = new List<GameObject>();
     #endregion
 
     private void Update()
@@ -46,38 +53,36 @@ public class CBasicCombatManager : MonoBehaviour
 
     private void ChangeState()
     {
-        if (_state == State.None || _state == State.Active)
+        if (_state == RoundState.None || _state == RoundState.Start)
         {
             if (_turnList.Count == 0)
             {
-                _state = State.Ready;
+                _state = RoundState.Ready;
             }
         }
 
-        if (_state == State.Ready)
+        if (_state == RoundState.Ready)
         {
             if (_turnList.Count != 0)
             {
-                _state = State.Active;
+                _state = RoundState.Start;
             }
         }
-
     }
     private void ActiveState()
     {
         switch (_state)
         {
-            case State.Ready:
-                SetTurnList();
+            case RoundState.Ready:
+                BuildTurnOrderList();
                 break;
-            case State.Active:
-                ActiveEntity();
+            case RoundState.Start:
+                ActionEntity();
                 break;
         }
     }
 
-
-    private void SetTurnList()
+    private void BuildTurnOrderList()
     {
         // 모션이 끝날때까지 기다리기
         if (_coroutine != null)
@@ -85,31 +90,29 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < _entityList.Count; i++)
+        for (int i = 0; i < _fieldEntityList.Count; i++)
         {
-            _entityList[i].SetRoundRandomSpeed();
             // 임의 버프 디버프 걸어보기
-            _entityList[i].TempInitState();
+            _fieldEntityList[i].TempInitState();
 
-            // 누군간 추가행동을 가지고 있습니다 [ 보스라던가 보스라던가 ]
-            // 추가 행동마다 속도를 다르게 주고 해당 요소들을 모두 리스트에 넣겠습니다.
-            for (int extraTurn = 0; extraTurn <= _entityList[i].ExtraTurn; extraTurn++)
+            // 보스 개체는 행동 횟수를 여러번 가집니다.
+            for (int actions = 0; actions < _fieldEntityList[i].Actions; actions++)
             {
-                _turnList.Add((_entityList[i], extraTurn));
+                _turnList.Add((_fieldEntityList[i], _fieldEntityList[i].Speed + Random.Range(0, 7)));
             }
         }
 
-        // 일단 선택정렬 [ 무려 시간복잡도 O^2 와! ]
+        // 선택정렬
         for (int i = 0; i < _turnList.Count - 1; i++)
         {
-            (int index, int speed) max = (i, _turnList[i].entity.Speed(_turnList[i].extraTurn));
+            (int index, int speed) max = (i, _turnList[i].turnSpeed);
 
             for (int j = i + 1; j < _turnList.Count; j++)
             {
-                if (max.speed < _turnList[j].entity.Speed(_turnList[j].extraTurn))
+                if (max.speed < _turnList[j].turnSpeed)
                 {
                     // 최소나 최대를 찾아서 체크
-                    max = (j, _turnList[j].entity.Speed(_turnList[j].extraTurn));
+                    max = (j, _turnList[j].turnSpeed);
                 }
             }
 
@@ -122,29 +125,34 @@ public class CBasicCombatManager : MonoBehaviour
         {
             GameObject obj = Instantiate(_turnOrderPrefab, _turnOrderRoot.transform);
 
-            CTurnImage cTurnImage = obj.GetComponent<CTurnImage>();
+            CPortraitImage portraitImage = obj.GetComponent<CPortraitImage>();
 
-            int posIdx = i > 3 ? 0 : 1;
-            cTurnImage.Init(_turnOrderPos[posIdx], _turnList[i].entity.Type, _turnList[i].entity.EntityTurnIamge);
 
-            if (i < 3)
+            // 4 3 2 1 초상화 배치 및 이동
+            if (i < 4)
             {
-                cTurnImage.Move(_turnOrderPos[4 - i], false);
+                portraitImage.Initialize(4, _turnList[i].entity.Type, _turnList[i].entity.PortraitImage);
+                portraitImage.Move(i + 1);
+            }
+            else
+            {
+                portraitImage.Initialize(i + 1, _turnList[i].entity.Type, _turnList[i].entity.PortraitImage);
             }
 
-            _turnOrdertList.Add(obj);
+            _turnPortraitList.Add(obj);
         }
 
         // Debug
         for (int i = 0; i < _turnList.Count; i++)
         {
-            CPrint.Log($"index[{i}] :  {_turnList[i].entity.name}/{_turnList[i].entity.Speed(_turnList[i].extraTurn)}");
+            CPrint.Log($"index[{i}] :  [{_turnList[i].entity.name} / {_turnList[i].turnSpeed}]");
         }
 
+        // 라운드 올리기
         _round++;
     }
 
-    private void ActiveEntity()
+    private void ActionEntity()
     {
         if (_coroutine != null)
         {
@@ -156,94 +164,133 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        _coroutine = StartCoroutine(CoActive());
+        // 행동하기전 상태 체크
+        EntityState entityState = CheckState();
+
+        // 상태에 맞는 행동 실행
+        switch (entityState)
+        {
+            case EntityState.Success:
+                _coroutine = StartCoroutine(CoAction());
+                break;
+            case EntityState.Dead:
+                // TODO : 죽음 상태 코루틴 만들어야합니다.
+                break;
+            case EntityState.Stun:
+                _coroutine = StartCoroutine(CoStun());
+                break;
+            case EntityState.Daze:
+                _coroutine = StartCoroutine(CoDaze());
+                break;
+        }
     }
 
-    private IEnumerator CoActive()
-    { 
-        CTempEntity.ActiveState activeState = CTempEntity.ActiveState.Wait;
+    private EntityState CheckState()
+    {
+        // TODO : DOT 데미지 들어오는거 체크 후 죽음 상태로 변경
+        // 맨 우선순위인 이유는 DOT 데미지로 죽었을 시 다른 처리는 필요없기 때문입니다.
 
-        _message = $"{_turnList[0].entity.name}의 턴!";
-
-        // 일단 동작만 시켜보기
-        while (activeState == CTempEntity.ActiveState.Wait)
+        if (false)
         {
-            activeState = _turnList[0].entity.Active();
+            return EntityState.Dead;
+        }
+
+        bool isStuned = _turnList[0].entity.TokenManager.ConsumeToken(EEffectType.Stun);
+
+        if (isStuned)
+        {
+            return EntityState.Stun;
+        }
+
+        bool isDazed = _turnList[0].entity.TokenManager.ConsumeToken(EEffectType.Daze);
+
+        if (isDazed)
+        {
+            return EntityState.Daze;
+        }
+
+        return EntityState.Success;
+    }
+
+    // 기절 : 현재 라운드의 차례를 넘깁니다.
+    private IEnumerator CoStun()
+    {
+        _message = $"{_turnList[0].entity.name} 기절";
+        _turnList.RemoveAt(0);
+        yield return new WaitForSeconds(_actionDelay);
+        MoveTurnOrder();
+        Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
+        _turnPortraitList.RemoveAt(0);
+        _coroutine = null;
+    }
+    // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
+    private IEnumerator CoDaze()
+    {
+        _message = $"{_turnList[0].entity.name} 현기증";
+        _turnList.Add(_turnList[0]);
+        _turnList.RemoveAt(0);
+        yield return new WaitForSeconds(_actionDelay);
+        GameObject copyObj = Instantiate(_turnPortraitList[0], _turnOrderRoot.transform);
+        _turnPortraitList.Add(copyObj);
+        MoveTurnOrder();
+        _turnPortraitList.RemoveAt(0);
+        _coroutine = null;
+    }
+    // 행동
+    // TODO : 추가행동은 주로 행동을 하고나서 추가행동이 가능한지 확인하는 느낌입니다. 변경필요
+    private IEnumerator CoAction()
+    {
+
+        _message = $"{_turnList[0].entity.name}의 턴";
+
+        bool doAction = false;
+
+        // 액션할때까지 기다리기
+        while (!doAction)
+        {
+            doAction = _turnList[0].entity.Action();
             yield return null;
         }
 
-
-
-
-        switch (activeState)
+        // TODO : 행동 후 추가행동 확인이 필요. 로직수정 필요
+        // 엔티티 상태에 따른 후처리
+        if (_turnList[0].entity.HaveFreeAction)
         {
-            case CTempEntity.ActiveState.Success:
-                if (!_turnList[0].entity.FreeTurn)
-                {
-                    _message = $"{_turnList[0].entity.name} 행동!";
-                    _turnList.RemoveAt(0);
-                    yield return new WaitForSeconds(CTempEntity.ActiveDelay + _subDelay);
-                    SetTurnOrderPos();
-                    Destroy(_turnOrdertList[0], _turnOrdertList[0].GetComponent<CTurnImage>().MoveTime + _subDelay);
-                    _turnOrdertList.RemoveAt(0);
-                    _coroutine = null;
-                }
-                else
-                {
-                    _message = $"{_turnList[0].entity.name} 추가행동!";
-                    _turnList[0].entity.UseFreeAction();
-                    yield return new WaitForSeconds(CTempEntity.ActiveDelay + _subDelay);
-                    _coroutine = null;
-                    // 현재 추가턴만 할 수 있도록..
-                    // 죽는 상황은 고려되지않음
-                }
-                break;
-            case CTempEntity.ActiveState.Stun:
-                _message = $"{_turnList[0].entity.name} 기절!";
-                _turnList.RemoveAt(0);
-                yield return new WaitForSeconds(CTempEntity.ActiveDelay + _subDelay);
-                SetTurnOrderPos();
-                Destroy(_turnOrdertList[0], _turnOrdertList[0].GetComponent<CTurnImage>().MoveTime + _subDelay);
-                _turnOrdertList.RemoveAt(0);
-                _coroutine = null;
-                break;
-            case CTempEntity.ActiveState.Daze:
-                _message = $"{_turnList[0].entity.name} 현기증!";
-                _turnList.Add(_turnList[0]);
-                _turnList.RemoveAt(0);
-                yield return new WaitForSeconds(CTempEntity.ActiveDelay + _subDelay);
-                SetTurnOrderPos();
-                _turnOrdertList.Add(_turnOrdertList[0]);
-                _turnOrdertList.RemoveAt(0);
-                _coroutine = null;
-                break;
-            case CTempEntity.ActiveState.Dead:
-                // _turnOrdertList에서 죽은 개체들을 검사 후 제거하는 작업 필요
-                break;
+            _message = $"{_turnList[0].entity.name} 추가행동";
+            _turnList[0].entity.UseFreeAction();
+            yield return new WaitForSeconds(_actionDelay);
+            _coroutine = null;
+        }
+        else
+        {
+            _message = $"{_turnList[0].entity.name} 행동";
+            _turnList.RemoveAt(0);
+            yield return new WaitForSeconds(_actionDelay);
+            MoveTurnOrder();
+            Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
+            _turnPortraitList.RemoveAt(0);
+            _coroutine = null;
         }
     }
 
-
-
-    private void SetTurnOrderPos()
+    // TODO : 엔티티들끼리 상호작용하고 죽은 엔티티들을 제거해야합니다.
+    private void CheckEntitiesDeath()
     {
-        for (int i = 0; i < _turnOrdertList.Count; i++)
+
+    }
+
+    private void MoveTurnOrder()
+    {
+        for (int i = 0; i < _turnPortraitList.Count; i++)
         {
-            if (_turnOrdertList.Count - 1 < i)
+            if (_turnPortraitList.Count - 1 < i)
             {
                 break;
             }
-            CTurnImage cTurnImage = _turnOrdertList[i].GetComponent<CTurnImage>();
 
-            if (i < 5)
-            {
-                cTurnImage.Move(_turnOrderPos[_turnOrderPos.Count - 1 - i], false);
-            }
-            else
-            {
-                cTurnImage.Move(_turnOrderPos[0], true);
-            }
+            CPortraitImage portraitImage = _turnPortraitList[i].GetComponent<CPortraitImage>();
 
+            portraitImage.Move(i);
         }
     }
 

@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 157751104}
   - component: {fileID: 157751108}
   m_Layer: 0
-  m_Name: Entity (3)
+  m_Name: Highwayman
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -242,13 +242,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 0
   _speed: 5
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: e191677258321ba48979c6d71fc6a66c, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: e191677258321ba48979c6d71fc6a66c, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1 &337185859
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,13 +365,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 1
   _speed: 2
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: 81758b1648193424ca01397d58d352d1, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: 81758b1648193424ca01397d58d352d1, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1 &343295362
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,13 +627,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 1
   _speed: 4
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: b37ce56c83927fe47b980a27850d9691, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 4
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: b37ce56c83927fe47b980a27850d9691, type: 3}
+  _actions: 3
+  _haveFreeAction: 0
 --- !u!1 &443519891
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,26 +766,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 935f04bbacdd78146a2f260fbc39a93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _entityList:
+  _fieldEntityList:
   - {fileID: 563332968}
-  - {fileID: 1195201850}
-  - {fileID: 157751108}
-  - {fileID: 1339275578}
-  - {fileID: 337185864}
-  - {fileID: 879710054}
   - {fileID: 429653290}
-  - {fileID: 1180937800}
   _state: 0
   _turnOrderPrefab: {fileID: 5773832701994379882, guid: 57e0047f1eeaa0c4c9c9fb2978c85054, type: 3}
   _turnOrderRoot: {fileID: 343295362}
-  _turnOrderPos:
-  - {x: -270, y: 100}
-  - {x: -270, y: -30}
-  - {x: -190, y: -30}
-  - {x: -110, y: -30}
-  - {x: -30, y: -30}
-  - {x: 100, y: -30}
-  _subDelay: 0.5
+  _actionDelay: 3.5
 --- !u!4 &540853369
 Transform:
   m_ObjectHideFlags: 0
@@ -827,7 +802,7 @@ GameObject:
   - component: {fileID: 563332964}
   - component: {fileID: 563332968}
   m_Layer: 0
-  m_Name: Entity (1)
+  m_Name: PlagueDoctor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -933,13 +908,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 0
   _speed: 4
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: 9d621ddb49a23bb469dd6f143389b6a8, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: 9d621ddb49a23bb469dd6f143389b6a8, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1 &687126336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,13 +1304,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 1
   _speed: 3
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: 60c2c9d50ec67c942b683d6d7a91ba62, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: 60c2c9d50ec67c942b683d6d7a91ba62, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1 &949897049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1629,13 +1596,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 1
   _speed: 4
-  _randSpeed: 0000000000000000000000000000000000000000
-  _entityTurnImage: {fileID: 21300000, guid: b7befe9bf3a9fb34cab067cd74504ea2, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: b7befe9bf3a9fb34cab067cd74504ea2, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1 &1195201845
 GameObject:
   m_ObjectHideFlags: 0
@@ -1650,7 +1613,7 @@ GameObject:
   - component: {fileID: 1195201846}
   - component: {fileID: 1195201850}
   m_Layer: 0
-  m_Name: Entity (2)
+  m_Name: GraveRobber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1756,13 +1719,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 0
   _speed: 5
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: 54c817a61061174409ed52de1b67355d, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: 54c817a61061174409ed52de1b67355d, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1 &1339275573
 GameObject:
   m_ObjectHideFlags: 0
@@ -1777,7 +1736,7 @@ GameObject:
   - component: {fileID: 1339275574}
   - component: {fileID: 1339275578}
   m_Layer: 0
-  m_Name: Entity (4)
+  m_Name: ManAtArms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1883,13 +1842,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 0
   _speed: 2
-  _randSpeed: 
-  _entityTurnImage: {fileID: 21300000, guid: 62b8201e633af9b48ad61cd1621529c4, type: 3}
-  _isStun: 0
-  _isDaze: 0
-  _isDead: 0
-  _extraTurn: 0
-  _isFreeTurn: 0
+  _portraitImage: {fileID: 21300000, guid: 62b8201e633af9b48ad61cd1621529c4, type: 3}
+  _actions: 1
+  _haveFreeAction: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

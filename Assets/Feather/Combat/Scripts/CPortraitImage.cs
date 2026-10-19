@@ -1,14 +1,19 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 
-public class CTurnImage : MonoBehaviour
+public class CPortraitImage : MonoBehaviour
 {
     #region Inspector
-    [Header("Turn Image")]
-    [SerializeField] private Image _entityImage;
+    [Header("Turn Portrait Image")]
+    [SerializeField] private Image _entityPortrait;
     [SerializeField] private Image _markerImage;
+
+    [Header("Turnorder Pos")]
+    // 턴오더 배치 위치
+    [SerializeField] private List<Vector2> _turnOrderPos;
 
     [Header("Maker Color")]
     [SerializeField] private Color _heroMakerColor;
@@ -23,9 +28,11 @@ public class CTurnImage : MonoBehaviour
     #region Field
     private RectTransform _rectTr;
     private Coroutine _coroutine;
+    private int _currentTurnorder = 0;
     #endregion
 
     #region Property
+    public int CurrentTurnorder => _currentTurnorder;
     public float MoveTime => _moveTime;
     #endregion
 
@@ -34,11 +41,15 @@ public class CTurnImage : MonoBehaviour
         _rectTr = GetComponent<RectTransform>();
     }
 
-    public void Init(Vector2 vec, CTempEntity.EntityType type, Sprite sprite)
+    public void Initialize(int index, CTempEntity.EntityType type, Sprite sprite)
     {
-        _rectTr.anchoredPosition = vec;
+        index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
-        _entityImage.sprite = sprite;
+        _currentTurnorder = index;
+
+        _rectTr.anchoredPosition = _turnOrderPos[index];
+
+        _entityPortrait.sprite = sprite;
 
         switch (type)
         {
@@ -51,21 +62,32 @@ public class CTurnImage : MonoBehaviour
         }
     }
 
-    // 보간작업 해야겠지?
-    public void Move(Vector2 vec, bool direct)
+    // 보간
+    public void Move(int index)
     {
-        // 즉발이동도 필요할거같아요 [ 엔티티가 여러마리 한방에 죽었을 때? ]
-        if (direct)
-        {
-            _rectTr.anchoredPosition = vec;
-        }
-
         if (_coroutine != null)
         {
             return;
         }
 
-        _coroutine = StartCoroutine(CoLerpMove(vec));
+
+        if (index < _turnOrderPos.Count - 1)
+        {
+            if (_currentTurnorder < index)
+            {
+                _rectTr.anchoredPosition = _turnOrderPos[index];
+            }
+            else
+            {
+                _coroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
+            }
+        }
+        else
+        {
+            _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 1];
+        }
+
+        _currentTurnorder = index;
     }
 
     private IEnumerator CoLerpMove(Vector2 vec)
