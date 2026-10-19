@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_PlagueDoctor_plague_grenade
+  m_EditorClassIdentifier: 
+  _skillName: Plague Grenade
+  _skillIcon: {fileID: 21300000, guid: 9a2b19cd205bd8244909f6b1f1ebe4b7, type: 3}
+  _useableRank: 12
+  _targetableRank: 12
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 3873f6f6a57e38d49984630cab3351b2, type: 2}
+  _target: 3
+  _startState: Base Layer.Skill5Start
+  _endState: Base Layer.Skill5End
+  _presentationNote: Shares the throw motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill5Start
+  _selectionHoldState: Base Layer.Ready_Skill5Start
+  _feedback: {fileID: 11400000, guid: 2f66297d3896ddf41927f723b2065a44, type: 2}

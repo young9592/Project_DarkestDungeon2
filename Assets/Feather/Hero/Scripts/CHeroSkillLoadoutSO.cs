@@ -12,6 +12,30 @@ public class CHeroSkillLoadoutSO : ScriptableObject
         get { return _skills; }
     }
 
+    public static CHeroSkillLoadoutSO CreateRuntime(CHeroDataSO heroData, IReadOnlyList<CSkillDataSO> skills)
+    {
+        if (heroData == null || skills == null)
+        {
+            return null;
+        }
+
+        CHeroSkillLoadoutSO loadout = CreateInstance<CHeroSkillLoadoutSO>();
+        loadout.hideFlags = HideFlags.DontSave;
+        loadout._heroData = heroData;
+        for (int i = 0; i < skills.Count; i++)
+        {
+            loadout._skills.Add(skills[i]);
+        }
+
+        if (loadout.TryValidate(heroData, out _))
+        {
+            return loadout;
+        }
+
+        Destroy(loadout);
+        return null;
+    }
+
     public bool TryValidate(CHeroDataSO heroData, out string message)
     {
         if (heroData == null || _heroData != heroData)
@@ -22,6 +46,11 @@ public class CHeroSkillLoadoutSO : ScriptableObject
         if (_skills == null)
         {
             message = "장착 스킬 목록이 없습니다.";
+            return false;
+        }
+        if (_skills.Count > 5)
+        {
+            message = "스킬은 최대 5개까지 장착할 수 있습니다.";
             return false;
         }
         for (int i = 0; i < _skills.Count; i++)

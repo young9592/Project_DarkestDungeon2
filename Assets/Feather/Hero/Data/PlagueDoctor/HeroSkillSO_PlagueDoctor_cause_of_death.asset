@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_PlagueDoctor_cause_of_death
+  m_EditorClassIdentifier: 
+  _skillName: Cause of Death
+  _skillIcon: {fileID: 21300000, guid: c47030b82c730624c8ad1b18d52e860d, type: 3}
+  _useableRank: 7
+  _targetableRank: 7
+  _cooldown: 2
+  _effectList: []
+  _target: 0
+  _startState: Base Layer.Skill9Start
+  _endState: Base Layer.Skill9End
+  _presentationNote: Shares the knife motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill9Start
+  _selectionHoldState: Base Layer.Ready_Skill9Start
+  _feedback: {fileID: 11400000, guid: b50286b47e9d64d46a0e65e203aa03bb, type: 2}

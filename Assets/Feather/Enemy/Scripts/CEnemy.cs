@@ -15,6 +15,7 @@ public class CEnemy : CEntity
     [SerializeField] private ERank _currentRank = ERank.Rank1;
 
     private bool _isInitialized;
+    private CEntityActionExecution _actionExecution;
     private bool _isRequestingSkill;
 
     public event Action<CEnemy, CEntity, CSkillDataSO> OnSkillActionRequested;
@@ -49,8 +50,16 @@ public class CEnemy : CEntity
         get { return _currentRank; }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        _actionExecution = GetComponent<CEntityActionExecution>();
+        if (_actionExecution == null)
+        {
+            _actionExecution = gameObject.AddComponent<CEntityActionExecution>();
+        }
+
+
         if (_attackAnimation == null)
         {
             _attackAnimation = GetComponent<CEnemyAttackAnimation>();
@@ -73,9 +82,29 @@ public class CEnemy : CEntity
         _isInitialized = true;
     }
 
+    public bool IsPresentationBusy
+    {
+        get { return _attackAnimation != null && _attackAnimation.IsBusy; }
+    }
+
+    public event Action<CEntity> OnHitPresentationStarted;
+    public event Action<CEntity> OnHitPresentationInterrupted;
+
+    private void HandleHitStarted()
+    {
+        OnHitPresentationStarted?.Invoke(this);
+    }
+
+    private void HandleHitInterrupted()
+    {
+        OnHitPresentationInterrupted?.Invoke(this);
+    }
+
     private void OnEnable()
     {
         if (_attackAnimation == null) return;
+        _attackAnimation.OnHitStarted += HandleHitStarted;
+        _attackAnimation.OnHitInterrupted += HandleHitInterrupted;
         _attackAnimation.OnAttackCompleted += HandleAttackCompleted;
         _attackAnimation.OnAttackInterrupted += HandleAttackInterrupted;
     }
@@ -84,6 +113,8 @@ public class CEnemy : CEntity
     {
         base.OnDisable();
         if (_attackAnimation == null) return;
+        _attackAnimation.OnHitStarted -= HandleHitStarted;
+        _attackAnimation.OnHitInterrupted -= HandleHitInterrupted;
         _attackAnimation.OnAttackCompleted -= HandleAttackCompleted;
         _attackAnimation.OnAttackInterrupted -= HandleAttackInterrupted;
     }
@@ -105,7 +136,8 @@ public class CEnemy : CEntity
 
     protected override bool CanCompleteAction()
     {
-        return _attackAnimation != null && !_attackAnimation.IsBusy;
+        return (_actionExecution == null || !_actionExecution.IsRunning)
+            && (_attackAnimation != null && !_attackAnimation.IsBusy);
     }
 
     protected override bool CanExecuteRequestedAction()
@@ -115,6 +147,12 @@ public class CEnemy : CEntity
     }
 
     protected override bool TryStartActionPresentation()
+    {
+        return _actionExecution != null && _actionExecution.TryExecute(ActionSkill,
+            new CEntity[] { ActionTarget }, StartAttackPresentation);
+    }
+
+    private bool StartAttackPresentation()
     {
         return TryPlayAttack(ActionSkill);
     }

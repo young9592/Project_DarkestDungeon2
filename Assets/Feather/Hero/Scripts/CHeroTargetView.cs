@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CHeroTargetView : MonoBehaviour
 {
+    private CEntity _entity;
     private CEnemy _enemy;
     private Renderer[] _renderers;
     private Camera _camera;
@@ -9,6 +10,7 @@ public class CHeroTargetView : MonoBehaviour
     private bool _isHighlighted;
     private bool _isHovered;
 
+    public CEntity Entity { get { return _entity; } }
     public CEnemy Enemy { get { return _enemy; } }
     public bool IsHighlighted { get { return _isHighlighted; } }
 
@@ -17,9 +19,10 @@ public class CHeroTargetView : MonoBehaviour
         _renderers = GetComponentsInChildren<Renderer>();
     }
 
-    public void Configure(CEnemy enemy, Camera camera, Vector3 rankStep)
+    public void Configure(CEntity enemy, Camera camera, Vector3 rankStep)
     {
-        _enemy = enemy;
+        _entity = enemy;
+        _enemy = enemy as CEnemy;
         _camera = camera;
         _rankStep = rankStep;
     }
@@ -42,7 +45,7 @@ public class CHeroTargetView : MonoBehaviour
     public bool TryGetHit(Ray ray, out float distance)
     {
         distance = 0.0f;
-        return _enemy != null && _enemy.isActiveAndEnabled && GetWorldBounds().IntersectRay(ray, out distance);
+        return _entity != null && _entity.isActiveAndEnabled && GetWorldBounds().IntersectRay(ray, out distance);
     }
 
     public void SetHighlight(bool highlighted, bool hovered)
@@ -55,7 +58,7 @@ public class CHeroTargetView : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!_isHighlighted || _camera == null || _enemy == null || !_enemy.isActiveAndEnabled) return;
+        if (!_isHighlighted || _camera == null || _entity == null || !_entity.isActiveAndEnabled) return;
         Bounds bounds = GetWorldBounds();
         Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
         Vector2 max = new Vector2(float.MinValue, float.MinValue);

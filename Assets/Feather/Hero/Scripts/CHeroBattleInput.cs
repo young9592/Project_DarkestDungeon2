@@ -11,6 +11,7 @@ public class CHeroBattleInput : MonoBehaviour
     [SerializeField] private CHeroSkillBar _skillBar;
 
     private readonly List<CHeroTargetView> _targets = new List<CHeroTargetView>();
+    private readonly List<CEntity> _groupTargets = new List<CEntity>();
     private readonly List<RaycastResult> _uiHits = new List<RaycastResult>();
     private PointerEventData _pointerData;
     private EventSystem _eventSystem;
@@ -47,12 +48,40 @@ public class CHeroBattleInput : MonoBehaviour
         ClearHighlights();
     }
 
+    public bool SetHero(CPlayer hero)
+    {
+        if (_hero != null && (_hero.ActionState == EEntityActionState.Requested || _hero.ActionState == EEntityActionState.Executing))
+        {
+            return false;
+        }
+
+        if (_hero != null)
+        {
+            _hero.OnActionRequested -= HandleRequested;
+            _hero.OnActionCompleted -= HandleEnded;
+            _hero.OnActionInterrupted -= HandleEnded;
+            _hero.CancelSkillSelection();
+        }
+
+        ClearHighlights();
+        _targets.Clear();
+        _hero = hero;
+        if (isActiveAndEnabled && _hero != null)
+        {
+            _hero.OnActionRequested += HandleRequested;
+            _hero.OnActionCompleted += HandleEnded;
+            _hero.OnActionInterrupted += HandleEnded;
+        }
+
+        return true;
+    }
+
     public void SetTargets(IReadOnlyList<CEnemy> enemies, Vector3 rankStep)
     {
         ClearHighlights();
         _targets.Clear();
         if (CanChooseSkill) _hero.CancelSkillSelection();
-        if (enemies == null) return;
+        if (enemies == null || _hero == null) return;
         for (int i = 0; i < enemies.Count; i++)
         {
             CEnemy enemy = enemies[i];
@@ -61,6 +90,25 @@ public class CHeroBattleInput : MonoBehaviour
             if (view == null) view = enemy.gameObject.AddComponent<CHeroTargetView>();
             if (_targets.Contains(view)) continue;
             view.Configure(enemy, _camera, rankStep);
+            _targets.Add(view);
+        }
+        CHeroTargetView self = _hero.GetComponent<CHeroTargetView>();
+        if (self == null) self = _hero.gameObject.AddComponent<CHeroTargetView>();
+        self.Configure(_hero, _camera, rankStep);
+        _targets.Add(self);
+    }
+
+    public void AddAllyTargets(IReadOnlyList<CPlayer> allies, Vector3 rankStep)
+    {
+        if (allies == null) return;
+        for (int i = 0; i < allies.Count; i++)
+        {
+            CPlayer ally = allies[i];
+            if (ally == null || ally == _hero) continue;
+            CHeroTargetView view = ally.GetComponent<CHeroTargetView>();
+            if (view == null) view = ally.gameObject.AddComponent<CHeroTargetView>();
+            if (_targets.Contains(view)) continue;
+            view.Configure(ally, _camera, rankStep);
             _targets.Add(view);
         }
     }
@@ -75,8 +123,8 @@ public class CHeroBattleInput : MonoBehaviour
 
     private bool CanTarget(CHeroTargetView view)
     {
-        return CanChooseSkill && view != null && view.Enemy != null && view.Enemy.EntityType == EEntityType.Enemy
-            && _hero.CanRequestSkillAction(view.Enemy, view.Enemy.CurrentRank);
+        return CanChooseSkill && view != null && view.Entity != null
+            && _hero.CanRequestSkillAction(view.Entity, view.Entity.CurrentRank);
     }
 
     private void Update()
@@ -111,7 +159,17 @@ public class CHeroBattleInput : MonoBehaviour
                     nearest = distance;
                 }
                 if (hovered != null && mouse.leftButton.wasPressedThisFrame)
-                    _hero.TryRequestSkillAction(hovered.Enemy, hovered.Enemy.CurrentRank);
+                {
+                    CHeroSkillSO skill = _hero.SelectedSkill as CHeroSkillSO;
+                    if (skill != null && skill.IsGroupTarget)
+                    {
+                        _groupTargets.Clear();
+                        for (int i = 0; i < _targets.Count; i++)
+                            if (CanTarget(_targets[i]) && !_groupTargets.Contains(_targets[i].Entity)) _groupTargets.Add(_targets[i].Entity);
+                        _hero.TryRequestSkillAction(_groupTargets);
+                    }
+                    else _hero.TryRequestSkillAction(hovered.Entity, hovered.Entity.CurrentRank);
+                }
             }
         }
         RefreshHighlights(hovered);

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_poison_dart
+  m_EditorClassIdentifier: 
+  _skillName: Poison Dart
+  _skillIcon: {fileID: 21300000, guid: fd81623e80fa80b4bab5ea758b5733ad, type: 3}
+  _useableRank: 14
+  _targetableRank: 15
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 218aa0ecbd9454943a5316f6b98928df, type: 2}
+  _target: 0
+  _startState: Base Layer.Skill3Start
+  _endState: Base Layer.Skill3End
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill3Start
+  _selectionHoldState: Base Layer.Ready_Skill3Start
+  _feedback: {fileID: 11400000, guid: 1ad418725bf6fe14c835550bc3ec5250, type: 2}

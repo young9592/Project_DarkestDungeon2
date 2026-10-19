@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_PlagueDoctor_indiscriminate_science
+  m_EditorClassIdentifier: 
+  _skillName: Indiscriminate Science
+  _skillIcon: {fileID: 21300000, guid: c970e2a56c5cb5c48af01d5b98aae054, type: 3}
+  _useableRank: 14
+  _targetableRank: 15
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: fdf4276e6ff5a75429a71888bff847fd, type: 2}
+  _target: 4
+  _startState: Base Layer.Skill8Start
+  _endState: Base Layer.Skill8End
+  _presentationNote: Shares the support motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill8Start
+  _selectionHoldState: Base Layer.Ready_Skill8Start
+  _feedback: {fileID: 11400000, guid: 1907f8dfcf44c4640a7e88ee9c7fee52, type: 2}

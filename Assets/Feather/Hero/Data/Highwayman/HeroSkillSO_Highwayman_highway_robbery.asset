@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_Highwayman_highway_robbery
+  m_EditorClassIdentifier: 
+  _skillName: Highway Robbery
+  _skillIcon: {fileID: 21300000, guid: d2aca686604dbee4791be6d08eae28f8, type: 3}
+  _useableRank: 14
+  _targetableRank: 7
+  _cooldown: 1
+  _effectList: []
+  _target: 0
+  _startState: Base Layer.Skill9Start
+  _endState: Base Layer.Skill9End
+  _presentationNote: Uses the aim-pose motion from the supplied model.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.Select_Skill9Start
+  _selectionHoldState: Base Layer.Ready_Skill9Start
+  _feedback: {fileID: 11400000, guid: 58a5c5246eb4bb64cacf4176e6ee6f9f, type: 2}
