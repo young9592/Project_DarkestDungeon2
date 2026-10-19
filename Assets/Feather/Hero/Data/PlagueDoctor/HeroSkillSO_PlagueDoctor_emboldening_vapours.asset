@@ -19,10 +19,11 @@ MonoBehaviour:
   _cooldown: 1
   _effectList: []
   _target: 4
-  _startState: Base Layer.Skill6Start
-  _endState: Base Layer.Skill6End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_emboldening_vapours
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_emboldening_vapours
   _presentationNote: Shares the support motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill6Start
-  _selectionHoldState: Base Layer.Ready_Skill6Start
+  _selectionStartState: Base Layer.SourceSelect_poison
+  _selectionHoldState: Base Layer.SourceReady_poison
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_emboldening_vapours
   _feedback: {fileID: 11400000, guid: c44dab9adf55e6145b9c07ac9dc1db1c, type: 2}

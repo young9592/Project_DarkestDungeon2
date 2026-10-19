@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audio: {fileID: 0}
   _rangedOrigin: {fileID: 5855249883282239631}
+  _projectileOrigin: {fileID: 4182277343978945966}
 --- !u!82 &2137048716228786562
 AudioSource:
   m_ObjectHideFlags: 0
@@ -358,6 +359,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7334968773648311423}
   m_SourcePrefab: {fileID: 100100000, guid: 8b4bdb09aece6cb4790f21552058b324, type: 3}
+--- !u!4 &4182277343978945966 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3550379405989435796, guid: 8b4bdb09aece6cb4790f21552058b324, type: 3}
+  m_PrefabInstance: {fileID: 8408479612163873730}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &5855249883282239631 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -6488863428637414579, guid: 8b4bdb09aece6cb4790f21552058b324, type: 3}

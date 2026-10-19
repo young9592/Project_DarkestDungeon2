@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audio: {fileID: 0}
   _rangedOrigin: {fileID: 0}
+  _projectileOrigin: {fileID: 4525964893303595204}
 --- !u!82 &2223782264390462304
 AudioSource:
   m_ObjectHideFlags: 0
@@ -331,5 +332,10 @@ Animator:
 --- !u!4 &4180406575128026170 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: adc3a4d07509c544083379adf2acdb38, type: 3}
+  m_PrefabInstance: {fileID: 4434199402102127569}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4525964893303595204 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 235882402649742101, guid: adc3a4d07509c544083379adf2acdb38, type: 3}
   m_PrefabInstance: {fileID: 4434199402102127569}
   m_PrefabAsset: {fileID: 0}

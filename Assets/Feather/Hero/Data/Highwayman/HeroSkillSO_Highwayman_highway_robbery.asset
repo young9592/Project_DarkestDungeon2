@@ -19,10 +19,11 @@ MonoBehaviour:
   _cooldown: 1
   _effectList: []
   _target: 0
-  _startState: Base Layer.Skill9Start
-  _endState: Base Layer.Skill9End
+  _startState: Base Layer.OriginalAntic_Highwayman_highway_robbery
+  _endState: Base Layer.OriginalRecover_Highwayman_highway_robbery
   _presentationNote: Uses the aim-pose motion from the supplied model.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill9Start
-  _selectionHoldState: Base Layer.Ready_Skill9Start
+  _selectionStartState: Base Layer.SourceSelect_advance
+  _selectionHoldState: Base Layer.SourceReady_advance
+  _executionStartState: Base Layer.OriginalAction_Highwayman_highway_robbery
   _feedback: {fileID: 11400000, guid: 58a5c5246eb4bb64cacf4176e6ee6f9f, type: 2}

@@ -8,6 +8,8 @@ public class CHeroSkillFeedback : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource _audio;
     [SerializeField] private Renderer _rangedOrigin;
+    [Header("Projectile Origin")]
+    [SerializeField] private Transform _projectileOrigin;
     private CPlayer _hero;
     private CHeroAnimation _animation;
     private Camera _camera;
@@ -118,9 +120,21 @@ public class CHeroSkillFeedback : MonoBehaviour
         int version = _feedbackVersion;
         _shots++;
         Vector3 origin = Center(_hero);
-        if (_feedback.Projectile != null && _rangedOrigin != null)
+        if (_feedback.Projectile != null && _projectileOrigin != null)
         {
-            origin = _rangedOrigin.bounds.center;
+            origin = _projectileOrigin.position;
+        }
+        else if (_feedback.Projectile != null && _rangedOrigin != null)
+        {
+            Bounds bounds = _rangedOrigin.bounds;
+            origin = bounds.center;
+            if (_targets.Count > 0 && _targets[0] != null)
+            {
+                // 무기 중심 대신 대상을 향한 총구 쪽에서 발사
+                Vector3 direction = (Center(_targets[0]) - origin).normalized;
+                Vector3 absolute = new Vector3(Mathf.Abs(direction.x), Mathf.Abs(direction.y), Mathf.Abs(direction.z));
+                origin += direction * Vector3.Dot(bounds.extents, absolute) * 0.8f;
+            }
         }
         else if (_camera != null)
         {

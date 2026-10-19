@@ -19,10 +19,11 @@ MonoBehaviour:
   _cooldown: 0
   _effectList: []
   _target: 1
-  _startState: Base Layer.BuffStart
-  _endState: Base Layer.BuffEnd
+  _startState: Base Layer.OriginalAntic_ManAtArms_Defender
+  _endState: Base Layer.OriginalRecover_ManAtArms_Defender
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_BuffStart
-  _selectionHoldState: Base Layer.Ready_BuffStart
+  _selectionStartState: Base Layer.SourceSelect_maa_buffA
+  _selectionHoldState: Base Layer.SourceReady_maa_buffA
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_Defender
   _feedback: {fileID: 11400000, guid: d3bc85837dacfbb4eafdde5439e8cbab, type: 2}

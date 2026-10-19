@@ -19,10 +19,11 @@ MonoBehaviour:
   _cooldown: 0
   _effectList: []
   _target: 3
-  _startState: Base Layer.Skill1Start
-  _endState: Base Layer.Skill1End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_blinding_gas
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_blinding_gas
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill1Start
-  _selectionHoldState: Base Layer.Ready_Skill1Start
+  _selectionStartState: Base Layer.SourceSelect_poison
+  _selectionHoldState: Base Layer.SourceReady_poison
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_blinding_gas
   _feedback: {fileID: 11400000, guid: e554b015ffa02d34d829eece038d22fd, type: 2}
