@@ -274,8 +274,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c51c7952db84d47a7967173c5f6720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _entityImage: {fileID: 4915383613303770179}
+  _entityPortrait: {fileID: 4915383613303770179}
   _markerImage: {fileID: 6875093607393216545}
+  _turnOrderPos:
+  - {x: 100, y: -30}
+  - {x: -30, y: -30}
+  - {x: -110, y: -30}
+  - {x: -190, y: -30}
+  - {x: -270, y: -30}
+  - {x: -270, y: 100}
   _heroMakerColor: {r: 0.62352943, g: 0.5647059, b: 0.40784314, a: 1}
   _enemyMakerColor: {r: 0.30588236, g: 0.41960785, b: 0.5058824, a: 1}
   _moveTime: 3
