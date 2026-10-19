@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -23,6 +23,10 @@ public class CHeroPreparationPanel : MonoBehaviour
     private readonly List<ERank> _ranks = new List<ERank>();
     private readonly List<List<CSkillDataSO>> _skills = new List<List<CSkillDataSO>>();
     private readonly List<ScriptableObject> _runtimeAssets = new List<ScriptableObject>();
+    [Header("Skill and Model Preview")]
+    [SerializeField] private CHeroSkillDetailView _skillDetails;
+    [SerializeField] private CHeroPreparationModel _modelPreview;
+    private CSkillDataSO _inspectedSkill;
     private int _selectedIndex;
     private readonly List<CEntityHealthView> _hiddenHealthViews = new List<CEntityHealthView>();
     private readonly List<bool> _healthVisibility = new List<bool>();
@@ -129,11 +133,12 @@ public class CHeroPreparationPanel : MonoBehaviour
         _isOpen = true;
         HideHealthViews();
         _selectedIndex = 0;
+        _inspectedSkill = _skills[0].Count > 0 ? _skills[0][0] : null;
         _panelRoot.SetActive(true);
         _panelRoot.transform.SetAsLastSibling();
         if (_detail != null)
         {
-            _detail.text = "Select a skill to equip it. Select it again to remove it.";
+            _detail.text = "Hover to inspect / Click to equip or remove";
         }
 
         Refresh();
@@ -175,9 +180,10 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
 
         _selectedIndex = index;
+        _inspectedSkill = _skills[index].Count > 0 ? _skills[index][0] : null;
         if (_detail != null)
         {
-            _detail.text = "Choose up to 5 skills. Equipped order becomes the skill bar order.";
+            _detail.text = "Hover to inspect / Click to equip or remove";
         }
 
         Refresh();
@@ -257,6 +263,7 @@ public class CHeroPreparationPanel : MonoBehaviour
             return;
         }
 
+        _inspectedSkill = _skills[_selectedIndex][index];
         _skills[_selectedIndex].RemoveAt(index);
         Refresh();
     }
@@ -391,6 +398,12 @@ public class CHeroPreparationPanel : MonoBehaviour
 
     private void Refresh()
     {
+        ShowDetail(_inspectedSkill);
+        if (_modelPreview != null)
+        {
+            _modelPreview.Show(_prefabs[_selectedIndex], _partyTest.Heroes[_selectedIndex].transform.rotation);
+        }
+
         if (_heading != null)
         {
             _heading.text = _prefabs[_selectedIndex].HeroData.Name + " / Rank " + RankNumber(_ranks[_selectedIndex]);
@@ -455,6 +468,13 @@ public class CHeroPreparationPanel : MonoBehaviour
                 bool equipped = i < _skills[_selectedIndex].Count;
                 SetLabel(_slotButtons[i], (i + 1) + ". " + (equipped ? _skills[_selectedIndex][i].SkillName + "  x" : "Empty"));
                 _slotButtons[i].interactable = equipped;
+                Image icon = _slotButtons[i].transform.Find("Icon")?.GetComponent<Image>();
+                if (icon != null)
+                {
+                    icon.sprite = equipped ? _skills[_selectedIndex][i].SkillIcon : null;
+                    icon.enabled = equipped && icon.sprite != null;
+                }
+
             }
         }
 
@@ -480,26 +500,21 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
     }
 
+    public void PreviewSkill(int index, bool equippedSlot)
+    {
+        if (!_isOpen) return;
+        IReadOnlyList<CSkillDataSO> skills = equippedSlot ? _skills[_selectedIndex] : _prefabs[_selectedIndex].HeroData.AvailableSkills;
+        if (skills == null || index < 0 || index >= skills.Count) return;
+        ShowDetail(skills[index]);
+    }
+
     private void ShowDetail(CSkillDataSO skill)
     {
-        if (_detail == null)
+        _inspectedSkill = skill;
+        if (_skillDetails != null)
         {
-            return;
+            _skillDetails.Show(skill, _ranks[_selectedIndex], _skills[_selectedIndex].Contains(skill));
         }
-
-        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
-        _detail.text = skill.SkillName
-            + " | Use: "
-            + RankText(skill.UsableRank)
-            + " | Target: "
-            + RankText(skill.TargetableRank)
-            + (heroSkill != null ? " | "
-            + heroSkill.Target : "")
-            + (heroSkill != null
-            && heroSkill.RequiresCorpse ? "\nRequires an enemy corpse. Not available against living enemies." : "")
-            + (heroSkill != null
-            && !string.IsNullOrEmpty(heroSkill.PresentationNote) ? "\n"
-            + heroSkill.PresentationNote : "");
     }
 
     private void SetLabel(Button button, string text)
