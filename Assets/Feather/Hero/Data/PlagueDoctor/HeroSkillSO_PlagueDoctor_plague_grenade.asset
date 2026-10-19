@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 3873f6f6a57e38d49984630cab3351b2, type: 2}
   _target: 3
-  _startState: Base Layer.Skill5Start
-  _endState: Base Layer.Skill5End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_plague_grenade
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_plague_grenade
   _presentationNote: Shares the throw motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill5Start
-  _selectionHoldState: Base Layer.Ready_Skill5Start
+  _selectionStartState: Base Layer.SourceSelect_explosion
+  _selectionHoldState: Base Layer.SourceReady_explosion
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_plague_grenade
   _feedback: {fileID: 11400000, guid: 2f66297d3896ddf41927f723b2065a44, type: 2}

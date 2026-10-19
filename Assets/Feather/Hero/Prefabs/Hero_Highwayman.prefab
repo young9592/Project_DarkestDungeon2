@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audio: {fileID: 0}
   _rangedOrigin: {fileID: 4293521357919402914}
+  _projectileOrigin: {fileID: 0}
 --- !u!82 &7457615906278644357
 AudioSource:
   m_ObjectHideFlags: 0

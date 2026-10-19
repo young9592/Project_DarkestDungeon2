@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 3dea74326a637a841b0e2f5a5e2ac5f9, type: 2}
   _target: 3
-  _startState: Base Layer.Skill8Start
-  _endState: Base Layer.Skill8End
+  _startState: Base Layer.OriginalAntic_GraveRobber_pirouette
+  _endState: Base Layer.OriginalRecover_GraveRobber_pirouette
   _presentationNote: Shares the Flashing Daggers motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill8Start
-  _selectionHoldState: Base Layer.Ready_Skill8Start
+  _selectionStartState: Base Layer.SourceSelect_flashing_daggers
+  _selectionHoldState: Base Layer.SourceReady_flashing_daggers
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_pirouette
   _feedback: {fileID: 11400000, guid: d23a0dbf09253c346ab2a0ea4704df5c, type: 2}

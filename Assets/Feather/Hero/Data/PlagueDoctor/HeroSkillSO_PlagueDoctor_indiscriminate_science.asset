@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: fdf4276e6ff5a75429a71888bff847fd, type: 2}
   _target: 4
-  _startState: Base Layer.Skill8Start
-  _endState: Base Layer.Skill8End
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_indiscriminate_science
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_indiscriminate_science
   _presentationNote: Shares the support motion.
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_Skill8Start
-  _selectionHoldState: Base Layer.Ready_Skill8Start
+  _selectionStartState: Base Layer.SourceSelect_poison
+  _selectionHoldState: Base Layer.SourceReady_poison
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_indiscriminate_science
   _feedback: {fileID: 11400000, guid: 1907f8dfcf44c4640a7e88ee9c7fee52, type: 2}

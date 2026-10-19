@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
+  m_Name: EffectSO_Ghoul_Skull_Toss
+  m_EditorClassIdentifier: 
+  _name: Ghoul / Skull Toss damage
+  _effectType: 1
+  _damage: 4
+  _duration: 0
+  _baseChance: 100
+  _tokenType: 0
+  _condition: None
+  _strategy: {fileID: 11400000, guid: 84075ad42d515fa47a304aa089004efb, type: 2}

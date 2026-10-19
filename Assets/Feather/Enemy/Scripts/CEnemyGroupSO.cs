@@ -7,6 +7,11 @@ public class CEnemyGroupSO : ScriptableObject
     [Header("Enemy Formation")]
     [Tooltip("Rank는 시작 열이고 적 데이터의 Formation Size만큼 자리를 차지합니다.")]
     [SerializeField] private List<CEnemyGroupEntry> _entries = new List<CEnemyGroupEntry>();
+    [SerializeField] private string _displayName;
+    public string DisplayName
+    {
+        get { return _displayName; }
+    }
 
     public IReadOnlyList<CEnemyGroupEntry> Entries
     {
@@ -44,8 +49,8 @@ public class CEnemyGroupSO : ScriptableObject
                 message = prefix + "씬의 적 대신 프리팹 에셋을 연결해야 합니다.";
                 return false;
             }
-#endif
 
+#endif
             if (entry.EnemyPrefab.EnemyData == null)
             {
                 message = prefix + "프리팹에 Enemy Data가 연결되어 있지 않습니다.";
@@ -79,7 +84,10 @@ public class CEnemyGroupSO : ScriptableObject
 
     private void OnValidate()
     {
-        // 잘못된 항목을 임의로 지우거나 열을 바꾸지 않고 설정 문제만 알려줍니다.
-        if (!TryValidate(out string message)) CPrint.Warn(name + ": " + message);
+        // 잘못된 조합 설정 알림
+        if (!TryValidate(out string message))
+        {
+            CPrint.Warn(name + ": " + message);
+        }
     }
 }

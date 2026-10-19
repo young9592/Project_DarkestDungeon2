@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 52e87ebe1387762419e02578df6bfe95, type: 2}
   _target: 0
-  _startState: Base Layer.AttackAntic
-  _endState: Base Layer.AttackRecover
+  _startState: Base Layer.OriginalAntic_ManAtArms_CourageousAbandon
+  _endState: Base Layer.OriginalRecover_ManAtArms_CourageousAbandon
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_AttackAntic
-  _selectionHoldState: Base Layer.Ready_AttackAntic
+  _selectionStartState: Base Layer.SourceSelect_bash
+  _selectionHoldState: Base Layer.SourceReady_bash
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_CourageousAbandon
   _feedback: {fileID: 11400000, guid: fed0aef3142320b458c2bcbd6e1028e1, type: 2}

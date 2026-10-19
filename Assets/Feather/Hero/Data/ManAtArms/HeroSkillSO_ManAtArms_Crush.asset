@@ -20,10 +20,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: d32777dfa5d01c547a091716f84961ee, type: 2}
   _target: 0
-  _startState: Base Layer.CrushStart
-  _endState: Base Layer.CrushEnd
+  _startState: Base Layer.OriginalAntic_ManAtArms_Crush
+  _endState: Base Layer.OriginalRecover_ManAtArms_Crush
   _presentationNote: 
   _requiresCorpse: 0
-  _selectionStartState: Base Layer.Select_CrushStart
-  _selectionHoldState: Base Layer.Ready_CrushStart
+  _selectionStartState: Base Layer.SourceSelect_crush
+  _selectionHoldState: Base Layer.SourceReady_crush
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_Crush
   _feedback: {fileID: 11400000, guid: 4586fe5c47c671345b8f01fdc3f68264, type: 2}
