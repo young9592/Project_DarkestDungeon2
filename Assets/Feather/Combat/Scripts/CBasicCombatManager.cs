@@ -12,6 +12,13 @@ public class CBasicCombatManager : MonoBehaviour
         Start
     }
 
+    // 추가턴인지 아닌지 체크
+    public enum TurnState
+    {
+        Normal,
+        Extra
+    }
+
     public enum EntityState
     {
         Success,
@@ -21,8 +28,9 @@ public class CBasicCombatManager : MonoBehaviour
     }
 
     #region Inspector
+    [Header("CombatManager State")]
     // 현재 필드에 서있는 엔티티 리스트
-    [SerializeField] private List<CTempEntity> _fieldEntityList;
+    [SerializeField] private List<CTempEntity> _fieldEntitiesList;
     // 현재 라운드 상태
     [SerializeField] private RoundState _state = RoundState.None;
 
@@ -31,8 +39,15 @@ public class CBasicCombatManager : MonoBehaviour
     [SerializeField] private GameObject _turnOrderPrefab;
     [SerializeField] private GameObject _turnOrderRoot;
 
+    [Header("State Text Prefab")]
+    [SerializeField] private GameObject _stateTextPrefab;
+    [SerializeField] private GameObject _stateTextRoot;
+    [SerializeField] private Canvas _canvas;
+
     [Header("Option")]
     [SerializeField] private float _actionDelay = 3.5f;
+    // 전투 진입 시 엔티티들의 위치
+    [SerializeField] private Vector3 _fieldEntitiesPos;
     #endregion
 
     #region Field
@@ -40,6 +55,7 @@ public class CBasicCombatManager : MonoBehaviour
     private Coroutine _coroutine = null;
     private string _message = "";
     private int _round = 0;
+    private TurnState _currentTurnState = TurnState.Normal;
 
     // UI 가지고 있다가 삭제
     private List<GameObject> _turnPortraitList = new List<GameObject>();
@@ -50,7 +66,6 @@ public class CBasicCombatManager : MonoBehaviour
         ChangeState();
         ActiveState();
     }
-
     private void ChangeState()
     {
         if (_state == RoundState.None || _state == RoundState.Start)
@@ -81,7 +96,6 @@ public class CBasicCombatManager : MonoBehaviour
                 break;
         }
     }
-
     private void BuildTurnOrderList()
     {
         // 모션이 끝날때까지 기다리기
@@ -90,15 +104,17 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < _fieldEntityList.Count; i++)
+        _currentTurnState = TurnState.Normal;
+
+        for (int i = 0; i < _fieldEntitiesList.Count; i++)
         {
             // 임의 버프 디버프 걸어보기
-            _fieldEntityList[i].TempInitState();
+            _fieldEntitiesList[i].TempInitState();
 
             // 보스 개체는 행동 횟수를 여러번 가집니다.
-            for (int actions = 0; actions < _fieldEntityList[i].Actions; actions++)
+            for (int actions = 0; actions < _fieldEntitiesList[i].Actions; actions++)
             {
-                _turnList.Add((_fieldEntityList[i], _fieldEntityList[i].Speed + Random.Range(0, 7)));
+                _turnList.Add((_fieldEntitiesList[i], _fieldEntitiesList[i].Speed + Random.Range(0, 7)));
             }
         }
 
@@ -211,11 +227,12 @@ public class CBasicCombatManager : MonoBehaviour
 
         return EntityState.Success;
     }
-
     // 기절 : 현재 라운드의 차례를 넘깁니다.
     private IEnumerator CoStun()
     {
         _message = $"{_turnList[0].entity.name} 기절";
+        ShowUIMessage(_turnList[0].entity.gameObject, "기절");
+
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
         MoveTurnOrder();
@@ -227,6 +244,8 @@ public class CBasicCombatManager : MonoBehaviour
     private IEnumerator CoDaze()
     {
         _message = $"{_turnList[0].entity.name} 현기증";
+        ShowUIMessage(_turnList[0].entity.gameObject, "현기증");
+        
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
@@ -236,14 +255,16 @@ public class CBasicCombatManager : MonoBehaviour
         _turnPortraitList.RemoveAt(0);
         _coroutine = null;
     }
+
     // 행동
-    // TODO : 추가행동은 주로 행동을 하고나서 추가행동이 가능한지 확인하는 느낌입니다. 변경필요
     private IEnumerator CoAction()
     {
-
         _message = $"{_turnList[0].entity.name}의 턴";
 
         bool doAction = false;
+
+        // 턴 시작 시 추가 행동 악세사리 확인
+        CheckAddExtraTurn(CTempEntity.EJewelryType.TurnStart);
 
         // 액션할때까지 기다리기
         while (!doAction)
@@ -252,24 +273,71 @@ public class CBasicCombatManager : MonoBehaviour
             yield return null;
         }
 
-        // TODO : 행동 후 추가행동 확인이 필요. 로직수정 필요
-        // 엔티티 상태에 따른 후처리
-        if (_turnList[0].entity.HaveFreeAction)
+        _message = $"{_turnList[0].entity.name} 행동";
+        ShowUIMessage(_turnList[0].entity.gameObject, "행동");
+
+        yield return new WaitForSeconds(_actionDelay);
+        
+        // 턴 종료 시 추가 행동 악세사리 확인
+        CheckAddExtraTurn(CTempEntity.EJewelryType.TurnEnd);
+        // 턴 종료 전 추가 행동 가능 여부 체크
+        CheckTurnState();
+        // 엔티티 상태 체크 후 처리
+        CheckEntitiesDeath();
+    }
+
+    // 아무래도 아직 악세사리나 특정조건이 없다보니 임시로 만들었습니다.
+    private void CheckAddExtraTurn(CTempEntity.EJewelryType type)
+    {
+        if (_turnList[0].entity.EquipJewelry == type && _currentTurnState == TurnState.Normal)
         {
-            _message = $"{_turnList[0].entity.name} 추가행동";
-            _turnList[0].entity.UseFreeAction();
-            yield return new WaitForSeconds(_actionDelay);
-            _coroutine = null;
+            _turnList[0].entity.HasExtraTurn = true;
+            ShowUIMessage(_turnList[0].entity.gameObject, "추가 행동 획득");
         }
-        else
+    }
+
+    #region 추가 행동 체크
+    /*
+    ▶ 추가 행동 체크
+
+    현재 확인한 방식은 
+
+    스킬을 사용 시 추가 행동 획득 [ 적 : 사서 / 아군 : 나병환자 스킬 ]
+    
+    악세사리 [ 턴 시작 혹은 종료 시 / 죽음의 일격 혹은 피격 시 등등..]
+    */
+    #endregion
+    private void CheckTurnState()
+    {
+        if (_currentTurnState == TurnState.Normal)
         {
-            _message = $"{_turnList[0].entity.name} 행동";
+            if (_turnList[0].entity.HasExtraTurn)
+            {
+                _turnList[0].entity.HasExtraTurn = false;
+                _coroutine = null;
+
+                _currentTurnState = TurnState.Extra;
+            }
+            else
+            {
+                _turnList.RemoveAt(0);
+                MoveTurnOrder();
+                Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
+                _turnPortraitList.RemoveAt(0);
+                _coroutine = null;
+            }
+        }
+        // 추가행동 후 턴에선 
+        else if (_currentTurnState == TurnState.Extra)
+        {
+
             _turnList.RemoveAt(0);
-            yield return new WaitForSeconds(_actionDelay);
             MoveTurnOrder();
             Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
             _turnPortraitList.RemoveAt(0);
             _coroutine = null;
+
+            _currentTurnState = TurnState.Normal;
         }
     }
 
@@ -294,6 +362,15 @@ public class CBasicCombatManager : MonoBehaviour
         }
     }
 
+    private void ShowUIMessage(GameObject target, string text)
+    {
+        GameObject stateTextObj = Instantiate(_stateTextPrefab, _stateTextRoot.transform);
+        CStateText stateText = stateTextObj.GetComponent<CStateText>();
+
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
+
+        stateText.SetText(_canvas, screenPos, text);
+    }
     private void OnGUI()
     {
         GUIStyle gUIStyle = new GUIStyle(GUI.skin.label);

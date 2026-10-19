@@ -40,8 +40,8 @@ public class CPortraitImage : MonoBehaviour
     {
         _rectTr = GetComponent<RectTransform>();
     }
-
-    public void Initialize(int index, CTempEntity.EntityType type, Sprite sprite)
+    // 초상화 초기화
+    public void Initialize(int index, CTempEntity.EEntityType type, Sprite sprite)
     {
         index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
@@ -53,16 +53,16 @@ public class CPortraitImage : MonoBehaviour
 
         switch (type)
         {
-            case CTempEntity.EntityType.Player:
+            case CTempEntity.EEntityType.Player:
                 _markerImage.color = _heroMakerColor;
                 break;
-            case CTempEntity.EntityType.Enemy:
+            case CTempEntity.EEntityType.Enemy:
                 _markerImage.color = _enemyMakerColor;
                 break;
         }
     }
-
-    // 보간
+    
+    // 턴순서 초상화 이동
     public void Move(int index)
     {
         if (_coroutine != null)
@@ -77,6 +77,10 @@ public class CPortraitImage : MonoBehaviour
             {
                 _rectTr.anchoredPosition = _turnOrderPos[index];
             }
+            else if (_currentTurnorder == _turnOrderPos.Count - 1 && _currentTurnorder - index >= 2)
+            {
+                _rectTr.anchoredPosition = _turnOrderPos[index];
+            }
             else
             {
                 _coroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
@@ -87,7 +91,7 @@ public class CPortraitImage : MonoBehaviour
             _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 1];
         }
 
-        _currentTurnorder = index;
+        _currentTurnorder = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
     }
 
     private IEnumerator CoLerpMove(Vector2 vec)
