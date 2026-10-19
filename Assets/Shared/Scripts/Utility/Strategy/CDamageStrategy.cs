@@ -5,7 +5,31 @@ public class CDamageStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
-        // 1. 명중 확인
+        // 1. 명중 / 회피 판정 (토큰 Intercept)
+        // 공격자가 실명 토큰 보유시 50% 빗나가기
+        if (context.Caster.TokenManager.ConsumeToken(EEffectType.Blind))
+        {
+            if (Random.Range(1, 101) <= 50)
+            {
+                context.IsHit = false;
+                CPrint.Log($"[{context.Caster.name}] 의 [실명] 토큰 \n" +
+                    $"공격이 빗나갔습니다.");
+                return;
+            }
+        }
+        
+        // 방어자가 회피+ or 회피 토큰 보유시
+        if (context.Target.TokenManager.ConsumeToken(EEffectType.DodgePlus))
+        {
+            if (Random.Range(1, 101) <= 75)
+            {
+                context.IsHit = false;
+                CPrint.Log($"[{context.Target.name}] 의 [회피+] 토큰 \n" +
+                    $"공격을 회피했습니다.");
+                return;
+            }
+        }
+
         if (!context.IsHit)
         {
             CPrint.Log($"[{effectData.Name}] : 공격이 빗나갔습니다.");
@@ -20,10 +44,16 @@ public class CDamageStrategy : CEffectStrategy
         CPrint.Log($"[{effectData.Name}] : Base 롤링 데미지 = {baseDamage}");
 
         // 3. 크리티컬 판정 연산
+        if (context.Caster.TokenManager.ConsumeToken(EEffectType.Crit))
+        {
+            context.IsCrit = true;
+            CPrint.Log($"[{context.Caster.name}] 의 [치명타] 토큰 소모");
+        }
+
        if (context.IsCrit)
         {
             // 크리티컬 발생시 데미지 (수치 조절 필요)
-            finalDamage *= 1.2f;
+            finalDamage *= 1.5f;
             CPrint.Log($"[{effectData.Name}] : 크리티컬 적용! 데미지가 증가합니다.");
         }
 
@@ -32,21 +62,32 @@ public class CDamageStrategy : CEffectStrategy
        if (context.Caster.TokenManager.ConsumeToken(EEffectType.Strength))
         {
             finalDamage *= 1.5f;
-            CPrint.Log($"[{context.Caster.name}] 의 [힘] 토큰 소모 \n 데미지 50% 증가");
+            CPrint.Log($"[{context.Caster.name}] 의 [힘] 토큰 소모 \n (데미지 50%)");
+        }
+
+        if (context.Caster.TokenManager.ConsumeToken(EEffectType.Weak))
+        {
+            finalDamage *= 0.5f;
+            CPrint.Log($"[{context.Caster.name}] 의 [약화] 토큰 소모 \n (데미지 -50%)");
         }
 
         // 방어 토큰 가지고 있을때
-        if (context.Target.TokenManager.ConsumeToken(EEffectType.Block))
+        if (context.Target.TokenManager.ConsumeToken(EEffectType.BlockPlus))
+        {
+            finalDamage *= 0.25f;
+            CPrint.Log($"[{context.Target.name}] 의 [방어+] 토큰 소모 \n (받는 피해 -75%)");
+        }
+        else if (context.Target.TokenManager.ConsumeToken(EEffectType.Block))
         {
             finalDamage *= 0.5f;
-            CPrint.Log($"[{context.Target.name}] 의 [방어] 토큰 소모 \n 데미지 50% 감소");
+            CPrint.Log($"[{context.Target.name}] 의 [방어] 토큰 소모 \n (받는 피해 -50%)");
         }
 
         // 취약 토큰 가지고 있을때
         if (context.Target.TokenManager.ConsumeToken(EEffectType.Vulnerable))
         {
             finalDamage *= 1.5f;
-            CPrint.Log($"[{context.Target.name}] 의 [취약] 토큰 소모 \n 받는 데미지 50% 증가");
+            CPrint.Log($"[{context.Target.name}] 의 [취약] 토큰 소모 \n (받는 피해 +50%)");
         }
 
 

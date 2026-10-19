@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CEnemyAI : MonoBehaviour
@@ -59,6 +59,12 @@ public class CEnemyAI : MonoBehaviour
             || _enemy.AttackAnimation == null || _enemy.AttackAnimation.IsBusy || _hasRequestedAction
             || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
 
+        if (_enemy.CurrentHp <= 0)
+        {
+            ClearPlan();
+            return false;
+        }
+
         _heroes.Clear();
         if (heroes != null)
         {
@@ -97,7 +103,7 @@ public class CEnemyAI : MonoBehaviour
 
     public bool IsPlanValid()
     {
-        return _enemy != null && _enemy.isActiveAndEnabled && _plannedSkill != null
+        return _enemy != null && _enemy.isActiveAndEnabled && _enemy.CurrentHp > 0 && _plannedSkill != null
             && IsHeroAvailable(_plannedTarget) && _heroes.Contains(_plannedTarget)
             && _enemy.GetSkillCandidates(_plannedTarget.CurrentRank).Contains(_plannedSkill)
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, _plannedSkill, _enemy.CurrentHp) > 0;

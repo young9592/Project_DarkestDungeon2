@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_Firemouth
+  m_EditorClassIdentifier: 
+  _id: enemy_firemouth
+  _name: Firemouth
+  _maxHealth: 20
+  _speed: 4
+  _resistance:
+    Bleed: 0
+    Blight: 0
+    Burn: 0
+    Stun: 0
+    Move: 0
+    Debuff: 0
+  _availableSkills:
+  - {fileID: 11400000, guid: 428e1c5a3a197864da6ce9d60084fcd0, type: 2}
+  - {fileID: 11400000, guid: 17c969bc27c678b4b8f3bc2d2ed87966, type: 2}
+  - {fileID: 11400000, guid: 3997648d85372fb4ea0274b1173757a5, type: 2}
+  _formationSize: 1
+  _deathDoorCount: 0
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: 428e1c5a3a197864da6ce9d60084fcd0, type: 2}
+    _weight: 3
+    _minHpPercent: 0
+    _maxHpPercent: 100
+  - _skill: {fileID: 11400000, guid: 17c969bc27c678b4b8f3bc2d2ed87966, type: 2}
+    _weight: 2
+    _minHpPercent: 0
+    _maxHpPercent: 100
+  - _skill: {fileID: 11400000, guid: 3997648d85372fb4ea0274b1173757a5, type: 2}
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100

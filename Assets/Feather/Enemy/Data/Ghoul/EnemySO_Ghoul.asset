@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_Ghoul
+  m_EditorClassIdentifier: 
+  _id: enemy_ghoul
+  _name: Ghoul
+  _maxHealth: 40
+  _speed: 2
+  _resistance:
+    Bleed: 0
+    Blight: 0
+    Burn: 0
+    Stun: 0
+    Move: 0
+    Debuff: 0
+  _availableSkills:
+  - {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
+  - {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
+  _formationSize: 2
+  _deathDoorCount: 0
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
+    _weight: 3
+    _minHpPercent: 0
+    _maxHpPercent: 100
+  - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
+    _weight: 2
+    _minHpPercent: 0
+    _maxHpPercent: 100
