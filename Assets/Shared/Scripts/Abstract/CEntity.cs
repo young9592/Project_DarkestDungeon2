@@ -39,10 +39,13 @@ public abstract class CEntity : MonoBehaviour
 
     public CTokenManager TokenManager { get; private set ; }
 
+    public bool IsDead { get; protected set; }
+
     protected virtual void Awake()
     {
         // 생성될 때 토큰 주머니 생성
         TokenManager = new CTokenManager();
+        IsDead = false;
     }
 
 
@@ -140,6 +143,9 @@ public abstract class CEntity : MonoBehaviour
     protected virtual void OnActionCancelled() { }
     protected virtual bool CanExecuteRequestedAction() { return _actionSkill != null; }
     protected virtual bool TryStartActionPresentation() { return true; }
+
+    // 스트레스 증감처리
+    public virtual void ModifyStress(int stressAmount) { }
 
     protected virtual void OnDisable()
     {

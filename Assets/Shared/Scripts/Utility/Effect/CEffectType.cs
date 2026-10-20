@@ -14,6 +14,7 @@ public enum EEffectType
     // 즉발형
     Damage,
     Heal,
+    Stress,
 
     // 도트뎀 [ 일단 동일한 매커니즘 같습니다. ]
     Bleed,
