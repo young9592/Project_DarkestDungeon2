@@ -15,7 +15,7 @@ MonoBehaviour:
   _skillName: Battlefield Medicine
   _skillIcon: {fileID: 21300000, guid: 8d5718349f67fe140aed254cc6ad561e, type: 3}
   _useableRank: 12
-  _targetableRank: 15
+  _targetableRank: -1
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 9c7129f8a9270c64eb4068232e0ba430, type: 2}
