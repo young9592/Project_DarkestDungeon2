@@ -3,11 +3,11 @@ using TMPro;
 using UnityEngine;
 
 //챕터 이름 클릭 잠금 상태 관리
-public class CChapterButton : MonoBehaviour
+public class CChapterUIButton : MonoBehaviour
 {
     #region Inspector
-    [SerializeField] private CChapterMenu _chapterMenu;
-    [SerializeField] private CChapterAnimation _chapterAnimation;
+    [SerializeField] private CChapterUIMenu _chapterMenu;
+    [SerializeField] private CChapterUIAnimation _chapterAnimation;
     //챕터 텍스트
     [SerializeField] private TMP_Text _chapterText;
 
@@ -35,7 +35,7 @@ public class CChapterButton : MonoBehaviour
         _signature.SetActive(true);
         _signatureWhite.SetActive(false);
         _chapterAnimation.ChapterMenuExit();
-        //게임 시작 
+        //교차로로 넘어감
     }
 
     //글씨 초기화
