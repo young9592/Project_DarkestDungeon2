@@ -13,11 +13,16 @@ public class CPlayer : CEntity
     [Header("Runtime Status")]
     [SerializeField] private int _currentHp;
     [SerializeField] private int _currentStress;
+    [SerializeField] private bool _isDeathsDoor = false;
+    [SerializeField] private bool _isDead = false;
     // 현재 플레이어가 위치한 열 테스트로 1로 설정함
     [SerializeField] private ERank _currentRank = ERank.Rank1;
     #endregion
 
     #region Field
+    private const int MAX_STRESS = 10;
+    private const int MELTDOWN_RESET_STRESS = 3;
+
     // 전투에 들고 온 장착할 스킬 리스트
     private List<CSkillDataSO> _equippedSkills = new List<CSkillDataSO>();
     // 유저가 클릭해서 실행 대기 중인 스킬
@@ -29,12 +34,18 @@ public class CPlayer : CEntity
     #region Events
     // 스킬 타케팅까지 완료되었을시 BattleCore에 '행동 실행' 요청 이벤트
     public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
+
+    // 배틀 상태 변화 이벤트
+    public event Action<CPlayer, int, int> OnHealthChanged;
+    public event Action<CPlayer, int, int> OnStressChanged;
+    public event Action<CPlayer, bool> OnDeathDoorChanged;
+    public event Action<CPlayer> OnMeltdownTriggered;
+    public event Action<CPlayer> OnPlayerDied;
     #endregion
 
     private bool _isRequesting;
     private CEntityActionExecution _actionExecution;
     private CHeroSkillFeedback _skillFeedback;
-    public event Action<CPlayer, int, int> OnHealthChanged;
     private bool _isGroupRequest;
     private readonly List<CEntity> _actionTargets = new List<CEntity>();
     public IReadOnlyList<CEntity> ActionTargets
@@ -512,28 +523,61 @@ public class CPlayer : CEntity
     }
     #endregion
 
-    #region CEntity Overrides & DOT Logic
+    #region CEntity Overrides, DOT, Stress & Death's Door Logic
     // Effect Core 파이프라인에서 최종 연산된 데미지를 받음
     public override void TakeDamage(int finalDamage)
     {
-        if (!isActiveAndEnabled || _heroData == null || finalDamage == 0)
+        if (!isActiveAndEnabled || _isDead || _heroData == null || finalDamage == 0)
         {
             return;
         }
 
-        int previousHp = _currentHp;
-        long nextHp = (long)_currentHp - finalDamage;
-        _currentHp = (int)Math.Max(0L, Math.Min(_heroData.MaxHealth, nextHp));
-        if (_currentHp != previousHp)
+        if (finalDamage < 0)
         {
-            OnHealthChanged?.Invoke(this, previousHp, _currentHp);
+            int previousHp = _currentHp;
+            long nextHp = (long)_currentHp - finalDamage;
+            _currentHp = (int)Math.Max(0L, Math.Min(_heroData.MaxHealth, nextHp));
+            
+            if (_currentHp != previousHp)
+            {
+                OnHealthChanged?.Invoke(this, previousHp, _currentHp);
+                CPrint.Log($"[{_heroData.DefaultName}] 체력 회복 : +{-finalDamage} (현재 체력: {_currentHp}/{_heroData.MaxHealth})");
+            }
+
+            if (_isDeathsDoor && _currentHp > 0)
+            {
+                ExitDeathDoor();
+            }
+            return;
         }
-        if (finalDamage > 0 && _actionAnimation != null)
+        
+        // 데미지 피격시 애니메이션 재생
+        if (_actionAnimation != null)
         {
             _actionAnimation.TryPlayHit();
         }
 
-        if (finalDamage > 0 && _currentHp == 0)
+        // 죽음의 문턱 상태에서 데미지 입을 경우 즉사 저항 돌리기
+        if (_isDeathsDoor)
+        {
+            RollDeathblow();
+            return;
+        }
+
+        // 일반 체력 차감 처리
+        int prevHp = _currentHp;
+        long calculatedHp = (long)_currentHp - finalDamage;
+        _currentHp = (int)Mathf.Max(0L, Math.Min(_heroData.MaxHealth, calculatedHp));
+
+        if (_currentHp != prevHp)
+        {
+            OnHealthChanged?.Invoke(this, prevHp, _currentHp);
+            CPrint.Log($"[{_heroData.DefaultName}] 피격" +
+                $"데미지: {finalDamage}, 남은 체력: {_currentHp}/{_heroData.MaxHealth}");
+        }
+
+        // 체력이 0일시 죽음의 문턱 진입
+        if (_currentHp == 0)
         {
             EnterDeathsDoor();
         }
@@ -555,8 +599,34 @@ public class CPlayer : CEntity
         }
     }
 
+    // 스트레스 수치 증감
+    public void ModifyStress(int stressAmount)
+    {
+        if (!isActiveAndEnabled || _isDead || _heroData == null || stressAmount == 0)
+        {
+            return;
+        }
+
+        int previousStress = _currentStress;
+        _currentStress = Mathf.Clamp(_currentStress + stressAmount, 0, MAX_STRESS);
+
+        if (_currentStress != previousStress)
+        {
+            OnStressChanged?.Invoke(this, previousStress, _currentStress);
+            CPrint.Log($"[{_heroData.DefaultName}] 스트레스 변화: {previousStress} → {_currentStress}/{MAX_STRESS}");
+        }
+
+        if (_currentStress >= MAX_STRESS)
+        {
+            TriggerMeltdown();
+        }
+    }
+
+
     public void OnTurnStart()
     {
+        if (_isDead) return;
+
         if (_activeStatusEffects.Count > 0)
         {
             int bleedDamage = 0;
@@ -588,6 +658,10 @@ public class CPlayer : CEntity
             {
                 CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
                     $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totlaTickDamage}] 데미지");
+
+                TakeDamage(totlaTickDamage);
+
+                if (_isDead) return;
             }
         }
 
@@ -620,9 +694,89 @@ public class CPlayer : CEntity
 
 	private void EnterDeathsDoor()
 	{
+        if (_isDeathsDoor || _isDead) return;
+
+        _isDeathsDoor = true;
 		CPrint.Log($"[{_heroData.DefaultName}] 죽음의 문턱 진입 \n 다음 피격 시 생존 난수를 굴립니다.");
-		// TODO : 죽음의 문턱 토글 켜기 및 능력치 감소 디버프등 적용
+
+        TokenManager.AddToken(EEffectType.Weak, 1);
+
+        OnDeathDoorChanged?.Invoke(this, true);
 	}
+
+    private void ExitDeathDoor()
+    {
+        if (!_isDeathsDoor) return;
+
+        _isDeathsDoor = false;
+        CPrint.Log($"[{_heroData.DefaultName}] 죽음의 문턱에서 벗어났습니다 (현재 체력 : {_currentHp})");
+
+        OnDeathDoorChanged?.Invoke(this, false);
+    }
+
+    private void RollDeathblow()
+    {
+        // TODO : CResistanceStat에 Deathblow 스탯 을 만들어서 진행시 _heroData.Resistance.Deathblow로 교체해서 진행할것
+        int deathblowResist = 75;
+        int randomRoll = UnityEngine.Random.Range(1, 101);
+
+        CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격 저항 굴림");
+
+        if (randomRoll <= deathblowResist)
+        {
+            CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격을 버텼습니다.");
+        }
+        else
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        if (_isDead) return;
+
+        _isDead = true;
+        _isDeathsDoor = false;
+        _currentHp = 0;
+
+        TokenManager.ClearAllTokens();
+        _activeStatusEffects.Clear();
+        CancelSkillSelection();
+
+        CPrint.Log($"[{_heroData.DefaultName}] 사망.. 전투 불능 상태가 되었습니다.");
+
+        OnPlayerDied?.Invoke(this);
+    }
+
+    private void TriggerMeltdown()
+    {
+        CPrint.Log($"[{_heroData.DefaultName}] 스트레스 10 도달! [붕괴] 발생!");
+
+        // 스트레스 수치 3으로 리셋 및 이벤트
+        int prevStress = _currentStress;
+        _currentStress = MELTDOWN_RESET_STRESS;
+        OnStressChanged?.Invoke(this, prevStress, _currentStress);
+
+        if (_currentHp > 0)
+        {
+            int prevHp = _currentHp;
+            int meltdownDamage = Mathf.Max(1, Mathf.RoundToInt(_heroData.MaxHealth * 0.7f));
+            _currentHp = Mathf.Max(0, _currentHp - meltdownDamage);
+
+            OnHealthChanged?.Invoke(this, prevHp, _currentHp);
+
+            if (_currentHp == 0)
+            {
+                EnterDeathsDoor();
+            }
+        }
+
+        TokenManager.AddToken(EEffectType.Weak, 1);
+        TokenManager.AddToken(EEffectType.Vulnerable, 1);
+
+        OnMeltdownTriggered?.Invoke(this);
+    }
 	#endregion
 
 }
