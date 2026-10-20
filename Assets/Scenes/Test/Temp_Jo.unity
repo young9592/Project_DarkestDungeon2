@@ -241,10 +241,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 0
+  _currentHealth: 10
   _speed: 5
   _portraitImage: {fileID: 21300000, guid: e191677258321ba48979c6d71fc6a66c, type: 3}
   _actions: 1
-  _haveFreeAction: 0
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1 &337185859
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,10 +367,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
+  _currentHealth: 10
   _speed: 2
-  _portraitImage: {fileID: 21300000, guid: 81758b1648193424ca01397d58d352d1, type: 3}
+  _portraitImage: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
   _actions: 1
-  _haveFreeAction: 0
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1 &343295362
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +506,7 @@ RectTransform:
   - {fileID: 949897050}
   - {fileID: 687126337}
   - {fileID: 343295363}
+  - {fileID: 552428675}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -626,10 +633,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
+  _currentHealth: 10
   _speed: 4
-  _portraitImage: {fileID: 21300000, guid: b37ce56c83927fe47b980a27850d9691, type: 3}
-  _actions: 3
-  _haveFreeAction: 0
+  _portraitImage: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
+  _actions: 1
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1 &443519891
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,13 +776,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 935f04bbacdd78146a2f260fbc39a93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fieldEntityList:
+  _fieldEntitiesList:
   - {fileID: 563332968}
-  - {fileID: 429653290}
+  - {fileID: 1180937800}
   _state: 0
   _turnOrderPrefab: {fileID: 5773832701994379882, guid: 57e0047f1eeaa0c4c9c9fb2978c85054, type: 3}
   _turnOrderRoot: {fileID: 343295362}
+  _stateTextPrefab: {fileID: 1353407603784324156, guid: 5f47edd9f2107334999cf0366b8a4f8e, type: 3}
+  _stateTextRoot: {fileID: 552428674}
+  _canvas: {fileID: 384005849}
   _actionDelay: 3.5
+  _fieldEntitiesPos: {x: 0, y: 0, z: 0}
 --- !u!4 &540853369
 Transform:
   m_ObjectHideFlags: 0
@@ -788,6 +802,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &552428674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 552428675}
+  m_Layer: 5
+  m_Name: StateTextRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &552428675
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552428674}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 384005850}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &563332963
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,10 +956,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 0
+  _currentHealth: 10
   _speed: 4
   _portraitImage: {fileID: 21300000, guid: 9d621ddb49a23bb469dd6f143389b6a8, type: 3}
   _actions: 1
-  _haveFreeAction: 0
+  _hasExtraTurn: 0
+  _equipJewelry: 2
+  _testDelay: 3
 --- !u!1 &687126336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,10 +1355,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
+  _currentHealth: 10
   _speed: 3
-  _portraitImage: {fileID: 21300000, guid: 60c2c9d50ec67c942b683d6d7a91ba62, type: 3}
+  _portraitImage: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
   _actions: 1
-  _haveFreeAction: 0
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1 &949897049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1595,10 +1650,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
+  _currentHealth: 10
   _speed: 4
-  _portraitImage: {fileID: 21300000, guid: b7befe9bf3a9fb34cab067cd74504ea2, type: 3}
-  _actions: 1
-  _haveFreeAction: 0
+  _portraitImage: {fileID: 21300000, guid: 766209dfcb3283c40adcaa7162bd57ac, type: 3}
+  _actions: 3
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1 &1195201845
 GameObject:
   m_ObjectHideFlags: 0
@@ -1718,10 +1776,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 0
+  _currentHealth: 10
   _speed: 5
   _portraitImage: {fileID: 21300000, guid: 54c817a61061174409ed52de1b67355d, type: 3}
   _actions: 1
-  _haveFreeAction: 0
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1 &1339275573
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,10 +1902,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 0
+  _currentHealth: 10
   _speed: 2
   _portraitImage: {fileID: 21300000, guid: 62b8201e633af9b48ad61cd1621529c4, type: 3}
   _actions: 1
-  _haveFreeAction: 0
+  _hasExtraTurn: 0
+  _equipJewelry: 0
+  _testDelay: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

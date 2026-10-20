@@ -12,6 +12,13 @@ public class CBasicCombatManager : MonoBehaviour
         Start
     }
 
+    // ì¶”ê°€í„´ì¸ì§€ ì•„ë‹Œì§€ ì²´í¬
+    public enum TurnState
+    {
+        Normal,
+        Extra
+    }
+
     public enum EntityState
     {
         Success,
@@ -21,18 +28,26 @@ public class CBasicCombatManager : MonoBehaviour
     }
 
     #region Inspector
-    // ÇöÀç ÇÊµå¿¡ ¼­ÀÖ´Â ¿£Æ¼Æ¼ ¸®½ºÆ®
-    [SerializeField] private List<CTempEntity> _fieldEntityList;
-    // ÇöÀç ¶ó¿îµå »óÅÂ
+    [Header("CombatManager State")]
+    // í˜„ì¬ í•„ë“œì— ì„œìˆëŠ” ì—”í‹°í‹° ë¦¬ìŠ¤íŠ¸
+    [SerializeField] private List<CTempEntity> _fieldEntitiesList;
+    // í˜„ì¬ ë¼ìš´ë“œ ìƒíƒœ
     [SerializeField] private RoundState _state = RoundState.None;
 
-    // ÅÏ ÃÊ»óÈ­ ÀÌ¹ÌÁö ÇÁ¸®ÆÕ°ú º¸°ü À§Ä¡
+    // í„´ ì´ˆìƒí™” ì´ë¯¸ì§€ í”„ë¦¬íŒ¹ê³¼ ë³´ê´€ ìœ„ì¹˜
     [Header("Turnorder Prefab")]
     [SerializeField] private GameObject _turnOrderPrefab;
     [SerializeField] private GameObject _turnOrderRoot;
 
+    [Header("State Text Prefab")]
+    [SerializeField] private GameObject _stateTextPrefab;
+    [SerializeField] private GameObject _stateTextRoot;
+    [SerializeField] private Canvas _canvas;
+
     [Header("Option")]
     [SerializeField] private float _actionDelay = 3.5f;
+    // ì „íˆ¬ ì§„ì… ì‹œ ì—”í‹°í‹°ë“¤ì˜ ìœ„ì¹˜
+    [SerializeField] private Vector3 _fieldEntitiesPos;
     #endregion
 
     #region Field
@@ -40,8 +55,9 @@ public class CBasicCombatManager : MonoBehaviour
     private Coroutine _coroutine = null;
     private string _message = "";
     private int _round = 0;
+    private TurnState _currentTurnState = TurnState.Normal;
 
-    // UI °¡Áö°í ÀÖ´Ù°¡ »èÁ¦
+    // UI ê°€ì§€ê³  ìˆë‹¤ê°€ ì‚­ì œ
     private List<GameObject> _turnPortraitList = new List<GameObject>();
     #endregion
 
@@ -50,7 +66,6 @@ public class CBasicCombatManager : MonoBehaviour
         ChangeState();
         ActiveState();
     }
-
     private void ChangeState()
     {
         if (_state == RoundState.None || _state == RoundState.Start)
@@ -81,28 +96,29 @@ public class CBasicCombatManager : MonoBehaviour
                 break;
         }
     }
-
     private void BuildTurnOrderList()
     {
-        // ¸ğ¼ÇÀÌ ³¡³¯¶§±îÁö ±â´Ù¸®±â
+        // ëª¨ì…˜ì´ ëë‚ ë•Œê¹Œì§€ ê¸°ë‹¤ë¦¬ê¸°
         if (_coroutine != null)
         {
             return;
         }
 
-        for (int i = 0; i < _fieldEntityList.Count; i++)
-        {
-            // ÀÓÀÇ ¹öÇÁ µğ¹öÇÁ °É¾îº¸±â
-            _fieldEntityList[i].TempInitState();
+        _currentTurnState = TurnState.Normal;
 
-            // º¸½º °³Ã¼´Â Çàµ¿ È½¼ö¸¦ ¿©·¯¹ø °¡Áı´Ï´Ù.
-            for (int actions = 0; actions < _fieldEntityList[i].Actions; actions++)
+        for (int i = 0; i < _fieldEntitiesList.Count; i++)
+        {
+            // ì„ì˜ ë²„í”„ ë””ë²„í”„ ê±¸ì–´ë³´ê¸°
+            _fieldEntitiesList[i].TempInitState();
+
+            // ë³´ìŠ¤ ê°œì²´ëŠ” í–‰ë™ íšŸìˆ˜ë¥¼ ì—¬ëŸ¬ë²ˆ ê°€ì§‘ë‹ˆë‹¤.
+            for (int actions = 0; actions < _fieldEntitiesList[i].Actions; actions++)
             {
-                _turnList.Add((_fieldEntityList[i], _fieldEntityList[i].Speed + Random.Range(0, 7)));
+                _turnList.Add((_fieldEntitiesList[i], _fieldEntitiesList[i].Speed + Random.Range(0, 7)));
             }
         }
 
-        // ¼±ÅÃÁ¤·Ä
+        // ì„ íƒì •ë ¬
         for (int i = 0; i < _turnList.Count - 1; i++)
         {
             (int index, int speed) max = (i, _turnList[i].turnSpeed);
@@ -111,16 +127,16 @@ public class CBasicCombatManager : MonoBehaviour
             {
                 if (max.speed < _turnList[j].turnSpeed)
                 {
-                    // ÃÖ¼Ò³ª ÃÖ´ë¸¦ Ã£¾Æ¼­ Ã¼Å©
+                    // ìµœì†Œë‚˜ ìµœëŒ€ë¥¼ ì°¾ì•„ì„œ ì²´í¬
                     max = (j, _turnList[j].turnSpeed);
                 }
             }
 
-            // ¼ø¼­ º¯°æ
+            // ìˆœì„œ ë³€ê²½
             (_turnList[i], _turnList[max.index]) = (_turnList[max.index], _turnList[i]);
         }
 
-        // ÅÏ ÀÌ¹ÌÁö ¼¼ÆÃ ¹× »ı¼º
+        // í„´ ì´ë¯¸ì§€ ì„¸íŒ… ë° ìƒì„±
         for (int i = 0; i < _turnList.Count; i++)
         {
             GameObject obj = Instantiate(_turnOrderPrefab, _turnOrderRoot.transform);
@@ -128,7 +144,7 @@ public class CBasicCombatManager : MonoBehaviour
             CPortraitImage portraitImage = obj.GetComponent<CPortraitImage>();
 
 
-            // 4 3 2 1 ÃÊ»óÈ­ ¹èÄ¡ ¹× ÀÌµ¿
+            // 4 3 2 1 ì´ˆìƒí™” ë°°ì¹˜ ë° ì´ë™
             if (i < 4)
             {
                 portraitImage.Initialize(4, _turnList[i].entity.Type, _turnList[i].entity.PortraitImage);
@@ -148,7 +164,7 @@ public class CBasicCombatManager : MonoBehaviour
             CPrint.Log($"index[{i}] :  [{_turnList[i].entity.name} / {_turnList[i].turnSpeed}]");
         }
 
-        // ¶ó¿îµå ¿Ã¸®±â
+        // ë¼ìš´ë“œ ì˜¬ë¦¬ê¸°
         _round++;
     }
 
@@ -164,17 +180,17 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        // Çàµ¿ÇÏ±âÀü »óÅÂ Ã¼Å©
+        // í–‰ë™í•˜ê¸°ì „ ìƒíƒœ ì²´í¬
         EntityState entityState = CheckState();
 
-        // »óÅÂ¿¡ ¸Â´Â Çàµ¿ ½ÇÇà
+        // ìƒíƒœì— ë§ëŠ” í–‰ë™ ì‹¤í–‰
         switch (entityState)
         {
             case EntityState.Success:
                 _coroutine = StartCoroutine(CoAction());
                 break;
             case EntityState.Dead:
-                // TODO : Á×À½ »óÅÂ ÄÚ·çÆ¾ ¸¸µé¾î¾ßÇÕ´Ï´Ù.
+                // TODO : ì£½ìŒ ìƒíƒœ ì½”ë£¨í‹´ ë§Œë“¤ì–´ì•¼í•©ë‹ˆë‹¤.
                 break;
             case EntityState.Stun:
                 _coroutine = StartCoroutine(CoStun());
@@ -187,8 +203,8 @@ public class CBasicCombatManager : MonoBehaviour
 
     private EntityState CheckState()
     {
-        // TODO : DOT µ¥¹ÌÁö µé¾î¿À´Â°Å Ã¼Å© ÈÄ Á×À½ »óÅÂ·Î º¯°æ
-        // ¸Ç ¿ì¼±¼øÀ§ÀÎ ÀÌÀ¯´Â DOT µ¥¹ÌÁö·Î Á×¾úÀ» ½Ã ´Ù¸¥ Ã³¸®´Â ÇÊ¿ä¾ø±â ¶§¹®ÀÔ´Ï´Ù.
+        // TODO : DOT ë°ë¯¸ì§€ ë“¤ì–´ì˜¤ëŠ”ê±° ì²´í¬ í›„ ì£½ìŒ ìƒíƒœë¡œ ë³€ê²½
+        // ë§¨ ìš°ì„ ìˆœìœ„ì¸ ì´ìœ ëŠ” DOT ë°ë¯¸ì§€ë¡œ ì£½ì—ˆì„ ì‹œ ë‹¤ë¥¸ ì²˜ë¦¬ëŠ” í•„ìš”ì—†ê¸° ë•Œë¬¸ì…ë‹ˆë‹¤.
 
         if (false)
         {
@@ -211,11 +227,12 @@ public class CBasicCombatManager : MonoBehaviour
 
         return EntityState.Success;
     }
-
-    // ±âÀı : ÇöÀç ¶ó¿îµåÀÇ Â÷·Ê¸¦ ³Ñ±é´Ï´Ù.
+    // ê¸°ì ˆ : í˜„ì¬ ë¼ìš´ë“œì˜ ì°¨ë¡€ë¥¼ ë„˜ê¹ë‹ˆë‹¤.
     private IEnumerator CoStun()
     {
-        _message = $"{_turnList[0].entity.name} ±âÀı";
+        _message = $"{_turnList[0].entity.name} ê¸°ì ˆ";
+        ShowUIMessage(_turnList[0].entity.gameObject, "ê¸°ì ˆ");
+
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
         MoveTurnOrder();
@@ -223,10 +240,12 @@ public class CBasicCombatManager : MonoBehaviour
         _turnPortraitList.RemoveAt(0);
         _coroutine = null;
     }
-    // Çö±âÁõ : ÀÚ½ÅÀÇ Â÷·Ê¸¦ ¸Ç µÚ·Î º¸³À´Ï´Ù. 2ÁßÃ¸½Ã ±âÀı·Î º¯°æµË´Ï´Ù.
+    // í˜„ê¸°ì¦ : ìì‹ ì˜ ì°¨ë¡€ë¥¼ ë§¨ ë’¤ë¡œ ë³´ëƒ…ë‹ˆë‹¤. 2ì¤‘ì²©ì‹œ ê¸°ì ˆë¡œ ë³€ê²½ë©ë‹ˆë‹¤.
     private IEnumerator CoDaze()
     {
-        _message = $"{_turnList[0].entity.name} Çö±âÁõ";
+        _message = $"{_turnList[0].entity.name} í˜„ê¸°ì¦";
+        ShowUIMessage(_turnList[0].entity.gameObject, "í˜„ê¸°ì¦");
+        
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
@@ -236,44 +255,93 @@ public class CBasicCombatManager : MonoBehaviour
         _turnPortraitList.RemoveAt(0);
         _coroutine = null;
     }
-    // Çàµ¿
-    // TODO : Ãß°¡Çàµ¿Àº ÁÖ·Î Çàµ¿À» ÇÏ°í³ª¼­ Ãß°¡Çàµ¿ÀÌ °¡´ÉÇÑÁö È®ÀÎÇÏ´Â ´À³¦ÀÔ´Ï´Ù. º¯°æÇÊ¿ä
+
+    // í–‰ë™
     private IEnumerator CoAction()
     {
-
-        _message = $"{_turnList[0].entity.name}ÀÇ ÅÏ";
+        _message = $"{_turnList[0].entity.name}ì˜ í„´";
 
         bool doAction = false;
 
-        // ¾×¼ÇÇÒ¶§±îÁö ±â´Ù¸®±â
+        // í„´ ì‹œì‘ ì‹œ ì¶”ê°€ í–‰ë™ ì•…ì„¸ì‚¬ë¦¬ í™•ì¸
+        CheckAddExtraTurn(CTempEntity.EJewelryType.TurnStart);
+
+        // ì•¡ì…˜í• ë•Œê¹Œì§€ ê¸°ë‹¤ë¦¬ê¸°
         while (!doAction)
         {
             doAction = _turnList[0].entity.Action();
             yield return null;
         }
 
-        // TODO : Çàµ¿ ÈÄ Ãß°¡Çàµ¿ È®ÀÎÀÌ ÇÊ¿ä. ·ÎÁ÷¼öÁ¤ ÇÊ¿ä
-        // ¿£Æ¼Æ¼ »óÅÂ¿¡ µû¸¥ ÈÄÃ³¸®
-        if (_turnList[0].entity.HaveFreeAction)
+        _message = $"{_turnList[0].entity.name} í–‰ë™";
+        ShowUIMessage(_turnList[0].entity.gameObject, "í–‰ë™");
+
+        yield return new WaitForSeconds(_actionDelay);
+        
+        // í„´ ì¢…ë£Œ ì‹œ ì¶”ê°€ í–‰ë™ ì•…ì„¸ì‚¬ë¦¬ í™•ì¸
+        CheckAddExtraTurn(CTempEntity.EJewelryType.TurnEnd);
+        // í„´ ì¢…ë£Œ ì „ ì¶”ê°€ í–‰ë™ ê°€ëŠ¥ ì—¬ë¶€ ì²´í¬
+        CheckTurnState();
+        // ì—”í‹°í‹° ìƒíƒœ ì²´í¬ í›„ ì²˜ë¦¬
+        CheckEntitiesDeath();
+    }
+
+    // ì•„ë¬´ë˜ë„ ì•„ì§ ì•…ì„¸ì‚¬ë¦¬ë‚˜ íŠ¹ì •ì¡°ê±´ì´ ì—†ë‹¤ë³´ë‹ˆ ì„ì‹œë¡œ ë§Œë“¤ì—ˆìŠµë‹ˆë‹¤.
+    private void CheckAddExtraTurn(CTempEntity.EJewelryType type)
+    {
+        if (_turnList[0].entity.EquipJewelry == type && _currentTurnState == TurnState.Normal)
         {
-            _message = $"{_turnList[0].entity.name} Ãß°¡Çàµ¿";
-            _turnList[0].entity.UseFreeAction();
-            yield return new WaitForSeconds(_actionDelay);
-            _coroutine = null;
+            _turnList[0].entity.HasExtraTurn = true;
+            ShowUIMessage(_turnList[0].entity.gameObject, "ì¶”ê°€ í–‰ë™ íšë“");
         }
-        else
+    }
+
+    #region ì¶”ê°€ í–‰ë™ ì²´í¬
+    /*
+    â–¶ ì¶”ê°€ í–‰ë™ ì²´í¬
+
+    í˜„ì¬ í™•ì¸í•œ ë°©ì‹ì€ 
+
+    ìŠ¤í‚¬ì„ ì‚¬ìš© ì‹œ ì¶”ê°€ í–‰ë™ íšë“ [ ì  : ì‚¬ì„œ / ì•„êµ° : ë‚˜ë³‘í™˜ì ìŠ¤í‚¬ ]
+    
+    ì•…ì„¸ì‚¬ë¦¬ [ í„´ ì‹œì‘ í˜¹ì€ ì¢…ë£Œ ì‹œ / ì£½ìŒì˜ ì¼ê²© í˜¹ì€ í”¼ê²© ì‹œ ë“±ë“±..]
+    */
+    #endregion
+    private void CheckTurnState()
+    {
+        if (_currentTurnState == TurnState.Normal)
         {
-            _message = $"{_turnList[0].entity.name} Çàµ¿";
+            if (_turnList[0].entity.HasExtraTurn)
+            {
+                _turnList[0].entity.HasExtraTurn = false;
+                _coroutine = null;
+
+                _currentTurnState = TurnState.Extra;
+            }
+            else
+            {
+                _turnList.RemoveAt(0);
+                MoveTurnOrder();
+                Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
+                _turnPortraitList.RemoveAt(0);
+                _coroutine = null;
+            }
+        }
+        // ì¶”ê°€í–‰ë™ í›„ í„´ì—ì„  
+        else if (_currentTurnState == TurnState.Extra)
+        {
+
             _turnList.RemoveAt(0);
-            yield return new WaitForSeconds(_actionDelay);
             MoveTurnOrder();
             Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
             _turnPortraitList.RemoveAt(0);
             _coroutine = null;
+
+            _currentTurnState = TurnState.Normal;
         }
     }
 
-    // TODO : ¿£Æ¼Æ¼µé³¢¸® »óÈ£ÀÛ¿ëÇÏ°í Á×Àº ¿£Æ¼Æ¼µéÀ» Á¦°ÅÇØ¾ßÇÕ´Ï´Ù.
+    // TODO : ì—”í‹°í‹°ë“¤ë¼ë¦¬ ìƒí˜¸ì‘ìš©í•˜ê³  ì£½ì€ ì—”í‹°í‹°ë“¤ì„ ì œê±°í•´ì•¼í•©ë‹ˆë‹¤.
     private void CheckEntitiesDeath()
     {
 
@@ -294,6 +362,15 @@ public class CBasicCombatManager : MonoBehaviour
         }
     }
 
+    private void ShowUIMessage(GameObject target, string text)
+    {
+        GameObject stateTextObj = Instantiate(_stateTextPrefab, _stateTextRoot.transform);
+        CStateText stateText = stateTextObj.GetComponent<CStateText>();
+
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
+
+        stateText.SetText(_canvas, screenPos, text);
+    }
     private void OnGUI()
     {
         GUIStyle gUIStyle = new GUIStyle(GUI.skin.label);
@@ -302,7 +379,7 @@ public class CBasicCombatManager : MonoBehaviour
         gUIStyle.fontStyle = FontStyle.Bold;
 
 
-        GUI.Label(new Rect(Screen.width - 700, 20, 300, 120), $"¶ó¿îµå : {_round}", gUIStyle);
+        GUI.Label(new Rect(Screen.width - 700, 20, 300, 120), $"ë¼ìš´ë“œ : {_round}", gUIStyle);
 
         if (_message != "")
         {

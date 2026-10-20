@@ -1,68 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CTempEntity : MonoBehaviour
 {
-    public enum EntityType
+    public enum EEntityType
     {
         Player,
         Enemy
     }
 
+    // ì¶”ê°€í–‰ë™ ì•…ì„¸ì‚¬ë¦¬ ì°©ìš©ì—¬ë¶€
+    public enum EJewelryType
+    {
+        None,
+        TurnStart,
+        TurnEnd,
+    }
 
     #region Inspector
     [Header("Entity Inspector")]
-    [SerializeField] private EntityType _type;
+    [SerializeField] private EEntityType _type;
+    [SerializeField] private int _currentHealth = 10;
     [SerializeField] private int _speed;
     [SerializeField] private Sprite _portraitImage;
     [SerializeField] private CTokenManager _tokenManager;
+    // í–‰ë™ê¶Œ : 1íšŒ ê¸°ë³¸ / 2íšŒ ~ 3íšŒ ë³´ìŠ¤
+    [SerializeField] private int _actions = 1;
+
+    [Header("ExtraTurn")]
+    [SerializeField] private bool _hasExtraTurn = false;
+    // ì„ì‹œ ì•…ì„¸ì‚¬ë¦¬ ì—¬ë¶€ ì²´í¬
+    [SerializeField] private EJewelryType _equipJewelry = EJewelryType.None;
 
     [Header("Test State")]
-    // Çàµ¿±Ç : 1È¸ ±âº» / 2È¸ ~ 3È¸ º¸½º
-    [SerializeField] private int _actions = 1;
-    [SerializeField] private bool _haveFreeAction = false;
-    #endregion
-
-    #region Field
-    private MeshRenderer _mesh;
-    private Color _initColor;
-    private static Color _actionColor = Color.red;
-    private static Color _dazeColor = Color.cyan;
-    private static Color _stunColor = Color.yellow;
-    private static Color _freeActionColor = Color.magenta;
+    // ì„ì‹œ ë„íŠ¸ë°ë¯¸ì§€ ìƒíƒœì´ìƒ ì²˜ë¦¬
+    [SerializeField] private List<CEffect> _dotEffectList;
+    [SerializeField] private float _testDelay = 3.0f;
     #endregion
 
     #region Property
     public CTokenManager TokenManager => _tokenManager;
     public Sprite PortraitImage => _portraitImage;
-    public EntityType Type => _type;
+    public EEntityType Type => _type;
     public int Speed => _speed;
     public float Actions => _actions;
-    public bool HaveFreeAction => _haveFreeAction;
+    public bool HasExtraTurn { get; set; }
+    public EJewelryType EquipJewelry => _equipJewelry;
     #endregion
 
     private void Awake()
     {
-        _mesh = GetComponent<MeshRenderer>();
-        _initColor = _mesh.material.color;
-
         _tokenManager = new CTokenManager();
     }
 
-    // Çàµ¿
+    // í–‰ë™
     public bool Action()
     {
-        if (_type == EntityType.Player)
+        if (_type == EEntityType.Player)
         {
-            if (!Input.GetKeyDown(KeyCode.A))
+            if (!Keyboard.current.aKey.isPressed)
             {
                 return false;
             }
         }
 
-        // Çàµ¿ ¼º°ø
-        _mesh.material.color = _actionColor;
+        // í–‰ë™ ì„±ê³µ
         StartCoroutine(CoActionColorDelay(3f));
         return true;
     }
@@ -70,11 +75,10 @@ public class CTempEntity : MonoBehaviour
     private IEnumerator CoActionColorDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        _mesh.material.color = _initColor;
     }
 
 
-    // ÀÓ½Ã »óÅÂÀÌ»ó °É±â
+    // ì„ì‹œ ìƒíƒœì´ìƒ ê±¸ê¸°
     public void TempInitState()
     {
         int rand = Random.Range(0, 100);
@@ -83,25 +87,30 @@ public class CTempEntity : MonoBehaviour
         {
             // none
         }
-        else if(rand < 80)
+        // TODO : DOT ê³µê²© ì¶”ê°€
+        else if (rand < 90)
         {
             _tokenManager.AddToken(EEffectType.Daze);
-            _mesh.material.color = _dazeColor;
         }
-        else if(rand < 100)
+        else if (rand < 100)
         {
             _tokenManager.AddToken(EEffectType.Stun);
-            _mesh.material.color = _stunColor;
         }
     }
 
-    // FreeActionÀº ³»°¡ Çàµ¿À» ÇÑ ÈÄ¿¡ ÇÁ¸®¾×¼ÇÀÌ ÀÖ´ÂÁö Ã¼Å©ÇÏ´Â°Å °°½À´Ï´Ù.
-    public void TempAddFreeAction()
+    // ì•„ì§ ì‹¤ì œ ìƒì†ê³¼ ì—°ê²°í•  ìˆœ ì—†ìœ¼ë‹ˆ ì„ì‹œë¡œ..
+    public void Attack(int damage)
     {
-        _haveFreeAction = true;
+
     }
-    public void UseFreeAction()
+
+    public void TakeDamage(int finalDamage)
     {
-        _haveFreeAction = false;
+
+    }
+
+    public void ApplyStatusEffect(CEffect statusEffect)
+    {
+
     }
 }
