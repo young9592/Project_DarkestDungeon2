@@ -12,7 +12,7 @@ public class CPortraitImage : MonoBehaviour
     [SerializeField] private Image _markerImage;
 
     [Header("Turnorder Pos")]
-    // ÅÏ¿À´õ ¹èÄ¡ À§Ä¡
+    // í„´ì˜¤ë” ë°°ì¹˜ ìœ„ì¹˜
     [SerializeField] private List<Vector2> _turnOrderPos;
 
     [Header("Maker Color")]
@@ -20,8 +20,8 @@ public class CPortraitImage : MonoBehaviour
     [SerializeField] private Color _enemyMakerColor;
 
     [Header("Option")]
-    // ¿À¸¥ÂÊ »ó´Ü ÅÏÀÌ ÁøÇàµÉ ¶§ ¿òÁ÷ÀÌ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ÁøÇà ½Ã°£
-    // 2ÃÊ¸é 2ÃÊ°£ Lerp°¡ ½ÇÇàµÇ¸é¼­ ¸ñÇ¥À§Ä¡·Î ÀÌµ¿ÇÕ´Ï´Ù.
+    // ì˜¤ë¥¸ìª½ ìƒë‹¨ í„´ì´ ì§„í–‰ë  ë•Œ ì›€ì§ì´ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì§„í–‰ ì‹œê°„
+    // 2ì´ˆë©´ 2ì´ˆê°„ Lerpê°€ ì‹¤í–‰ë˜ë©´ì„œ ëª©í‘œìœ„ì¹˜ë¡œ ì´ë™í•©ë‹ˆë‹¤.
     [SerializeField] private float _moveTime = 2f;
     #endregion
 
@@ -40,8 +40,8 @@ public class CPortraitImage : MonoBehaviour
     {
         _rectTr = GetComponent<RectTransform>();
     }
-
-    public void Initialize(int index, CTempEntity.EntityType type, Sprite sprite)
+    // ì´ˆìƒí™” ì´ˆê¸°í™”
+    public void Initialize(int index, CTempEntity.EEntityType type, Sprite sprite)
     {
         index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
@@ -53,16 +53,16 @@ public class CPortraitImage : MonoBehaviour
 
         switch (type)
         {
-            case CTempEntity.EntityType.Player:
+            case CTempEntity.EEntityType.Player:
                 _markerImage.color = _heroMakerColor;
                 break;
-            case CTempEntity.EntityType.Enemy:
+            case CTempEntity.EEntityType.Enemy:
                 _markerImage.color = _enemyMakerColor;
                 break;
         }
     }
-
-    // º¸°£
+    
+    // í„´ìˆœì„œ ì´ˆìƒí™” ì´ë™
     public void Move(int index)
     {
         if (_coroutine != null)
@@ -77,6 +77,10 @@ public class CPortraitImage : MonoBehaviour
             {
                 _rectTr.anchoredPosition = _turnOrderPos[index];
             }
+            else if (_currentTurnorder == _turnOrderPos.Count - 1 && _currentTurnorder - index >= 2)
+            {
+                _rectTr.anchoredPosition = _turnOrderPos[index];
+            }
             else
             {
                 _coroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
@@ -87,7 +91,7 @@ public class CPortraitImage : MonoBehaviour
             _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 1];
         }
 
-        _currentTurnorder = index;
+        _currentTurnorder = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
     }
 
     private IEnumerator CoLerpMove(Vector2 vec)

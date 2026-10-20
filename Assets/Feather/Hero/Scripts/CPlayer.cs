@@ -15,7 +15,7 @@ public class CPlayer : CEntity
     [SerializeField] private int _currentStress;
     [SerializeField] private bool _isDeathsDoor = false;
     [SerializeField] private bool _isDead = false;
-    // ÇöÀç ÇÃ·¹ÀÌ¾î°¡ À§Ä¡ÇÑ ¿­ Å×½ºÆ®·Î 1·Î ¼³Á¤ÇÔ
+    // í˜„ì¬ í”Œë ˆì´ì–´ê°€ ìœ„ì¹˜í•œ ì—´ í…ŒìŠ¤íŠ¸ë¡œ 1ë¡œ ì„¤ì •í•¨
     [SerializeField] private ERank _currentRank = ERank.Rank1;
     #endregion
 
@@ -23,19 +23,19 @@ public class CPlayer : CEntity
     private const int MAX_STRESS = 10;
     private const int MELTDOWN_RESET_STRESS = 3;
 
-    // ÀüÅõ¿¡ µé°í ¿Â ÀåÂøÇÒ ½ºÅ³ ¸®½ºÆ®
+    // ì „íˆ¬ì— ë“¤ê³  ì˜¨ ì¥ì°©í•  ìŠ¤í‚¬ ë¦¬ìŠ¤íŠ¸
     private List<CSkillDataSO> _equippedSkills = new List<CSkillDataSO>();
-    // À¯Àú°¡ Å¬¸¯ÇØ¼­ ½ÇÇà ´ë±â ÁßÀÎ ½ºÅ³
+    // ìœ ì €ê°€ í´ë¦­í•´ì„œ ì‹¤í–‰ ëŒ€ê¸° ì¤‘ì¸ ìŠ¤í‚¬
     private CSkillDataSO _selectedSkill;
-    // ¸ö¿¡ °É¸®´Â »óÅÂÀÌ»ó ÀÎ½ºÅÏ½º ¸ñ·Ï
+    // ëª¸ì— ê±¸ë¦¬ëŠ” ìƒíƒœì´ìƒ ì¸ìŠ¤í„´ìŠ¤ ëª©ë¡
     private List<CEffect> _activeStatusEffects = new List<CEffect>();
     #endregion
 
     #region Events
-    // ½ºÅ³ Å¸ÄÉÆÃ±îÁö ¿Ï·áµÇ¾úÀ»½Ã BattleCore¿¡ 'Çàµ¿ ½ÇÇà' ¿äÃ» ÀÌº¥Æ®
+    // ìŠ¤í‚¬ íƒ€ì¼€íŒ…ê¹Œì§€ ì™„ë£Œë˜ì—ˆì„ì‹œ BattleCoreì— 'í–‰ë™ ì‹¤í–‰' ìš”ì²­ ì´ë²¤íŠ¸
     public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
 
-    // ¹èÆ² »óÅÂ º¯È­ ÀÌº¥Æ®
+    // ë°°í‹€ ìƒíƒœ ë³€í™” ì´ë²¤íŠ¸
     public event Action<CPlayer, int, int> OnHealthChanged;
     public event Action<CPlayer, int, int> OnStressChanged;
     public event Action<CPlayer, bool> OnDeathDoorChanged;
@@ -120,7 +120,7 @@ public class CPlayer : CEntity
         return true;
     }
 
-    // È¿°ú Ã³¸®¿Í º°µµ·Î ¿¬Ãâ »óÅÂ Á¦°ø
+    // íš¨ê³¼ ì²˜ë¦¬ì™€ ë³„ë„ë¡œ ì—°ì¶œ ìƒíƒœ ì œê³µ
     public bool IsPresentationBusy
     {
         get { return (_actionAnimation != null && _actionAnimation.IsBusy)
@@ -288,13 +288,13 @@ public class CPlayer : CEntity
         {
             if (!TryEquipLoadout(_skillLoadout))
             {
-                CPrint.Warn(name + ": ÀåÂø ½ºÅ³ ¸ñ·ÏÀ» È®ÀÎÇØ¾ß ÇÕ´Ï´Ù.");
+                CPrint.Warn(name + ": ì¥ì°© ìŠ¤í‚¬ ëª©ë¡ì„ í™•ì¸í•´ì•¼ í•©ë‹ˆë‹¤.");
                 enabled = false;
             }
             return;
         }
 
-        // ÀåÂø ¸ñ·ÏÀÌ ¾ø´Â ±âÁ¸ Ä³¸¯ÅÍ´Â º¸À¯ ½ºÅ³À» »ç¿ëÇÕ´Ï´Ù.
+        // ì¥ì°© ëª©ë¡ì´ ì—†ëŠ” ê¸°ì¡´ ìºë¦­í„°ëŠ” ë³´ìœ  ìŠ¤í‚¬ì„ ì‚¬ìš©í•©ë‹ˆë‹¤.
         if (_heroData.AvailableSkills == null) return;
         for (int i = 0; i < _heroData.AvailableSkills.Count; i++)
         {
@@ -305,7 +305,7 @@ public class CPlayer : CEntity
 
     #region Skill Usage
     /// </summary>
-    /// 1. À¯Àú°¡ ½ºÅ³ ¹öÆ° Å¬¸¯½Ã È£Ãâ
+    /// 1. ìœ ì €ê°€ ìŠ¤í‚¬ ë²„íŠ¼ í´ë¦­ì‹œ í˜¸ì¶œ
     /// </summary>
     public void SelectSkill(int skillIndex)
     {
@@ -484,7 +484,7 @@ public class CPlayer : CEntity
             return false;
         }
 
-        // ¿äÃ» Àü¿¡ ½ºÅ³ ¼±ÅÃ ÇØÁ¦ÇØ¼­ Áßº¹ ¿äÃ» ¸·±â
+        // ìš”ì²­ ì „ì— ìŠ¤í‚¬ ì„ íƒ í•´ì œí•´ì„œ ì¤‘ë³µ ìš”ì²­ ë§‰ê¸°
         CHeroSkillSO heroSkill = _selectedSkill as CHeroSkillSO;
         if (heroSkill != null && heroSkill.IsGroupTarget && !_isGroupRequest)
         {
@@ -519,12 +519,12 @@ public class CPlayer : CEntity
     {
         if (_actionAnimation != null) _actionAnimation.CancelSelection();
         _selectedSkill = null;
-        CPrint.Log("½ºÅ³ ¼±ÅÃÀ» Ãë¼ÒÇÏ¿´½À´Ï´Ù.");
+        CPrint.Log("ìŠ¤í‚¬ ì„ íƒì„ ì·¨ì†Œí•˜ì˜€ìŠµë‹ˆë‹¤.");
     }
     #endregion
 
     #region CEntity Overrides, DOT, Stress & Death's Door Logic
-    // Effect Core ÆÄÀÌÇÁ¶óÀÎ¿¡¼­ ÃÖÁ¾ ¿¬»êµÈ µ¥¹ÌÁö¸¦ ¹ŞÀ½
+    // Effect Core íŒŒì´í”„ë¼ì¸ì—ì„œ ìµœì¢… ì—°ì‚°ëœ ë°ë¯¸ì§€ë¥¼ ë°›ìŒ
     public override void TakeDamage(int finalDamage)
     {
         if (!isActiveAndEnabled || _isDead || _heroData == null || finalDamage == 0)
@@ -541,7 +541,7 @@ public class CPlayer : CEntity
             if (_currentHp != previousHp)
             {
                 OnHealthChanged?.Invoke(this, previousHp, _currentHp);
-                CPrint.Log($"[{_heroData.DefaultName}] Ã¼·Â È¸º¹ : +{-finalDamage} (ÇöÀç Ã¼·Â: {_currentHp}/{_heroData.MaxHealth})");
+                CPrint.Log($"[{_heroData.DefaultName}] ì²´ë ¥ íšŒë³µ : +{-finalDamage} (í˜„ì¬ ì²´ë ¥: {_currentHp}/{_heroData.MaxHealth})");
             }
 
             if (_isDeathsDoor && _currentHp > 0)
@@ -551,20 +551,20 @@ public class CPlayer : CEntity
             return;
         }
         
-        // µ¥¹ÌÁö ÇÇ°İ½Ã ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+        // ë°ë¯¸ì§€ í”¼ê²©ì‹œ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
         if (_actionAnimation != null)
         {
             _actionAnimation.TryPlayHit();
         }
 
-        // Á×À½ÀÇ ¹®ÅÎ »óÅÂ¿¡¼­ µ¥¹ÌÁö ÀÔÀ» °æ¿ì Áï»ç ÀúÇ× µ¹¸®±â
+        // ì£½ìŒì˜ ë¬¸í„± ìƒíƒœì—ì„œ ë°ë¯¸ì§€ ì…ì„ ê²½ìš° ì¦‰ì‚¬ ì €í•­ ëŒë¦¬ê¸°
         if (_isDeathsDoor)
         {
             RollDeathblow();
             return;
         }
 
-        // ÀÏ¹İ Ã¼·Â Â÷°¨ Ã³¸®
+        // ì¼ë°˜ ì²´ë ¥ ì°¨ê° ì²˜ë¦¬
         int prevHp = _currentHp;
         long calculatedHp = (long)_currentHp - finalDamage;
         _currentHp = (int)Mathf.Max(0L, Math.Min(_heroData.MaxHealth, calculatedHp));
@@ -572,18 +572,18 @@ public class CPlayer : CEntity
         if (_currentHp != prevHp)
         {
             OnHealthChanged?.Invoke(this, prevHp, _currentHp);
-            CPrint.Log($"[{_heroData.DefaultName}] ÇÇ°İ" +
-                $"µ¥¹ÌÁö: {finalDamage}, ³²Àº Ã¼·Â: {_currentHp}/{_heroData.MaxHealth}");
+            CPrint.Log($"[{_heroData.DefaultName}] í”¼ê²©" +
+                $"ë°ë¯¸ì§€: {finalDamage}, ë‚¨ì€ ì²´ë ¥: {_currentHp}/{_heroData.MaxHealth}");
         }
 
-        // Ã¼·ÂÀÌ 0ÀÏ½Ã Á×À½ÀÇ ¹®ÅÎ ÁøÀÔ
+        // ì²´ë ¥ì´ 0ì¼ì‹œ ì£½ìŒì˜ ë¬¸í„± ì§„ì…
         if (_currentHp == 0)
         {
             EnterDeathsDoor();
         }
     }
 
-    // »óÅÂÀÌ»ó ºÎ¿© (ÇÕÄ¡Áö ¾Ê°í ¸®½ºÆ®¿¡ °³º° ÀÎ½ºÅÏ½º·Î Ãß°¡)
+    // ìƒíƒœì´ìƒ ë¶€ì—¬ (í•©ì¹˜ì§€ ì•Šê³  ë¦¬ìŠ¤íŠ¸ì— ê°œë³„ ì¸ìŠ¤í„´ìŠ¤ë¡œ ì¶”ê°€)
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
         if (statusEffect == null || statusEffect.Data == null) return;
@@ -593,13 +593,13 @@ public class CPlayer : CEntity
             _activeStatusEffects.Add(statusEffect);
 
             int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
-            CPrint.Log($"[{_heroData.DefaultName}] ¿¡°Ô [{statusEffect.EffectType}] Ãß°¡ ºÎ¿© \n" +
-                $"(ÀÌ¹ø È¿°ú : {statusEffect.Damage} µ¥¹ÌÁö / {statusEffect.RemainingTurns}ÅÏ |" +
-                $"´ÙÀ½ ÅÏ ¿¹Á¤ {statusEffect.EffectType} ÇÕ»ê µ¥¹ÌÁö : {currentTotalDamage})");
+            CPrint.Log($"[{_heroData.DefaultName}] ì—ê²Œ [{statusEffect.EffectType}] ì¶”ê°€ ë¶€ì—¬ \n" +
+                $"(ì´ë²ˆ íš¨ê³¼ : {statusEffect.Damage} ë°ë¯¸ì§€ / {statusEffect.RemainingTurns}í„´ |" +
+                $"ë‹¤ìŒ í„´ ì˜ˆì • {statusEffect.EffectType} í•©ì‚° ë°ë¯¸ì§€ : {currentTotalDamage})");
         }
     }
 
-    // ½ºÆ®·¹½º ¼öÄ¡ Áõ°¨
+    // ìŠ¤íŠ¸ë ˆìŠ¤ ìˆ˜ì¹˜ ì¦ê°
     public void ModifyStress(int stressAmount)
     {
         if (!isActiveAndEnabled || _isDead || _heroData == null || stressAmount == 0)
@@ -613,7 +613,7 @@ public class CPlayer : CEntity
         if (_currentStress != previousStress)
         {
             OnStressChanged?.Invoke(this, previousStress, _currentStress);
-            CPrint.Log($"[{_heroData.DefaultName}] ½ºÆ®·¹½º º¯È­: {previousStress} ¡æ {_currentStress}/{MAX_STRESS}");
+            CPrint.Log($"[{_heroData.DefaultName}] ìŠ¤íŠ¸ë ˆìŠ¤ ë³€í™”: {previousStress} â†’ {_currentStress}/{MAX_STRESS}");
         }
 
         if (_currentStress >= MAX_STRESS)
@@ -648,7 +648,7 @@ public class CPlayer : CEntity
 
                 if (effect.RemainingTurns <= 0)
                 {
-                    CPrint.Log($"[{_heroData.DefaultName} ÀÇ [{effect.Data.Name}({effect.Damage}µ¥¹ÌÁö)] Áö¼Ó ½Ã°£ÀÌ ³¡³µ½À´Ï´Ù.");
+                    CPrint.Log($"[{_heroData.DefaultName} ì˜ [{effect.Data.Name}({effect.Damage}ë°ë¯¸ì§€)] ì§€ì† ì‹œê°„ì´ ëë‚¬ìŠµë‹ˆë‹¤.");
                     _activeStatusEffects.RemoveAt(i);
                 }
             }
@@ -656,8 +656,8 @@ public class CPlayer : CEntity
             int totlaTickDamage = bleedDamage + blightDamage + burnDamage;
             if (totlaTickDamage > 0)
             {
-                CPrint.Log($"[{_heroData.DefaultName}] ÅÏ ½ÃÀÛ µµÆ® ÇÇÇØ Á¤»ê ¡æ " +
-                    $"ÃâÇ÷({bleedDamage}) + Áßµ¶({blightDamage}) + È­»ó({burnDamage}) = ÃÑ [{totlaTickDamage}] µ¥¹ÌÁö");
+                CPrint.Log($"[{_heroData.DefaultName}] í„´ ì‹œì‘ ë„íŠ¸ í”¼í•´ ì •ì‚° â†’ " +
+                    $"ì¶œí˜ˆ({bleedDamage}) + ì¤‘ë…({blightDamage}) + í™”ìƒ({burnDamage}) = ì´ [{totlaTickDamage}] ë°ë¯¸ì§€");
 
                 TakeDamage(totlaTickDamage);
 
@@ -667,13 +667,13 @@ public class CPlayer : CEntity
 
         if (TokenManager.ConsumeToken(EEffectType.Stun))
         {
-            CPrint.Log($"[{_heroData.DefaultName}] ±âÀı ÅäÅ« ¼Ò¸ğ\n" +
-                $"ÀÌ¹ø ÅÏ Çàµ¿À» ¸øÇÕ´Ï´Ù.");
-            // TODO : Battle CoreºÎºĞ¿¡ ÅÏ Á¾·á ¾Ë¸®±â
+            CPrint.Log($"[{_heroData.DefaultName}] ê¸°ì ˆ í† í° ì†Œëª¨\n" +
+                $"ì´ë²ˆ í„´ í–‰ë™ì„ ëª»í•©ë‹ˆë‹¤.");
+            // TODO : Battle Coreë¶€ë¶„ì— í„´ ì¢…ë£Œ ì•Œë¦¬ê¸°
         }
     }
 
-    // Æ¯Á¤ µµÆ® ÇÕ»ê µ¥¹ÌÁö ¹İÈ¯
+    // íŠ¹ì • ë„íŠ¸ í•©ì‚° ë°ë¯¸ì§€ ë°˜í™˜
     public int GetTotalDotDamageByType(EEffectType dotType)
     {
         int total = 0;
@@ -697,7 +697,7 @@ public class CPlayer : CEntity
         if (_isDeathsDoor || _isDead) return;
 
         _isDeathsDoor = true;
-		CPrint.Log($"[{_heroData.DefaultName}] Á×À½ÀÇ ¹®ÅÎ ÁøÀÔ \n ´ÙÀ½ ÇÇ°İ ½Ã »ıÁ¸ ³­¼ö¸¦ ±¼¸³´Ï´Ù.");
+		CPrint.Log($"[{_heroData.DefaultName}] ì£½ìŒì˜ ë¬¸í„± ì§„ì… \n ë‹¤ìŒ í”¼ê²© ì‹œ ìƒì¡´ ë‚œìˆ˜ë¥¼ êµ´ë¦½ë‹ˆë‹¤.");
 
         TokenManager.AddToken(EEffectType.Weak, 1);
 
@@ -709,22 +709,22 @@ public class CPlayer : CEntity
         if (!_isDeathsDoor) return;
 
         _isDeathsDoor = false;
-        CPrint.Log($"[{_heroData.DefaultName}] Á×À½ÀÇ ¹®ÅÎ¿¡¼­ ¹ş¾î³µ½À´Ï´Ù (ÇöÀç Ã¼·Â : {_currentHp})");
+        CPrint.Log($"[{_heroData.DefaultName}] ì£½ìŒì˜ ë¬¸í„±ì—ì„œ ë²—ì–´ë‚¬ìŠµë‹ˆë‹¤ (í˜„ì¬ ì²´ë ¥ : {_currentHp})");
 
         OnDeathDoorChanged?.Invoke(this, false);
     }
 
     private void RollDeathblow()
     {
-        // TODO : CResistanceStat¿¡ Deathblow ½ºÅÈ À» ¸¸µé¾î¼­ ÁøÇà½Ã _heroData.Resistance.Deathblow·Î ±³Ã¼ÇØ¼­ ÁøÇàÇÒ°Í
+        // TODO : CResistanceStatì— Deathblow ìŠ¤íƒ¯ ì„ ë§Œë“¤ì–´ì„œ ì§„í–‰ì‹œ _heroData.Resistance.Deathblowë¡œ êµì²´í•´ì„œ ì§„í–‰í• ê²ƒ
         int deathblowResist = 75;
         int randomRoll = UnityEngine.Random.Range(1, 101);
 
-        CPrint.Log($"[{_heroData.DefaultName}] Á×À½ÀÇ ÀÏ°İ ÀúÇ× ±¼¸²");
+        CPrint.Log($"[{_heroData.DefaultName}] ì£½ìŒì˜ ì¼ê²© ì €í•­ êµ´ë¦¼");
 
         if (randomRoll <= deathblowResist)
         {
-            CPrint.Log($"[{_heroData.DefaultName}] Á×À½ÀÇ ÀÏ°İÀ» ¹öÅá½À´Ï´Ù.");
+            CPrint.Log($"[{_heroData.DefaultName}] ì£½ìŒì˜ ì¼ê²©ì„ ë²„í…¼ìŠµë‹ˆë‹¤.");
         }
         else
         {
@@ -744,16 +744,16 @@ public class CPlayer : CEntity
         _activeStatusEffects.Clear();
         CancelSkillSelection();
 
-        CPrint.Log($"[{_heroData.DefaultName}] »ç¸Á.. ÀüÅõ ºÒ´É »óÅÂ°¡ µÇ¾ú½À´Ï´Ù.");
+        CPrint.Log($"[{_heroData.DefaultName}] ì‚¬ë§.. ì „íˆ¬ ë¶ˆëŠ¥ ìƒíƒœê°€ ë˜ì—ˆìŠµë‹ˆë‹¤.");
 
         OnPlayerDied?.Invoke(this);
     }
 
     private void TriggerMeltdown()
     {
-        CPrint.Log($"[{_heroData.DefaultName}] ½ºÆ®·¹½º 10 µµ´Ş! [ºØ±«] ¹ß»ı!");
+        CPrint.Log($"[{_heroData.DefaultName}] ìŠ¤íŠ¸ë ˆìŠ¤ 10 ë„ë‹¬! [ë¶•ê´´] ë°œìƒ!");
 
-        // ½ºÆ®·¹½º ¼öÄ¡ 3À¸·Î ¸®¼Â ¹× ÀÌº¥Æ®
+        // ìŠ¤íŠ¸ë ˆìŠ¤ ìˆ˜ì¹˜ 3ìœ¼ë¡œ ë¦¬ì…‹ ë° ì´ë²¤íŠ¸
         int prevStress = _currentStress;
         _currentStress = MELTDOWN_RESET_STRESS;
         OnStressChanged?.Invoke(this, prevStress, _currentStress);

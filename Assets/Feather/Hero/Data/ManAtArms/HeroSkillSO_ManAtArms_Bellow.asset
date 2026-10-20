@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Bellow
   _skillIcon: {fileID: 21300000, guid: 5b62467fbd9f51249aab73bbb18a5259, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
   _cooldown: 1
   _effectList: []
   _target: 3

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Bolster
   _skillIcon: {fileID: 21300000, guid: 9978a708a3d987848b50803757cfb005, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
   _cooldown: 1
   _effectList: []
   _target: 1
