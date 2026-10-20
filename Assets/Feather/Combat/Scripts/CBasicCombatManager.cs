@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CBasicCombatManager : MonoBehaviour
 {
@@ -48,24 +50,139 @@ public class CBasicCombatManager : MonoBehaviour
     [SerializeField] private float _actionDelay = 3.5f;
     // 전투 진입 시 엔티티들의 위치
     [SerializeField] private Vector3 _fieldEntitiesPos;
+
+    [Header("Debug Menu")]
+    [SerializeField] private TMP_Dropdown _selectEntity;
+    [SerializeField] private TMP_Dropdown _selectEffect;
+    [SerializeField] private Button _shootEffectBtn;
+
+    [Header("Test Effect")]
+    [SerializeField] private CEffectSO _bleed;
+    [SerializeField] private CEffectSO _blight;
+    [SerializeField] private CEffectSO _burn;
+    [SerializeField] private CEffectSO _daze;
+    [SerializeField] private CEffectSO _stun;
     #endregion
 
     #region Field
+    // 순서 리스트
     private List<(CTempEntity entity, int turnSpeed)> _turnList = new List<(CTempEntity, int)>();
+    // 초상화 리스트
+    private List<GameObject> _turnPortraitList = new List<GameObject>();
     private Coroutine _coroutine = null;
     private string _message = "";
     private int _round = 0;
     private TurnState _currentTurnState = TurnState.Normal;
 
-    // UI 가지고 있다가 삭제
-    private List<GameObject> _turnPortraitList = new List<GameObject>();
+    // Debug Menu Value
+    private List<string> _effectOptions = new List<string> { "데미지" ,"출혈", "중독", "화상", "현기증", "기절", "추가행동"};
+    private int _selecedtEffectIdx = 0;
+    private int _selectedEntitytIdx = 0;
+
     #endregion
+
+    private void Start()
+    {
+        _selectEffect.ClearOptions();
+
+
+        _selectEffect.AddOptions(_effectOptions);
+        _selectEffect.RefreshShownValue();
+
+        SetDropboxEntityList();
+    }
+
+    private void OnEnable()
+    {
+        _selectEffect.onValueChanged.AddListener(index => OnDropboxChanged("Effect", index));
+        _selectEntity.onValueChanged.AddListener(index => OnDropboxChanged("Entity", index));
+        _shootEffectBtn.onClick.AddListener(OnEffectApplyButton);
+
+    }
+
+    private void OnDisable()
+    {
+        _selectEffect.onValueChanged.RemoveAllListeners();
+        _selectEntity.onValueChanged.RemoveAllListeners();
+        _shootEffectBtn.onClick.RemoveAllListeners();
+    }
 
     private void Update()
     {
         ChangeState();
         ActiveState();
     }
+
+    #region Debug Option Method
+    // 디버그용 엔티티 드롭박스
+    private void SetDropboxEntityList()
+    {
+        _selectEntity.ClearOptions();
+
+        List<string> options = new List<string>();
+
+        for (int i = 0; i < _fieldEntitiesList.Count; i++)
+        {
+            options.Add(_fieldEntitiesList[i].name);
+        }
+        _selectEntity.AddOptions(options);
+
+        _selectEntity.value = 0;
+        _selectEntity.RefreshShownValue();
+    }
+
+    // 디버그용 드랍박스 변경 리스너
+    private void OnDropboxChanged(string dropboxName, int index)
+    {
+        if (dropboxName == "Effect")
+        {
+            _selecedtEffectIdx = index;
+        }
+        else if (dropboxName == "Entity")
+        {
+            _selectedEntitytIdx = index;
+        }
+    }
+
+    // 디버그용 버튼 리스너
+    private void OnEffectApplyButton()
+    {
+        switch (_effectOptions[_selecedtEffectIdx])
+        {
+            case "데미지":
+                _fieldEntitiesList[_selectedEntitytIdx].TakeDamage(10);
+                break;
+            case "출혈":
+                CEffect effect = new CEffect(_bleed);
+                _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                break;
+            case "중독":
+                effect = new CEffect(_blight);
+                _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                break;
+            case "화상":
+                effect = new CEffect(_burn);
+                _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                break;
+            case "현기증":
+                effect = new CEffect(_daze);
+                _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                break;
+            case "기절":
+                effect = new CEffect(_stun);
+                _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                break;
+            case "추가행동":
+                _fieldEntitiesList[_selectedEntitytIdx].HasExtraTurn = true;
+                break;
+        }
+
+        ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, _effectOptions[_selecedtEffectIdx]+" 부여");
+        Debug.Log("속성 부여 완료");
+    }
+    #endregion
+
+
     private void ChangeState()
     {
         if (_state == RoundState.None || _state == RoundState.Start)
@@ -108,13 +225,10 @@ public class CBasicCombatManager : MonoBehaviour
 
         for (int i = 0; i < _fieldEntitiesList.Count; i++)
         {
-            // 임의 버프 디버프 걸어보기
-            _fieldEntitiesList[i].TempInitState();
-
             // 보스 개체는 행동 횟수를 여러번 가집니다.
             for (int actions = 0; actions < _fieldEntitiesList[i].Actions; actions++)
             {
-                _turnList.Add((_fieldEntitiesList[i], _fieldEntitiesList[i].Speed + Random.Range(0, 7)));
+                _turnList.Add((_fieldEntitiesList[i], _fieldEntitiesList[i].TempEntitySpeed + UnityEngine.Random.Range(0, 7)));
             }
         }
 
@@ -147,12 +261,12 @@ public class CBasicCombatManager : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(4, _turnList[i].entity.Type, _turnList[i].entity.PortraitImage);
+                portraitImage.Initialize(4, _turnList[i].entity.Type, _turnList[i].entity.TurnImage);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(i + 1, _turnList[i].entity.Type, _turnList[i].entity.PortraitImage);
+                portraitImage.Initialize(i + 1, _turnList[i].entity.Type, _turnList[i].entity.TurnImage);
             }
 
             _turnPortraitList.Add(obj);
@@ -180,6 +294,8 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
+        _message = $"{_turnList[0].entity.name}의 턴";
+
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
 
@@ -190,7 +306,7 @@ public class CBasicCombatManager : MonoBehaviour
                 _coroutine = StartCoroutine(CoAction());
                 break;
             case EntityState.Dead:
-                // TODO : 죽음 상태 코루틴 만들어야합니다.
+                _coroutine = StartCoroutine(CoDeath());
                 break;
             case EntityState.Stun:
                 _coroutine = StartCoroutine(CoStun());
@@ -201,12 +317,28 @@ public class CBasicCombatManager : MonoBehaviour
         }
     }
 
+    // 엔티티 상태 체크
     private EntityState CheckState()
     {
-        // TODO : DOT 데미지 들어오는거 체크 후 죽음 상태로 변경
-        // 맨 우선순위인 이유는 DOT 데미지로 죽었을 시 다른 처리는 필요없기 때문입니다.
+        if(_currentTurnState == TurnState.Normal)
+        {
+            // DOT 데미지 들어오는거 체크 후 죽음 상태로 변경
+            (int bleed, int blight, int burn) total = _turnList[0].entity.ConsumeDOTEffect();
 
-        if (false)
+            int[] dotList = new int[] { total.bleed, total.blight, total.burn };
+
+            for (int i = 0, delay = 1; i < dotList.Length; i++)
+            {
+                if (dotList[i] == 0)
+                {
+                    continue;
+                }
+                ShowUIMessage(_turnList[0].entity.gameObject, dotList[i].ToString(), delay * 0.3f);
+                delay++;
+            }
+        }
+
+        if (_turnList[0].entity.IsDead)
         {
             return EntityState.Dead;
         }
@@ -227,6 +359,74 @@ public class CBasicCombatManager : MonoBehaviour
 
         return EntityState.Success;
     }
+    // 턴이 왔는데 도트뎀으로 죽은 적들 처리
+    private IEnumerator CoDeath()
+    {
+        yield return new WaitForSeconds(_actionDelay);
+        for (int i = 0; i < _fieldEntitiesList.Count; i++)
+        {
+            if (_turnList[0].entity.Equals(_fieldEntitiesList[i]))
+            {
+                RemoveDeathEntity(i);
+                break;
+            }
+        }
+        // 디버그용 드롭박스
+        SetDropboxEntityList();
+
+        MoveTurnOrder();
+        _coroutine = null;
+    }
+
+    // 엔티티끼리 상호작용하고 죽은 엔티티를 확인
+    private void CheckEntitiesDeath()
+    {
+        int prev = _fieldEntitiesList.Count;
+
+        for (int i = _fieldEntitiesList.Count - 1; i >= 0; i--)
+        {
+            if (_fieldEntitiesList[i].IsDead)
+            {
+                RemoveDeathEntity(i);
+            }
+        }
+
+
+        if (_fieldEntitiesList.Count != prev)
+        {
+            // 디버그용 드롭박스
+            SetDropboxEntityList();
+            // 턴순서 초상화 정렬
+            MoveTurnOrder();
+        }
+    }
+    // 죽은 적 리스트에서 제거
+    private void RemoveDeathEntity(int index)
+    {
+        CTempEntity cTempEntity = _fieldEntitiesList[index];
+
+        // 턴 리스트와 턴순서 초상화 리스트에서 죽은 개체 확인
+        for (int i = _turnList.Count - 1; i >= 0; i--)
+        {
+            // 동일한 엔티티인지 확인
+            if (cTempEntity.Equals(_turnList[i].entity))
+            {
+
+                Destroy(_turnPortraitList[i], 0.1f);
+                _turnPortraitList.RemoveAt(i);
+                _turnList.RemoveAt(i);
+                // 초상화 리스트가 변경되었다는걸 알리기
+                CPortraitImage.IsDirty = true;
+            }
+        }
+
+        // TODO : 죽으면 원래 시체가 남기 때문에 임시 구현
+        // 시체를 해당 위치에 생성하는 방식도 필요.
+        ShowUIMessage(_fieldEntitiesList[index].gameObject, "사망");
+        Destroy(_fieldEntitiesList[index].gameObject, 0.1f);
+        _fieldEntitiesList.RemoveAt(index);
+    }
+
     // 기절 : 현재 라운드의 차례를 넘깁니다.
     private IEnumerator CoStun()
     {
@@ -245,7 +445,7 @@ public class CBasicCombatManager : MonoBehaviour
     {
         _message = $"{_turnList[0].entity.name} 현기증";
         ShowUIMessage(_turnList[0].entity.gameObject, "현기증");
-        
+
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
@@ -259,14 +459,12 @@ public class CBasicCombatManager : MonoBehaviour
     // 행동
     private IEnumerator CoAction()
     {
-        _message = $"{_turnList[0].entity.name}의 턴";
-
         bool doAction = false;
 
         // 턴 시작 시 추가 행동 악세사리 확인
         CheckAddExtraTurn(CTempEntity.EJewelryType.TurnStart);
 
-        // 액션할때까지 기다리기
+        // 액션할때까지 기다리기  
         while (!doAction)
         {
             doAction = _turnList[0].entity.Action();
@@ -277,7 +475,7 @@ public class CBasicCombatManager : MonoBehaviour
         ShowUIMessage(_turnList[0].entity.gameObject, "행동");
 
         yield return new WaitForSeconds(_actionDelay);
-        
+
         // 턴 종료 시 추가 행동 악세사리 확인
         CheckAddExtraTurn(CTempEntity.EJewelryType.TurnEnd);
         // 턴 종료 전 추가 행동 가능 여부 체크
@@ -289,6 +487,11 @@ public class CBasicCombatManager : MonoBehaviour
     // 아무래도 아직 악세사리나 특정조건이 없다보니 임시로 만들었습니다.
     private void CheckAddExtraTurn(CTempEntity.EJewelryType type)
     {
+        if (_turnList[0].entity.IsDead)
+        {
+            return;
+        }
+
         if (_turnList[0].entity.EquipJewelry == type && _currentTurnState == TurnState.Normal)
         {
             _turnList[0].entity.HasExtraTurn = true;
@@ -309,6 +512,11 @@ public class CBasicCombatManager : MonoBehaviour
     #endregion
     private void CheckTurnState()
     {
+        if (_turnList[0].entity.IsDead)
+        {
+            return;
+        }
+
         if (_currentTurnState == TurnState.Normal)
         {
             if (_turnList[0].entity.HasExtraTurn)
@@ -330,7 +538,6 @@ public class CBasicCombatManager : MonoBehaviour
         // 추가행동 후 턴에선 
         else if (_currentTurnState == TurnState.Extra)
         {
-
             _turnList.RemoveAt(0);
             MoveTurnOrder();
             Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
@@ -339,12 +546,6 @@ public class CBasicCombatManager : MonoBehaviour
 
             _currentTurnState = TurnState.Normal;
         }
-    }
-
-    // TODO : 엔티티들끼리 상호작용하고 죽은 엔티티들을 제거해야합니다.
-    private void CheckEntitiesDeath()
-    {
-
     }
 
     private void MoveTurnOrder()
@@ -360,17 +561,32 @@ public class CBasicCombatManager : MonoBehaviour
 
             portraitImage.Move(i);
         }
+        CPortraitImage.IsDirty = false;
     }
 
-    private void ShowUIMessage(GameObject target, string text)
+    private void ShowUIMessage(GameObject target, string text, float delay = 0f)
     {
         GameObject stateTextObj = Instantiate(_stateTextPrefab, _stateTextRoot.transform);
         CStateText stateText = stateTextObj.GetComponent<CStateText>();
 
         Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
 
-        stateText.SetText(_canvas, screenPos, text);
+        if (delay == 0f)
+        {
+            stateText.SetText(_canvas, screenPos, text);
+        }
+        else
+        {
+            StartCoroutine(CoDelayShowMessage(() => stateText.SetText(_canvas, screenPos, text), delay));
+        }
     }
+    private IEnumerator CoDelayShowMessage(Action action, float delay)
+    {
+
+        yield return new WaitForSeconds(delay);
+        action.Invoke();
+    }
+
     private void OnGUI()
     {
         GUIStyle gUIStyle = new GUIStyle(GUI.skin.label);
@@ -387,6 +603,7 @@ public class CBasicCombatManager : MonoBehaviour
             gUIStyle.alignment = TextAnchor.MiddleCenter;
             GUI.Label(new Rect(0, Screen.height * 0.2f, Screen.width, 100), $"{_message}", gUIStyle);
         }
+
 
     }
 

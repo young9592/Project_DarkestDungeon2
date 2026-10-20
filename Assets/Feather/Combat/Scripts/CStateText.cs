@@ -17,6 +17,7 @@ public class CStateText : MonoBehaviour
     private void Awake()
     {
 		_rectTr = GetComponent<RectTransform>();
+		gameObject.SetActive(false);
     }
 
     private void Update()
@@ -31,10 +32,16 @@ public class CStateText : MonoBehaviour
 
 		textMesh.text = text;
         _rectTr.anchoredPosition = uiLocalPos;
+
+		gameObject.SetActive(true);
 		Destroy(gameObject, _duration);
 	}
 	public void Move()
 	{
+		if (!gameObject.activeSelf)
+		{
+			return;
+		}
 		_rectTr.anchoredPosition += Vector2.up * _speed * Time.deltaTime;
 	}
 }
