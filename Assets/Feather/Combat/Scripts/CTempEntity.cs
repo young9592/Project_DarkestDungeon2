@@ -1,17 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CTempEntity : MonoBehaviour
+public class CTempEntity : CEntity
 {
-    public enum EEntityType
-    {
-        Player,
-        Enemy
-    }
-
     // 추가행동 악세사리 착용여부
     public enum EJewelryType
     {
@@ -23,43 +16,43 @@ public class CTempEntity : MonoBehaviour
     #region Inspector
     [Header("Entity Inspector")]
     [SerializeField] private EEntityType _type;
-    [SerializeField] private int _currentHealth = 10;
-    [SerializeField] private int _speed;
-    [SerializeField] private Sprite _portraitImage;
-    [SerializeField] private CTokenManager _tokenManager;
     // 행동권 : 1회 기본 / 2회 ~ 3회 보스
     [SerializeField] private int _actions = 1;
 
-    [Header("ExtraTurn")]
-    [SerializeField] private bool _hasExtraTurn = false;
-    // 임시 악세사리 여부 체크
-    [SerializeField] private EJewelryType _equipJewelry = EJewelryType.None;
-
     [Header("Test State")]
-    // 임시 도트데미지 상태이상 처리
-    [SerializeField] private List<CEffect> _dotEffectList;
+    // 임시 값
+    [SerializeField] private int _currentHealth = 10;
+    [SerializeField] private int _speed;
+    [SerializeField] private bool _isDead = false;
+    // 추가 행동 부여
+    [SerializeField] private bool _hasExtraTurn = false;
+    [SerializeField] private EJewelryType _equipJewelry = EJewelryType.None;
+    // 테스트 딜레이
     [SerializeField] private float _testDelay = 3.0f;
     #endregion
 
+    #region Field
+    private List<CEffect> _dotEffectList = new List<CEffect>();
+    #endregion
+
     #region Property
-    public CTokenManager TokenManager => _tokenManager;
-    public Sprite PortraitImage => _portraitImage;
     public EEntityType Type => _type;
-    public int Speed => _speed;
     public float Actions => _actions;
     public bool HasExtraTurn { get; set; }
     public EJewelryType EquipJewelry => _equipJewelry;
+    public int TempEntitySpeed => _speed;
+    public bool IsDead => _isDead;
     #endregion
 
-    private void Awake()
+    protected override void Awake()
     {
-        _tokenManager = new CTokenManager();
+        base.Awake();
     }
 
     // 행동
     public bool Action()
     {
-        if (_type == EEntityType.Player)
+        if (_type == EEntityType.Hero)
         {
             if (!Keyboard.current.aKey.isPressed)
             {
@@ -68,49 +61,92 @@ public class CTempEntity : MonoBehaviour
         }
 
         // 행동 성공
-        StartCoroutine(CoActionColorDelay(3f));
         return true;
     }
-
-    private IEnumerator CoActionColorDelay(float delay)
+    // 데미지 적용
+    public override void TakeDamage(int finalDamage)
     {
-        yield return new WaitForSeconds(delay);
-    }
-
-
-    // 임시 상태이상 걸기
-    public void TempInitState()
-    {
-        int rand = Random.Range(0, 100);
-
-        if(rand < 40)
+        if (_isDead)
         {
-            // none
+            return;
         }
-        // TODO : DOT 공격 추가
-        else if (rand < 90)
+
+        _currentHealth -= finalDamage;
+
+        if (_currentHealth <= 0)
         {
-            _tokenManager.AddToken(EEffectType.Daze);
-        }
-        else if (rand < 100)
-        {
-            _tokenManager.AddToken(EEffectType.Stun);
+            _currentHealth = 0;
+            _isDead = true;
         }
     }
-
-    // 아직 실제 상속과 연결할 순 없으니 임시로..
-    public void Attack(int damage)
+    // 상태이상 적용
+    public override void ApplyStatusEffect(CEffect statusEffect)
     {
+        EEffectType eEffectType = statusEffect.EffectType;
 
+        switch (eEffectType)
+        {
+            case EEffectType.Bleed:
+            case EEffectType.Blight:
+            case EEffectType.Burn:
+                _dotEffectList.Add(statusEffect);
+                break;
+            case EEffectType.Daze:
+            case EEffectType.Stun:
+                TokenManager.AddToken(eEffectType);
+                break;
+        }
     }
-
-    public void TakeDamage(int finalDamage)
+    // 임시 도트 데미지 소모
+    public (int, int, int) ConsumeDOTEffect()
     {
+        (int bleed, int blight, int burn) total = (0, 0, 0);
 
+        if(_dotEffectList.Count == 0)
+        {
+            return total;
+        }
+
+        for (int i = 0; i < _dotEffectList.Count; i++)
+        {
+            if (_dotEffectList[i].RemainingTurns <= 0)
+            {
+                _dotEffectList.RemoveAt(i);
+                i -= 1;
+                continue;
+            }
+
+            _dotEffectList[i].DecreaseTurn();
+            switch (_dotEffectList[i].EffectType)
+            {
+                case EEffectType.Bleed:
+                    total.bleed += _dotEffectList[i].Damage;
+                    break;
+                case EEffectType.Blight:
+                    total.blight += _dotEffectList[i].Damage;
+                    break;
+                case EEffectType.Burn:
+                    total.burn += _dotEffectList[i].Damage;
+                    break;
+            }
+
+            Debug.Log($"Dot[{_dotEffectList[i].EffectType}] : {_dotEffectList[i].Damage} / {_dotEffectList[i].RemainingTurns}");
+        }
+
+        TakeDamage(total.bleed + total.blight + total.burn);
+
+        return total;
     }
-
-    public void ApplyStatusEffect(CEffect statusEffect)
+    // 임시 토큰 소모
+    public bool ConsumeTokenEffect(EEffectType eEffectType)
     {
+        bool consumeToken = TokenManager.ConsumeToken(eEffectType);
 
+        if (consumeToken)
+        {
+            Debug.Log($"Token[{eEffectType}] Use");
+        }
+
+        return consumeToken;
     }
 }
