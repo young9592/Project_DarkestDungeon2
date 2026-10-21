@@ -19,6 +19,19 @@ public class CTokenManager
     /// </summary>
     public void AddToken(EEffectType tokenType, int amount = 1)
     {
+        EEffectType oppositeToken = GetOppositeToken(tokenType);
+        if (oppositeToken != EEffectType.None)
+        {
+            while (amount > 0 && HasToken(oppositeToken))
+            {
+                ConsumeToken(oppositeToken);
+                amount--;
+                CPrint.Log($"[Token] 새로 들어온 [{tokenType}] 토큰이 기존 [{oppositeToken}] 토큰과 상쇄되어 소멸합니다.");
+            }
+        }
+
+        if (amount <= 0) return;
+
         if (!_tokenStacks.ContainsKey(tokenType))
         {
             _tokenStacks[tokenType] = 0;
@@ -89,4 +102,18 @@ public class CTokenManager
                 return Max_Token_STACK; // 나머지는 2개
         }
     }
+
+    private EEffectType GetOppositeToken(EEffectType tokenType)
+    {
+        switch (tokenType)
+        {
+            case EEffectType.Strength: return EEffectType.Weak;
+            case EEffectType.Weak: return EEffectType.Strength;
+            case EEffectType.Block:
+            case EEffectType.BlockPlus: return EEffectType.Vulnerable;
+            case EEffectType.Vulnerable: return EEffectType.Block;
+            default:                    return EEffectType.None;
+        }
+    }
+
 }
