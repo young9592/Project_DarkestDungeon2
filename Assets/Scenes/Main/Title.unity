@@ -1073,7 +1073,7 @@ SpriteRenderer:
   m_Size: {x: 39.89, y: 20.37}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &488268413
@@ -1085,7 +1085,7 @@ Transform:
   m_GameObject: {fileID: 488268411}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.12, y: 3.27, z: 0}
+  m_LocalPosition: {x: -0.12, y: 3.56, z: 0}
   m_LocalScale: {x: 0.26379412, y: 0.22344613, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3231,9 +3231,9 @@ RectTransform:
   - {fileID: 924273673}
   m_Father: {fileID: 1567785092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -845, y: -454.4273}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -895, y: -504.4273}
   m_SizeDelta: {x: 80, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1737899436
@@ -3282,7 +3282,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 251663718}
         m_TargetAssemblyTypeName: CChapterButton, Assembly-CSharp
-        m_MethodName: OnClickback
+        m_MethodName: OnClickExit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -15,11 +15,11 @@ public class CChapterButton : MonoBehaviour
     [SerializeField] private GameObject _signatureEffect;
 
     // 화면 전환
-    [SerializeField] private GameObject _mainMenuA;
-    [SerializeField] private GameObject _mainMenuB;
+    [SerializeField] private GameObject _mainMenuA;             // 3개 : 고해,왕국,모드 버튼들
+    [SerializeField] private GameObject _mainMenuB;             // 2개 : 고해이어하기,새 고해 버튼들
     [SerializeField] private GameObject _confessionButton;
-    [SerializeField] private GameObject _backButton;
-
+    [SerializeField] private GameObject _backButton;            // 뒤로가기 버튼
+    // 게임종료도 만들예정
 
     //투명도
     [SerializeField, Range(0f, 1f)]
@@ -41,7 +41,7 @@ public class CChapterButton : MonoBehaviour
        
     }
 
-    public void OnClickConfession()  // 고해 버튼 클릭
+    public void OnClickConfession()     // 고해 버튼 클릭
     {
         if (_mainMenuA != null)
         {
@@ -53,7 +53,7 @@ public class CChapterButton : MonoBehaviour
         }
         Debug.Log("고해버튼 눌림");
     }
-    public void OnClickback() // 뒤로가기 눌렀을때
+    public void OnClickback()           // 뒤로가기 눌렀을때
     {
         if (_mainMenuA != null)
         {
@@ -66,7 +66,7 @@ public class CChapterButton : MonoBehaviour
         Debug.Log("뒤로가기 눌림");
     }
    
-    private void FirstUISet()
+    private void FirstUISet()           // 처음 상태로 전환
     {
         if (_mainMenuA != null)
         {
@@ -78,9 +78,14 @@ public class CChapterButton : MonoBehaviour
         }
         Debug.Log("처음 타이틀 화면(고해,왕국,모드)");
     }
-    public void OnClickExit()
+    public void OnClickExit()           // 게임 종료버튼
     {
-
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPaused = false;
+#else
+        Application.Quit();
+#endif
+        Debug.Log("게임종료버튼 눌림");
     }
     public void ClickTextButton()
     {
