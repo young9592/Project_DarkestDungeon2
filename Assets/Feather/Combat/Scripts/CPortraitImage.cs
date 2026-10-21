@@ -26,17 +26,15 @@ public class CPortraitImage : MonoBehaviour
     #endregion
 
     #region Field
+
     private RectTransform _rectTr;
     private Coroutine _coroutine;
+    private int _prevTurnorder = 0;
     private int _currentTurnorder = 0;
-    // 최신 상태인지 체크
-    private static bool _isDirty = false;
     #endregion
 
     #region Property
-    public int CurrentTurnorder => _currentTurnorder;
     public float MoveTime => _moveTime;
-    public static bool IsDirty { get { return _isDirty; } set { _isDirty = value; } }
     #endregion
 
     private void Awake()
@@ -49,6 +47,7 @@ public class CPortraitImage : MonoBehaviour
         index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
         _currentTurnorder = index;
+        _prevTurnorder = index;
 
         _rectTr.anchoredPosition = _turnOrderPos[index];
 
@@ -68,16 +67,12 @@ public class CPortraitImage : MonoBehaviour
     // 턴순서 초상화 이동
     public void Move(int index)
     {
+        // 코루틴이 돌고있는데 들어왔다는건 Move가 두번 호출된 상황인 것
         if (_coroutine != null)
         {
-            return;
-        }
-
-        Debug.Log($"{_isDirty} / {index}");
-
-        if (_isDirty)
-        {
-            index += 1;
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+            _currentTurnorder = _prevTurnorder;
         }
 
         if (index < _turnOrderPos.Count - 1)
@@ -88,7 +83,8 @@ public class CPortraitImage : MonoBehaviour
             }
             else if (_currentTurnorder == _turnOrderPos.Count - 1 && _currentTurnorder - index >= 2)
             {
-                _rectTr.anchoredPosition = _turnOrderPos[index];
+                _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 2];
+                _coroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
             }
             else
             {
@@ -100,6 +96,8 @@ public class CPortraitImage : MonoBehaviour
             _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 1];
         }
 
+        // Move가 짧은시간에 두번 들어오는 경우를 위한 변수
+        _prevTurnorder = _currentTurnorder;
 
         _currentTurnorder = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
     }

@@ -27,8 +27,6 @@ public class CTempEntity : CEntity
     // 추가 행동 부여
     [SerializeField] private bool _hasExtraTurn = false;
     [SerializeField] private EJewelryType _equipJewelry = EJewelryType.None;
-    // 테스트 딜레이
-    [SerializeField] private float _testDelay = 3.0f;
     #endregion
 
     #region Field

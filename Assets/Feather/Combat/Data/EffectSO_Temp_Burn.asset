@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: EffectSO_Temp_Burn
   m_EditorClassIdentifier: 
   _name: "\uD14C\uC2A4\uD2B8 \uD654\uC0C1"
-  _effectType: 5
+  _effectType: 6
   _damage: 3
   _duration: 3
   _baseChance: 100
-  _tokenType: 5
+  _tokenType: 6
   _condition: None
   _strategy: {fileID: 11400000, guid: d1395818501d75f44a652f3ca5e8e91d, type: 2}
