@@ -139,6 +139,20 @@ public class CHeroAnimation : MonoBehaviour
         return IsReady && !IsBusy && _animator.HasState(0, _hitHash) && _animator.HasState(0, _hitEndHash);
     }
 
+    public bool TryGetAttackProgress(out float progress, out float remaining)
+    {
+        progress = 0.0f;
+        remaining = 0.0f;
+        if (!IsReady || !IsAttacking || _waitForSelection) return false;
+
+        AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+        if (info.fullPathHash != _currentExecutionStartHash) return false;
+
+        progress = Mathf.Clamp01(info.normalizedTime);
+        remaining = Mathf.Max(0.0f, info.length * (1.0f - progress) / Mathf.Max(0.01f, _animator.speed));
+        return true;
+    }
+
     public bool TryGetAttackRecovery(out float progress, out float remaining)
     {
         progress = 0.0f;
@@ -187,6 +201,17 @@ public class CHeroAnimation : MonoBehaviour
         PlayIdle();
         if (interrupted == EAnimationState.Attack) OnAttackInterrupted?.Invoke();
         if (interrupted == EAnimationState.Hit) OnHitInterrupted?.Invoke();
+    }
+
+    public void CompleteHitForDeath()
+    {
+        if (!IsHitReacting)
+        {
+            return;
+        }
+
+        PlayIdle();
+        OnHitCompleted?.Invoke();
     }
 
     private void PlayIdle()
