@@ -29,11 +29,14 @@ public class CPortraitImage : MonoBehaviour
     private RectTransform _rectTr;
     private Coroutine _coroutine;
     private int _currentTurnorder = 0;
+    // 최신 상태인지 체크
+    private static bool _isDirty = false;
     #endregion
 
     #region Property
     public int CurrentTurnorder => _currentTurnorder;
     public float MoveTime => _moveTime;
+    public static bool IsDirty { get { return _isDirty; } set { _isDirty = value; } }
     #endregion
 
     private void Awake()
@@ -41,7 +44,7 @@ public class CPortraitImage : MonoBehaviour
         _rectTr = GetComponent<RectTransform>();
     }
     // 초상화 초기화
-    public void Initialize(int index, CTempEntity.EEntityType type, Sprite sprite)
+    public void Initialize(int index, EEntityType entityType, Sprite sprite)
     {
         index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
@@ -51,17 +54,17 @@ public class CPortraitImage : MonoBehaviour
 
         _entityPortrait.sprite = sprite;
 
-        switch (type)
+        switch (entityType)
         {
-            case CTempEntity.EEntityType.Player:
+            case EEntityType.Hero:
                 _markerImage.color = _heroMakerColor;
                 break;
-            case CTempEntity.EEntityType.Enemy:
+            case EEntityType.Enemy:
                 _markerImage.color = _enemyMakerColor;
                 break;
         }
     }
-    
+
     // 턴순서 초상화 이동
     public void Move(int index)
     {
@@ -70,6 +73,12 @@ public class CPortraitImage : MonoBehaviour
             return;
         }
 
+        Debug.Log($"{_isDirty} / {index}");
+
+        if (_isDirty)
+        {
+            index += 1;
+        }
 
         if (index < _turnOrderPos.Count - 1)
         {
@@ -90,6 +99,7 @@ public class CPortraitImage : MonoBehaviour
         {
             _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 1];
         }
+
 
         _currentTurnorder = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
     }
