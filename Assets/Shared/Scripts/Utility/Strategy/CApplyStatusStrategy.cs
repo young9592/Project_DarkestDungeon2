@@ -17,7 +17,8 @@ public class CApplyStatusStrategy : CEffectStrategy
 
         int targetResistance = GetTargetResistance(context.Target, effectData.EffectType);
 
-        int finalChance = effectData.BaseChance - targetResistance;
+        int rawChance = effectData.BaseChance - targetResistance;
+        int finalChance = Mathf.Clamp(rawChance, 0, 100);
 
         CPrint.Log($"[{effectData.Name}] 부여 시도 \n " +
             $"기본 확률 : {effectData.BaseChance}% - 대상 저항력 : {targetResistance}% = 최종 확률 : {finalChance}%"); // 결과 확인용

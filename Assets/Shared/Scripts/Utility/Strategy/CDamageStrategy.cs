@@ -94,9 +94,10 @@ public class CDamageStrategy : CEffectStrategy
         // 5. 최종 산출 된 수치를 정수로 변환시켜 대상의 HP 반영
         int calculatedDamage = Mathf.RoundToInt(finalDamage);
 
+        CPrint.Log($"[{context.Caster.name}]가 [{context.Target.name}]에게 최종 데미지 [{calculatedDamage}]를 입혔습니다.");
+        
         // 계산이 다 끝난 최종 데미지 수치만 전달받음
         context.Target.TakeDamage(calculatedDamage);
 
-        CPrint.Log($"[{context.Caster.name}]가 [{context.Target.name}]에게 최종 데미지 [{calculatedDamage}]를 입혔습니다.");
     }
 }
