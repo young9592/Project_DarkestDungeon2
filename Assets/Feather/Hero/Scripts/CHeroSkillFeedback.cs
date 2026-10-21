@@ -106,7 +106,7 @@ public class CHeroSkillFeedback : MonoBehaviour
             }
         }
 
-        if (_animation.TryGetAttackRecovery(out float progress, out float remaining)
+        if (_animation.TryGetAttackProgress(out float progress, out float remaining)
             && _shots < _feedback.ShotCount
             && progress >= _feedback.ReleaseTime + _shots * _feedback.ShotSpacing)
         {
