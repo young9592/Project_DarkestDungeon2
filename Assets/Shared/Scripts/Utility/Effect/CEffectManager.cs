@@ -41,6 +41,12 @@ public class CEffectManager : MonoBehaviour
         {
             foreach (CEffectSO effectData in skillData.EffectList)
             {
+                if (target == null || !target.isActiveAndEnabled || (target is CPlayer targetPlayer && targetPlayer.IsDead))
+                {
+                    CPrint.Log($"{target.name}이 사망하여 이펙트 실행을 중단합니다.");
+                    break;
+                }
+
                 // 미리 할당한 전략이 있다면 실행
                 if (effectData.Strategy != null)
                 {

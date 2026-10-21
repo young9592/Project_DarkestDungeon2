@@ -1,11 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class CChapterAnimation : MonoBehaviour
+public class CChapterUIAnimation : MonoBehaviour
 {
     #region Inspector
     [SerializeField] RectTransform _chapterMenu;
-    [SerializeField] CChapterButton _chapterButton;
+    [SerializeField] CChapterUIButton _chapterButton;
     [SerializeField] private GameObject _text;
 
     //시작 위치

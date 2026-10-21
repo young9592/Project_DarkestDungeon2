@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //메뉴 등장 퇴장 애니메이션 및 전체 메뉴 상태 관리
-public class CChapterMenu : MonoBehaviour
+public class CChapterUIMenu : MonoBehaviour
 {
     #region Inspector
     //버튼

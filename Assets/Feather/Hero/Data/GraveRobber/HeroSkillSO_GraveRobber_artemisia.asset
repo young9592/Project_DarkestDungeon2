@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Absinthe
   _skillIcon: {fileID: 21300000, guid: e8a64e43c6a6a814fa0f24f8049e33f4, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: d011635b80cfd724baeea0311471dd1c, type: 2}
