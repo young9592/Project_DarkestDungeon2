@@ -586,7 +586,7 @@ public class CPlayer : CEntity
     // 상태이상 부여 (합치지 않고 리스트에 개별 인스턴스로 추가)
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        if (statusEffect == null || statusEffect.Data == null) return;
+        if (_isDead || statusEffect == null || statusEffect.Data == null) return;
 
         if (IsDotEffect(statusEffect.EffectType))
         {
