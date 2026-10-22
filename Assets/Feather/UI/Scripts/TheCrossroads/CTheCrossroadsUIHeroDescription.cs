@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 
 //HeroDescriptionUI 담당
-public class CTheCrossroadsUIText : MonoBehaviour
+public class CTheCrossroadsUIHeroDescription : MonoBehaviour
 {
     #region Inspector
     [SerializeField] private Transform[] _heroRanks;
@@ -12,15 +12,16 @@ public class CTheCrossroadsUIText : MonoBehaviour
     [SerializeField] private float[] _rankScale = new float[4];
     [SerializeField] private float[] _targetScale = new float[4];
 
+    [SerializeField] private TMP_Text _customText;
     [SerializeField] private TMP_Text _characterNameText;
     [SerializeField] private TMP_Text _heroBonusListText;
     [SerializeField] private TMP_Text _heroQuoteText;
     [SerializeField] private TMP_Text _heroGorlText;
 
     [SerializeField] private string[] _characterName;
-    [TextArea(3,5)]
+    [TextArea(3, 5)]
     [SerializeField] private string[] _heroQuote;
-    [TextArea(5,5)]
+    [TextArea(5, 5)]
     [SerializeField] private string[] _heroBonusList;
     [SerializeField] private string[] _heroGorl;
     #endregion
@@ -33,6 +34,11 @@ public class CTheCrossroadsUIText : MonoBehaviour
         _heroBonusListText.text = _heroBonusList[index];
         _heroGorlText.text = _heroGorl[index];
         UpdateHeroScaleUI(index);
+    }
+
+    public void UpdateCustomNameText(string customName)
+    {
+        _customText.text = customName;
     }
     //클릭에 따라 랭크 + 타겟 이미지 업뎃
     private void UpdateHeroScaleUI(int index)

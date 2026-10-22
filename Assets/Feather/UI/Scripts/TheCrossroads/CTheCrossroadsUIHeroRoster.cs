@@ -2,7 +2,7 @@
 using UnityEngine;
 
 //HeroRosterUI
-public class CTheCrossroadsHeroSetUI : MonoBehaviour
+public class CTheCrossroadsUIHeroRoster : MonoBehaviour
 {
     #region Inspector
     [SerializeField] private GameObject[] _hero3DModels;

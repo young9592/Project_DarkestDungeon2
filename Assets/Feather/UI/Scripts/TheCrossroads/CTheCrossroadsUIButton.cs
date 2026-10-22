@@ -4,29 +4,36 @@ using UnityEngine;
 public class CTheCrossroadsUIButton : MonoBehaviour
 {
     #region Inspector
-    [SerializeField] private CTheCrossroadsHeroSetUI _heroSetUI;
-    [SerializeField] private CTheCrossroadsUIText _textUI;
-    [SerializeField] private CTheCrossroadsUIPartyMenu _partyMenuUI;
+    [SerializeField] private CTheCrossroadsUIHeroRoster _heroRosterUI;
+    [SerializeField] private CTheCrossroadsUIHeroDescription _heroDescriptionUI;
+    [SerializeField] private CTheCrossroadsUIHeroPlacement _heroPlacementUI;
+    [SerializeField] private CTheCrossroadsUICustomName _customNameUI;
 
     [SerializeField] private int _currentindex;
     #endregion
 
     public void ClickButton()
     {
-        if (_heroSetUI != null)
+        if (_heroRosterUI != null)
         {
-            _heroSetUI.UpdateHeroUI(_currentindex);
+            _heroRosterUI.UpdateHeroUI(_currentindex);
         }
-        if (_textUI != null)
+        if (_heroDescriptionUI != null)
         {
-            _textUI.UpdateTextUI(_currentindex);
+            _heroDescriptionUI.UpdateTextUI(_currentindex);
         }
+
+        if (_customNameUI != null)
+        {
+            _customNameUI.SelectHero(_currentindex);
+        }
+
     }
     public void HeroEquipped()
     {
-       if(_partyMenuUI != null)
+        if (_heroPlacementUI != null)
         {
-            _partyMenuUI.UpdateHeroEquippedUI(_currentindex);
+            _heroPlacementUI.SetHeroSlot(_currentindex);
         }
     }
 
