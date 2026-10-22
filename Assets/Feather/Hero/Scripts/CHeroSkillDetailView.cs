@@ -106,6 +106,16 @@ public class CHeroSkillDetailView : MonoBehaviour
         }
     }
 
+    private string EffectValueText(CEffectSO effect)
+    {
+        if (effect.MaxDamage > effect.Damage)
+        {
+            return effect.Damage + "-" + effect.MaxDamage;
+        }
+
+        return effect.Damage.ToString();
+    }
+
     private string EffectText(CSkillDataSO skill, CHeroSkillSO heroSkill)
     {
         StringBuilder text = new StringBuilder();
@@ -118,12 +128,12 @@ public class CHeroSkillDetailView : MonoBehaviour
                 if (effect == null || effect.Strategy == null) continue;
                 if (effect.EffectType == EEffectType.Damage)
                 {
-                    text.Append("Base damage: ").Append(effect.Damage).Append(" per target\n");
+                    text.Append("Base damage: ").Append(EffectValueText(effect)).Append(" per target\n");
                     hasDamage = true;
                 }
                 else if (effect.EffectType == EEffectType.Heal)
                 {
-                    text.Append("Restore ").Append(effect.Damage).Append(" HP\nUp to maximum HP\n");
+                    text.Append("Restore ").Append(EffectValueText(effect)).Append(" HP\nUp to maximum HP\n");
                 }
                 else
                 {
