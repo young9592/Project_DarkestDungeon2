@@ -775,7 +775,6 @@ public class CPlayer : CEntity
         if (_isDead) return;
 
         _isDead = true;
-        IsDead = true;
         _isDeathsDoor = false;
         _currentHp = 0;
 
