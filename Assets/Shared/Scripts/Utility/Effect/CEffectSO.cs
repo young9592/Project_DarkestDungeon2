@@ -68,7 +68,7 @@ public class CEffectSO : ScriptableObject
     /// </summary>
     public int RollValue(bool isCrit = false)
     {
-        if (isCrit || _maxDamage <= _maxDamage)
+        if (isCrit || _maxDamage <= _damage)
         {
             return MaxDamage;
         }

@@ -95,7 +95,7 @@ public class CPlayer : CEntity
 
     protected override bool CanExecuteRequestedAction()
     {
-        return !IsDeathPresented && ActionTarget != null
+        return !IsDead && !IsDeathPresented && ActionTarget != null
             && AreActionTargetsValid()
             && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null
@@ -214,7 +214,7 @@ public class CPlayer : CEntity
 
     protected override bool CanBeginAction()
     {
-        return !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy);
+        return !IsDead && !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy);
     }
 
     protected override bool CanCompleteAction()
@@ -313,6 +313,9 @@ public class CPlayer : CEntity
 
     private void Initialize()
     {
+        _isDeathsDoor = false;
+        _isDead = false;
+        
         _currentHp = _heroData.MaxHealth;
         _currentStress = 0;
 
@@ -605,7 +608,7 @@ public class CPlayer : CEntity
         // 일반 체력 차감 처리
         int prevHp = _currentHp;
         long calculatedHp = (long)_currentHp - finalDamage;
-        _currentHp = (int)Mathf.Max(0L, Math.Min(_heroData.MaxHealth, calculatedHp));
+        _currentHp = (int)Math.Max(0L, Math.Min(_heroData.MaxHealth, calculatedHp));
 
         if (_currentHp != prevHp)
         {
@@ -755,7 +758,7 @@ public class CPlayer : CEntity
     private void RollDeathblow()
     {
         // TODO : CResistanceStat에 Deathblow 스탯 을 만들어서 진행시 _heroData.Resistance.Deathblow로 교체해서 진행할것
-        int deathblowResist = 75;
+        int deathblowResist = _heroData != null ? _heroData.DeathDoorResistance : 75;
         int randomRoll = UnityEngine.Random.Range(1, 101);
 
         CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격 저항 굴림");
@@ -781,6 +784,7 @@ public class CPlayer : CEntity
         TokenManager.ClearAllTokens();
         _activeStatusEffects.Clear();
         CancelSkillSelection();
+        CancelAction();
 
         CPrint.Log($"[{_heroData.DefaultName}] 사망.. 전투 불능 상태가 되었습니다.");
 
