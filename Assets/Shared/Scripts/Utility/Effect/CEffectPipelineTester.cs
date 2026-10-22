@@ -78,7 +78,7 @@ public class CEffectPipelineTester : MonoBehaviour
     {
         CPrint.Log("== [죽음의 문턱 / 즉사 저항 테스트] ==");
 
-        if (!_casterPlayer.IsDead)
+        if (!_casterPlayer.IsDeathsDoor)
         {
             CPrint.Log("죽음의 문턱 상태");
             _casterPlayer.TakeDamage(_casterPlayer.CurrentHp);
