@@ -13,8 +13,6 @@ public class CPlayer : CEntity
     [Header("Runtime Status")]
     [SerializeField] private int _currentHp;
     [SerializeField] private int _currentStress;
-    [SerializeField] private bool _isDeathsDoor = false;
-    [SerializeField] private bool _isDead = false;
     // 현재 플레이어가 위치한 열 테스트로 1로 설정함
     [SerializeField] private ERank _currentRank = ERank.Rank1;
     #endregion

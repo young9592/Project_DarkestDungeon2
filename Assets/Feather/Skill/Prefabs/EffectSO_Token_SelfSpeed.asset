@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
+  m_Name: EffectSO_Token_SelfSpeed
+  m_EditorClassIdentifier: 
+  _name: "\uAC00\uC18D"
+  _effectType: 15
+  _effectTarget: 1
+  _damage: 1
+  _maxDamage: 0
+  _duration: 3
+  _baseChance: 100
+  _tokenType: 15
+  _condition: 0
+  _strategy: {fileID: 11400000, guid: 8622b2421d5ff144ead00950836983d0, type: 2}
