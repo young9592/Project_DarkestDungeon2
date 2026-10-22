@@ -42,8 +42,16 @@ public abstract class CEntity : MonoBehaviour
 
     public CTokenManager TokenManager { get; private set ; }
 
-    public bool IsDeathsDoor { get { return _isDeathsDoor; } }
-    public bool IsDead { get { return _isDead; } }
+    public bool IsDeathsDoor 
+    { 
+        get { return _isDeathsDoor; } 
+        protected set { _isDeathsDoor = value; }
+    }
+    public bool IsDead 
+    { 
+        get { return _isDead; }
+        protected set { _isDead = value; }
+    }
 
     
 

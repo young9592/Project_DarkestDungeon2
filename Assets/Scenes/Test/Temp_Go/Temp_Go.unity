@@ -122,6 +122,59 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &80861904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 80861906}
+  - component: {fileID: 80861905}
+  m_Layer: 0
+  m_Name: Dummy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &80861905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80861904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5fe3bcbc054e34992e58d485fa653e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _turnImage: {fileID: 0}
+  _isDeathsDoor: 0
+  _isDead: 0
+  _heroData: {fileID: 11400000, guid: 6fd1fd10fa6c2a048812b3ebe207ed8f, type: 2}
+  _skillLoadout: {fileID: 0}
+  _actionAnimation: {fileID: 0}
+  _currentHp: 0
+  _currentStress: 0
+  _currentRank: 1
+--- !u!4 &80861906
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80861904}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &388313254
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,13 +249,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 0}
+  _isDeathsDoor: 0
+  _isDead: 0
   _heroData: {fileID: 11400000, guid: 6fd1fd10fa6c2a048812b3ebe207ed8f, type: 2}
   _skillLoadout: {fileID: 0}
   _actionAnimation: {fileID: 0}
   _currentHp: 0
   _currentStress: 0
-  _isDeathsDoor: 0
-  _isDead: 0
   _currentRank: 1
 --- !u!4 &1230264961
 Transform:
@@ -249,10 +302,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _casterPlayer: {fileID: 1230264960}
-  _targetEntity: {fileID: 1230264960}
-  _testSkill: {fileID: 11400000, guid: 8a17e2effa3bddb42aa735079a7f26a2, type: 2}
-  _blight3TurnSO: {fileID: 11400000, guid: f643d4556ccda5348afc93ca2ddcbf54, type: 2}
-  _blight2TurnSO: {fileID: 11400000, guid: b48046b88420b684ea67802f2cab1b27, type: 2}
+  _targetEntity: {fileID: 80861905}
+  _testSkill: {fileID: 11400000, guid: 553bbecde523bc549ad965e38f2c58bf, type: 2}
+  _blight3TurnSO: {fileID: 0}
+  _blight2TurnSO: {fileID: 0}
 --- !u!4 &1610693739
 Transform:
   m_ObjectHideFlags: 0
@@ -463,3 +516,4 @@ SceneRoots:
   - {fileID: 388313256}
   - {fileID: 1610693739}
   - {fileID: 1230264961}
+  - {fileID: 80861906}
