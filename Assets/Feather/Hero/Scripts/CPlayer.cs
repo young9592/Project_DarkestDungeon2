@@ -44,6 +44,15 @@ public class CPlayer : CEntity
     private bool _isRequesting;
     private CEntityActionExecution _actionExecution;
     private CHeroSkillFeedback _skillFeedback;
+    private CEntityDeathPresentation _deathPresentation;
+    public CEntityDeathPresentation DeathPresentation
+    {
+        get { return _deathPresentation; }
+    }
+    public bool IsDeathPresented
+    {
+        get { return _deathPresentation != null && _deathPresentation.IsConfirmed; }
+    }
     private bool _isGroupRequest;
     private readonly List<CEntity> _actionTargets = new List<CEntity>();
     public IReadOnlyList<CEntity> ActionTargets
@@ -86,7 +95,7 @@ public class CPlayer : CEntity
 
     protected override bool CanExecuteRequestedAction()
     {
-        return ActionTarget != null
+        return !IsDeathPresented && ActionTarget != null
             && AreActionTargetsValid()
             && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null
@@ -122,7 +131,8 @@ public class CPlayer : CEntity
     public bool IsPresentationBusy
     {
         get { return (_actionAnimation != null && _actionAnimation.IsBusy)
-            || (_skillFeedback != null && _skillFeedback.IsBusy); }
+            || (_skillFeedback != null && _skillFeedback.IsBusy)
+            || (_deathPresentation != null && _deathPresentation.IsBusy); }
     }
     public bool IsAttackPresentationPlaying
     {
@@ -183,9 +193,28 @@ public class CPlayer : CEntity
         _actionAnimation.OnAttackInterrupted += HandleAttackInterrupted;
     }
 
+    private void LateUpdate()
+    {
+        if (ActionState != EEntityActionState.Requested && ActionState != EEntityActionState.Executing)
+        {
+            return;
+        }
+
+        for (int i = 0; i < _actionTargets.Count; i++)
+        {
+            CEntity target = _actionTargets[i];
+            if (target is CPlayer hero && hero.IsDeathPresented
+                && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+            {
+                CancelAction();
+                return;
+            }
+        }
+    }
+
     protected override bool CanBeginAction()
     {
-        return _actionAnimation == null || !_actionAnimation.IsBusy;
+        return !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy);
     }
 
     protected override bool CanCompleteAction()
@@ -258,6 +287,12 @@ public class CPlayer : CEntity
     protected override void Awake()
     {
         base.Awake();
+        _deathPresentation = GetComponent<CEntityDeathPresentation>();
+        if (_deathPresentation == null)
+        {
+            _deathPresentation = gameObject.AddComponent<CEntityDeathPresentation>();
+        }
+
         _actionExecution = GetComponent<CEntityActionExecution>();
         if (_actionExecution == null)
         {
@@ -438,13 +473,18 @@ public class CPlayer : CEntity
 
     private bool CanChooseTarget(CSkillDataSO skill, CEntity target)
     {
+        if (target == null || target.IsDead || (target is CPlayer hero && hero.IsDeathPresented))
+        {
+            return false;
+        }
+
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
     }
 
     public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
     {
-        return isActiveAndEnabled
+        return !IsDeathPresented && isActiveAndEnabled
             && !_isRequesting
             && CanIssueActionRequest
             && _selectedSkill != null
@@ -535,7 +575,7 @@ public class CPlayer : CEntity
             int previousHp = _currentHp;
             long nextHp = (long)_currentHp - finalDamage;
             _currentHp = (int)Math.Max(0L, Math.Min(_heroData.MaxHealth, nextHp));
-            
+
             if (_currentHp != previousHp)
             {
                 OnHealthChanged?.Invoke(this, previousHp, _currentHp);
@@ -548,7 +588,7 @@ public class CPlayer : CEntity
             }
             return;
         }
-        
+
         // 데미지 피격시 애니메이션 재생
         if (_actionAnimation != null)
         {
@@ -598,7 +638,7 @@ public class CPlayer : CEntity
     }
 
     // 스트레스 수치 증감
-    public void ModifyStress(int stressAmount)
+    public override void ModifyStress(int stressAmount)
     {
         if (!isActiveAndEnabled || _isDead || _heroData == null || stressAmount == 0)
         {
@@ -735,6 +775,7 @@ public class CPlayer : CEntity
         if (_isDead) return;
 
         _isDead = true;
+        IsDead = true;
         _isDeathsDoor = false;
         _currentHp = 0;
 

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: EffectSO_Temp_Stun
   m_EditorClassIdentifier: 
   _name: "\uD14C\uC2A4\uD2B8 \uAE30\uC808"
-  _effectType: 17
+  _effectType: 18
   _damage: 0
   _duration: 1
   _baseChance: 100
-  _tokenType: 17
+  _tokenType: 18
   _condition: None
   _strategy: {fileID: 11400000, guid: d4ab5cc214b0ad3468c092d35c83a869, type: 2}
