@@ -132,8 +132,8 @@ public class CBasicCombatManager : MonoBehaviour
         }
         _selectEntity.AddOptions(options);
 
-        _selectEntity.value = 0;
         _selectEntity.RefreshShownValue();
+        _selectEntity.value = 0;
     }
 
     // 디버그용 드랍박스 변경 리스너
@@ -155,34 +155,51 @@ public class CBasicCombatManager : MonoBehaviour
         switch (_effectOptions[_selecedtEffectIdx])
         {
             case "데미지":
-                _fieldEntitiesList[_selectedEntitytIdx].TakeDamage(10);
+                int rand = UnityEngine.Random.Range(0, 10);
+
+                if (rand < 6)
+                {
+                    _fieldEntitiesList[_selectedEntitytIdx].TakeDamage(5);
+                    ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Damage, "5");
+                }
+                else
+                {
+                    _fieldEntitiesList[_selectedEntitytIdx].TakeDamage(10);
+                    ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Damage, "10", new Color32(241, 116, 9, 255));
+                    ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Damage, "치명타!", new Color32(241, 116, 9, 255));
+                }
                 break;
             case "출혈":
                 CEffect effect = new CEffect(_bleed);
                 _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Bleed, "출혈");
                 break;
             case "중독":
                 effect = new CEffect(_blight);
                 _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Blight, "중독");
                 break;
             case "화상":
                 effect = new CEffect(_burn);
                 _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Burn, "화상");
                 break;
             case "현기증":
                 effect = new CEffect(_daze);
                 _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Daze, "추가");
                 break;
             case "기절":
                 effect = new CEffect(_stun);
                 _fieldEntitiesList[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.Stun, "추가");
                 break;
             case "추가행동":
                 _fieldEntitiesList[_selectedEntitytIdx].HasExtraTurn = true;
+                ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, EEffectType.None, "추가 행동 부여");
                 break;
         }
 
-        ShowUIMessage(_fieldEntitiesList[_selectedEntitytIdx].gameObject, _effectOptions[_selecedtEffectIdx] + " 부여");
         Debug.Log("속성 부여 완료");
     }
     #endregion
@@ -332,13 +349,15 @@ public class CBasicCombatManager : MonoBehaviour
 
             int[] dotList = new int[] { total.bleed, total.blight, total.burn };
 
+            EEffectType[] dotType = new EEffectType[] { EEffectType.Bleed, EEffectType.Blight, EEffectType.Burn };
+
             for (int i = 0, delay = 1; i < dotList.Length; i++)
             {
                 if (dotList[i] == 0)
                 {
                     continue;
                 }
-                ShowUIMessage(_turnList[0].entity.gameObject, dotList[i].ToString(), delay * 0.3f);
+                ShowUIMessage(_turnList[0].entity.gameObject, dotType[i], dotList[i].ToString(), default, delay * 0.3f);
                 delay++;
             }
         }
@@ -420,7 +439,7 @@ public class CBasicCombatManager : MonoBehaviour
         // TODO : 죽으면 원래 시체가 남기 때문에 임시 구현
         // 시체를 해당 위치에 생성하는 방식도 필요.
         ShowUIIcon(_fieldEntitiesList[index].gameObject, _deathStampPrefab);
-        ShowUIMessage(_fieldEntitiesList[index].gameObject, "사망");
+        ShowUIMessage(_fieldEntitiesList[index].gameObject, EEffectType.None, "죽음의 일격!");
         Destroy(_fieldEntitiesList[index].gameObject, _portraitRemoveDelay);
         _fieldEntitiesList.RemoveAt(index);
     }
@@ -429,7 +448,7 @@ public class CBasicCombatManager : MonoBehaviour
     private IEnumerator CoStun()
     {
         _message = $"{_turnList[0].entity.name} 기절";
-        ShowUIMessage(_turnList[0].entity.gameObject, "기절");
+        ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.Stun, "기절!");
 
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
@@ -442,7 +461,7 @@ public class CBasicCombatManager : MonoBehaviour
     private IEnumerator CoDaze()
     {
         _message = $"{_turnList[0].entity.name} 현기증";
-        ShowUIMessage(_turnList[0].entity.gameObject, "현기증");
+        ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.Daze, "현기증!");
 
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
@@ -470,7 +489,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         _message = $"{_turnList[0].entity.name} 행동";
-        ShowUIMessage(_turnList[0].entity.gameObject, "행동");
+        ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.None, "행동");
 
         yield return new WaitForSeconds(_actionDelay);
 
@@ -497,7 +516,7 @@ public class CBasicCombatManager : MonoBehaviour
         if (_turnList[0].entity.EquipJewelry == type && _currentTurnState == TurnState.Normal)
         {
             _turnList[0].entity.HasExtraTurn = true;
-            ShowUIMessage(_turnList[0].entity.gameObject, "추가 행동 획득");
+            ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.None, "추가 행동");
         }
     }
 
@@ -578,8 +597,8 @@ public class CBasicCombatManager : MonoBehaviour
         }
         CPortraitImage.IsDirty = false;
     }
-
-    private void ShowUIMessage(GameObject target, string text, float delay = 0f)
+    // 상태 메세지 출력
+    private void ShowUIMessage(GameObject target, EEffectType effectType, string text, Color32 color = default, float delay = 0f)
     {
         GameObject stateTextObj = Instantiate(_stateTextPrefab, _stateTextRoot.transform);
         CStateText stateText = stateTextObj.GetComponent<CStateText>();
@@ -588,13 +607,14 @@ public class CBasicCombatManager : MonoBehaviour
 
         if (delay == 0f)
         {
-            stateText.SetText(_canvas, screenPos, text);
+            stateText.SetText(_canvas, screenPos, effectType, text, color);
         }
         else
         {
-            StartCoroutine(CoDelayShow(() => stateText.SetText(_canvas, screenPos, text), delay));
+            StartCoroutine(CoDelayShow(() => stateText.SetText(_canvas, screenPos, effectType, text, color), delay));
         }
     }
+    // 현재는 죽음의 일격정도만 있습니다.
     private void ShowUIIcon(GameObject target, GameObject prefab, float delay = 0f)
     {
         GameObject iconPrefab = Instantiate(prefab, _iconPrefabRoot.transform);
