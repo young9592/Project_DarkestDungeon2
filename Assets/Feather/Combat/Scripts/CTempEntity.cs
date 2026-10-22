@@ -33,6 +33,10 @@ public class CTempEntity : CEntity
     private List<CEffect> _dotEffectList = new List<CEffect>();
     #endregion
 
+    #region Field
+    private List<CEffect> _dotEffectList = new List<CEffect>();
+    #endregion
+
     #region Property
     public EEntityType Type => _type;
     public float Actions => _actions;

@@ -31,10 +31,13 @@ public class CPortraitImage : MonoBehaviour
     private Coroutine _coroutine;
     private int _prevTurnorder = 0;
     private int _currentTurnorder = 0;
+    // 최신 상태인지 체크
+    private static bool _isDirty = false;
     #endregion
 
     #region Property
     public float MoveTime => _moveTime;
+    public static bool IsDirty { get { return _isDirty; } set { _isDirty = value; } }
     #endregion
 
     private void Awake()

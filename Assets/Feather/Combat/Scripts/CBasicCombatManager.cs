@@ -514,6 +514,11 @@ public class CBasicCombatManager : MonoBehaviour
     #endregion
     private void CheckTurnState()
     {
+        if (_turnList[0].entity.IsDead)
+        {
+            return;
+        }
+
         if (_currentTurnState == TurnState.Normal)
         {
             if (_turnList[0].entity.HasExtraTurn)
@@ -571,6 +576,7 @@ public class CBasicCombatManager : MonoBehaviour
 
             portraitImage.Move(i);
         }
+        CPortraitImage.IsDirty = false;
     }
 
     private void ShowUIMessage(GameObject target, string text, float delay = 0f)
