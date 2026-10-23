@@ -303,9 +303,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _casterPlayer: {fileID: 1230264960}
   _targetEntity: {fileID: 80861905}
-  _testSkill: {fileID: 11400000, guid: 553bbecde523bc549ad965e38f2c58bf, type: 2}
-  _blight3TurnSO: {fileID: 0}
-  _blight2TurnSO: {fileID: 0}
+  _testSkill: {fileID: 11400000, guid: 8a17e2effa3bddb42aa735079a7f26a2, type: 2}
+  _blight3TurnSO: {fileID: 11400000, guid: b48046b88420b684ea67802f2cab1b27, type: 2}
+  _blight2TurnSO: {fileID: 11400000, guid: f643d4556ccda5348afc93ca2ddcbf54, type: 2}
 --- !u!4 &1610693739
 Transform:
   m_ObjectHideFlags: 0
