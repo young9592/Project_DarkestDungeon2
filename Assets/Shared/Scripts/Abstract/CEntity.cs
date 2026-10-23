@@ -20,6 +20,9 @@ public abstract class CEntity : MonoBehaviour
     [Header("Turn Information")]
     [SerializeField] private Sprite _turnImage;
 
+    [SerializeField] protected bool _isDeathsDoor = false;
+    [SerializeField] protected bool _isDead = false;
+
     private int _roundSpeedBonus;
     private bool _usesActionLifecycle;
     private EEntityActionState _actionState;
@@ -39,13 +42,25 @@ public abstract class CEntity : MonoBehaviour
 
     public CTokenManager TokenManager { get; private set ; }
 
-    public bool IsDead { get; protected set; }
+    public bool IsDeathsDoor 
+    { 
+        get { return _isDeathsDoor; } 
+        protected set { _isDeathsDoor = value; }
+    }
+    public bool IsDead 
+    { 
+        get { return _isDead; }
+        protected set { _isDead = value; }
+    }
+
+    
 
     protected virtual void Awake()
     {
         // 생성될 때 토큰 주머니 생성
         TokenManager = new CTokenManager();
-        IsDead = false;
+        _isDeathsDoor = false;
+        _isDead = false;
     }
 
 

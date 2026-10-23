@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -36,21 +35,44 @@ public class CEffectManager : MonoBehaviour
     private IEnumerator ExecuteEffectsCoroutine(CEntity caster, CEntity target, CSkillDataSO skillData, Action onComplete)
     {
         CEffectContext context = new CEffectContext(caster, target);
+        bool consumedComboInThisSkill = false;
 
         if (skillData.EffectList != null && skillData.EffectList.Count > 0)
         {
             foreach (CEffectSO effectData in skillData.EffectList)
             {
-                if (target == null || !target.isActiveAndEnabled || (target is CPlayer targetPlayer && targetPlayer.IsDead))
+                if (effectData == null) continue;
+
+                CEntity actualTarget = (effectData.EffectTarget == EEffectTarget.Self) ? caster : target;
+
+                if (IsEntityDead(actualTarget))
                 {
-                    CPrint.Log($"{target.name}이 사망하여 이펙트 실행을 중단합니다.");
-                    break;
+                    CPrint.Log($"대상 ({actualTarget.name})이 사망 상태여서 [{effectData.Name}] 효과를 스킵합니다.");
+                    continue;
+                }
+
+                if (!CheckEffectCondition(context, effectData, ref consumedComboInThisSkill))
+                {
+                    CPrint.Log($"[{effectData.Name} 발동 조건 ({effectData.Condition}) 불충족으로 스킵합니다.]");
+                    continue;
                 }
 
                 // 미리 할당한 전략이 있다면 실행
                 if (effectData.Strategy != null)
                 {
-                    effectData.Strategy.Apply(context, effectData);
+                    if (effectData.EffectTarget == EEffectTarget.Self)
+                    {
+                        CEffectContext selfContext = new CEffectContext(caster, caster)
+                        {
+                            IsHit = true,
+                            IsCrit = context.IsCrit
+                        };
+                        effectData.Strategy.Apply(selfContext, effectData);
+                    }
+                    else
+                    {
+                        effectData.Strategy.Apply(context, effectData);
+                    }
 
                     // TODO : 연출(파티클, 사운드 등) 대기 시간이 필요시 여기서 yield return 처리
                     yield return new WaitForSeconds(0.2f);
@@ -71,4 +93,32 @@ public class CEffectManager : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    private bool CheckEffectCondition(CEffectContext context, CEffectSO effectData, ref bool consumedCombo)
+    {
+        switch(effectData.Condition)
+        {
+            case EEffectCondition.None:
+                return true;
+            case EEffectCondition.TargetHasCombo:
+                if (!context.IsHit) return false;
+                if (consumedCombo || context.Target.TokenManager.ConsumeToken(EEffectType.Combo))
+                {
+                    consumedCombo = true;
+                    CPrint.Log($"[Combo 연계] [{context.Target.name}]의 콤보 토큰 소모하여 [{effectData.Name}] 발동");
+                    return true;
+                }
+                return false;
+            case EEffectCondition.OnCriticalHit:
+                return context.IsHit && context.IsCrit;
+            case EEffectCondition.CasterIsDeathsDoor:
+                return context.Caster != null && context.Caster.IsDeathsDoor;
+            default:
+                return true;
+        }
+    }
+
+    private bool IsEntityDead(CEntity entity)
+    {
+        return entity == null || !entity.isActiveAndEnabled || entity.IsDead;
+    }
 }

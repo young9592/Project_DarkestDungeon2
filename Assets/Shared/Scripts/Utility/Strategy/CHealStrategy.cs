@@ -9,7 +9,7 @@ public class CHealStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
-        int healAmount = effectData.Damage; // CEffectSO의 Damage 수치를 회복량으로 사용
+        int healAmount = effectData.RollValue(context.IsCrit); // CEffectSO의 Damage 수치를 회복량으로 사용
 
         if (context.IsCrit)
         {

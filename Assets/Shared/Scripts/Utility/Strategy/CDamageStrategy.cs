@@ -36,19 +36,19 @@ public class CDamageStrategy : CEffectStrategy
             return;
         }
 
-        // 2. Base 롤링
-        // TODO : 데미지의 Min / Max가 필요해질시 CEffectSO 수정해야 할 수도..
-        int baseDamage = effectData.Damage;
-        float finalDamage = baseDamage;
-
-        CPrint.Log($"[{effectData.Name}] : Base 롤링 데미지 = {baseDamage}");
-
         // 3. 크리티컬 판정 연산
         if (context.Caster.TokenManager.ConsumeToken(EEffectType.Crit))
         {
             context.IsCrit = true;
             CPrint.Log($"[{context.Caster.name}] 의 [치명타] 토큰 소모");
         }
+
+        // 2. Base 롤링
+        // TODO : 데미지의 Min / Max가 필요해질시 CEffectSO 수정해야 할 수도..
+        int baseDamage = effectData.RollValue(context.IsCrit);
+        float finalDamage = baseDamage;
+
+        CPrint.Log($"[{effectData.Name}] : Base 롤링 데미지 = {baseDamage}");
 
        if (context.IsCrit)
         {

@@ -17,4 +17,6 @@ MonoBehaviour:
   _useableRank: 0
   _targetableRank: 0
   _cooldown: 0
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 9c696fcdcb846a840b7977da219d2257, type: 2}
+  - {fileID: 11400000, guid: b48046b88420b684ea67802f2cab1b27, type: 2}
