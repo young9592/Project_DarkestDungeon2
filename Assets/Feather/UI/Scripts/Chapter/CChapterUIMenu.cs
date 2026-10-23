@@ -11,27 +11,39 @@ public class CChapterUIMenu : MonoBehaviour
     [SerializeField] private GameObject[] _chapterButton = new GameObject[5];
     //택스트
     [SerializeField] private TMP_Text[] _chapterTextButtons;
+    //챕터 기본 이름
+    [SerializeField] private string[] _chapterText = new string[5];
 
     [SerializeField] private Button[] _textButtons;
     //택스트를 눌렀을떄 뜨는 버튼 프로필
     [SerializeField] private GameObject[] _chapterProfile = new GameObject[5];
     #endregion
 
-    //챕터 클리어에 따라서 UI 갱신
-    public void UpdateChapterUI(bool[] unlockedChapters)
+
+    private void Start()
     {
-        for (int i = 0; i < _chapterButton.Length; i++)
+        ShowPrologue();
+    }
+    //챕터 보여주기
+    public void ShowChapterSelect(bool[] unlockedChapters)
+    {
+        for(int i =0; i < _chapterButton.Length; i++)
         {
-            //챕터 오픈
             _chapterButton[i].SetActive(true);
-            //잠긴 챕터는 클릭 불가능
             _textButtons[i].interactable = unlockedChapters[i];
-            //열린 챕터 없으면 ??? 로
-            if (!unlockedChapters[i])
-            {
-                _chapterTextButtons[i].text = "???";
-            }
+
+            _chapterTextButtons[i].text =
+                unlockedChapters[i] ? _chapterText[i] : "???";
         }
+    }
+    //프롤로그 보여주기
+    public void ShowPrologue()
+    {
+        for(int i =0; i< _chapterButton.Length; i++)
+        {
+            _chapterButton[i].SetActive(i == 0);
+        }
+        _chapterTextButtons[0].text = "Prologue";
     }
 
     //챕터 선택
@@ -42,4 +54,12 @@ public class CChapterUIMenu : MonoBehaviour
             _chapterProfile[i].SetActive(i == index);
         }
     }
+    public void ResetChapterProfile()
+    {
+        for (int i = 0; i < _chapterProfile.Length; i++)
+        {
+            _chapterProfile[i].SetActive(false);
+        }
+    }
+
 }
