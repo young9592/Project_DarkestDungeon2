@@ -12,6 +12,8 @@ public class CEnemy : CEntity
     [SerializeField] private int _currentHp;
     [SerializeField] private ERank _currentRank = ERank.Rank1;
     private bool _isInitialized;
+    private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
+    private bool _isStartingTurn;
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
     private bool _isRequestingSkill;
@@ -369,12 +371,110 @@ public class CEnemy : CEntity
 
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        if (!_isInitialized || !isActiveAndEnabled || statusEffect == null || statusEffect.Data == null)
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || _currentHp <= 0
+            || statusEffect == null || statusEffect.Data == null)
         {
             return;
         }
 
-        // TODO: 보관과 갱신 규칙에 맞춰 상태이상 연결
-        CPrint.Warn(name + ": Enemy 상태이상 처리는 아직 연결되지 않았습니다.");
+        if (IsDotEffect(statusEffect.EffectType))
+        {
+            if (statusEffect.RemainingTurns > 0 && statusEffect.Damage > 0
+                && !_activeStatusEffects.Contains(statusEffect))
+            {
+                _activeStatusEffects.Add(statusEffect);
+            }
+            return;
+        }
+
+        EEffectType tokenType = statusEffect.Data.TokenType != EEffectType.None
+            ? statusEffect.Data.TokenType : statusEffect.EffectType;
+        switch (tokenType)
+        {
+            case EEffectType.Crit:
+            case EEffectType.Riposte:
+            case EEffectType.Dodge:
+            case EEffectType.DodgePlus:
+            case EEffectType.Block:
+            case EEffectType.BlockPlus:
+            case EEffectType.Guarded:
+            case EEffectType.Strength:
+            case EEffectType.Speed:
+            case EEffectType.Stealth:
+            case EEffectType.Daze:
+            case EEffectType.Stun:
+            case EEffectType.Blind:
+            case EEffectType.Weak:
+            case EEffectType.Vulnerable:
+            case EEffectType.Taunt:
+            case EEffectType.Immobilize:
+            case EEffectType.Combo:
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
+                break;
+        }
+    }
+
+    // 턴 진행 주체가 턴 시작마다 한 번 호출합니다. 행동 재시도에는 호출하지 않습니다.
+    public bool OnTurnStart()
+    {
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || _currentHp <= 0
+            || _isStartingTurn || IsActionActive || IsPresentationBusy)
+        {
+            return false;
+        }
+
+        _isStartingTurn = true;
+        try
+        {
+            long totalDamage = 0;
+            for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+            {
+                CEffect effect = _activeStatusEffects[i];
+                if (effect == null || effect.Data == null || effect.RemainingTurns <= 0)
+                {
+                    _activeStatusEffects.RemoveAt(i);
+                    continue;
+                }
+
+                totalDamage += effect.Damage;
+                effect.DecreaseTurn();
+                if (effect.RemainingTurns <= 0)
+                {
+                    _activeStatusEffects.RemoveAt(i);
+                }
+            }
+
+            if (totalDamage > 0)
+            {
+                TakeDamage((int)Math.Min(int.MaxValue, totalDamage));
+            }
+
+            if (!isActiveAndEnabled || _isDead || _currentHp <= 0) return false;
+            return !TokenManager.ConsumeToken(EEffectType.Stun);
+        }
+        finally
+        {
+            _isStartingTurn = false;
+        }
+    }
+
+    public int GetTotalDotDamageByType(EEffectType type)
+    {
+        if (!IsDotEffect(type)) return 0;
+        long total = 0;
+        for (int i = 0; i < _activeStatusEffects.Count; i++)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect != null && effect.Data != null && effect.RemainingTurns > 0 && effect.EffectType == type)
+            {
+                total += effect.Damage;
+            }
+        }
+        return (int)Math.Min(int.MaxValue, total);
+    }
+
+    private bool IsDotEffect(EEffectType type)
+    {
+        return type == EEffectType.Bleed || type == EEffectType.Blight || type == EEffectType.Burn;
     }
 }
