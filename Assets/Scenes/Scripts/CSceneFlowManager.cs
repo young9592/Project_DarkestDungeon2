@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 #region Build용 임시 SceneManager
@@ -22,6 +23,9 @@ public class CSceneFlowManager : MonoBehaviour
 
     [Header("SceneLoadView")]
     [SerializeField] private GameObject _loadPanel;
+
+    [Header("Progress Bar")]
+    [SerializeField] private Image _progressBar;
 
     [Header("Option")]
     [SerializeField] private bool _enableKey = true;
@@ -49,7 +53,7 @@ public class CSceneFlowManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        if(_catalog == null)
+        if (_catalog == null)
         {
             CPrint.Error("카탈로그 없음");
             Destroy(_catalog);
@@ -63,7 +67,7 @@ public class CSceneFlowManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(_instance == this)
+        if (_instance == this)
         {
             _instance = null;
         }
@@ -74,8 +78,8 @@ public class CSceneFlowManager : MonoBehaviour
         if (!_enableKey)
         {
             return;
-        }   
-        if(_catalog == null)
+        }
+        if (_catalog == null)
         {
             return;
         }
@@ -91,11 +95,11 @@ public class CSceneFlowManager : MonoBehaviour
     {
         List<SceneEntry> entries = new List<SceneEntry>();
 
-        if(entries == null || entries.Count == 0)
+        if (entries == null || entries.Count == 0)
         {
             return;
         }
-        
+
         string currentName = SceneManager.GetActiveScene().name;
 
         for (int i = 0; i < entries.Count; i++)
@@ -115,7 +119,7 @@ public class CSceneFlowManager : MonoBehaviour
     public void LoadScene(ESceneId id)
     {
         bool loadSuccess = _catalog.TryGetSceneName(id, out string sceneName);
-        
+
         if (!loadSuccess)
         {
             CPrint.Warn($"Load Fail : [{id}] 없음");
@@ -140,23 +144,21 @@ public class CSceneFlowManager : MonoBehaviour
 
         _isLoading = true;
 
+        _loadPanel.SetActive(true);
+        yield return null;
+
         CPrint.Log($"id = {id} / sceneName = {sceneName}");
 
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
 
-        op.allowSceneActivation = false;
-        _loadPanel.SetActive(true);
-
-
-        while(op.progress < 0.9f)
+        while (op.progress < 0.9f)
         {
+            _progressBar.fillAmount = op.progress;
             yield return null;
         }
 
-        op.allowSceneActivation = true;
+        _progressBar.fillAmount = op.progress;
         _loadPanel.SetActive(false);
-
-        yield return null;
 
         SyncCursorToCurrentScene();
 
@@ -167,7 +169,7 @@ public class CSceneFlowManager : MonoBehaviour
     {
         string current = SceneManager.GetActiveScene().name;
 
-        if(_catalog.TryGetSceneId(current, out ESceneId id))
+        if (_catalog.TryGetSceneId(current, out ESceneId id))
         {
             return;
         }
