@@ -63,6 +63,11 @@ public class CPlayer : CEntity
     {
         get { return _currentHp; }
     }
+    public int CurrentStress
+    {
+        get { return _currentStress; }
+    }
+
 
     public CHeroDataSO HeroData { get { return _heroData; } }
     public override ERank CurrentRank
