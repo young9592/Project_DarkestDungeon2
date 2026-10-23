@@ -12,6 +12,10 @@ public class CTheCrossroadsUIButton : MonoBehaviour
     [SerializeField] private int _currentindex;
     #endregion
 
+    private void Update()
+    {
+        HeroStateUIOpen();
+    }
     public void ClickButton()
     {
         if (_heroRosterUI != null)
@@ -34,6 +38,14 @@ public class CTheCrossroadsUIButton : MonoBehaviour
         if (_heroPlacementUI != null)
         {
             _heroPlacementUI.SetHeroSlot(_currentindex);
+        }
+    }
+
+    public void HeroStateUIOpen()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("영웅 상태창 열림");
         }
     }
 
