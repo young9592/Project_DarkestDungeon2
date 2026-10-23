@@ -23,7 +23,6 @@ public class CTempEntity : CEntity
     // 임시 값
     [SerializeField] private int _currentHealth = 10;
     [SerializeField] private int _speed;
-    [SerializeField] private bool _isDead = false;
     // 추가 행동 부여
     [SerializeField] private bool _hasExtraTurn = false;
     [SerializeField] private EJewelryType _equipJewelry = EJewelryType.None;
@@ -39,7 +38,6 @@ public class CTempEntity : CEntity
     public bool HasExtraTurn { get; set; }
     public EJewelryType EquipJewelry => _equipJewelry;
     public int TempEntitySpeed => _speed;
-    public bool IsDead => _isDead;
     #endregion
 
     protected override void Awake()
