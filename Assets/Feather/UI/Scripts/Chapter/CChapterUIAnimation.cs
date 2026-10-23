@@ -16,6 +16,14 @@ public class CChapterUIAnimation : MonoBehaviour
     [SerializeField] private float _moveDuration = 1.0f;
     #endregion
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            ChapterMenuEnter();
+        }
+    }
+
     //챕터 메뉴 등장
     private IEnumerator MoveChapterMenuEnter()
     {
