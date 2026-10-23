@@ -26,6 +26,7 @@ public class CStateText : MonoBehaviour
     [SerializeField] private Sprite _burnSprite;
     [SerializeField] private Sprite _dazeSprite;
     [SerializeField] private Sprite _stunSprite;
+    [SerializeField] private Sprite _healSprite;
     #endregion
 
     #region Field
@@ -100,6 +101,7 @@ public class CStateText : MonoBehaviour
                 break;
             // 후에 수정 필요할수도 있음
             case EEffectType.Heal:
+                _iconImage.sprite = _healSprite;
                 SetAlignment(TextType.Dot, text);
                 _text.color = new Color32(151, 255, 183, 255);
                 break;
