@@ -4,5 +4,29 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Build.unity
+    guid: 95a0c843afb92444fa43c875b5ac5a8c
+  - enabled: 1
+    path: Assets/Scenes/Main/Title.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Park.unity
+    guid: d31241fee07789346ae163c34546c8de
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Sin/Temp_Sin_Chapter.unity
+    guid: 812dbc0c3baa09246be4bbb8132581ed
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Sin/Temp_Sin_TheCrossroads.unity
+    guid: 960abbe9ba8a43144a3605d635d42051
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Go/Temp_Go.unity
+    guid: 67379238b5a90174e9e40c7458858458
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Lee.unity
+    guid: aad721ed710a41c4485304a0f1b374a1
+  - enabled: 1
+    path: Assets/Scenes/Test/Temp_Jo.unity
+    guid: 80c2dac491e1df944bb109f58d93d474
   m_configObjects: {}
