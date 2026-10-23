@@ -213,6 +213,7 @@ MonoBehaviour:
   _burnSprite: {fileID: 21300000, guid: 383b2f5a64649c74fb19a629d8ccaf0b, type: 3}
   _dazeSprite: {fileID: 21300000, guid: dce76dd742dffab48aae1456fd5c1d77, type: 3}
   _stunSprite: {fileID: 21300000, guid: 30f464601a0f44645b0f56419b2fe85b, type: 3}
+  _healSprite: {fileID: 21300000, guid: d1bdb7050ebe0c049af0ee6db560e676, type: 3}
 --- !u!1 &7488851534494778716
 GameObject:
   m_ObjectHideFlags: 0

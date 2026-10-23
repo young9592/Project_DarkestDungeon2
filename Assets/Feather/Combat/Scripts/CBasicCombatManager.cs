@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,8 +48,9 @@ public class CBasicCombatManager : MonoBehaviour
     [SerializeField] private GameObject _stateTextRoot;
     [SerializeField] private Canvas _canvas;
 
-    [Header("Death Stamp")]
+    [Header("Icon Prefab")]
     [SerializeField] private GameObject _deathStampPrefab;
+    [SerializeField] private GameObject _targetPrefab;
     [SerializeField] private GameObject _iconPrefabRoot;
 
     [Header("Option")]
@@ -74,6 +77,7 @@ public class CBasicCombatManager : MonoBehaviour
     private List<(CTempEntity entity, int turnSpeed)> _turnList = new List<(CTempEntity, int)>();
     // 초상화 리스트
     private List<GameObject> _turnPortraitList = new List<GameObject>();
+    private GameObject _myTurn = null;
     private Coroutine _coroutine = null;
     private string _message = "";
     private int _round = 0;
@@ -202,6 +206,105 @@ public class CBasicCombatManager : MonoBehaviour
 
         Debug.Log("속성 부여 완료");
     }
+
+    // 진짜 임시 랜덤 스킬 [ 그냥 보기 위한 것 ]
+    public void TempRandomSkill(CTempEntity cTempEntity)
+    {
+        switch (cTempEntity.Type)
+        {
+            case EEntityType.Hero:
+                int random1 = UnityEngine.Random.Range(0, 5);
+
+                if (random1 < 3)
+                {
+                    for (int i = 0; i < _fieldEntitiesList.Count; i++)
+                    {
+                        if (_fieldEntitiesList[i].Type == EEntityType.Enemy)
+                        {
+                            int randDmg = UnityEngine.Random.Range(1, 6);
+                            int cri = UnityEngine.Random.Range(0, 4);
+
+                            if (cri < 3)
+                            {
+                                _fieldEntitiesList[i].TakeDamage(randDmg);
+                                ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Damage, $"{randDmg}");
+                            }
+                            else
+                            {
+                                _fieldEntitiesList[i].TakeDamage(randDmg * 2);
+                                ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Damage, $"{randDmg * 2}", new Color32(241, 116, 9, 255));
+                                ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Damage, "치명타!", new Color32(241, 116, 9, 255));
+                            }
+
+                            if (cTempEntity.gameObject.name == "ManAtArms")
+                            {
+                                CEffect effect = new CEffect(_daze);
+                                _fieldEntitiesList[i].ApplyStatusEffect(effect);
+                                ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Daze, "추가");
+                            }
+
+
+
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < _fieldEntitiesList.Count; i++)
+                    {
+                        if (_fieldEntitiesList[i].Type == EEntityType.Hero)
+                        {
+                            int heal = UnityEngine.Random.Range(1, 6);
+                            _fieldEntitiesList[i].TakeDamage(-heal);
+                            ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Heal, $"{heal}");
+                        }
+                    }
+                }
+                break;
+            case EEntityType.Enemy:
+                for (int i = 0; i < _fieldEntitiesList.Count; i++)
+                {
+                    if (_fieldEntitiesList[i].Type == EEntityType.Hero)
+                    {
+                        int randDmg = UnityEngine.Random.Range(1, 6);
+                        int cri = UnityEngine.Random.Range(0, 4);
+
+
+
+                        if (cri < 3)
+                        {
+                            _fieldEntitiesList[i].TakeDamage(randDmg);
+                            ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Damage, $"{randDmg}");
+                        }
+                        else
+                        {
+                            _fieldEntitiesList[i].TakeDamage(randDmg * 2);
+                            ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Damage, $"{randDmg * 2}", new Color32(241, 116, 9, 255));
+                            ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Damage, "치명타!", new Color32(241, 116, 9, 255));
+                        }
+
+                        if (cTempEntity.gameObject.name != "Entity (8)")
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            int randomBurn = UnityEngine.Random.Range(0, 6);
+
+                            if (randomBurn < 2)
+                            {
+                                CEffect effect = new CEffect(_burn);
+                                _fieldEntitiesList[i].ApplyStatusEffect(effect);
+                                ShowUIMessage(_fieldEntitiesList[i].gameObject, EEffectType.Burn, "화상");
+                            }
+
+                        }
+                    }
+                }
+                break;
+        }
+    }
     #endregion
 
 
@@ -317,6 +420,13 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         _message = $"{_turnList[0].entity.name}의 턴";
+
+        if (_myTurn != null)
+        {
+            Destroy(_myTurn);
+        }
+
+        _myTurn = ShowUIIcon(_turnList[0].entity.gameObject, _targetPrefab);
 
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
@@ -491,6 +601,8 @@ public class CBasicCombatManager : MonoBehaviour
         _message = $"{_turnList[0].entity.name} 행동";
         ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.None, "행동");
 
+        TempRandomSkill(_turnList[0].entity);
+
         yield return new WaitForSeconds(_actionDelay);
 
         bool _isAfterDead = _turnList[0].entity.IsDead;
@@ -615,20 +727,22 @@ public class CBasicCombatManager : MonoBehaviour
         }
     }
     // 현재는 죽음의 일격정도만 있습니다.
-    private void ShowUIIcon(GameObject target, GameObject prefab, float delay = 0f)
+    private GameObject ShowUIIcon(GameObject target, GameObject prefab, float delay = 0f)
     {
         GameObject iconPrefab = Instantiate(prefab, _iconPrefabRoot.transform);
         CIcon icon = iconPrefab.GetComponent<CIcon>();
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
+
 
         if (delay == 0f)
         {
-            icon.SetIcon(_canvas, screenPos);
+            icon.SetIcon(_canvas, target);
         }
         else
         {
-            StartCoroutine(CoDelayShow(() => icon.SetIcon(_canvas, screenPos), delay));
+            StartCoroutine(CoDelayShow(() => icon.SetIcon(_canvas, target), delay));
         }
+
+        return iconPrefab;
     }
     private IEnumerator CoDelayShow(Action action, float delay)
     {
