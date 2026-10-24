@@ -1946,6 +1946,12 @@ MonoBehaviour:
   - {fileID: 1960252239}
   - {fileID: 841850004}
   - {fileID: 1916305732}
+  _chapterText:
+  - Denial
+  - Resentment
+  - Obsession
+  - Ambition
+  - Cowardice
   _textButtons:
   - {fileID: 461385963}
   - {fileID: 1488752822}

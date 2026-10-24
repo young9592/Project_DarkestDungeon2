@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8333393942071210236}
   - component: {fileID: 804672543303931575}
   - component: {fileID: 2137048716228786562}
+  - component: {fileID: 719840200110033001}
   m_Layer: 0
   m_Name: Hero_GraveRobber
   m_TagString: Untagged
@@ -400,3 +401,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &719840200110033001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7440417726439134939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2fd7c72c22c47198e6380f19e6230be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skill: {fileID: 11400000, guid: 5eaf1ab69225dbf4d8bac9a3c58198a0, type: 2}
+  _shader: {fileID: 4800000, guid: 24ff07008e984fabb58eae71193f7a50, type: 3}
+  _tint: {r: 0.22, g: 0.18, b: 0.85, a: 1}
+  _echoStart: 0.1
+  _fadeStart: 0.78
+  _returnDuration: 0.18

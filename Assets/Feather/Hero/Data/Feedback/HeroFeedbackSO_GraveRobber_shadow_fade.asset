@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf66d92403c42d4a8e67325c5dae37d, type: 3}
   m_Name: HeroFeedbackSO_GraveRobber_shadow_fade
   m_EditorClassIdentifier: 
-  _launch: {fileID: 5126751830505223851, guid: 1e2c63ad60114104ea0688ead832cf9a, type: 3}
+  _launch: {fileID: 0}
   _projectile: {fileID: 0}
-  _impact: {fileID: 5126751830505223851, guid: 1e2c63ad60114104ea0688ead832cf9a, type: 3}
+  _impact: {fileID: 0}
   _releaseTime: 0.1
   _shotCount: 1
   _shotSpacing: 0.15

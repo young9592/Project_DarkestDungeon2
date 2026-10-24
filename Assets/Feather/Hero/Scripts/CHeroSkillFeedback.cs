@@ -11,6 +11,7 @@ public class CHeroSkillFeedback : MonoBehaviour
     [Header("Projectile Origin")]
     [SerializeField] private Transform _projectileOrigin;
     private CPlayer _hero;
+    private CHeroShadowFadePresentation _shadowFade;
     private CHeroAnimation _animation;
     private Camera _camera;
     private CHeroSkillFeedbackSO _feedback;
@@ -31,6 +32,7 @@ public class CHeroSkillFeedback : MonoBehaviour
     {
         get
         {
+            if (_shadowFade != null && _shadowFade.IsBusy) return true;
             for (int i = 0; i < _visuals.Count; i++)
             {
                 if (_visuals[i] != null && _visuals[i].gameObject.activeSelf) return true;
@@ -43,6 +45,7 @@ public class CHeroSkillFeedback : MonoBehaviour
     private void Awake()
     {
         _hero = GetComponent<CPlayer>();
+        _shadowFade = GetComponent<CHeroShadowFadePresentation>();
         _animation = GetComponent<CHeroAnimation>();
         _camera = Camera.main;
         if (_audio == null) _audio = GetComponent<AudioSource>();
