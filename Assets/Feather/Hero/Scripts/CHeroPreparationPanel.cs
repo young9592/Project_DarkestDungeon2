@@ -8,6 +8,7 @@ public class CHeroPreparationPanel : MonoBehaviour
     [Header("Party")]
     [SerializeField] private CHeroPartyTest _partyTest;
     [SerializeField] private GameObject _panelRoot;
+    [SerializeField] private CHeroPartyPresets _presets;
     [Header("Selection")]
     [SerializeField] private Button[] _heroButtons;
     [SerializeField] private Button[] _skillButtons;
@@ -27,13 +28,19 @@ public class CHeroPreparationPanel : MonoBehaviour
     [SerializeField] private CHeroSkillDetailView _skillDetails;
     [SerializeField] private CHeroPreparationModel _modelPreview;
     private CSkillDataSO _inspectedSkill;
-    private int _selectedIndex;
     private readonly List<CEntityHealthView> _hiddenHealthViews = new List<CEntityHealthView>();
     private readonly List<bool> _healthVisibility = new List<bool>();
+    private int _selectedIndex;
     private bool _isOpen;
+    public event System.Action<bool> OnClosed;
     public bool IsOpen
     {
         get { return _isOpen; }
+    }
+
+    public string SaveNotice
+    {
+        get { return _presets != null ? _presets.Notice : string.Empty; }
     }
 
     public int SelectedIndex
@@ -142,6 +149,10 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
 
         Refresh();
+        if (_presets != null && !string.IsNullOrEmpty(_presets.Notice))
+        {
+            SetSaveNotice(_presets.Notice);
+        }
         return true;
     }
 
@@ -309,10 +320,20 @@ public class CHeroPreparationPanel : MonoBehaviour
 
         Release(_runtimeAssets);
         _runtimeAssets.AddRange(nextAssets);
-        _panelRoot.SetActive(false);
         RestoreHealthViews();
+        _panelRoot.SetActive(false);
         _partyTest.EndPreparation();
         _partyTest.TrySelectHero(_selectedIndex);
+        if (_presets != null)
+        {
+            _presets.Close();
+            if (TryCaptureParty(out CHeroSavedParty saved))
+            {
+                _presets.SaveApplied(saved);
+            }
+        }
+
+        OnClosed?.Invoke(true);
         return true;
     }
 
@@ -342,6 +363,11 @@ public class CHeroPreparationPanel : MonoBehaviour
         }
 
         _isOpen = false;
+        if (_presets != null)
+        {
+            _presets.Close();
+        }
+
         RestoreHealthViews();
         if (_panelRoot != null)
         {
@@ -353,39 +379,18 @@ public class CHeroPreparationPanel : MonoBehaviour
             _partyTest.EndPreparation();
         }
 
+        OnClosed?.Invoke(false);
     }
-
-    private void HideHealthViews()
-    {
-        _hiddenHealthViews.Clear();
-        _healthVisibility.Clear();
-        CEntityHealthView[] views = FindObjectsOfType<CEntityHealthView>();
-        for (int i = 0; i < views.Length; i++)
-        {
-            _hiddenHealthViews.Add(views[i]);
-            _healthVisibility.Add(views[i].ShowBar);
-            views[i].ShowBar = false;
-        }
-    }
-
-    private void RestoreHealthViews()
-    {
-        for (int i = 0; i < _hiddenHealthViews.Count; i++)
-        {
-            if (_hiddenHealthViews[i] != null)
-            {
-                _hiddenHealthViews[i].ShowBar = _healthVisibility[i];
-            }
-        }
-
-        _hiddenHealthViews.Clear();
-        _healthVisibility.Clear();
-    }
-
 
     private void Update()
     {
         if (!_isOpen)
+        {
+            return;
+        }
+
+        if (CTempLeeTestUI.CanShow(this) && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame
+            && _presets != null && _presets.HandleEscape())
         {
             return;
         }
@@ -506,6 +511,65 @@ public class CHeroPreparationPanel : MonoBehaviour
         IReadOnlyList<CSkillDataSO> skills = equippedSlot ? _skills[_selectedIndex] : _prefabs[_selectedIndex].HeroData.AvailableSkills;
         if (skills == null || index < 0 || index >= skills.Count) return;
         ShowDetail(skills[index]);
+    }
+
+    public bool TryCaptureParty(out CHeroSavedParty saved)
+    {
+        saved = null;
+        return _presets != null && CanApply() && _presets.TryCapture(_prefabs, _ranks, _skills, out saved);
+    }
+
+    public bool TryLoadSavedParty(CHeroSavedParty saved)
+    {
+        if (!_isOpen || _presets == null || !_presets.TryResolve(saved,
+            out List<CPlayer> prefabs, out List<ERank> ranks, out List<List<CSkillDataSO>> skills))
+        {
+            return false;
+        }
+
+        // 전체 편성을 확인한 뒤 편집 중인 목록 교체
+        _prefabs.Clear();
+        _prefabs.AddRange(prefabs);
+        _ranks.Clear();
+        _ranks.AddRange(ranks);
+        _skills.Clear();
+        _skills.AddRange(skills);
+        _selectedIndex = 0;
+        _inspectedSkill = _skills[0][0];
+        Refresh();
+        return true;
+    }
+
+    public void SetSaveNotice(string message)
+    {
+        if (_status != null) _status.text = message;
+    }
+
+    private void HideHealthViews()
+    {
+        _hiddenHealthViews.Clear();
+        _healthVisibility.Clear();
+        CEntityHealthView[] views = FindObjectsOfType<CEntityHealthView>();
+        for (int i = 0; i < views.Length; i++)
+        {
+            _hiddenHealthViews.Add(views[i]);
+            _healthVisibility.Add(views[i].ShowBar);
+            views[i].ShowBar = false;
+        }
+    }
+
+    private void RestoreHealthViews()
+    {
+        for (int i = 0; i < _hiddenHealthViews.Count; i++)
+        {
+            if (_hiddenHealthViews[i] != null)
+            {
+                _hiddenHealthViews[i].ShowBar = _healthVisibility[i];
+            }
+        }
+
+        _hiddenHealthViews.Clear();
+        _healthVisibility.Clear();
     }
 
     private void ShowDetail(CSkillDataSO skill)

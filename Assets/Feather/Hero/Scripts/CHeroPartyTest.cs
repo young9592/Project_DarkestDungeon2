@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +19,11 @@ public class CHeroPartyTest : MonoBehaviour
     [SerializeField] private MonoBehaviour[] _otherPanels;
     [SerializeField] private Camera _camera;
     [SerializeField] private CHeroPreparationPanel _preparation;
+    [SerializeField] private CHeroPartyPresets _presets;
+    [SerializeField] private CPartyEnemyPreview _enemyPreview;
+
     private readonly List<CPlayer> _heroes = new List<CPlayer>();
+    private readonly List<ERank> _displayedRanks = new List<ERank>();
     private GameObject _loadedRoot;
     private bool _isOpen;
     private bool[] _panelStates;
@@ -30,6 +35,9 @@ public class CHeroPartyTest : MonoBehaviour
     private Canvas _presentationCanvas;
     private GraphicRaycaster _presentationRaycaster;
     private string _lastRequest = "Choose a Hero, then a skill";
+    private CHeroPartySO _activeParty;
+    private bool _isPreviewSuspended;
+    private bool _isEnemyPreview;
     public IReadOnlyList<CPlayer> Heroes
     {
         get { return _heroes; }
@@ -40,6 +48,22 @@ public class CHeroPartyTest : MonoBehaviour
         get { return _parties; }
     }
 
+    public IReadOnlyList<CEnemyGroupSO> Groups
+    {
+        get { return _groups; }
+    }
+
+    public CHeroPartySO ActiveParty
+    {
+        get { return _activeParty; }
+    }
+
+    public bool IsPreviewSuspended
+    {
+        get { return _isPreviewSuspended; }
+    }
+
+    public bool ShowControls { get; set; } = true;
 
     public bool IsOpen
     {
@@ -65,6 +89,11 @@ public class CHeroPartyTest : MonoBehaviour
     {
         get
         {
+            if (_isEnemyPreview)
+            {
+                return true;
+            }
+
             for (int i = 0; i < _heroes.Count; i++)
             {
                 if (_heroes[i] != null
@@ -78,6 +107,35 @@ public class CHeroPartyTest : MonoBehaviour
 
             return false;
         }
+    }
+
+    public bool TryBeginEnemyPreview()
+    {
+        if (!_isOpen || _isPreviewSuspended || IsPreparing || IsBusy)
+        {
+            return false;
+        }
+
+        if (SelectedHero != null)
+        {
+            SelectedHero.CancelAction();
+        }
+
+        _isEnemyPreview = true;
+        _input.enabled = false;
+        return true;
+    }
+
+    public void EndEnemyPreview()
+    {
+        _isEnemyPreview = false;
+        if (!_isOpen || _isPreviewSuspended || IsPreparing)
+        {
+            return;
+        }
+
+        _input.enabled = true;
+        TrySelectHero(_selectedIndex);
     }
 
     private void Awake()
@@ -110,7 +168,7 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool BeginPreparation()
     {
-        if (!_isOpen || IsBusy || IsPreparing)
+        if (!_isOpen || _isPreviewSuspended || IsBusy || IsPreparing)
         {
             return false;
         }
@@ -157,6 +215,9 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool OpenTest()
     {
+        if (!isActiveAndEnabled) return false;
+
+
         if (_isOpen
             || _input == null
             || _viewRoot == null
@@ -195,7 +256,8 @@ public class CHeroPartyTest : MonoBehaviour
         _viewRoot.SetActive(true);
         _groupTest.enabled = true;
         _groupTest.ShowControls = false;
-        if (TryLoadParty(_parties[0]) && SwitchGroup(0))
+        CHeroPartySO restored = _presets != null ? _presets.RestoreLastApplied() : null;
+        if (TryLoadParty(restored != null ? restored : _parties[0]) && SwitchGroup(0))
         {
             return true;
         }
@@ -204,9 +266,11 @@ public class CHeroPartyTest : MonoBehaviour
         return false;
     }
 
+
+
     public bool TryLoadParty(CHeroPartySO party)
     {
-        if (!_isOpen || IsBusy || _partyRoot == null || party == null || !party.TryValidate(out _))
+        if (!_isOpen || _isPreviewSuspended || IsBusy || _partyRoot == null || party == null || !party.TryValidate(out _))
         {
             return false;
         }
@@ -233,6 +297,7 @@ public class CHeroPartyTest : MonoBehaviour
         _lastRequest = "Choose a skill and target";
         _loadedRoot = nextRoot;
         _heroes.AddRange(nextHeroes);
+        _activeParty = party;
         for (int i = 0; i < _heroes.Count; i++)
         {
             _heroes[i].OnActionRequested += HandleRequest;
@@ -241,6 +306,72 @@ public class CHeroPartyTest : MonoBehaviour
         UpdatePositions();
         UpdateButtonOrder();
         return TrySelectHero(0);
+    }
+
+    public bool SuspendPreview()
+    {
+        if (!_isOpen || _isPreviewSuspended || IsPreparing || IsBusy)
+        {
+            return false;
+        }
+
+        if (_enemyPreview != null)
+        {
+            _enemyPreview.Detach();
+        }
+
+        _isPreviewSuspended = true;
+        ClearParty();
+        _groupTest.SuspendGroup();
+        _input.enabled = false;
+        if (_presentationCanvas != null)
+        {
+            _presentationCanvas.enabled = false;
+        }
+
+        if (_presentationRaycaster != null)
+        {
+            _presentationRaycaster.enabled = false;
+        }
+
+        return true;
+    }
+
+    public bool ResumePreview(int groupIndex)
+    {
+        if (!_isOpen
+            || !_isPreviewSuspended
+            || _activeParty == null
+            || !_activeParty.TryValidate(out _)
+            || _groups == null
+            || groupIndex < 0
+            || groupIndex >= _groups.Length
+            || _groups[groupIndex] == null
+            || !_groups[groupIndex].TryValidate(out _))
+        {
+            return false;
+        }
+
+        _isPreviewSuspended = false;
+        _input.enabled = true;
+        if (_presentationCanvas != null)
+        {
+            _presentationCanvas.enabled = true;
+        }
+
+        if (_presentationRaycaster != null)
+        {
+            _presentationRaycaster.enabled = true;
+        }
+
+        if (!TryLoadParty(_activeParty) || !SwitchGroup(groupIndex))
+        {
+            SuspendPreview();
+            return false;
+        }
+
+        _requests = 0;
+        return true;
     }
 
     public bool TryMoveSelectedToNextRank()
@@ -264,15 +395,11 @@ public class CHeroPartyTest : MonoBehaviour
 
     private void UpdatePositions()
     {
+        _displayedRanks.Clear();
         for (int i = 0; i < _heroes.Count; i++)
         {
-            for (int rank = 0; rank < 4; rank++)
-            {
-                if (_heroes[i].CurrentRank == (ERank)(1 << rank))
-                {
-                    _heroes[i].transform.position = _frontPosition + _rankStep * rank;
-                }
-            }
+            _heroes[i].RankPresentation.Configure(_frontPosition, _rankStep, _heroes);
+            _displayedRanks.Add(_heroes[i].CurrentRank);
         }
     }
 
@@ -298,7 +425,7 @@ public class CHeroPartyTest : MonoBehaviour
     public bool TrySelectHero(int index)
     {
         if (!_isOpen
-           
+            || _isPreviewSuspended
             || IsPreparing
             || IsBusy
             || index < 0
@@ -360,12 +487,16 @@ public class CHeroPartyTest : MonoBehaviour
             return false;
         }
 
+        if (!TrySelectHero(_selectedIndex))
+        {
+            return false;
+        }
+
         ERank previous = _heroes[first].CurrentRank;
         _heroes[first].TrySetRank(_heroes[second].CurrentRank);
         _heroes[second].TrySetRank(previous);
-        UpdatePositions();
         UpdateButtonOrder();
-        return TrySelectHero(_selectedIndex);
+        return true;
     }
 
     private void HandleRequest(CEntity actor, CEntity target, CSkillDataSO skill)
@@ -389,9 +520,20 @@ public class CHeroPartyTest : MonoBehaviour
 
     private void Update()
     {
+
+
         if (!_isOpen || _heroButtons == null)
         {
             return;
+        }
+
+        for (int i = 0; i < _heroes.Count && i < _displayedRanks.Count; i++)
+        {
+            if (_heroes[i] != null && _displayedRanks[i] != _heroes[i].CurrentRank)
+            {
+                _displayedRanks[i] = _heroes[i].CurrentRank;
+                UpdateButtonOrder();
+            }
         }
 
         // 완료 후 같은 영웅 다시 선택
@@ -412,7 +554,8 @@ public class CHeroPartyTest : MonoBehaviour
                 continue;
             }
 
-            _heroButtons[i].interactable = !IsPreparing && !IsBusy && i < _heroes.Count && _heroes[i].isActiveAndEnabled && !_heroes[i].IsDeathPresented;
+            _heroButtons[i].interactable = !IsPreparing && !IsBusy && i < _heroes.Count
+                && _heroes[i].isActiveAndEnabled && !_heroes[i].IsDeathPresented;
             _heroButtons[i].image.color = i == _selectedIndex ? new Color(0.65f, 0.42f, 0.12f) : new Color(0.18f, 0.23f, 0.28f);
             Text label = _heroButtons[i].GetComponentInChildren<Text>();
             if (label != null && i < _heroes.Count)
@@ -453,8 +596,12 @@ public class CHeroPartyTest : MonoBehaviour
             _heroes[i].CancelAction();
         }
 
-        _input.SetHero(null);
+        if (_input != null)
+        {
+            _input.SetHero(null);
+        }
         _heroes.Clear();
+        _displayedRanks.Clear();
         if (_loadedRoot != null)
         {
             _loadedRoot.SetActive(false);
@@ -466,21 +613,42 @@ public class CHeroPartyTest : MonoBehaviour
 
     public void CloseTest()
     {
+
+
         if (!_isOpen)
         {
             return;
         }
 
+        _isOpen = false;
+        if (_enemyPreview != null)
+        {
+            _enemyPreview.Detach();
+        }
+
+        _isEnemyPreview = false;
         if (IsPreparing)
         {
             _preparation.Cancel();
         }
 
+        _isPreviewSuspended = false;
         ClearParty();
-        _groupTest.ClearGroup();
-        _groupTest.enabled = false;
-        _viewRoot.SetActive(false);
-        _input.enabled = true;
+        if (_groupTest != null)
+        {
+            _groupTest.ClearGroup();
+            _groupTest.enabled = false;
+        }
+
+        if (_viewRoot != null)
+        {
+            _viewRoot.SetActive(false);
+        }
+
+        if (_input != null)
+        {
+            _input.enabled = true;
+        }
         if (_presentationCanvas != null)
         {
             _presentationCanvas.enabled = true;
@@ -491,11 +659,16 @@ public class CHeroPartyTest : MonoBehaviour
             _presentationRaycaster.enabled = true;
         }
 
-        _camera.transform.position = _cameraPosition;
-        _camera.orthographicSize = _cameraSize;
-        if (_otherPanels != null)
+        _activeParty = null;
+        if (_camera != null)
         {
-            for (int i = 0; i < _otherPanels.Length; i++)
+            _camera.transform.position = _cameraPosition;
+            _camera.orthographicSize = _cameraSize;
+        }
+
+        if (_otherPanels != null && _panelStates != null)
+        {
+            for (int i = 0; i < _otherPanels.Length && i < _panelStates.Length; i++)
             {
                 if (_otherPanels[i] != null)
                 {
@@ -504,7 +677,6 @@ public class CHeroPartyTest : MonoBehaviour
             }
         }
 
-        _isOpen = false;
     }
 
     private void OnDisable()
@@ -516,10 +688,12 @@ public class CHeroPartyTest : MonoBehaviour
     {
         if (!CTempLeeTestUI.CanShow(this)) return;
 
-        if (IsPreparing)
+        if (!ShowControls || IsPreparing)
         {
             return;
         }
+
+
 
         if (!_isOpen)
         {
