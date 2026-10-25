@@ -83,6 +83,13 @@ public class CHeroSkillSO : CSkillDataSO
             return false;
         }
 
+        if ((actor is CPlayer heroActor && heroActor.IsDeathPresented)
+            || (target is CPlayer heroTarget && heroTarget.IsDeathPresented)
+            || (target is CEnemy enemyTarget && enemyTarget.IsDeathPresented))
+        {
+            return false;
+        }
+
         CEnemy enemy = target as CEnemy;
         if (enemy != null && enemy.CurrentHp <= 0)
         {

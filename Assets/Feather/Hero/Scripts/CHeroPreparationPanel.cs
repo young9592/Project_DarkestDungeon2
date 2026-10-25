@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -390,7 +390,7 @@ public class CHeroPreparationPanel : MonoBehaviour
             return;
         }
 
-        if (_partyTest == null || !_partyTest.IsOpen || (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame))
+        if (_partyTest == null || !_partyTest.IsOpen || (CTempLeeTestUI.CanShow(this) && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame))
         {
             Cancel();
         }

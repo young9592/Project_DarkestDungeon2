@@ -152,6 +152,8 @@ public class CEnemyAutoActionTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (!_isOpen)
         {
             if (GUI.Button(new Rect(Screen.width - 150.0f, Screen.height - 60.0f, 140.0f, 25.0f), "Open Enemy AI")) OpenTest();
