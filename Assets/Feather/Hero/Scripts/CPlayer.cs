@@ -208,8 +208,10 @@ public class CPlayer : CEntity
         for (int i = 0; i < _actionTargets.Count; i++)
         {
             CEntity target = _actionTargets[i];
-            if (target is CPlayer hero && hero.IsDeathPresented
+            if ((target is CPlayer hero && hero.IsDeathPresented
                 && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+                || (target is CEnemy enemy && enemy.IsDeathPresented
+                && (!enemy.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying)))
             {
                 CancelAction();
                 return;

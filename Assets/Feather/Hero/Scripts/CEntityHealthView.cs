@@ -62,6 +62,8 @@ public class CEntityHealthView : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (!ShowBar || _camera == null || MaxHp <= 0)
         {
             return;

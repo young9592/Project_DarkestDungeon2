@@ -166,6 +166,17 @@ public class CEnemyAttackAnimation : MonoBehaviour
         }
     }
 
+    public void CompleteHitForDeath()
+    {
+        if (!IsHitReacting)
+        {
+            return;
+        }
+
+        PlayIdle();
+        OnHitCompleted?.Invoke();
+    }
+
     public bool TryPlayAttack()
     {
         return TryPlayAttackStates(_attackStateHash, _attackPoseStateHash);

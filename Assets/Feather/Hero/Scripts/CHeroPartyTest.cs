@@ -303,6 +303,7 @@ public class CHeroPartyTest : MonoBehaviour
             || IsBusy
             || index < 0
             || index >= _heroes.Count
+            || _heroes[index].IsDeathPresented
             || !_heroes[index].isActiveAndEnabled)
         {
             return false;
@@ -397,6 +398,7 @@ public class CHeroPartyTest : MonoBehaviour
         if (!IsPreparing
             && !IsBusy
             && SelectedHero != null
+            && !SelectedHero.IsDeathPresented
             && SelectedHero.isActiveAndEnabled
             && SelectedHero.ActionState == EEntityActionState.Idle)
         {
@@ -410,7 +412,7 @@ public class CHeroPartyTest : MonoBehaviour
                 continue;
             }
 
-            _heroButtons[i].interactable = !IsPreparing && !IsBusy && i < _heroes.Count && _heroes[i].isActiveAndEnabled;
+            _heroButtons[i].interactable = !IsPreparing && !IsBusy && i < _heroes.Count && _heroes[i].isActiveAndEnabled && !_heroes[i].IsDeathPresented;
             _heroButtons[i].image.color = i == _selectedIndex ? new Color(0.65f, 0.42f, 0.12f) : new Color(0.18f, 0.23f, 0.28f);
             Text label = _heroButtons[i].GetComponentInChildren<Text>();
             if (label != null && i < _heroes.Count)
@@ -512,6 +514,8 @@ public class CHeroPartyTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (IsPreparing)
         {
             return;

@@ -57,6 +57,8 @@ public class CEnemyTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         float panelHeight = _showDetails ? 430.0f : 30.0f;
         GUILayout.BeginArea(new Rect(360.0f, 20.0f, 300.0f, panelHeight), GUI.skin.box);
         if (GUILayout.Button("Enemy Runtime Test" + (_showDetails ? " [-]" : " [+]"))) _showDetails = !_showDetails;

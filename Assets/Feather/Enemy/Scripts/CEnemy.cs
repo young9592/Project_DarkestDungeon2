@@ -16,6 +16,15 @@ public class CEnemy : CEntity
     private bool _isStartingTurn;
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
+    private CEntityDeathPresentation _deathPresentation;
+    public CEntityDeathPresentation DeathPresentation
+    {
+        get { return _deathPresentation; }
+    }
+    public bool IsDeathPresented
+    {
+        get { return _deathPresentation != null && _deathPresentation.IsConfirmed; }
+    }
     private bool _isRequestingSkill;
     public event Action<CEnemy, CEntity, CSkillDataSO> OnSkillActionRequested;
     public CEnemyDataSO EnemyData
@@ -51,6 +60,11 @@ public class CEnemy : CEntity
     protected override void Awake()
     {
         base.Awake();
+        _deathPresentation = GetComponent<CEntityDeathPresentation>();
+        if (_deathPresentation == null)
+        {
+            _deathPresentation = gameObject.AddComponent<CEntityDeathPresentation>();
+        }
         _skillFeedback = GetComponent<CEnemySkillFeedback>();
         _actionExecution = GetComponent<CEntityActionExecution>();
         if (_actionExecution == null)
@@ -87,7 +101,8 @@ public class CEnemy : CEntity
     public bool IsPresentationBusy
     {
         get { return (_attackAnimation != null && _attackAnimation.IsBusy)
-            || (_skillFeedback != null && _skillFeedback.IsBusy); }
+            || (_skillFeedback != null && _skillFeedback.IsBusy)
+            || (_deathPresentation != null && _deathPresentation.IsBusy); }
     }
 
     public bool IsAttackPresentationPlaying
@@ -180,9 +195,18 @@ public class CEnemy : CEntity
         CancelAction();
     }
 
+    private void LateUpdate()
+    {
+        if (ActionTarget is CPlayer hero && hero.IsDeathPresented
+            && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+        {
+            CancelAction();
+        }
+    }
+
     protected override bool CanBeginAction()
     {
-        return _isInitialized && _currentHp > 0 && _attackAnimation != null && _attackAnimation.isActiveAndEnabled && !IsPresentationBusy;
+        return !IsDeathPresented && _isInitialized && _currentHp > 0 && _attackAnimation != null && _attackAnimation.isActiveAndEnabled && !IsPresentationBusy;
     }
 
     protected override bool CanCompleteAction()
@@ -290,12 +314,13 @@ public class CEnemy : CEntity
 
     private bool CanSendRequest(CEntity target)
     {
-        return _isInitialized
+        return !IsDeathPresented && _isInitialized
             && isActiveAndEnabled
             && !_isRequestingSkill
             && CanIssueActionRequest
             && target != null
             && target != this
+            && (!(target is CPlayer player) || !player.IsDeathPresented)
             && target.isActiveAndEnabled
             && _attackAnimation != null
             && _attackAnimation.isActiveAndEnabled
@@ -371,7 +396,7 @@ public class CEnemy : CEntity
 
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        if (!_isInitialized || !isActiveAndEnabled || _isDead || _currentHp <= 0
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0
             || statusEffect == null || statusEffect.Data == null)
         {
             return;
@@ -417,7 +442,7 @@ public class CEnemy : CEntity
     // 턴 진행 주체가 턴 시작마다 한 번 호출합니다. 행동 재시도에는 호출하지 않습니다.
     public bool OnTurnStart()
     {
-        if (!_isInitialized || !isActiveAndEnabled || _isDead || _currentHp <= 0
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0
             || _isStartingTurn || IsActionActive || IsPresentationBusy)
         {
             return false;
@@ -449,7 +474,7 @@ public class CEnemy : CEntity
                 TakeDamage((int)Math.Min(int.MaxValue, totalDamage));
             }
 
-            if (!isActiveAndEnabled || _isDead || _currentHp <= 0) return false;
+            if (!isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0) return false;
             return !TokenManager.ConsumeToken(EEffectType.Stun);
         }
         finally
