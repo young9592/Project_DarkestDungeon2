@@ -374,11 +374,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: e191677258321ba48979c6d71fc6a66c, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 1
   _actions: 1
-  _currentHealth: 10
-  _speed: 3
-  _isDead: 0
+  _currentHealth: 30
+  _speed: 5
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &263462310
@@ -536,11 +537,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 2
   _actions: 1
-  _currentHealth: 10
+  _currentHealth: 15
   _speed: 1
-  _isDead: 0
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &343295362
@@ -804,11 +806,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 2
   _actions: 1
-  _currentHealth: 10
+  _currentHealth: 15
   _speed: 1
-  _isDead: 0
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &431457817
@@ -1334,6 +1337,9 @@ MonoBehaviour:
   - {fileID: 1195201850}
   - {fileID: 157751108}
   - {fileID: 1339275578}
+  - {fileID: 337185864}
+  - {fileID: 879710054}
+  - {fileID: 429653290}
   - {fileID: 1180937800}
   _state: 0
   _turnOrderPrefab: {fileID: 5773832701994379882, guid: 57e0047f1eeaa0c4c9c9fb2978c85054, type: 3}
@@ -1342,6 +1348,7 @@ MonoBehaviour:
   _stateTextRoot: {fileID: 552428674}
   _canvas: {fileID: 384005849}
   _deathStampPrefab: {fileID: 8428275685590659208, guid: 60bed3f9ea804b449b83272e338a9159, type: 3}
+  _targetPrefab: {fileID: 5629277834582724754, guid: d5018ffea83ac1346850b642f080dffb, type: 3}
   _iconPrefabRoot: {fileID: 2119594959}
   _actionDelay: 3.5
   _portraitRemoveDelay: 0.05
@@ -1523,11 +1530,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: 9d621ddb49a23bb469dd6f143389b6a8, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 1
   _actions: 1
-  _currentHealth: 10
+  _currentHealth: 25
   _speed: 3
-  _isDead: 0
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &572875989
@@ -2630,11 +2638,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 2
   _actions: 1
-  _currentHealth: 10
+  _currentHealth: 15
   _speed: 1
-  _isDead: 0
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &949897049
@@ -3653,11 +3662,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: 766209dfcb3283c40adcaa7162bd57ac, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 2
   _actions: 3
-  _currentHealth: 60
-  _speed: 1
-  _isDead: 0
+  _currentHealth: 150
+  _speed: 3
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &1195201845
@@ -3779,11 +3789,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: 54c817a61061174409ed52de1b67355d, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 1
   _actions: 1
-  _currentHealth: 10
-  _speed: 3
-  _isDead: 0
+  _currentHealth: 30
+  _speed: 4
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &1235641500
@@ -3978,11 +3989,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 21300000, guid: 62b8201e633af9b48ad61cd1621529c4, type: 3}
+  _isDeathsDoor: 0
+  _isDead: 0
   _type: 1
   _actions: 1
-  _currentHealth: 10
-  _speed: 3
-  _isDead: 0
+  _currentHealth: 42
+  _speed: 9
   _hasExtraTurn: 0
   _equipJewelry: 0
 --- !u!1 &1375161214

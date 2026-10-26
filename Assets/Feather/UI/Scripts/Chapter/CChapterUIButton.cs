@@ -44,6 +44,7 @@ public class CChapterUIButton : MonoBehaviour
         _signature.SetActive(false);
         _signatureWhite.SetActive(false);
         _signatureEffect.SetActive(false);
+        _chapterMenu.ResetChapterProfile();
     }
 
 }

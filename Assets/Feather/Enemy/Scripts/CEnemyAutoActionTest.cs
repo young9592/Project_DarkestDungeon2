@@ -80,7 +80,26 @@ public class CEnemyAutoActionTest : MonoBehaviour
             CEnemyAI actor = _actors[i];
             if (actor == null) continue;
             CEnemy enemy = actor.GetComponent<CEnemy>();
-            if (!actor.IsPlanValid() || !enemy.TryBeginAction())
+            while (enemy != null && enemy.isActiveAndEnabled && enemy.IsPresentationBusy)
+            {
+                yield return null;
+            }
+
+            bool canAct = enemy != null && enemy.OnTurnStart();
+            while (enemy != null && enemy.isActiveAndEnabled && enemy.IsPresentationBusy)
+            {
+                yield return null;
+            }
+
+            if (!canAct || enemy == null || !enemy.isActiveAndEnabled)
+            {
+                _skipped++;
+                actor.CancelPlan();
+                continue;
+            }
+
+            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인합니다.
+            if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes)) || !enemy.TryBeginAction())
             {
                 _skipped++;
                 actor.CancelPlan();
@@ -133,6 +152,8 @@ public class CEnemyAutoActionTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (!_isOpen)
         {
             if (GUI.Button(new Rect(Screen.width - 150.0f, Screen.height - 60.0f, 140.0f, 25.0f), "Open Enemy AI")) OpenTest();

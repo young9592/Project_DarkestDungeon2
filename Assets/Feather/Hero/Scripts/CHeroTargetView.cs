@@ -13,6 +13,10 @@ public class CHeroTargetView : MonoBehaviour
     public CEntity Entity { get { return _entity; } }
     public CEnemy Enemy { get { return _enemy; } }
     public bool IsHighlighted { get { return _isHighlighted; } }
+    public bool IsHovered
+    {
+        get { return _isHovered; }
+    }
 
     private void Awake()
     {
@@ -45,19 +49,28 @@ public class CHeroTargetView : MonoBehaviour
     public bool TryGetHit(Ray ray, out float distance)
     {
         distance = 0.0f;
-        return _entity != null && _entity.isActiveAndEnabled && GetWorldBounds().IntersectRay(ray, out distance);
+        return CanShowTarget() && GetWorldBounds().IntersectRay(ray, out distance);
+    }
+
+    private bool CanShowTarget()
+    {
+        return _entity != null && _entity.isActiveAndEnabled
+            && (!(_entity is CPlayer hero) || !hero.IsDeathPresented)
+            && (_enemy == null || !_enemy.IsDeathPresented);
     }
 
     public void SetHighlight(bool highlighted, bool hovered)
     {
-        _isHighlighted = highlighted;
-        _isHovered = highlighted && hovered;
+        _isHighlighted = highlighted && CanShowTarget();
+        _isHovered = _isHighlighted && hovered;
     }
 
     private void OnDisable() { SetHighlight(false, false); }
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (!_isHighlighted || _camera == null || _entity == null || !_entity.isActiveAndEnabled) return;
         Bounds bounds = GetWorldBounds();
         Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
