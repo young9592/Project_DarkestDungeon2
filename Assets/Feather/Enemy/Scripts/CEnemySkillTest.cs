@@ -52,6 +52,8 @@ public class CEnemySkillTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (_needsRefresh) RefreshCandidates();
 
         float panelHeight = _showDetails ? 340.0f : 30.0f;

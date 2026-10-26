@@ -20,14 +20,15 @@ public class CEnemyIntentTest : MonoBehaviour
     {
         get
         {
-            if (!ShowTarget || !isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled
+            if (!ShowTarget || !isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented
                 || _autoAction == null || !_autoAction.isActiveAndEnabled || _autoAction.PlannedSkill == null)
             {
                 return null;
             }
 
             CEntity target = _autoAction.PlannedTarget;
-            return target != null && target.isActiveAndEnabled ? target : null;
+            return target != null && target.isActiveAndEnabled
+                && (!(target is CPlayer hero) || !hero.IsDeathPresented) ? target : null;
         }
     }
 
@@ -104,7 +105,7 @@ public class CEnemyIntentTest : MonoBehaviour
             return;
         }
 
-        if (_enemy == null || !_enemy.isActiveAndEnabled || _animation == null)
+        if (_enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented || _animation == null)
         {
             ClearIntent();
             return;
@@ -129,7 +130,7 @@ public class CEnemyIntentTest : MonoBehaviour
 
     public bool TryPrepareIntent()
     {
-        if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _animation == null || _animation.IsBusy || _isExecuting)
+        if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented || _animation == null || _animation.IsBusy || _isExecuting)
         {
             return false;
         }
@@ -151,7 +152,7 @@ public class CEnemyIntentTest : MonoBehaviour
             return false;
         }
 
-        if (_enemy == null || !_enemy.isActiveAndEnabled || !IsSkillAvailable())
+        if (_enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented || !IsSkillAvailable())
         {
             ClearIntent();
             return false;
@@ -191,6 +192,8 @@ public class CEnemyIntentTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         DrawTargetIntent();
         if (!ShowLabel)
         {
@@ -200,7 +203,7 @@ public class CEnemyIntentTest : MonoBehaviour
         CSkillDataSO skill = _autoAction != null && _autoAction.PlannedSkill != null ? _autoAction.PlannedSkill : _plannedSkill;
         CEntity target = _autoAction != null ? _autoAction.PlannedTarget : null;
         bool executing = _autoAction != null && _autoAction.PlannedSkill != null ? _autoAction.IsExecuting : _isExecuting;
-        if (skill == null || _camera == null || _enemy == null || !_enemy.isActiveAndEnabled)
+        if (skill == null || _camera == null || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented)
         {
             return;
         }

@@ -40,7 +40,7 @@ public class CEnemyGroupTest : MonoBehaviour
         }
 
         CEnemy enemy = _spawnedEnemies[index];
-        if (enemy == null || !enemy.isActiveAndEnabled)
+        if (enemy == null || !enemy.isActiveAndEnabled || enemy.IsDeathPresented)
         {
             return false;
         }
@@ -48,6 +48,15 @@ public class CEnemyGroupTest : MonoBehaviour
         _selectedEnemy = enemy;
         _selectedIntent = enemy.GetComponent<CEnemyIntentTest>();
         return _selectedIntent != null;
+    }
+
+    private void LateUpdate()
+    {
+        if (_selectedEnemy != null && _selectedEnemy.IsDeathPresented)
+        {
+            _selectedEnemy = null;
+            _selectedIntent = null;
+        }
     }
 
     public bool TryPlanSelectedSkill()
@@ -275,6 +284,8 @@ public class CEnemyGroupTest : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!CTempLeeTestUI.CanShow(this)) return;
+
         if (!ShowControls)
         {
             return;
@@ -342,7 +353,7 @@ public class CEnemyGroupTest : MonoBehaviour
         for (int i = 0; i < _spawnedEnemies.Count; i++)
         {
             CEnemy enemy = _spawnedEnemies[i];
-            if (enemy == null)
+            if (enemy == null || enemy.IsDeathPresented)
             {
                 continue;
             }

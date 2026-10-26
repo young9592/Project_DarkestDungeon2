@@ -53,6 +53,11 @@ public class CPlayer : CEntity
     {
         get { return _deathPresentation != null && _deathPresentation.IsConfirmed; }
     }
+    private CHeroRankPresentation _rankPresentation;
+    public CHeroRankPresentation RankPresentation
+    {
+        get { return _rankPresentation; }
+    }
     private bool _isGroupRequest;
     private readonly List<CEntity> _actionTargets = new List<CEntity>();
     public IReadOnlyList<CEntity> ActionTargets
@@ -137,6 +142,7 @@ public class CPlayer : CEntity
     {
         get { return (_actionAnimation != null && _actionAnimation.IsBusy)
             || (_skillFeedback != null && _skillFeedback.IsBusy)
+            || (_rankPresentation != null && _rankPresentation.IsBusy)
             || (_deathPresentation != null && _deathPresentation.IsBusy); }
     }
     public bool IsAttackPresentationPlaying
@@ -208,8 +214,10 @@ public class CPlayer : CEntity
         for (int i = 0; i < _actionTargets.Count; i++)
         {
             CEntity target = _actionTargets[i];
-            if (target is CPlayer hero && hero.IsDeathPresented
+            if ((target is CPlayer hero && hero.IsDeathPresented
                 && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+                || (target is CEnemy enemy && enemy.IsDeathPresented
+                && (!enemy.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying)))
             {
                 CancelAction();
                 return;
@@ -219,14 +227,16 @@ public class CPlayer : CEntity
 
     protected override bool CanBeginAction()
     {
-        return !IsDead && !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy);
+        return !IsDead && !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy)
+            && (_rankPresentation == null || !_rankPresentation.IsBusy);
     }
 
     protected override bool CanCompleteAction()
     {
         return (_actionExecution == null || !_actionExecution.IsRunning)
             && (_actionAnimation == null || !_actionAnimation.IsBusy)
-            && (_skillFeedback == null || !_skillFeedback.IsBusy);
+            && (_skillFeedback == null || !_skillFeedback.IsBusy)
+            && (_rankPresentation == null || !_rankPresentation.IsBusy);
     }
 
     protected override bool TryStartActionPresentation()
@@ -297,6 +307,11 @@ public class CPlayer : CEntity
         {
             _deathPresentation = gameObject.AddComponent<CEntityDeathPresentation>();
         }
+        _rankPresentation = GetComponent<CHeroRankPresentation>();
+        if (_rankPresentation == null)
+        {
+            _rankPresentation = gameObject.AddComponent<CHeroRankPresentation>();
+        }
 
         _actionExecution = GetComponent<CEntityActionExecution>();
         if (_actionExecution == null)
@@ -320,7 +335,7 @@ public class CPlayer : CEntity
     {
         _isDeathsDoor = false;
         _isDead = false;
-        
+
         _currentHp = _heroData.MaxHealth;
         _currentStress = 0;
 

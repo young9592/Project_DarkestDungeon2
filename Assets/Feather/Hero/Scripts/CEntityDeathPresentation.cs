@@ -9,7 +9,9 @@ public class CEntityDeathPresentation : MonoBehaviour
     private CEntity _entity;
     private Animator _animator;
     private CHeroAnimation _heroAnimation;
+    private CEnemyAttackAnimation _enemyAnimation;
     private bool _heroAnimationEnabled;
+    private bool _enemyAnimationEnabled;
     private bool _isConfirmed;
     private bool _isPlaying;
     private bool _keepAnimatorState;
@@ -46,6 +48,7 @@ public class CEntityDeathPresentation : MonoBehaviour
         _entity = GetComponent<CEntity>();
         _animator = GetComponentInChildren<Animator>(true);
         _heroAnimation = GetComponent<CHeroAnimation>();
+        _enemyAnimation = GetComponent<CEnemyAttackAnimation>();
     }
 
     private void OnEnable()
@@ -72,7 +75,9 @@ public class CEntityDeathPresentation : MonoBehaviour
         _isConfirmed = true;
         int version = ++_presentationVersion;
         _heroAnimationEnabled = _heroAnimation != null && _heroAnimation.enabled;
-        _wasHitReacting = _heroAnimation != null && _heroAnimation.IsHitReacting;
+        _enemyAnimationEnabled = _enemyAnimation != null && _enemyAnimation.enabled;
+        _wasHitReacting = (_heroAnimation != null && _heroAnimation.IsHitReacting)
+            || (_enemyAnimation != null && _enemyAnimation.IsHitReacting);
         _isPlaying = HasDeathClip && _animator.isActiveAndEnabled;
         if (_animator != null)
         {
@@ -86,6 +91,10 @@ public class CEntityDeathPresentation : MonoBehaviour
             _heroAnimation.CompleteHitForDeath();
         }
 
+        if (_enemyAnimation != null)
+        {
+            _enemyAnimation.CompleteHitForDeath();
+        }
 
         _entity.CancelAction();
         if (version != _presentationVersion || !_isConfirmed || !isActiveAndEnabled)
@@ -104,6 +113,11 @@ public class CEntityDeathPresentation : MonoBehaviour
             _heroAnimation.enabled = false;
         }
 
+        if (_enemyAnimation != null)
+        {
+            _enemyAnimation.CancelPlayback();
+            _enemyAnimation.enabled = false;
+        }
 
         OnDeathPresentationStarted?.Invoke(_entity);
         if (version != _presentationVersion || !_isConfirmed || !isActiveAndEnabled)
@@ -168,6 +182,11 @@ public class CEntityDeathPresentation : MonoBehaviour
             _heroAnimation.CancelPlayback();
         }
 
+        if (_enemyAnimation != null)
+        {
+            _enemyAnimation.enabled = _enemyAnimationEnabled;
+            _enemyAnimation.CancelPlayback();
+        }
 
         if (interrupted)
         {

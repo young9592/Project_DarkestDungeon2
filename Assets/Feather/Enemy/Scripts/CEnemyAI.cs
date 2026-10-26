@@ -47,7 +47,17 @@ public class CEnemyAI : MonoBehaviour
         if (_hasRequestedAction)
         {
             if (!_enemy.IsActionActive) ClearPlan();
-            else if (!IsPlanValid()) _enemy.CancelAction();
+            else if (!IsPlanValid())
+            {
+                bool finishingHit = _enemy.ActionState == EEntityActionState.Executing
+                    && !_enemy.IsAttackPresentationPlaying
+                    && _plannedTarget is CPlayer target && target.IsDeathPresented
+                    && target.DeathPresentation.WasHitReacting;
+                if (!finishingHit)
+                {
+                    _enemy.CancelAction();
+                }
+            }
             return;
         }
         if (!IsPlanValid() || _enemy.AttackAnimation.IsBusy) ClearPlan();
@@ -55,7 +65,7 @@ public class CEnemyAI : MonoBehaviour
 
     public bool TryPlanAction(IReadOnlyList<CEntity> heroes)
     {
-        if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled
+        if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented
             || _enemy.AttackAnimation == null || _enemy.AttackAnimation.IsBusy || _hasRequestedAction
             || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
 
@@ -103,7 +113,8 @@ public class CEnemyAI : MonoBehaviour
 
     public bool IsPlanValid()
     {
-        return _enemy != null && _enemy.isActiveAndEnabled && _enemy.CurrentHp > 0 && _plannedSkill != null
+        return _enemy != null && _enemy.isActiveAndEnabled && !_enemy.IsDeathPresented
+            && _enemy.CurrentHp > 0 && _plannedSkill != null
             && IsHeroAvailable(_plannedTarget) && _heroes.Contains(_plannedTarget)
             && _enemy.GetSkillCandidates(_plannedTarget.CurrentRank).Contains(_plannedSkill)
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, _plannedSkill, _enemy.CurrentHp) > 0;
@@ -134,6 +145,7 @@ public class CEnemyAI : MonoBehaviour
     {
         // 체력이 0이어도 죽음의 문 상태일 수 있어서 체력만으로 제외하지 않습니다.
         return hero != null && hero.isActiveAndEnabled && hero.EntityType == EEntityType.Hero
+            && (!(hero is CPlayer player) || !player.IsDeathPresented)
             && CSkillRankUtility.IsSingleRank(hero.CurrentRank);
     }
 
