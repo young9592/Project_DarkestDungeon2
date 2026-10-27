@@ -29,4 +29,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test/Temp_Jo.unity
     guid: 80c2dac491e1df944bb109f58d93d474
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 46c6450c7f4b47047a70b95cd25808bd, type: 2}
