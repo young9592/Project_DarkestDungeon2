@@ -2,11 +2,14 @@
 using TMPro;
 using UnityEngine;
 
-public class CTheInnNavigationBarUI : MonoBehaviour
+public class CTheInnUINavigationBar : MonoBehaviour
 {
+    #region Inspector
+    [SerializeField] private CTheInnUIBiome _biome;
+
     [SerializeField] private TMP_Text _navigationTitleText;
     [SerializeField] private GameObject _restText;
-
+    #endregion
 
     private bool _isBiomeSelected = false;
 
@@ -43,7 +46,7 @@ public class CTheInnNavigationBarUI : MonoBehaviour
 
     public void OpenBiomeIcon()
     {
-
+        _biome.BiomeUIOpen();
     }
 
     public void ClickRestText()
