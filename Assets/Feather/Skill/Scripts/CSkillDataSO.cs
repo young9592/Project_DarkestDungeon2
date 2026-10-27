@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using JetBrains.Annotations;
 
 [Flags]
 public enum ERank
@@ -26,6 +25,7 @@ public class CSkillDataSO : ScriptableObject
     [SerializeField] private ERank _useableRank;
     // 스킬이 타겟을 잡을 수 있는 적의 열
     [SerializeField] private ERank _targetableRank;
+    [SerializeField] private bool _isGroupTarget = false;
 
     [Header("Settings")]
     [SerializeField] private int _cooldown = 0;
@@ -41,6 +41,7 @@ public class CSkillDataSO : ScriptableObject
     public ERank UsableRank => _useableRank;
     public ERank TargetableRank => _targetableRank;
     public int Cooldown => _cooldown;
-    public IReadOnlyList<CEffectSO> EffectList => _effectList; 
+    public IReadOnlyList<CEffectSO> EffectList => _effectList;
+    public bool IsGroupTarget => _isGroupTarget;
     #endregion
 }

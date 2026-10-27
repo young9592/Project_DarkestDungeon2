@@ -1,6 +1,8 @@
-using System.Collections;
-using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 // 배틀코어에서 스킬 정보를 넘겨받아 Effect들을 순차적으로 실행하고 결과를 반환해주는 매니저
 public class CEffectManager : MonoBehaviour
@@ -24,18 +26,43 @@ public class CEffectManager : MonoBehaviour
     /// </summary>
     /// <param name="skillData">사용된 스킬 데이터</param>
     /// <param name="onComplete">Effect 연산 및 연출이 모두 끝났을 때 Battle Core로 턴을 넘기기 위한 콜백</param>
+    /// 단일 타겟 진입점
     public void ExecuteSkillEffects(CEntity caster, CEntity target, CSkillDataSO skillData, Action onComplete)
     {
-        CPrint.Log($"{caster.name} 가 {target.name} 에게 <{skillData.SkillName}> 실행 시작");
-
-        // 이펙트 연출 시간 기다리도록 처리
-        StartCoroutine(ExecuteEffectsCoroutine(caster, target, skillData, onComplete));
+        if (target == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+        ExecuteSkillEffects(caster, new List<CEntity> { target }, skillData, onComplete);
     }
 
-    private IEnumerator ExecuteEffectsCoroutine(CEntity caster, CEntity target, CSkillDataSO skillData, Action onComplete)
+    // 광역 스킬 실행 진입점
+    public void ExecuteSkillEffects(CEntity caster, IReadOnlyList<CEntity> targets, CSkillDataSO skillData, Action onComplete)
     {
-        CEffectContext context = new CEffectContext(caster, target);
-        bool consumedComboInThisSkill = false;
+        if (caster == null || targets == null || targets.Count == 0 || skillData == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        string targetInfo = targets.Count > 1 ? $"{targets[0].name} 외 {targets.Count - 1}명" : targets[0].name;
+        CPrint.Log($"{caster.name} 가 {targetInfo} 에게 <{skillData.SkillName}> 실행 시작");
+
+        StartCoroutine(ExecuteEffectsCoroutine(caster, targets, skillData, onComplete));
+    }
+
+    private IEnumerator ExecuteEffectsCoroutine(CEntity caster, IReadOnlyList<CEntity> targets, CSkillDataSO skillData, Action onComplete)
+    {
+        int targetCount = targets.Count;
+        CEffectContext[] contexts = new CEffectContext[targetCount];
+        bool[] consumedComboInThisSkill = new bool[targetCount];
+
+        for (int i=0 ; i < targetCount ; i++)
+        {
+            contexts[i] = new CEffectContext(caster, targets[i]);
+            consumedComboInThisSkill[i] = false;
+        }
 
         if (skillData.EffectList != null && skillData.EffectList.Count > 0)
         {
@@ -43,43 +70,69 @@ public class CEffectManager : MonoBehaviour
             {
                 if (effectData == null) continue;
 
-                CEntity actualTarget = (effectData.EffectTarget == EEffectTarget.Self) ? caster : target;
-
-                if (IsEntityDead(actualTarget))
-                {
-                    CPrint.Log($"대상 ({actualTarget.name})이 사망 상태여서 [{effectData.Name}] 효과를 스킵합니다.");
-                    continue;
-                }
-
-                if (!CheckEffectCondition(context, effectData, ref consumedComboInThisSkill))
-                {
-                    CPrint.Log($"[{effectData.Name} 발동 조건 ({effectData.Condition}) 불충족으로 스킵합니다.]");
-                    continue;
-                }
-
-                // 미리 할당한 전략이 있다면 실행
-                if (effectData.Strategy != null)
-                {
-                    if (effectData.EffectTarget == EEffectTarget.Self)
-                    {
-                        CEffectContext selfContext = new CEffectContext(caster, caster)
-                        {
-                            IsHit = true,
-                            IsCrit = context.IsCrit
-                        };
-                        effectData.Strategy.Apply(selfContext, effectData);
-                    }
-                    else
-                    {
-                        effectData.Strategy.Apply(context, effectData);
-                    }
-
-                    // TODO : 연출(파티클, 사운드 등) 대기 시간이 필요시 여기서 yield return 처리
-                    yield return new WaitForSeconds(0.2f);
-                }
-                else
+                if (effectData.Strategy == null)
                 {
                     CPrint.Warn($"{effectData.Name} 에 연결된 Strategy가 없습니다");
+                    continue;
+                }
+
+                // 1분기 자신에게 걸 때
+                if (effectData.EffectTarget == EEffectTarget.Self)
+                {
+                    if (IsEntityDead(caster))
+                    {
+                        CPrint.Log($"대상 ({caster.name})이 사망 상태여서 [{effectData.Name}] 효과를 스킵합니다.");
+                        continue;
+                    }
+
+                    bool anyHit = false;
+                    bool anyCrit = false;
+                    bool anyCombo = false;
+                    for (int i = 0; i < targetCount; i++)
+                    {
+                        if (contexts[i].IsHit) anyHit = true;
+                        if (contexts[i].IsCrit) anyCrit = true;
+                        if (consumedComboInThisSkill[i]) anyCombo = true;
+                    }
+
+                    CEffectContext selfContext = new CEffectContext(caster, caster)
+                    {
+                        IsHit = anyHit || targetCount == 0,
+                        IsCrit = anyCrit
+                    };
+
+                    if (!CheckEffectCondition(selfContext, effectData, ref anyCombo))
+                    {
+                        CPrint.Log($"[{effectData.Name} 발동 조건 ({effectData.Condition}) 불총족으로 스킵합니다.]");
+                        continue;
+                    }
+
+                    effectData.Strategy.Apply(selfContext, effectData);
+                    yield return new WaitForSeconds(0.2f);
+                }
+                // 2분기 대상에게 거는 효과
+                else
+                {
+                    for (int i = 0; i < targetCount; i++)
+                    {
+                        CEntity currentTarget = targets[i];
+
+                        if (IsEntityDead(currentTarget))
+                        {
+                            CPrint.Log($"대상 ({currentTarget.name})이 사망 상태여서 [{effectData.Name}] 효과를 스킵합니다.");
+                            continue;
+                        }
+
+                        if (!CheckEffectCondition(contexts[i], effectData, ref consumedComboInThisSkill[i]))
+                        {
+                            CPrint.Log($"[{currentTarget.name}]에게 [{effectData.Name} 발동 조건 ({effectData.Condition}) 불충족으로 스킵합니다.]");
+                            continue;
+                        }
+
+                        effectData.Strategy.Apply(contexts[i], effectData);
+                    }
+
+                    yield return new WaitForSeconds(0.2f);
                 }
             }
         }
