@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Security.Cryptography;
 
 public class CPlayer : CEntity
 {
@@ -839,6 +840,34 @@ public class CPlayer : CEntity
 
         OnMeltdownTriggered?.Invoke(this);
     }
-	#endregion
+    #endregion
 
+    public override void CureStatusEffect(EEffectType targetType = EEffectType.None)
+    {
+        if (_isDead || _activeStatusEffects.Count == 0) return;
+
+        int removedCount = 0;
+
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            EEffectType currentType = _activeStatusEffects[i].EffectType;
+
+            if (targetType == EEffectType.None || currentType == targetType)
+            {
+                _activeStatusEffects.RemoveAt(i);
+                removedCount++;
+            }
+        }
+
+        if (removedCount > 0)
+        {
+            string targetName = targetType == EEffectType.None ? "모든 지속 피해" : targetType.ToString();
+            CPrint.Log($"[{_heroData.DefaultName}] 상태이상 치료 성공" +
+                $"제거된 [{targetName}] 인스턴스 : {removedCount}개");
+        }
+        else
+        {
+            CPrint.Log($"[{_heroData.DefaultName}] 치료할 지속 피해가 없습니다.");
+        }
+    }
 }

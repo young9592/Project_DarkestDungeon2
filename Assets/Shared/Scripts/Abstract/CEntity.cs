@@ -39,7 +39,7 @@ public abstract class CEntity : MonoBehaviour
     public bool IsActionActive { get { return _actionState != EEntityActionState.Idle; } }
     public CEntity ActionTarget { get { return _actionTarget; } }
     public CSkillDataSO ActionSkill { get { return _actionSkill; } }
-
+    public virtual void CureStatusEffect(EEffectType targetType = EEffectType.None) { }
     public CTokenManager TokenManager { get; private set ; }
 
     public bool IsDeathsDoor 
