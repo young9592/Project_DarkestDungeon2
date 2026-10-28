@@ -870,4 +870,27 @@ public class CPlayer : CEntity
             CPrint.Log($"[{_heroData.DefaultName}] 치료할 지속 피해가 없습니다.");
         }
     }
+
+    public override void ResetEntityState()
+    {
+        if (_heroData == null) return;
+
+        _isDead = false;
+        _isDeathsDoor = false;
+
+        int prevHp = _currentHp;
+        int prevStress = _currentStress;
+        _currentHp = _heroData.MaxHealth;
+        _currentStress = 0;
+
+        TokenManager.ClearAllTokens();
+        _activeStatusEffects.Clear();
+        CancelSkillSelection();
+
+        OnHealthChanged?.Invoke(this, prevHp, _currentHp);
+        OnStressChanged?.Invoke(this, prevStress, _currentStress);
+        OnDeathDoorChanged?.Invoke(this, false);
+
+        CPrint.Log($"[{_heroData.DefaultName}] 상태 완전 초기화");
+    }
 }
