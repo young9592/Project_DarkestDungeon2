@@ -157,15 +157,11 @@ public class CSkillTester : MonoBehaviour
         _guiLogs.Clear();
         if(_caster  != null)
         {
-            _caster.TokenManager.ClearAllTokens();
-            _caster.TakeDamage(-999);
-            _caster.ModifyStress(-10);
+            _caster.ResetEntityState();
         }
         if (_target != null)
         {
-            _target.TokenManager.ClearAllTokens();
-            _target.TakeDamage(-999);
-            _target.ModifyStress(-10);
+            _target.ResetEntityState();
         }
         CPrint.Log("[토큰 제거 및 체력/스트레스 회복 완료]");
     }
