@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CBasicCombatManager : MonoBehaviour
@@ -53,6 +52,9 @@ public class CBasicCombatManager : MonoBehaviour
     [SerializeField] private GameObject _targetPrefab;
     [SerializeField] private GameObject _iconPrefabRoot;
 
+    [Header("Round Text")]
+    [SerializeField] private TextMeshProUGUI _roundText;
+
     [Header("Option")]
     [SerializeField] private float _actionDelay = 3.5f;
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
@@ -60,6 +62,7 @@ public class CBasicCombatManager : MonoBehaviour
     [SerializeField] private Vector3 _fieldEntitiesPos;
 
     [Header("Debug Menu")]
+    [SerializeField] private GameObject _debugRoot;
     [SerializeField] private TMP_Dropdown _selectEntity;
     [SerializeField] private TMP_Dropdown _selectEffect;
     [SerializeField] private Button _shootEffectBtn;
@@ -79,7 +82,6 @@ public class CBasicCombatManager : MonoBehaviour
     private List<GameObject> _turnPortraitList = new List<GameObject>();
     private GameObject _myTurn = null;
     private Coroutine _coroutine = null;
-    private string _message = "";
     private int _round = 0;
     private TurnState _currentTurnState = TurnState.Normal;
 
@@ -118,11 +120,22 @@ public class CBasicCombatManager : MonoBehaviour
 
     private void Update()
     {
+        // Debug Menu Key
+        DebugMenuKey();
+
         ChangeState();
         ActiveState();
     }
 
     #region Debug Option Method
+    private void DebugMenuKey()
+    {
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            _debugRoot.SetActive(!_debugRoot.activeSelf);
+        }
+    }
+
     // 디버그용 엔티티 드롭박스
     private void SetDropboxEntityList()
     {
@@ -405,6 +418,7 @@ public class CBasicCombatManager : MonoBehaviour
 
         // 라운드 올리기
         _round++;
+        
     }
 
     private void ActionEntity()
@@ -418,8 +432,6 @@ public class CBasicCombatManager : MonoBehaviour
         {
             return;
         }
-
-        _message = $"{_turnList[0].entity.name}의 턴";
 
         if (_myTurn != null)
         {
@@ -557,7 +569,6 @@ public class CBasicCombatManager : MonoBehaviour
     // 기절 : 현재 라운드의 차례를 넘깁니다.
     private IEnumerator CoStun()
     {
-        _message = $"{_turnList[0].entity.name} 기절";
         ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.Stun, "기절!");
 
         _turnList.RemoveAt(0);
@@ -570,7 +581,6 @@ public class CBasicCombatManager : MonoBehaviour
     // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
     private IEnumerator CoDaze()
     {
-        _message = $"{_turnList[0].entity.name} 현기증";
         ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.Daze, "현기증!");
 
         _turnList.Add(_turnList[0]);
@@ -598,7 +608,6 @@ public class CBasicCombatManager : MonoBehaviour
             yield return null;
         }
 
-        _message = $"{_turnList[0].entity.name} 행동";
         ShowUIMessage(_turnList[0].entity.gameObject, EEffectType.None, "행동");
 
         TempRandomSkill(_turnList[0].entity);
@@ -751,24 +760,9 @@ public class CBasicCombatManager : MonoBehaviour
         action.Invoke();
     }
 
-    private void OnGUI()
+    private void NextRound()
     {
-        GUIStyle gUIStyle = new GUIStyle(GUI.skin.label);
-        gUIStyle.alignment = TextAnchor.MiddleRight;
-        gUIStyle.fontSize = 50;
-        gUIStyle.fontStyle = FontStyle.Bold;
-
-
-        GUI.Label(new Rect(Screen.width - 700, 20, 300, 120), $"라운드 : {_round}", gUIStyle);
-
-        if (_message != "")
-        {
-            GUI.color = Color.black;
-            gUIStyle.alignment = TextAnchor.MiddleCenter;
-            GUI.Label(new Rect(0, Screen.height * 0.2f, Screen.width, 100), $"{_message}", gUIStyle);
-        }
-
-
+        _round++;
+        _roundText.text = _round.ToString();
     }
-
 }
