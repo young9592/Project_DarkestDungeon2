@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CHeroAnimation : MonoBehaviour
 {
-    private enum EAnimationState { Idle, Selecting, Attack, Hit }
+    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown }
 
     [Header("Animation")]
     [SerializeField] private Animator _animator;
@@ -12,6 +12,10 @@ public class CHeroAnimation : MonoBehaviour
 
     [SerializeField, Range(0.0f, 0.3f)] private float _returnBlendDuration = 0.12f;
 
+    private bool _meltdownQueued;
+    private CPlayer _hero;
+    private CHeroSkillFeedback _feedback;
+    private static readonly int _meltdownHash = Animator.StringToHash("Base Layer.Meltdown");
     private bool _returningToIdle;
     private EAnimationState _state;
     private bool _needsIdle;
@@ -27,6 +31,10 @@ public class CHeroAnimation : MonoBehaviour
     private static readonly int _hitHash = Animator.StringToHash("Base Layer.Hit");
     private static readonly int _hitEndHash = Animator.StringToHash("Base Layer.HitRecover");
 
+    public event Action OnMeltdownStarted;
+    public event Action OnMeltdownCompleted;
+    public event Action OnMeltdownInterrupted;
+
     public event Action OnAttackStarted;
     public event Action OnAttackCompleted;
     public event Action OnAttackInterrupted;
@@ -34,7 +42,9 @@ public class CHeroAnimation : MonoBehaviour
     public event Action OnHitCompleted;
     public event Action OnHitInterrupted;
 
-    public bool IsBusy { get { return IsAttacking || IsHitReacting; } }
+    public bool IsBusy { get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued; } }
+    public bool IsMeltingDown { get { return _state == EAnimationState.Meltdown; } }
+    public bool IsMeltdownQueued { get { return _meltdownQueued; } }
     public bool IsSelecting { get { return _state == EAnimationState.Selecting; } }
     public bool IsAttacking { get { return _state == EAnimationState.Attack; } }
     public bool IsHitReacting { get { return _state == EAnimationState.Hit; } }
@@ -49,12 +59,31 @@ public class CHeroAnimation : MonoBehaviour
 
     private void Awake()
     {
+        _hero = GetComponent<CPlayer>();
+        _feedback = GetComponent<CHeroSkillFeedback>();
         if (_animator == null) _animator = GetComponentInChildren<Animator>(true);
         if (_animator == null || _animator.runtimeAnimatorController == null)
         {
             Debug.LogError(name + ": Hero Animator와 Controller를 연결해야 합니다.", this);
             enabled = false;
         }
+    }
+
+    public bool TryQueueMeltdown()
+    {
+        if (!IsReady || _hero == null || _hero.IsDead || _hero.IsDeathPresented
+            || _meltdownQueued || IsMeltingDown || !_animator.HasState(0, _meltdownHash)) return false;
+        if (IsSelecting) CancelSelection();
+        _meltdownQueued = true;
+        return true;
+    }
+
+    public void CancelMeltdown()
+    {
+        bool interrupted = _meltdownQueued || IsMeltingDown;
+        _meltdownQueued = false;
+        if (IsMeltingDown) PlayIdle();
+        if (interrupted) OnMeltdownInterrupted?.Invoke();
     }
 
     public bool TryPlaySelection(CSkillDataSO skill)
@@ -171,13 +200,39 @@ public class CHeroAnimation : MonoBehaviour
     private void LateUpdate()
     {
         if (_needsIdle && IsReady) PlayIdle();
-        if (_state == EAnimationState.Idle) return;
+        if (_state == EAnimationState.Idle)
+        {
+            if (!_meltdownQueued) return;
+            if (!IsReady || _hero == null || _hero.IsDead || _hero.IsDeathPresented)
+            {
+                CancelMeltdown();
+                return;
+            }
+            if ((_hero.RankPresentation != null && _hero.RankPresentation.IsBusy)
+                || (_feedback != null && _feedback.IsBusy)) return;
+            _meltdownQueued = false;
+            _state = EAnimationState.Meltdown;
+            _needsIdle = false;
+            _animator.Play(_meltdownHash, 0, 0.0f);
+            OnMeltdownStarted?.Invoke();
+            return;
+        }
         if (_animator == null || !_animator.isActiveAndEnabled || _animator.runtimeAnimatorController == null)
         {
             CancelPlayback();
             return;
         }
         AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+        if (IsMeltingDown)
+        {
+            if (info.fullPathHash == _idleHash && !_animator.IsInTransition(0))
+            {
+                _state = EAnimationState.Idle;
+                _needsIdle = false;
+                OnMeltdownCompleted?.Invoke();
+            }
+            return;
+        }
         if (IsSelecting) return;
         if (_waitForSelection)
         {
@@ -225,9 +280,12 @@ public class CHeroAnimation : MonoBehaviour
     public void CancelPlayback()
     {
         EAnimationState interrupted = _state;
+        bool meltdownInterrupted = _meltdownQueued || IsMeltingDown;
+        _meltdownQueued = false;
         PlayIdle();
         if (interrupted == EAnimationState.Attack) OnAttackInterrupted?.Invoke();
         if (interrupted == EAnimationState.Hit) OnHitInterrupted?.Invoke();
+        if (meltdownInterrupted) OnMeltdownInterrupted?.Invoke();
     }
 
     public void CompleteHitForDeath()
