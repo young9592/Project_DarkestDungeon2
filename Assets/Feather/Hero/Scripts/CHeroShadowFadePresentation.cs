@@ -97,6 +97,13 @@ public class CHeroShadowFadePresentation : MonoBehaviour
             copy.mainTexture = originals[i].mainTexture;
             copy.mainTextureScale = originals[i].mainTextureScale;
             copy.mainTextureOffset = originals[i].mainTextureOffset;
+            if (originals[i].HasProperty("_Ink"))
+            {
+                copy.SetTexture("_Ink", originals[i].GetTexture("_Ink"));
+                copy.SetTextureScale("_Ink", originals[i].GetTextureScale("_Ink"));
+                copy.SetTextureOffset("_Ink", originals[i].GetTextureOffset("_Ink"));
+                copy.SetFloat("_InkStrength", originals[i].GetFloat("_InkStrength"));
+            }
             copy.SetColor("_Tint", _tint);
             copies[i] = copy;
             materials.Add(copy);
