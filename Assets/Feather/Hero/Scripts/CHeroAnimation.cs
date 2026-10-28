@@ -10,6 +10,9 @@ public class CHeroAnimation : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private List<CSkillDataSO> _attackSkills = new List<CSkillDataSO>();
 
+    [SerializeField, Range(0.0f, 0.3f)] private float _returnBlendDuration = 0.12f;
+
+    private bool _returningToIdle;
     private EAnimationState _state;
     private bool _needsIdle;
     private int _currentAttackEndHash;
@@ -187,8 +190,32 @@ public class CHeroAnimation : MonoBehaviour
             return;
         }
 
+        if (IsAttacking && _currentExecutionStartHash != _currentAttackEndHash
+            && (info.fullPathHash == _idleHash
+            || (_animator.IsInTransition(0) && _animator.GetNextAnimatorStateInfo(0).fullPathHash == _idleHash)))
+        {
+            _returningToIdle = true;
+        }
+
+        if (_returningToIdle)
+        {
+            if (_animator.IsInTransition(0) || info.fullPathHash != _idleHash) return;
+            _returningToIdle = false;
+            _state = EAnimationState.Idle;
+            _needsIdle = false;
+            OnAttackCompleted?.Invoke();
+            return;
+        }
+
         int endHash = IsAttacking ? _currentAttackEndHash : _hitEndHash;
         if (info.fullPathHash != endHash || info.normalizedTime < 1.0f || _animator.IsInTransition(0)) return;
+        if (IsAttacking && _currentExecutionStartHash != _currentAttackEndHash && _returnBlendDuration > 0.0f)
+        {
+            _returningToIdle = true;
+            _animator.CrossFadeInFixedTime(_idleHash, _returnBlendDuration, 0, 0.0f);
+            return;
+        }
+
         EAnimationState finished = _state;
         PlayIdle();
         if (finished == EAnimationState.Attack) OnAttackCompleted?.Invoke();
@@ -216,6 +243,7 @@ public class CHeroAnimation : MonoBehaviour
 
     private void PlayIdle()
     {
+        _returningToIdle = false;
         _state = EAnimationState.Idle;
         _selectionSkill = null;
         _waitForSelection = false;
