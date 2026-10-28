@@ -21,7 +21,10 @@ public class CTempEntity : CEntity
 
     [Header("Test State")]
     // 임시 값
+    [SerializeField] private int _maxHealth = 10;
     [SerializeField] private int _currentHealth = 10;
+    [SerializeField] private int _maxStress = 10;
+    [SerializeField] private int _currentStress = 0;
     [SerializeField] private int _speed;
     // 추가 행동 부여
     [SerializeField] private bool _hasExtraTurn = false;
@@ -38,11 +41,20 @@ public class CTempEntity : CEntity
     public bool HasExtraTurn { get; set; }
     public EJewelryType EquipJewelry => _equipJewelry;
     public int TempEntitySpeed => _speed;
+
+    public IReadOnlyList<CEffect> DotEffectList => _dotEffectList;
+    public int CurrentHealth => _currentHealth;
+    public int MaxHealth => _maxHealth;
+    public int CurrentStress => _currentStress;
+    public int MaxStress => _maxStress;
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
+
+        _currentHealth = _maxHealth;
+        _currentStress = 0;
     }
 
     // 행동
@@ -98,7 +110,7 @@ public class CTempEntity : CEntity
     {
         (int bleed, int blight, int burn) total = (0, 0, 0);
 
-        if(_dotEffectList.Count == 0)
+        if (_dotEffectList.Count == 0)
         {
             return total;
         }
@@ -125,8 +137,6 @@ public class CTempEntity : CEntity
                     total.burn += _dotEffectList[i].Damage;
                     break;
             }
-
-            Debug.Log($"Dot[{_dotEffectList[i].EffectType}] : {_dotEffectList[i].Damage} / {_dotEffectList[i].RemainingTurns}");
         }
 
         TakeDamage(total.bleed + total.blight + total.burn);

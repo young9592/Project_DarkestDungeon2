@@ -89,5 +89,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _iconType: 1
-  _durationTime: 2
+  _durationTime: 1
   _sharpness: 30
