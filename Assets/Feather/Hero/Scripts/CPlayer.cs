@@ -202,6 +202,7 @@ public class CPlayer : CEntity
         _actionAnimation.OnHitCompleted += HandleHitCompleted;
         _actionAnimation.OnHitInterrupted += HandleHitInterrupted;
         _actionAnimation.OnAttackCompleted += HandleAttackCompleted;
+        _actionAnimation.OnMeltdownCompleted += HandleMeltdownCompleted;
         _actionAnimation.OnAttackInterrupted += HandleAttackInterrupted;
     }
 
@@ -259,6 +260,11 @@ public class CPlayer : CEntity
         }
     }
 
+    private void HandleMeltdownCompleted()
+    {
+        TryCompleteAction();
+    }
+
     private void HandleAttackCompleted()
     {
         OnAttackPresentationCompleted?.Invoke(this);
@@ -282,6 +288,7 @@ public class CPlayer : CEntity
             _actionAnimation.OnHitCompleted -= HandleHitCompleted;
             _actionAnimation.OnHitInterrupted -= HandleHitInterrupted;
             _actionAnimation.OnAttackCompleted -= HandleAttackCompleted;
+            _actionAnimation.OnMeltdownCompleted -= HandleMeltdownCompleted;
             _actionAnimation.OnAttackInterrupted -= HandleAttackInterrupted;
         }
 
@@ -323,6 +330,10 @@ public class CPlayer : CEntity
 
         _skillFeedback = GetComponent<CHeroSkillFeedback>();
         if (_actionAnimation == null) _actionAnimation = GetComponent<CHeroAnimation>();
+        if (GetComponent<CHeroMeltdownPresentation>() == null)
+        {
+            gameObject.AddComponent<CHeroMeltdownPresentation>();
+        }
         if (CPrint.NullUnityObjectCheck(gameObject.name, _heroData))
         {
             enabled = false;
