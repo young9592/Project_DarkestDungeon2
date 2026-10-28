@@ -41,6 +41,7 @@ public abstract class CEntity : MonoBehaviour
     public CSkillDataSO ActionSkill { get { return _actionSkill; } }
     public virtual void CureStatusEffect(EEffectType targetType = EEffectType.None) { }
     public CTokenManager TokenManager { get; private set ; }
+    public virtual void ResetEntityState() { }
 
     public bool IsDeathsDoor 
     { 
