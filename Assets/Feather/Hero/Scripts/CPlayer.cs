@@ -40,9 +40,16 @@ public class CPlayer : CEntity
     public event Action<CPlayer, bool> OnDeathDoorChanged;
     public event Action<CPlayer> OnMeltdownTriggered;
     public event Action<CPlayer> OnPlayerDied;
+    public event Action<CPlayer> OnTurnSkipped;
     #endregion
 
     private bool _isRequesting;
+    private bool _isStartingTurn;
+    private bool _isTurnSkipped;
+    public bool IsTurnSkipped
+    {
+        get { return _isTurnSkipped; }
+    }
     private CEntityActionExecution _actionExecution;
     private CHeroSkillFeedback _skillFeedback;
     private CEntityDeathPresentation _deathPresentation;
@@ -106,7 +113,7 @@ public class CPlayer : CEntity
 
     protected override bool CanExecuteRequestedAction()
     {
-        return !IsDead && !IsDeathPresented && ActionTarget != null
+        return !_isTurnSkipped && !IsDead && !IsDeathPresented && ActionTarget != null
             && AreActionTargetsValid()
             && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null
@@ -229,7 +236,7 @@ public class CPlayer : CEntity
 
     protected override bool CanBeginAction()
     {
-        return !IsDead && !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy)
+        return !_isTurnSkipped && !IsDead && !IsDeathPresented && (_actionAnimation == null || !_actionAnimation.IsBusy)
             && (_rankPresentation == null || !_rankPresentation.IsBusy);
     }
 
@@ -382,7 +389,7 @@ public class CPlayer : CEntity
 
     public bool TrySelectSkill(int skillIndex)
     {
-        if (_isRequesting || !CanIssueActionRequest) return false;
+        if (_isTurnSkipped || _isRequesting || !CanIssueActionRequest) return false;
         if (!isActiveAndEnabled || _heroData == null || _equippedSkills == null
             || skillIndex < 0 || skillIndex >= _equippedSkills.Count)
         {
@@ -519,7 +526,7 @@ public class CPlayer : CEntity
 
     public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
     {
-        return !IsDeathPresented && isActiveAndEnabled
+        return !_isTurnSkipped && !IsDeathPresented && isActiveAndEnabled
             && !_isRequesting
             && CanIssueActionRequest
             && _selectedSkill != null
@@ -698,51 +705,63 @@ public class CPlayer : CEntity
 
     public void OnTurnStart()
     {
-        if (_isDead) return;
+        if (!isActiveAndEnabled || _isDead || IsDeathPresented || _isStartingTurn) return;
 
-        if (_activeStatusEffects.Count > 0)
+        _isStartingTurn = true;
+        try
         {
-            int bleedDamage = 0;
-            int blightDamage = 0;
-            int burnDamage = 0;
-
-            for (int i = _activeStatusEffects.Count - 1 ; i >= 0 ; i--)
+            _isTurnSkipped = false;
+            if (_activeStatusEffects.Count > 0)
             {
-                CEffect effect = _activeStatusEffects[i];
+                int bleedDamage = 0;
+                int blightDamage = 0;
+                int burnDamage = 0;
 
-                switch (effect.EffectType)
+                for (int i = _activeStatusEffects.Count - 1 ; i >= 0 ; i--)
                 {
-                    case EEffectType.Bleed: bleedDamage += effect.Damage; break;
-                    case EEffectType.Blight: blightDamage += effect.Damage; break;
-                    case EEffectType.Burn: burnDamage += effect.Damage; break;
+                    CEffect effect = _activeStatusEffects[i];
+
+                    switch (effect.EffectType)
+                    {
+                        case EEffectType.Bleed: bleedDamage += effect.Damage; break;
+                        case EEffectType.Blight: blightDamage += effect.Damage; break;
+                        case EEffectType.Burn: burnDamage += effect.Damage; break;
+                    }
+
+                    effect.DecreaseTurn();
+
+                    if (effect.RemainingTurns <= 0)
+                    {
+                        CPrint.Log($"[{_heroData.DefaultName} 의 [{effect.Data.Name}({effect.Damage}데미지)] 지속 시간이 끝났습니다.");
+                        _activeStatusEffects.RemoveAt(i);
+                    }
                 }
 
-                effect.DecreaseTurn();
-
-                if (effect.RemainingTurns <= 0)
+                int totlaTickDamage = bleedDamage + blightDamage + burnDamage;
+                if (totlaTickDamage > 0)
                 {
-                    CPrint.Log($"[{_heroData.DefaultName} 의 [{effect.Data.Name}({effect.Damage}데미지)] 지속 시간이 끝났습니다.");
-                    _activeStatusEffects.RemoveAt(i);
+                    CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
+                        $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totlaTickDamage}] 데미지");
+
+                    TakeDamage(totlaTickDamage);
+
+                    if (_isDead) return;
                 }
             }
 
-            int totlaTickDamage = bleedDamage + blightDamage + burnDamage;
-            if (totlaTickDamage > 0)
+            if (TokenManager.ConsumeToken(EEffectType.Stun))
             {
-                CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
-                    $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totlaTickDamage}] 데미지");
-
-                TakeDamage(totlaTickDamage);
-
-                if (_isDead) return;
+                CPrint.Log($"[{_heroData.DefaultName}] 기절 토큰 소모\n" +
+                    $"이번 턴 행동을 못합니다.");
+                _isTurnSkipped = true;
+                CancelAction();
+                CancelSkillSelection();
+                OnTurnSkipped?.Invoke(this);
             }
         }
-
-        if (TokenManager.ConsumeToken(EEffectType.Stun))
+        finally
         {
-            CPrint.Log($"[{_heroData.DefaultName}] 기절 토큰 소모\n" +
-                $"이번 턴 행동을 못합니다.");
-            // TODO : Battle Core부분에 턴 종료 알리기
+            _isStartingTurn = false;
         }
     }
 
@@ -886,6 +905,12 @@ public class CPlayer : CEntity
     {
         if (_heroData == null) return;
 
+        CancelAction();
+        CancelSkillSelection();
+        if (_actionAnimation != null) _actionAnimation.CancelPlayback();
+        if (_deathPresentation != null) _deathPresentation.ResetPresentation();
+
+        _isTurnSkipped = false;
         _isDead = false;
         _isDeathsDoor = false;
 
