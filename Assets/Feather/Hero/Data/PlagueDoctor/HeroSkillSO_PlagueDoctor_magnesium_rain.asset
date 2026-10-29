@@ -17,7 +17,9 @@ MonoBehaviour:
   _useableRank: 12
   _targetableRank: 15
   _cooldown: 2
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 868337a8358a454893fe1f4a1883625c, type: 2}
+  - {fileID: 11400000, guid: 69977cb8ae9941c7833cdc1025f3a251, type: 2}
   _target: 3
   _startState: Base Layer.OriginalAntic_PlagueDoctor_magnesium_rain
   _endState: Base Layer.OriginalRecover_PlagueDoctor_magnesium_rain
@@ -27,3 +29,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_magnesium_rain
   _feedback: {fileID: 11400000, guid: 9c913b3007d48ee4bba39252a385781f, type: 2}
+  _clearsCorpses: 1

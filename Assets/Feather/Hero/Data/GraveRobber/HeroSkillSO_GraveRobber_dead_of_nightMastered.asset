@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_dead_of_nightMastered
+  m_EditorClassIdentifier: 
+  _skillName: Dead of Night+
+  _skillIcon: {fileID: 21300000, guid: 112ef1a44ad1d06438b92da8770296b8, type: 3}
+  _useableRank: -1
+  _targetableRank: -1
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: ae0bdf205a7d4cc188d8b8f054724ed0, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_GraveRobber_dead_of_night
+  _endState: Base Layer.OriginalRecover_GraveRobber_dead_of_night
+  _presentationNote: Shares the pickaxe motion.
+  _requiresCorpse: 1
+  _selectionStartState: Base Layer.SourceSelect_pick_to_the_face
+  _selectionHoldState: Base Layer.SourceReady_pick_to_the_face
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_dead_of_night
+  _feedback: {fileID: 11400000, guid: 678bf21fb5cd83f429096462e86a941b, type: 2}
+  _baseSkill: {fileID: 11400000, guid: 2cef150618dbd024298265fc65c52af6, type: 2}

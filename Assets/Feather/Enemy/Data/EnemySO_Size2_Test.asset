@@ -29,3 +29,7 @@ MonoBehaviour:
   _formationSize: 2
   _deathDoorCount: 0
   _skillRules: []
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 21300000, guid: 7d58255767df402b9e2d4ca98e7b9509, type: 3}
+  _corpseHealth: 5
+  _corpseWidth: 0.014

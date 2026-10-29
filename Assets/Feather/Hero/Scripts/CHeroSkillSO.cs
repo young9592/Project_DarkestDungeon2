@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public enum EHeroSkillTarget
 {
@@ -13,6 +13,28 @@ public enum EHeroSkillTarget
 [CreateAssetMenu(menuName = "Data/Hero/Skill", fileName = "HeroSkillSO_")]
 public class CHeroSkillSO : CSkillDataSO
 {
+    [Header("Battle Limits")]
+    [SerializeField, Min(0)] private int _usesPerBattle;
+
+    public int UsesPerBattle
+    {
+        get { return BaseSkill._usesPerBattle; }
+    }
+
+    [Header("Mastery")]
+    [SerializeField] private CHeroSkillSO _baseSkill;
+
+    public CHeroSkillSO BaseSkill
+    {
+        get { return _baseSkill != null ? _baseSkill : this; }
+    }
+
+    public static CSkillDataSO GetBaseSkill(CSkillDataSO skill)
+    {
+        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        return heroSkill != null ? heroSkill.BaseSkill : skill;
+    }
+
     [Header("Hero Target")]
     [SerializeField] private EHeroSkillTarget _target;
     [Header("Presentation")]
@@ -20,6 +42,7 @@ public class CHeroSkillSO : CSkillDataSO
     [SerializeField] private string _endState;
     [SerializeField] private string _presentationNote;
     [SerializeField] private bool _requiresCorpse;
+    [SerializeField] private bool _clearsCorpses;
     [Header("Selection Presentation")]
     [SerializeField] private string _selectionStartState;
     [SerializeField] private string _selectionHoldState;
@@ -76,11 +99,21 @@ public class CHeroSkillSO : CSkillDataSO
         get { return _requiresCorpse; }
     }
 
+    public bool ClearsCorpses { get { return _clearsCorpses || _requiresCorpse; } }
+
     public bool CanChooseTarget(CEntity actor, CEntity target)
     {
         if (actor == null || target == null)
         {
             return false;
+        }
+
+        if (target is CEnemyCorpse corpse)
+        {
+            if (_requiresCorpse) return corpse.IsAvailable;
+            return corpse.IsAvailable
+                && (_target == EHeroSkillTarget.Enemy || _target == EHeroSkillTarget.AllEnemies)
+                && (_clearsCorpses || (EffectList != null && HasDamageEffect()));
         }
 
         if ((actor is CPlayer heroActor && heroActor.IsDeathPresented)
@@ -123,5 +156,14 @@ public class CHeroSkillSO : CSkillDataSO
         }
 
         return target.EntityType == EEntityType.Enemy;
+    }
+
+    private bool HasDamageEffect()
+    {
+        for (int i = 0; i < EffectList.Count; i++)
+        {
+            if (EffectList[i] != null && EffectList[i].EffectType == EEffectType.Damage) return true;
+        }
+        return false;
     }
 }

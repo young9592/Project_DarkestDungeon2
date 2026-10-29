@@ -4,6 +4,7 @@ public class CHeroTargetView : MonoBehaviour
 {
     private CEntity _entity;
     private CEnemy _enemy;
+    private CEnemyCorpse _corpse;
     private Renderer[] _renderers;
     private Camera _camera;
     private Vector3 _rankStep;
@@ -27,6 +28,7 @@ public class CHeroTargetView : MonoBehaviour
     {
         _entity = enemy;
         _enemy = enemy as CEnemy;
+        _corpse = enemy as CEnemyCorpse;
         _camera = camera;
         _rankStep = rankStep;
     }
@@ -37,9 +39,10 @@ public class CHeroTargetView : MonoBehaviour
         if (_renderers != null)
         {
             for (int i = 0; i < _renderers.Length; i++)
-                if (_renderers[i] != null) bounds.Encapsulate(_renderers[i].bounds);
+                if (_renderers[i] != null && _renderers[i].enabled) bounds.Encapsulate(_renderers[i].bounds);
         }
         int size = _enemy != null && _enemy.EnemyData != null ? _enemy.EnemyData.FormationSize : 1;
+        if (_corpse != null) size = _corpse.FormationSize;
         Vector3 footprint = new Vector3(Mathf.Abs(_rankStep.x) * size, bounds.size.y, Mathf.Abs(_rankStep.z) * size);
         // 모델이 작아도 차지하는 자리 전체를 같은 적으로 선택합니다.
         bounds.Encapsulate(new Bounds(new Vector3(transform.position.x, bounds.center.y, transform.position.z), footprint));
@@ -55,6 +58,7 @@ public class CHeroTargetView : MonoBehaviour
     private bool CanShowTarget()
     {
         return _entity != null && _entity.isActiveAndEnabled
+            && (_corpse == null || _corpse.IsAvailable)
             && (!(_entity is CPlayer hero) || !hero.IsDeathPresented)
             && (_enemy == null || !_enemy.IsDeathPresented);
     }

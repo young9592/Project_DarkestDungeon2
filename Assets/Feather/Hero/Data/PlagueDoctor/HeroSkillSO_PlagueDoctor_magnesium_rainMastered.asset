@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_PlagueDoctor_magnesium_rainMastered
+  m_EditorClassIdentifier: 
+  _skillName: Magnesium Rain+
+  _skillIcon: {fileID: 21300000, guid: 697d6ff33b105e145ad2f66259977c7e, type: 3}
+  _useableRank: 12
+  _targetableRank: 15
+  _cooldown: 2
+  _effectList:
+  - {fileID: 11400000, guid: feab8e37a37c44349ad2ee17e734c061, type: 2}
+  - {fileID: 11400000, guid: 69977cb8ae9941c7833cdc1025f3a251, type: 2}
+  _target: 3
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_magnesium_rain
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_magnesium_rain
+  _presentationNote: Shares the ignition motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_explosion
+  _selectionHoldState: Base Layer.SourceReady_explosion
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_magnesium_rain
+  _feedback: {fileID: 11400000, guid: 9c913b3007d48ee4bba39252a385781f, type: 2}
+  _baseSkill: {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
+  _clearsCorpses: 1

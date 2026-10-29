@@ -12,6 +12,13 @@ public class CEnemyDataSO : CEntityDataSO
     [Header("DeathDoorCount")]
     [SerializeField] private int _deathDoorCount = 0;
 
+    [Header("Corpse")]
+    [SerializeField] private bool _leavesCorpse = true;
+    [SerializeField] private Sprite _corpseSprite;
+    [Tooltip("원작의 적별 시체 체력을 확인하기 전까지 사용하는 테스트 값입니다.")]
+    [SerializeField, Min(1)] private int _corpseHealth = 5;
+    [SerializeField, Min(0.001f)] private float _corpseWidth = 0.014f;
+
     [Header("Skill Selection")]
     [Tooltip("공통 스킬 목록에 있는 스킬의 선택 규칙입니다. 설정하지 않은 스킬은 체력 제한 없이 비중 1로 선택합니다.")]
     [SerializeField] private List<CEnemySkillRule> _skillRules = new List<CEnemySkillRule>();
@@ -19,6 +26,10 @@ public class CEnemyDataSO : CEntityDataSO
 
     #region Property
     public int DeathDoorCount => _deathDoorCount;
+    public bool LeavesCorpse { get { return _leavesCorpse; } }
+    public Sprite CorpseSprite { get { return _corpseSprite; } }
+    public int CorpseHealth { get { return Mathf.Max(1, _corpseHealth); } }
+    public float CorpseWidth { get { return Mathf.Max(0.001f, _corpseWidth); } }
     public int FormationSize
     {
         get { return _formationSize; }

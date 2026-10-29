@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
+  m_Name: HeroMastery_MagnesiumRainBurn
+  m_EditorClassIdentifier: 
+  _name: Burn 3 for 3 turns
+  _effectType: 6
+  _effectTarget: 0
+  _damage: 3
+  _maxDamage: 3
+  _duration: 3
+  _baseChance: 100
+  _tokenType: 0
+  _condition: 0
+  _strategy: {fileID: 11400000, guid: d1395818501d75f44a652f3ca5e8e91d, type: 2}

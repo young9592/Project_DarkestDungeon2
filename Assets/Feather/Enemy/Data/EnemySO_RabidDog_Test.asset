@@ -36,3 +36,7 @@ MonoBehaviour:
     _weight: 3
     _minHpPercent: 0
     _maxHpPercent: 50
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 21300000, guid: 76c87ad803e54e72a9f4be5d896f0ede, type: 3}
+  _corpseHealth: 5
+  _corpseWidth: 0.014

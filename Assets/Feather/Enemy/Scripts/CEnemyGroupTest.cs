@@ -148,6 +148,7 @@ public class CEnemyGroupTest : MonoBehaviour
             }
 
             _spawnedEnemies.Add(enemy);
+            if (enemy.Corpse != null) enemy.Corpse.OnRemoved += HandleCorpseRemoved;
         }
 
         TrySelectEnemy(0);
@@ -198,6 +199,38 @@ public class CEnemyGroupTest : MonoBehaviour
 
         _isShowingGroup = false;
         _message = "Group cleared / existing tests restored";
+    }
+
+    public bool HasLivingEnemies
+    {
+        get
+        {
+            for (int i = 0; i < _spawnedEnemies.Count; i++)
+            {
+                CEnemy enemy = _spawnedEnemies[i];
+                if (enemy != null && enemy.isActiveAndEnabled && !enemy.IsDead) return true;
+            }
+            return false;
+        }
+    }
+
+    private void HandleCorpseRemoved(CEnemyCorpse corpse)
+    {
+        if (corpse == null || corpse.Owner == null || !_spawnedEnemies.Contains(corpse.Owner)) return;
+        int removedIndex = GetRankIndex(corpse.CurrentRank);
+        int size = corpse.FormationSize;
+        for (int i = 0; i < _spawnedEnemies.Count; i++)
+        {
+            CEnemy enemy = _spawnedEnemies[i];
+            if (enemy == null || enemy == corpse.Owner || !enemy.isActiveAndEnabled) continue;
+            if (enemy.IsDead && (enemy.Corpse == null || enemy.Corpse.IsRemoved)) continue;
+            int index = GetRankIndex(enemy.CurrentRank);
+            if (index <= removedIndex) continue;
+            index -= size;
+            enemy.TrySetRank((ERank)(1 << index));
+            int endIndex = index + enemy.EnemyData.FormationSize - 1;
+            enemy.transform.position = (_rankSlots[index].position + _rankSlots[endIndex].position) * 0.5f;
+        }
     }
 
     public void SuspendGroup()
@@ -260,6 +293,7 @@ public class CEnemyGroupTest : MonoBehaviour
             }
 
             // 프레임 끝에 제거되기 전에 먼저 비활성화
+            if (_spawnedEnemies[i].Corpse != null) _spawnedEnemies[i].Corpse.OnRemoved -= HandleCorpseRemoved;
             _spawnedEnemies[i].gameObject.SetActive(false);
             Destroy(_spawnedEnemies[i].gameObject);
         }

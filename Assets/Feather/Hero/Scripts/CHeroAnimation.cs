@@ -153,7 +153,8 @@ public class CHeroAnimation : MonoBehaviour
 
     public bool CanPlayAttack(CSkillDataSO skill)
     {
-        if (!IsReady || IsBusy || skill == null || _attackSkills == null || !_attackSkills.Contains(skill)) return false;
+        if (!IsReady || IsBusy || skill == null || _attackSkills == null
+            || !_attackSkills.Contains(CHeroSkillSO.GetBaseSkill(skill))) return false;
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         if (heroSkill == null) return _animator.HasState(0, _attackHash) && _animator.HasState(0, _attackEndHash);
         if (string.IsNullOrEmpty(heroSkill.StartState) || string.IsNullOrEmpty(heroSkill.EndState)) return false;

@@ -12,6 +12,7 @@ public class CHeroRunStateTest : MonoBehaviour
     private bool _isExpeditionActive;
     private CHeroPartySO _expeditionParty;
     private CHeroRunMemberState[] _closedPartyState;
+    private CHeroSkillUseState[] _closedSkillUses;
     private string _notice = "Start a new expedition or continue a saved one.";
 
     public string SavePath
@@ -105,6 +106,11 @@ public class CHeroRunStateTest : MonoBehaviour
         }
         _expeditionParty = _party.ActiveParty;
         _closedPartyState = states;
+        _closedSkillUses = new CHeroSkillUseState[_party.Heroes.Count];
+        for (int i = 0; i < _closedSkillUses.Length; i++)
+        {
+            _closedSkillUses[i] = _party.Heroes[i].SkillUses.Copy();
+        }
     }
 
     public bool TryOpenParty(CHeroPartySO defaultParty)
@@ -119,6 +125,7 @@ public class CHeroRunStateTest : MonoBehaviour
         if (_closedPartyState != null)
         {
             if (_closedPartyState.Length != party.Members.Count) return false;
+            if (_closedSkillUses != null && _closedSkillUses.Length != party.Members.Count) return false;
             for (int i = 0; i < _closedPartyState.Length; i++)
             {
                 if (_closedPartyState[i].HeroId != party.Members[i].Prefab.HeroData.Id) return false;
@@ -135,6 +142,7 @@ public class CHeroRunStateTest : MonoBehaviour
         for (int i = 0; i < _closedPartyState.Length; i++)
         {
             if (!_party.Heroes[i].TryRestoreRunState(_closedPartyState[i])) return false;
+            if (_closedSkillUses != null) _party.Heroes[i].SkillUses.CopyFrom(_closedSkillUses[i]);
         }
         return _party.RefreshHeroSelection();
     }
@@ -143,6 +151,11 @@ public class CHeroRunStateTest : MonoBehaviour
     {
         _battleId = Guid.NewGuid().ToString("N");
         _battleSaved = false;
+        _closedSkillUses = null;
+        for (int i = 0; i < _party.Heroes.Count; i++)
+        {
+            if (_party.Heroes[i] != null) _party.Heroes[i].SkillUses.Clear();
+        }
     }
 
     private bool CanUseParty()

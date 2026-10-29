@@ -129,6 +129,13 @@ public class CHeroBattleInput : MonoBehaviour
 
             view.Configure(enemy, _camera, rankStep);
             _targets.Add(view);
+            if (enemy.Corpse != null)
+            {
+                CHeroTargetView corpseView = enemy.Corpse.GetComponent<CHeroTargetView>();
+                if (corpseView == null) corpseView = enemy.Corpse.gameObject.AddComponent<CHeroTargetView>();
+                corpseView.Configure(enemy.Corpse, _camera, rankStep);
+                _targets.Add(corpseView);
+            }
         }
 
         CHeroTargetView self = _hero.GetComponent<CHeroTargetView>();
@@ -218,17 +225,23 @@ public class CHeroBattleInput : MonoBehaviour
         }
 
         CSkillDataSO skill = skills[index];
+        if (_hero.SkillUses.GetRemaining(skill) == 0)
+        {
+            return "No uses remaining this battle";
+        }
+
+        int cooldown = _hero.SkillUses.GetRemainingCooldown(skill);
+        if (cooldown > 0)
+        {
+            return "Cooldown: " + cooldown + " Hero turn(s) remaining";
+        }
+
         if (!CSkillRankUtility.CanUseSkill(skill, _hero.CurrentRank))
         {
             return "Cannot use from this position";
         }
 
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
-        if (heroSkill != null && heroSkill.RequiresCorpse)
-        {
-            return "Corpse targeting is unavailable";
-        }
-
         for (int i = 0; i < _targets.Count; i++)
         {
             CHeroTargetView view = _targets[i];
@@ -238,7 +251,8 @@ public class CHeroBattleInput : MonoBehaviour
             }
         }
 
-        return "No eligible target in this skill's target positions";
+        return heroSkill != null && heroSkill.RequiresCorpse
+            ? "No enemy corpse available" : "No eligible target in this skill's target positions";
     }
 
     private bool CanTarget(CHeroTargetView view)

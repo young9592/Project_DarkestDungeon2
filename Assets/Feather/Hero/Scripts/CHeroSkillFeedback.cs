@@ -182,6 +182,11 @@ public class CHeroSkillFeedback : MonoBehaviour
         if (_hasDamage) Impact(target);
     }
 
+    private void CorpseDamaged(CEnemyCorpse corpse)
+    {
+        if (_hasDamage) Impact(corpse);
+    }
+
     private void HealthChanged(CPlayer target, int previous, int current)
     {
         if (_hasHeal && current > previous) Impact(target);
@@ -238,6 +243,11 @@ public class CHeroSkillFeedback : MonoBehaviour
 
     private void Bind(CEntity target, bool add)
     {
+        if (target is CEnemyCorpse corpse)
+        {
+            if (add) corpse.OnDamaged += CorpseDamaged;
+            else corpse.OnDamaged -= CorpseDamaged;
+        }
         CPlayer hero = target as CPlayer;
         CEnemy enemy = target as CEnemy;
         if (hero != null)
