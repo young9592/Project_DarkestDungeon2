@@ -570,6 +570,13 @@ public class CPlayer : CEntity
         return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
     }
 
+    public bool CanTargetSkill(CSkillDataSO skill, CEntity target)
+    {
+        return skill != null && target != null && target.isActiveAndEnabled
+            && CanChooseTarget(skill, target)
+            && CanTargetRank(skill, target, target.CurrentRank);
+    }
+
     public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
     {
         return !_isTurnSkipped && !IsDeathPresented && isActiveAndEnabled
