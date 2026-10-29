@@ -58,9 +58,11 @@ public class CEffectManager : MonoBehaviour
         CEffectContext[] contexts = new CEffectContext[targetCount];
         bool[] consumedComboInThisSkill = new bool[targetCount];
 
+        Dictionary<EEffectType, bool> sharedCasterTokens = new Dictionary<EEffectType, bool>();
+
         for (int i=0 ; i < targetCount ; i++)
         {
-            contexts[i] = new CEffectContext(caster, targets[i]);
+            contexts[i] = new CEffectContext(caster, targets[i], sharedCasterTokens);
             consumedComboInThisSkill[i] = false;
         }
 

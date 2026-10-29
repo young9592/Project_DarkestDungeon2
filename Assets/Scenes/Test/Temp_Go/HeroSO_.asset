@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 
   _name: 
-  _maxHealth: 10
+  _maxHealth: 100
   _speed: 1
   _resistance:
     Bleed: 0
