@@ -7,15 +7,11 @@ public static class CPrint
 
     public static void Log(string str)
     {
-#if UNITY_EDITOR
         Debug.Log(str);
-#endif
     }
     public static void Warn(string str)
     {
-#if UNITY_EDITOR
         Debug.LogWarning(str);
-#endif
     }
     public static void Error(string str)
     {
@@ -26,9 +22,7 @@ public static class CPrint
         }
 
         _once.Add(str);
-#if UNITY_EDITOR
         Debug.LogError(str);
-#endif
     }
 
     /*

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4189229558796768241}
   - component: {fileID: 6875093607393216545}
   m_Layer: 5
-  m_Name: MarkerImage
+  m_Name: marker_image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5391226183375217891}
   - component: {fileID: 4915383613303770179}
   m_Layer: 5
-  m_Name: EntityImage
+  m_Name: entity_image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 6107757264227746714}
   - component: {fileID: 6621649711208462400}
   m_Layer: 5
-  m_Name: TurnorderFame
+  m_Name: turnorder_frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ GameObject:
   - component: {fileID: 4862979696798293114}
   - component: {fileID: 7974760431266820589}
   m_Layer: 5
-  m_Name: DiamondMask
+  m_Name: diamond_mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

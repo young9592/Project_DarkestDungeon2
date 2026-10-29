@@ -8,6 +8,8 @@ public class CIcon : MonoBehaviour
     {
         None,
         DeathStemp,
+        Stress,
+        Virtue,
         Turn,
     }
     #endregion
@@ -34,6 +36,7 @@ public class CIcon : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    // 아이콘 UI 표시
     public void SetIcon(Canvas canvas, GameObject target)
     {
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
@@ -43,23 +46,32 @@ public class CIcon : MonoBehaviour
 
         switch (_iconType)
         {
+            // 죽음의 일격 아이콘
             case IconType.DeathStemp:
                 _rectTr.localScale = Vector3.one * 5f;
                 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
                 break;
+            // 스트레스 아이콘
+            case IconType.Stress:
+
+                break;
+            // 스트레스 회복 아이콘
+            case IconType.Virtue:
+
+                break;
+            // 현재 차례 아이콘 표시
             case IconType.Turn:
-                MeshRenderer mesh = target.GetComponent<MeshRenderer>();
                 // 현재 차례의 오브젝트 아랫부분
+                MeshRenderer mesh = target.GetComponent<MeshRenderer>();
                 Vector3 targetVec = target.transform.position;
                 Vector3 bottomPos = new Vector3(targetVec.x, mesh.bounds.min.y, targetVec.z);
-
                 screenPos = Camera.main.WorldToScreenPoint(bottomPos);
                 break;
             default:
                 break;
         }
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, canvas.worldCamera, out uiLocalPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
         _rectTr.anchoredPosition = uiLocalPos;
         _deleteTime = Time.time + _durationTime;
         gameObject.SetActive(true);
@@ -68,9 +80,6 @@ public class CIcon : MonoBehaviour
         {
             Destroy(gameObject, _durationTime);
         }
-
-
-
     }
 
     void Update()

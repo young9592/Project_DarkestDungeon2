@@ -4,7 +4,30 @@ using UnityEngine.UI;
 
 public class CStateText : MonoBehaviour
 {
-    private enum TextType
+    // 어떤 형식의 출력 메세지인가
+    public enum EMessageType
+    {
+        None = 0,
+
+        Damage,
+        Damage_Crit,
+        Damage_Crit_Msg,
+
+        Heal,
+        Stress,
+
+        Bleed,
+        Blight,
+        Burn,
+
+        Daze,
+        Stun,
+
+        Death_Door,
+        Death
+    }
+    // 메세지 정렬 방식
+    private enum ETextType
     {
         Default,
         Dot,
@@ -49,16 +72,19 @@ public class CStateText : MonoBehaviour
         Move();
     }
     // 상호작용시 표시되는 텍스트
-    // offset은 고려중입니다.
-    public void SetText(Canvas canvas, Vector3 screenPos, EEffectType type, string text, Color32 color = default, Vector2 offset = default)
+    // offset은 여러 메세지가 한번에 출력되는 경우 위치 조정되는걸 구현하기 위함
+    public void SetText(Canvas canvas, GameObject target, EMessageType type, string text, Vector2 offset = default)
     {
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
         Vector2 uiLocalPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, canvas.worldCamera, out uiLocalPos);
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
 
         _text.text = text;
         _rectTr.anchoredPosition = uiLocalPos;
 
+        // 다중 메세지 겹침 위치조정
         if (offset != default)
         {
             _rectTr.anchoredPosition += offset;
@@ -66,67 +92,64 @@ public class CStateText : MonoBehaviour
 
         switch (type)
         {
-            case EEffectType.None:
-                SetAlignment(TextType.Default);
-
-                // 임시
-                if (text.Equals("죽음의 일격!"))
-                {
-                    _text.color = new Color32(213, 68, 17, 255);
-                    _stopText = true;
-                    _rectTr.anchoredPosition += Vector2.up * 100f;
-                }
+            case EMessageType.None:
+                SetAlignment(ETextType.Default);
                 break;
-            case EEffectType.Damage:
-
+                // 죽음의 일격!
+            case EMessageType.Death:
+                SetAlignment(ETextType.Default);
+                _text.color = new Color32(213, 68, 17, 255);
+                _stopText = true;
+                // 죽음의 일격! 메세지 위치조정
+                _rectTr.anchoredPosition += Vector2.up * 100f;
+                break;
+                // 데미지, 치명타데미지, 치명타! 메세지
+            case EMessageType.Damage:
+                SetAlignment(ETextType.Default);
                 _speed = 100;
-                SetAlignment(TextType.Default);
-
-                // 이건 임시입니다.
-                // 치명타 데미지가 들어왔을 때 텍스트를 다르게 처리하기 때문에 위와같이 처리하였습니다.
-                if (color.Equals(new Color32(241, 116, 9, 255)))
-                {
-                    _text.color = color;
-
-                    // 숫자가 아니면
-                    if (!int.TryParse(text, out int damage))
-                    {
-                        _rectTr.anchoredPosition += Vector2.up * 50f;
-                    }
-                }
-                else
-                {
-                    _text.color = new Color32(218, 20, 37, 255);
-                }
+                _text.color = new Color32(218, 20, 37, 255);
+                break;
+            case EMessageType.Damage_Crit:
+                SetAlignment(ETextType.Default);
+                _speed = 100;
+                _text.color = new Color32(241, 116, 9, 255);
+                break;
+            case EMessageType.Damage_Crit_Msg:
+                SetAlignment(ETextType.Default);
+                _speed = 100;
+                _text.color = new Color32(241, 116, 9, 255);
+                // 치명타! 메세지 위치조정
+                _rectTr.anchoredPosition += Vector2.up * 50f;
                 break;
             // 후에 수정 필요할수도 있음
-            case EEffectType.Heal:
+            case EMessageType.Heal:
+                SetAlignment(ETextType.Dot, text);
+                _speed = 100;
                 _iconImage.sprite = _healSprite;
-                SetAlignment(TextType.Dot, text);
                 _text.color = new Color32(151, 255, 183, 255);
                 break;
-            case EEffectType.Bleed:
+            case EMessageType.Bleed:
+                SetAlignment(ETextType.Dot, text);
                 _iconImage.sprite = _bleedSprite;
-                SetAlignment(TextType.Dot, text);
                 _text.color = new Color32(140, 8, 24, 255);
                 break;
-            case EEffectType.Blight:
+            case EMessageType.Blight:
                 _iconImage.sprite = _blightSprite;
-                SetAlignment(TextType.Dot, text);
+                SetAlignment(ETextType.Dot, text);
                 _text.color = new Color32(43, 82, 60, 255);
                 break;
-            case EEffectType.Burn:
+            case EMessageType.Burn:
                 _iconImage.sprite = _burnSprite;
-                SetAlignment(TextType.Dot, text);
+                SetAlignment(ETextType.Dot, text);
                 _text.color = new Color32(159, 64, 30, 255);
                 break;
-            case EEffectType.Stun:
+            case EMessageType.Stun:
                 _iconImage.sprite = _stunSprite;
-                SetAlignment(TextType.Token, text);
+                SetAlignment(ETextType.Token, text);
                 break;
-            case EEffectType.Daze:
+            case EMessageType.Daze:
                 _iconImage.sprite = _dazeSprite;
-                SetAlignment(TextType.Token, text);
+                SetAlignment(ETextType.Token, text);
                 break;
 
         }
@@ -134,11 +157,11 @@ public class CStateText : MonoBehaviour
         Destroy(gameObject, _duration);
     }
 
-    private void SetAlignment(TextType textType, string text = null)
+    private void SetAlignment(ETextType textType, string text = null)
     {
         switch (textType)
         {
-            case TextType.Default:
+            case ETextType.Default:
                 _textRectTr.anchorMin = new Vector2(0.5f, 0.5f);
                 _textRectTr.anchorMax = new Vector2(0.5f, 0.5f);
                 _textRectTr.pivot = new Vector2(0.5f, 0.5f);
@@ -147,7 +170,7 @@ public class CStateText : MonoBehaviour
                 _iconFrameImage.enabled = false;
                 _iconInnerImage.enabled = false;
                 break;
-            case TextType.Dot:
+            case ETextType.Dot:
                 _iconFrameImage.enabled = false;
                 _iconInnerImage.enabled = false;
                 _text.alignment = TextAlignmentOptions.Left;
@@ -166,7 +189,7 @@ public class CStateText : MonoBehaviour
                     _text.margin = new Vector4(30, 0, 0, 0);
                 }
                 break;
-            case TextType.Token:
+            case ETextType.Token:
                 _textRectTr.anchorMin = new Vector2(1, 0.5f);
                 _textRectTr.anchorMax = new Vector2(1, 0.5f);
                 _textRectTr.pivot = new Vector2(1, 0.5f);
