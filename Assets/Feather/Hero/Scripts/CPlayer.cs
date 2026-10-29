@@ -378,6 +378,52 @@ public class CPlayer : CEntity
         }
     }
 
+    public CHeroRunMemberState CaptureRunState(string memberId)
+    {
+        if (_heroData == null) return null;
+        return new CHeroRunMemberState
+        {
+            MemberId = memberId,
+            HeroId = _heroData.Id,
+            Health = _currentHp,
+            Stress = _currentStress,
+            IsDead = _isDead
+        };
+    }
+
+    public bool CanRestoreRunState(CHeroRunMemberState state)
+    {
+        return state != null && _heroData != null && TokenManager != null
+            && state.HeroId == _heroData.Id && _heroData.MaxHealth > 0
+            && state.Health >= 0 && state.Stress >= 0 && state.Stress <= MAX_STRESS
+            && (!state.IsDead || state.Health == 0) && !IsPresentationBusy
+            && ActionState != EEntityActionState.Requested && ActionState != EEntityActionState.Executing;
+    }
+
+    public bool TryRestoreRunState(CHeroRunMemberState state)
+    {
+        if (!CanRestoreRunState(state)) return false;
+        CancelAction();
+        CancelSkillSelection();
+        if (_deathPresentation != null) _deathPresentation.ResetPresentation();
+        int previousHealth = _currentHp;
+        int previousStress = _currentStress;
+        bool previousDoor = _isDeathsDoor;
+        _isTurnSkipped = false;
+        _isDead = state.IsDead;
+        _currentHp = Mathf.Min(state.Health, _heroData.MaxHealth);
+        _currentStress = state.Stress;
+        _isDeathsDoor = !_isDead && _currentHp == 0;
+        TokenManager.ClearAllTokens();
+        _activeStatusEffects.Clear();
+        if (_isDeathsDoor) TokenManager.AddToken(EEffectType.Weak, 1);
+        if (previousHealth != _currentHp) OnHealthChanged?.Invoke(this, previousHealth, _currentHp);
+        if (previousStress != _currentStress) OnStressChanged?.Invoke(this, previousStress, _currentStress);
+        if (previousDoor != _isDeathsDoor) OnDeathDoorChanged?.Invoke(this, _isDeathsDoor);
+        gameObject.SetActive(!_isDead);
+        return true;
+    }
+
     #region Skill Usage
     /// </summary>
     /// 1. 유저가 스킬 버튼 클릭시 호출

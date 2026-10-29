@@ -140,6 +140,11 @@ public class CHeroPartyTest : MonoBehaviour
 
     private void Awake()
     {
+        if (GetComponent<CHeroRunStateTest>() == null)
+        {
+            gameObject.AddComponent<CHeroRunStateTest>();
+        }
+
         if (_camera == null)
         {
             _camera = Camera.main;
@@ -256,8 +261,12 @@ public class CHeroPartyTest : MonoBehaviour
         _viewRoot.SetActive(true);
         _groupTest.enabled = true;
         _groupTest.ShowControls = false;
-        CHeroPartySO restored = _presets != null ? _presets.RestoreLastApplied() : null;
-        if (TryLoadParty(restored != null ? restored : _parties[0]) && SwitchGroup(0))
+        CHeroRunStateTest runState = GetComponent<CHeroRunStateTest>();
+        bool activeExpedition = runState != null && runState.IsExpeditionActive;
+        CHeroPartySO restored = !activeExpedition && _presets != null ? _presets.RestoreLastApplied() : null;
+        CHeroPartySO openingParty = restored != null ? restored : _parties[0];
+        bool loaded = runState != null ? runState.TryOpenParty(openingParty) : TryLoadParty(openingParty);
+        if (loaded && SwitchGroup(0))
         {
             return true;
         }
@@ -269,6 +278,17 @@ public class CHeroPartyTest : MonoBehaviour
 
 
     public bool TryLoadParty(CHeroPartySO party)
+    {
+        CHeroRunStateTest runState = GetComponent<CHeroRunStateTest>();
+        if (runState != null && runState.IsExpeditionActive)
+        {
+            runState.RememberParty();
+            return runState.TryRestoreParty(party);
+        }
+        return TryLoadParty(party, null);
+    }
+
+    public bool TryLoadParty(CHeroPartySO party, CHeroRunStateService runState)
     {
         if (!_isOpen || _isPreviewSuspended || IsBusy || _partyRoot == null || party == null || !party.TryValidate(out _))
         {
@@ -293,6 +313,13 @@ public class CHeroPartyTest : MonoBehaviour
             nextHeroes.Add(hero);
         }
 
+        if (runState != null && !runState.TryRestoreBattle(nextHeroes, out _))
+        {
+            nextRoot.SetActive(false);
+            Destroy(nextRoot);
+            return false;
+        }
+
         ClearParty();
         _lastRequest = "Choose a skill and target";
         _loadedRoot = nextRoot;
@@ -305,7 +332,16 @@ public class CHeroPartyTest : MonoBehaviour
 
         UpdatePositions();
         UpdateButtonOrder();
-        return TrySelectHero(0);
+        for (int i = 0; i < _heroes.Count; i++)
+        {
+            if (!_heroes[i].IsDead && _heroes[i].isActiveAndEnabled)
+            {
+                return TrySelectHero(i);
+            }
+        }
+        _selectedIndex = -1;
+        _input.SetHero(null);
+        return true;
     }
 
     public bool SuspendPreview()
@@ -320,6 +356,8 @@ public class CHeroPartyTest : MonoBehaviour
             _enemyPreview.Detach();
         }
 
+        CHeroRunStateTest runState = GetComponent<CHeroRunStateTest>();
+        if (runState != null) runState.RememberParty();
         _isPreviewSuspended = true;
         ClearParty();
         _groupTest.SuspendGroup();
@@ -470,7 +508,24 @@ public class CHeroPartyTest : MonoBehaviour
             return false;
         }
 
-        return TrySelectHero(_selectedIndex);
+        return RefreshHeroSelection();
+    }
+
+    public bool RefreshHeroSelection()
+    {
+        if (!_isOpen || _input == null || _heroes.Count == 0) return false;
+        if (_selectedIndex >= 0 && _selectedIndex < _heroes.Count
+            && !_heroes[_selectedIndex].IsDead && _heroes[_selectedIndex].isActiveAndEnabled)
+        {
+            return TrySelectHero(_selectedIndex);
+        }
+        for (int i = 0; i < _heroes.Count; i++)
+        {
+            if (!_heroes[i].IsDead && _heroes[i].isActiveAndEnabled) return TrySelectHero(i);
+        }
+        _selectedIndex = -1;
+        _input.SetHero(null);
+        return true;
     }
 
     public bool TrySwapRanks(int first, int second)
@@ -620,6 +675,8 @@ public class CHeroPartyTest : MonoBehaviour
             return;
         }
 
+        CHeroRunStateTest runState = GetComponent<CHeroRunStateTest>();
+        if (runState != null) runState.RememberParty();
         _isOpen = false;
         if (_enemyPreview != null)
         {
