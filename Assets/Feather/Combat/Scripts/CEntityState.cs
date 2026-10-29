@@ -151,7 +151,7 @@ public class CEntityState : MonoBehaviour
     {
         CTempEntity entity = _entity.GetComponent<CTempEntity>();
 
-        int maxHealth = entity.MaxHealth;
+        int maxHealth = entity.EntityData.MaxHealth;
         int curHealth = entity.CurrentHealth;
 
         float Clamp01 = Mathf.Clamp01((float)curHealth / (float)maxHealth);

@@ -18,10 +18,11 @@ public class CTempEntity : CEntity
     [SerializeField] private EEntityType _type;
     // 행동권 : 1회 기본 / 2회 ~ 3회 보스
     [SerializeField] private int _actions = 1;
+    [SerializeField] private CEntityDataSO _data;
+    [SerializeField] private List<CSkillDataSO> _skillList;
 
     [Header("Test State")]
     // 임시 값
-    [SerializeField] private int _maxHealth = 10;
     [SerializeField] private int _currentHealth = 10;
     [SerializeField] private int _maxStress = 10;
     [SerializeField] private int _currentStress = 0;
@@ -36,6 +37,8 @@ public class CTempEntity : CEntity
     #endregion
 
     #region Property
+    public override CEntityDataSO EntityData => _data;
+    public List<CSkillDataSO> SkillList => _skillList;
     public EEntityType Type => _type;
     public float Actions => _actions;
     public bool HasExtraTurn { get; set; }
@@ -44,16 +47,16 @@ public class CTempEntity : CEntity
 
     public IReadOnlyList<CEffect> DotEffectList => _dotEffectList;
     public int CurrentHealth => _currentHealth;
-    public int MaxHealth => _maxHealth;
     public int CurrentStress => _currentStress;
     public int MaxStress => _maxStress;
+
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
 
-        _currentHealth = _maxHealth;
+        _currentHealth = _data.MaxHealth;
         _currentStress = 0;
     }
 
