@@ -303,6 +303,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _caster: {fileID: 1230264960}
   _target: {fileID: 80861905}
+  _subTargets: []
   _skillList:
   - {fileID: 11400000, guid: 553bbecde523bc549ad965e38f2c58bf, type: 2}
   - {fileID: 11400000, guid: 76da6ed268496db4a8eca06f87e8e677, type: 2}
@@ -310,6 +311,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 754ebba8f671a7f4c88c46772901b662, type: 2}
   - {fileID: 11400000, guid: 33178cd9352f34a4fbb783938e09a8da, type: 2}
   _selectIndex: 0
+  _dummyAttackSkill: {fileID: 11400000, guid: c0d9286b935a57a4a83fae39b8baafc2, type: 2}
 --- !u!4 &1502528984
 Transform:
   m_ObjectHideFlags: 0
