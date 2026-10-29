@@ -10,6 +10,9 @@ public class CHeroPartyTest : MonoBehaviour
     [SerializeField] private Transform _partyRoot;
     [SerializeField] private Vector3 _frontPosition = new Vector3(0.014f, 0, 0);
     [SerializeField] private Vector3 _rankStep = new Vector3(0.011f, 0, 0);
+    [Header("Party Camera")]
+    [SerializeField] private Vector3 _partyCameraOffset = new Vector3(0.008f, 0, 0);
+    [SerializeField, Min(0.001f)] private float _partyCameraSize = 0.026f;
     [Header("Preview")]
     [SerializeField] private CHeroBattleInput _input;
     [SerializeField] private GameObject _viewRoot;
@@ -256,8 +259,8 @@ public class CHeroPartyTest : MonoBehaviour
 
         _cameraPosition = _camera.transform.position;
         _cameraSize = _camera.orthographicSize;
-        _camera.transform.position += new Vector3(0.008f, 0, 0);
-        _camera.orthographicSize = 0.026f;
+        _camera.transform.position += _partyCameraOffset;
+        _camera.orthographicSize = _partyCameraSize;
         _viewRoot.SetActive(true);
         _groupTest.enabled = true;
         _groupTest.ShowControls = false;
