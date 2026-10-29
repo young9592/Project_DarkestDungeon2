@@ -139,7 +139,7 @@ public class CEnemyGroupTest : MonoBehaviour
             Transform slot = _rankSlots[GetRankIndex(entry.Rank)];
             int endIndex = GetRankIndex(entry.Rank) + entry.EnemyPrefab.EnemyData.FormationSize - 1;
             Vector3 center = (slot.position + _rankSlots[endIndex].position) * 0.5f;
-            CEnemy enemy = Instantiate(entry.EnemyPrefab, center, slot.rotation, _spawnRoot);
+            CEnemy enemy = Instantiate(entry.EnemyPrefab, center, slot.rotation * entry.EnemyPrefab.transform.rotation, _spawnRoot);
             enemy.name = entry.EnemyPrefab.name + "_" + entry.Rank;
             enemy.TrySetRank(entry.Rank);
             if (enemy.GetComponent<CEnemyIntentTest>() == null)
