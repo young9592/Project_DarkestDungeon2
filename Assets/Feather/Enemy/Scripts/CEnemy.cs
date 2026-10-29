@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +17,8 @@ public class CEnemy : CEntity
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
     private CEntityDeathPresentation _deathPresentation;
+    private CEnemyCorpse _corpse;
+    public CEnemyCorpse Corpse { get { return _corpse; } }
     public CEntityDeathPresentation DeathPresentation
     {
         get { return _deathPresentation; }
@@ -84,6 +86,10 @@ public class CEnemy : CEntity
         }
 
         Initialize();
+        GameObject corpseObject = new GameObject("Enemy Corpse");
+        corpseObject.transform.SetParent(transform, false);
+        _corpse = corpseObject.AddComponent<CEnemyCorpse>();
+        _corpse.Configure(this);
     }
 
     private void Initialize()
@@ -378,7 +384,7 @@ public class CEnemy : CEntity
 
     public override void TakeDamage(int finalDamage)
     {
-        if (!_isInitialized || !isActiveAndEnabled || finalDamage == 0)
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
         {
             return;
         }
@@ -386,12 +392,20 @@ public class CEnemy : CEntity
         // 음수 피해는 회복으로 처리하고 최대 체력 제한
         long nextHp = (long)_currentHp - finalDamage;
         _currentHp = (int)Math.Max(0L, Math.Min(_enemyData.MaxHealth, nextHp));
-        // 체력 반영 후 재생 가능한 경우에만 피격 시작
+        // 피격에서 사망으로 이어져도 공격자의 완료 대기 유지
         if (finalDamage > 0 && _attackAnimation != null)
         {
             _attackAnimation.TryPlayHit();
         }
-    // TODO: 전투 규칙에 맞춰 사망과 죽음의 문 연결
+
+        if (_currentHp == 0)
+        {
+            _isDead = true;
+            _isDeathsDoor = false;
+            _deathPresentation.TryPlayConfirmedDeath();
+            return;
+        }
+
     }
 
     public override void ApplyStatusEffect(CEffect statusEffect)
@@ -457,6 +471,8 @@ public class CEnemy : CEntity
     public override void ResetEntityState()
     {
         if (!_isInitialized || _enemyData == null) return;
+
+        if (_corpse != null) _corpse.ResetEntityState();
 
         CancelAction();
         if (_attackAnimation != null) _attackAnimation.CancelPlayback();

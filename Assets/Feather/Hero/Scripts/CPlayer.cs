@@ -46,6 +46,11 @@ public class CPlayer : CEntity
     private bool _isRequesting;
     private bool _isStartingTurn;
     private bool _isTurnSkipped;
+    private readonly CHeroSkillUseState _skillUses = new CHeroSkillUseState();
+    public CHeroSkillUseState SkillUses
+    {
+        get { return _skillUses; }
+    }
     public bool IsTurnSkipped
     {
         get { return _isTurnSkipped; }
@@ -117,6 +122,7 @@ public class CPlayer : CEntity
             && AreActionTargetsValid()
             && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null
+            && _skillUses.CanUse(ActionSkill)
             && _equippedSkills.Contains(ActionSkill)
             && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
             && CanTargetRank(ActionSkill, ActionTarget, ActionTarget.CurrentRank);
@@ -256,7 +262,11 @@ public class CPlayer : CEntity
 
     private bool StartAttackPresentation()
     {
-        return _actionAnimation == null || _actionAnimation.TryPlayAttack(ActionSkill);
+        CSkillDataSO skill = ActionSkill;
+        if (!_skillUses.CanUse(skill)) return false;
+        if (_actionAnimation != null && !_actionAnimation.TryPlayAttack(skill)) return false;
+        if (!_skillUses.TryUse(skill)) return false;
+        return true;
     }
 
     protected override void OnActionCancelled()
@@ -444,7 +454,7 @@ public class CPlayer : CEntity
         }
 
         CSkillDataSO skill = _equippedSkills[skillIndex];
-        if (!CSkillRankUtility.CanUseSkill(skill, _currentRank))
+        if (!_skillUses.CanUse(skill) || !CSkillRankUtility.CanUseSkill(skill, _currentRank))
         {
             CancelSkillSelection();
             return false;
@@ -529,7 +539,8 @@ public class CPlayer : CEntity
     private bool CanTargetRank(CSkillDataSO skill, CEntity target, ERank targetRank)
     {
         CEnemy enemy = target as CEnemy;
-        if (enemy == null || enemy.EnemyData == null)
+        CEnemyCorpse corpse = target as CEnemyCorpse;
+        if ((enemy == null || enemy.EnemyData == null) && corpse == null)
         {
             return CSkillRankUtility.CanTargetSkill(skill, targetRank);
         }
@@ -548,7 +559,8 @@ public class CPlayer : CEntity
             return false;
         }
 
-        for (int i = 0; i < enemy.EnemyData.FormationSize && start + i <= 4; i++)
+        int size = corpse != null ? corpse.FormationSize : enemy.EnemyData.FormationSize;
+        for (int i = 0; i < size && start + i <= 4; i++)
         {
             if (CSkillRankUtility.CanTargetSkill(skill, (ERank)(1 << (start + i - 1))))
             {
@@ -583,6 +595,7 @@ public class CPlayer : CEntity
             && !_isRequesting
             && CanIssueActionRequest
             && _selectedSkill != null
+            && _skillUses.CanUse(_selectedSkill)
             && target != null
             && target.isActiveAndEnabled
             && CanChooseTarget(_selectedSkill, target)
@@ -758,9 +771,21 @@ public class CPlayer : CEntity
 
     public void OnTurnStart()
     {
+        OnTurnStart(false);
+    }
+
+    public void OnTurnStart(bool isExtraAction)
+    {
         if (!isActiveAndEnabled || _isDead || IsDeathPresented || _isStartingTurn) return;
 
+        if (isExtraAction)
+        {
+            _isTurnSkipped = false;
+            return;
+        }
+
         _isStartingTurn = true;
+        _skillUses.BeginTurn();
         try
         {
             _isTurnSkipped = false;
@@ -973,6 +998,7 @@ public class CPlayer : CEntity
         _currentStress = 0;
 
         TokenManager.ClearAllTokens();
+        _skillUses.Clear();
         _activeStatusEffects.Clear();
         CancelSkillSelection();
 

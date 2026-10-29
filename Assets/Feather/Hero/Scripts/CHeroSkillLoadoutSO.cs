@@ -63,7 +63,7 @@ public class CHeroSkillLoadoutSO : ScriptableObject
             {
                 for (int j = 0; j < heroData.AvailableSkills.Count; j++)
                 {
-                    if (heroData.AvailableSkills[j] == skill)
+                        if (heroData.AvailableSkills[j] == CHeroSkillSO.GetBaseSkill(skill))
                     {
                         available = true;
                     }
@@ -78,7 +78,7 @@ public class CHeroSkillLoadoutSO : ScriptableObject
 
             for (int j = 0; j < i; j++)
             {
-                if (_skills[j] != skill)
+                if (CHeroSkillSO.GetBaseSkill(_skills[j]) != CHeroSkillSO.GetBaseSkill(skill))
                 {
                     continue;
                 }

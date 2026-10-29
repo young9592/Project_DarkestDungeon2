@@ -27,3 +27,7 @@ MonoBehaviour:
   _availableSkills:
   - {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
   - {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 21300000, guid: 7d58255767df402b9e2d4ca98e7b9509, type: 3}
+  _corpseHealth: 5
+  _corpseWidth: 0.014

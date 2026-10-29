@@ -10,6 +10,7 @@ public class CHeroSkillBar : MonoBehaviour
     [SerializeField] private Transform _buttonRoot;
     [SerializeField] private Text _status;
     private readonly List<Button> _buttons = new List<Button>();
+    private readonly List<Text> _labels = new List<Text>();
     private readonly List<CSkillDataSO> _skills = new List<CSkillDataSO>();
     public IReadOnlyList<Button> Buttons
     {
@@ -59,6 +60,14 @@ public class CHeroSkillBar : MonoBehaviour
         {
             _buttons[i].interactable = _input.GetSkillUnavailableReason(i).Length == 0;
             _buttons[i].image.color = _input.Hero.SelectedSkill == _skills[i] ? new Color(0.8f, 0.55f, 0.15f) : new Color(0.2f, 0.25f, 0.3f);
+            Text label = _labels[i];
+            if (label != null)
+            {
+                CSkillDataSO skill = _skills[i];
+                int limit = _input.Hero.SkillUses.GetLimit(skill);
+                label.text = skill != null ? skill.SkillName : "Empty";
+                if (limit > 0) label.text += " [" + _input.Hero.SkillUses.GetRemaining(skill) + "/" + limit + "]";
+            }
         }
 
         if (_status != null)
@@ -114,6 +123,9 @@ public class CHeroSkillBar : MonoBehaviour
         {
             _status.text += " | Use: " + RankText(skill.UsableRank)
                 + " | Target: " + RankText(skill.TargetableRank);
+            int limit = _input.Hero.SkillUses.GetLimit(skill);
+            if (limit > 0) _status.text += " | Uses remaining: " + _input.Hero.SkillUses.GetRemaining(skill) + "/" + limit;
+            if (skill.Cooldown > 0) _status.text += " | Cooldown: " + _input.Hero.SkillUses.GetRemainingCooldown(skill) + "/" + skill.Cooldown;
         }
     }
 
@@ -170,6 +182,7 @@ public class CHeroSkillBar : MonoBehaviour
         }
 
         _buttons.Clear();
+        _labels.Clear();
         _skills.Clear();
         if (_buttonPrefab == null || _buttonRoot == null || _input.Hero.EquippedSkills == null)
         {
@@ -211,6 +224,7 @@ public class CHeroSkillBar : MonoBehaviour
             button.onClick.AddListener(() => _input.SelectSkill(index));
             _skills.Add(skill);
             _buttons.Add(button);
+            _labels.Add(label);
         }
     }
 }

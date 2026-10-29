@@ -126,6 +126,16 @@ public class CHeroSkillDetailView : MonoBehaviour
             {
                 CEffectSO effect = skill.EffectList[i];
                 if (effect == null || effect.Strategy == null) continue;
+                if (effect.Strategy is CHeroCorpseSkillStrategy corpseSkill)
+                {
+                    text.Append(heroSkill != null && heroSkill.RequiresCorpse ? "Clear one enemy corpse\n" : "Clear all enemy corpses\n");
+                    if (corpseSkill.HealPercent > 0) text.Append("On hit: restore ").Append(corpseSkill.HealPercent).Append("% maximum HP\n");
+                    if (corpseSkill.StealthTokens > 0) text.Append("On hit: Stealth x").Append(corpseSkill.StealthTokens).Append('\n');
+                    if (corpseSkill.StressRecovery > 0) text.Append("On hit: recover ").Append(corpseSkill.StressRecovery).Append(" stress\n");
+                    if (corpseSkill.ResetsCooldowns) text.Append("Clearing a corpse resets this Hero's skill cooldowns\n");
+                    text.Append("Corpse clear also occurs on a miss\n");
+                    continue;
+                }
                 if (effect.EffectType == EEffectType.Damage)
                 {
                     text.Append("Base damage: ").Append(EffectValueText(effect)).Append(" per target\n");
@@ -146,13 +156,15 @@ public class CHeroSkillDetailView : MonoBehaviour
         {
             text.Append("No effect connected yet.\nAnimation preview only.\n");
         }
+        if (heroSkill != null && heroSkill.UsesPerBattle > 0) text.Append("Uses per battle: ").Append(heroSkill.UsesPerBattle).Append("\n");
+        if (skill.Cooldown > 0) text.Append("Cooldown: ").Append(skill.Cooldown).Append(" Hero turn(s)\n");
         if (hasDamage)
         {
             text.Append("Combat effects can change damage.\n");
         }
         if (heroSkill != null && heroSkill.RequiresCorpse)
         {
-            text.Append("Corpse targeting is not connected.");
+            text.Append("Requires an enemy corpse.");
         }
 
         return text.ToString().TrimEnd();

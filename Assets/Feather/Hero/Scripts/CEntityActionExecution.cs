@@ -110,45 +110,35 @@ public class CEntityActionExecution : MonoBehaviour
             yield return null;
         }
 
-        for (int i = 0; i < _targets.Count; i++)
+        if (hasEffects)
         {
-            if (!CanContinue(executionId))
+            if (!CanContinue(executionId) || effects == null || !effects.isActiveAndEnabled)
             {
                 Interrupt();
                 yield break;
             }
 
-            CEntity target = _targets[i];
-            if (hasEffects)
+            bool effectsCompleted = false;
+            float effectStartedAt = Time.realtimeSinceStartup;
+            // 광역 효과와 자기 효과를 한 번의 스킬 실행으로 전달
+            effects.ExecuteSkillEffects(_actor, new List<CEntity>(_targets), skill, () =>
             {
-                if (effects == null || !effects.isActiveAndEnabled)
+                if (_isRunning && executionId == _executionId)
+                {
+                    effectsCompleted = true;
+                }
+            });
+
+            while (!effectsCompleted)
+            {
+                if (!CanContinue(executionId) || effects == null || !effects.isActiveAndEnabled
+                    || Time.realtimeSinceStartup - effectStartedAt >= _effectWaitLimit)
                 {
                     Interrupt();
                     yield break;
                 }
 
-                bool effectsCompleted = false;
-                float effectStartedAt = Time.realtimeSinceStartup;
-                // 효과 완료 콜백과 실제 피격 종료를 따로 확인
-                effects.ExecuteSkillEffects(_actor, target, skill, () =>
-                {
-                    if (_isRunning && executionId == _executionId)
-                    {
-                        effectsCompleted = true;
-                    }
-                });
-
-                while (!effectsCompleted || IsPresentationBusy(target))
-                {
-                    if (!CanContinue(executionId) || effects == null || !effects.isActiveAndEnabled
-                        || Time.realtimeSinceStartup - effectStartedAt >= _effectWaitLimit)
-                    {
-                        Interrupt();
-                        yield break;
-                    }
-
-                    yield return null;
-                }
+                yield return null;
             }
         }
 
