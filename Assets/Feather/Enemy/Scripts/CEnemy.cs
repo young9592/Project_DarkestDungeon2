@@ -439,6 +439,36 @@ public class CEnemy : CEntity
         }
     }
 
+    public override void CureStatusEffect(EEffectType targetType = EEffectType.None)
+    {
+        if (!_isInitialized || _isDead || IsDeathPresented) return;
+
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null
+                || targetType == EEffectType.None || effect.EffectType == targetType)
+            {
+                _activeStatusEffects.RemoveAt(i);
+            }
+        }
+    }
+
+    public override void ResetEntityState()
+    {
+        if (!_isInitialized || _enemyData == null) return;
+
+        CancelAction();
+        if (_attackAnimation != null) _attackAnimation.CancelPlayback();
+        if (_deathPresentation != null) _deathPresentation.ResetPresentation();
+
+        _isDead = false;
+        _isDeathsDoor = false;
+        _currentHp = _enemyData.MaxHealth;
+        TokenManager.ClearAllTokens();
+        _activeStatusEffects.Clear();
+    }
+
     // 턴 진행 주체가 턴 시작마다 한 번 호출합니다. 행동 재시도에는 호출하지 않습니다.
     public bool OnTurnStart()
     {

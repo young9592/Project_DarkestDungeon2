@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CHeroSkillBar : MonoBehaviour
@@ -24,6 +25,15 @@ public class CHeroSkillBar : MonoBehaviour
     {
         if (_input == null || _input.Hero == null)
         {
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                _buttons[i].interactable = false;
+            }
+            if (_status != null)
+            {
+                _status.text = "Choose a Hero first";
+                _status.color = Color.white;
+            }
             return;
         }
 
@@ -47,18 +57,63 @@ public class CHeroSkillBar : MonoBehaviour
 
         for (int i = 0; i < _buttons.Count; i++)
         {
-            _buttons[i].interactable = _input.CanChooseSkill && CSkillRankUtility.CanUseSkill(_skills[i], _input.Hero.CurrentRank);
+            _buttons[i].interactable = _input.GetSkillUnavailableReason(i).Length == 0;
             _buttons[i].image.color = _input.Hero.SelectedSkill == _skills[i] ? new Color(0.8f, 0.55f, 0.15f) : new Color(0.2f, 0.25f, 0.3f);
         }
 
         if (_status != null)
         {
-            _status.text = !_input.CanChooseSkill ? "Waiting for action" : _skills.Count == 0 ? "No equipped skills" : _input.Hero.SelectedSkill == null ? "Choose a skill" : TargetText(_input.Hero.SelectedSkill)
-                + " | Use: "
-                + RankText(_input.Hero.SelectedSkill.UsableRank)
-                + " | Target: "
-                + RankText(_input.Hero.SelectedSkill.TargetableRank)
-                + " | Right click / Esc: cancel";
+            RefreshStatus();
+        }
+    }
+
+    private void RefreshStatus()
+    {
+        int inspectedIndex = -1;
+        Mouse mouse = Mouse.current;
+        if (mouse != null)
+        {
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                RectTransform rect = _buttons[i].transform as RectTransform;
+                if (_buttons[i].gameObject.activeInHierarchy
+                    && RectTransformUtility.RectangleContainsScreenPoint(rect, mouse.position.ReadValue()))
+                {
+                    inspectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (inspectedIndex < 0)
+        {
+            inspectedIndex = _skills.IndexOf(_input.Hero.SelectedSkill);
+        }
+
+        _status.color = Color.white;
+        if (inspectedIndex < 0)
+        {
+            _status.text = !_input.CanChooseSkill ? _input.GetSkillUnavailableReason(0)
+                : _skills.Count == 0 ? "No equipped skills" : "Choose a skill | Hover over a skill to check availability";
+            return;
+        }
+
+        CSkillDataSO skill = _skills[inspectedIndex];
+        string reason = _input.GetSkillUnavailableReason(inspectedIndex);
+        if (reason.Length > 0)
+        {
+            _status.color = new Color(1.0f, 0.7f, 0.35f);
+            _status.text = (skill != null ? skill.SkillName + ": " : "") + reason;
+        }
+        else
+        {
+            _status.text = skill.SkillName + ": " + TargetText(skill) + " | Right click / Esc: cancel";
+        }
+
+        if (skill != null)
+        {
+            _status.text += " | Use: " + RankText(skill.UsableRank)
+                + " | Target: " + RankText(skill.TargetableRank);
         }
     }
 

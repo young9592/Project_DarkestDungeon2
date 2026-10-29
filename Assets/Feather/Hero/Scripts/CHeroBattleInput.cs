@@ -174,7 +174,7 @@ public class CHeroBattleInput : MonoBehaviour
 
     public bool SelectSkill(int index)
     {
-        if (!CanChooseSkill)
+        if (GetSkillUnavailableReason(index).Length > 0)
         {
             return false;
         }
@@ -182,6 +182,63 @@ public class CHeroBattleInput : MonoBehaviour
         bool selected = _hero.TrySelectSkill(index);
         RefreshHighlights(null);
         return selected;
+    }
+
+    public string GetSkillUnavailableReason(int index)
+    {
+        if (_hero == null)
+        {
+            return "Choose a Hero first";
+        }
+
+        if (_hero.IsDeathPresented)
+        {
+            return "This Hero cannot act";
+        }
+
+        if (_hero.IsPresentationBusy)
+        {
+            return "Wait for the current action or movement to finish";
+        }
+
+        if (!CTempLeeTestUI.CanShow(this) || !isActiveAndEnabled || !_hero.isActiveAndEnabled)
+        {
+            return "Controls are unavailable";
+        }
+
+        if (_hero.ActionState != EEntityActionState.Selecting)
+        {
+            return "Wait for this Hero's turn";
+        }
+
+        IReadOnlyList<CSkillDataSO> skills = _hero.EquippedSkills;
+        if (skills == null || index < 0 || index >= skills.Count || skills[index] == null)
+        {
+            return "No skill equipped";
+        }
+
+        CSkillDataSO skill = skills[index];
+        if (!CSkillRankUtility.CanUseSkill(skill, _hero.CurrentRank))
+        {
+            return "Cannot use from this position";
+        }
+
+        CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        if (heroSkill != null && heroSkill.RequiresCorpse)
+        {
+            return "Corpse targeting is unavailable";
+        }
+
+        for (int i = 0; i < _targets.Count; i++)
+        {
+            CHeroTargetView view = _targets[i];
+            if (view != null && _hero.CanTargetSkill(skill, view.Entity))
+            {
+                return string.Empty;
+            }
+        }
+
+        return "No eligible target in this skill's target positions";
     }
 
     private bool CanTarget(CHeroTargetView view)
