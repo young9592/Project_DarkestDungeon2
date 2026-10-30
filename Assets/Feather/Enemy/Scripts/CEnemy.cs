@@ -488,6 +488,11 @@ public class CEnemy : CEntity
     // 턴 진행 주체가 턴 시작마다 한 번 호출합니다. 행동 재시도에는 호출하지 않습니다.
     public bool OnTurnStart()
     {
+        return OnTurnStart(false);
+    }
+
+    public bool OnTurnStart(bool isExtraAction)
+    {
         if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0
             || _isStartingTurn || IsActionActive || IsPresentationBusy)
         {
@@ -497,27 +502,30 @@ public class CEnemy : CEntity
         _isStartingTurn = true;
         try
         {
-            long totalDamage = 0;
-            for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+            if (!isExtraAction)
             {
-                CEffect effect = _activeStatusEffects[i];
-                if (effect == null || effect.Data == null || effect.RemainingTurns <= 0)
+                long totalDamage = 0;
+                for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
                 {
-                    _activeStatusEffects.RemoveAt(i);
-                    continue;
+                    CEffect effect = _activeStatusEffects[i];
+                    if (effect == null || effect.Data == null || effect.RemainingTurns <= 0)
+                    {
+                        _activeStatusEffects.RemoveAt(i);
+                        continue;
+                    }
+
+                    totalDamage += effect.Damage;
+                    effect.DecreaseTurn();
+                    if (effect.RemainingTurns <= 0)
+                    {
+                        _activeStatusEffects.RemoveAt(i);
+                    }
                 }
 
-                totalDamage += effect.Damage;
-                effect.DecreaseTurn();
-                if (effect.RemainingTurns <= 0)
+                if (totalDamage > 0)
                 {
-                    _activeStatusEffects.RemoveAt(i);
+                    TakeDamage((int)Math.Min(int.MaxValue, totalDamage));
                 }
-            }
-
-            if (totalDamage > 0)
-            {
-                TakeDamage((int)Math.Min(int.MaxValue, totalDamage));
             }
 
             if (!isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0) return false;
