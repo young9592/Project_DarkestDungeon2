@@ -23,11 +23,17 @@ MonoBehaviour:
     Stun: 0
     Move: 0
     Debuff: 0
-  _deathDoorCount: 0
+  _actions: 1
   _availableSkills:
   - {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
   - {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 5ac18c22c119e1c4db36fa6df5de67eb, type: 3}
+  _skillSlotBackground: {fileID: 0}
+  _formationSize: 1
+  _deathDoorCount: 0
   _leavesCorpse: 1
   _corpseSprite: {fileID: 21300000, guid: 7d58255767df402b9e2d4ca98e7b9509, type: 3}
   _corpseHealth: 5
   _corpseWidth: 0.014
+  _skillRules: []

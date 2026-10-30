@@ -1,7 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+// 이제 제거를 하면 완벽..
 
 public class CTempEntity : CEntity
 {

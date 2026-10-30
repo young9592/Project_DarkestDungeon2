@@ -15,19 +15,26 @@ public class CHeroParty : MonoBehaviour
     #endregion
 
     #region Field
-    private bool _isReady = false;
+    private List<CEntity> _heroList = new List<CEntity>();
+    private static bool _isReady = false;
     #endregion
 
     #region Property
-    public bool IsReady => _isReady;
+    public static bool IsReady => _isReady;
+    public List<CEntity> HeroList => _heroList;
     #endregion
 
     private void Start()
     {
+        if (_isReady)
+        {
+            return;
+        }
+
         for (int i = 0; i < _heroPartyPreset.Members.Count; i++)
         {
             var heroPrefab = Instantiate(_heroPartyPreset.Members[i].Prefab, _entityRoot.transform);
-            
+
             // 위치 조정
             Vector3 vec = Vector3.zero;
 
@@ -50,6 +57,7 @@ public class CHeroParty : MonoBehaviour
                 default:
                     break;
             }
+            heroPrefab.GetComponent<CPlayer>().TrySetRank(_heroPartyPreset.Members[i].Rank);
 
             heroPrefab.transform.position = vec;
 
@@ -62,6 +70,12 @@ public class CHeroParty : MonoBehaviour
 
             // Rotaion 조정
             heroPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 180f, 0);
+
+            // 스크립트 잠시 중단
+            heroPrefab.GetComponent<CEntityHealthView>().enabled = false;
+
+            // 리스트 추가
+            _heroList.Add(heroPrefab.GetComponent<CPlayer>());
         }
 
         // 준비완료

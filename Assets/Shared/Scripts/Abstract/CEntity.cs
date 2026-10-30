@@ -25,6 +25,7 @@ public abstract class CEntity : MonoBehaviour
     private EEntityActionState _actionState;
     private CEntity _actionTarget;
     private CSkillDataSO _actionSkill;
+    private bool _extraActions = false;  // 추가행동
 
     public virtual CEntityDataSO EntityData { get { return null; } }
     public virtual EEntityType EntityType { get { return EEntityType.None; } }
@@ -50,7 +51,12 @@ public abstract class CEntity : MonoBehaviour
         protected set { _isDead = value; }
     }
 
-    
+    public bool ExtraAction => _extraActions;
+
+    public void SetExtraAction(bool setState)
+    {
+        _extraActions = setState;
+    }
 
     protected virtual void Awake()
     {

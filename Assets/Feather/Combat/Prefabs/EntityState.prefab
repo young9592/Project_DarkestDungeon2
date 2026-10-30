@@ -53,7 +53,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 0}
-  _entity: {fileID: 0}
+  _target: {fileID: 0}
+  _offset: {x: 0, y: -0.2, z: 0}
   _bleed: {fileID: 1263649268166187397}
   _blight: {fileID: 5577332608555275679}
   _burn: {fileID: 9190719446105599914}
