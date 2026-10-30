@@ -56,6 +56,7 @@ public class CPlayer : CEntity
         get { return _isTurnSkipped; }
     }
     private CEntityActionExecution _actionExecution;
+    private CHeroStatusMessage _statusMessage;
     private CHeroSkillFeedback _skillFeedback;
     private CEntityDeathPresentation _deathPresentation;
     public CEntityDeathPresentation DeathPresentation
@@ -346,6 +347,8 @@ public class CPlayer : CEntity
 
 
         _skillFeedback = GetComponent<CHeroSkillFeedback>();
+        _statusMessage = GetComponent<CHeroStatusMessage>();
+        if (_statusMessage == null) _statusMessage = gameObject.AddComponent<CHeroStatusMessage>();
         if (_actionAnimation == null) _actionAnimation = GetComponent<CHeroAnimation>();
         if (GetComponent<CHeroMeltdownPresentation>() == null)
         {
@@ -732,16 +735,49 @@ public class CPlayer : CEntity
     // 상태이상 부여 (합치지 않고 리스트에 개별 인스턴스로 추가)
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        if (_isDead || statusEffect == null || statusEffect.Data == null) return;
+        if (!isActiveAndEnabled || _isDead || IsDeathPresented || _heroData == null
+            || TokenManager == null || statusEffect == null || statusEffect.Data == null) return;
 
         if (IsDotEffect(statusEffect.EffectType))
         {
+            if (statusEffect.RemainingTurns <= 0 || statusEffect.Damage <= 0
+                || _activeStatusEffects.Contains(statusEffect)) return;
+
             _activeStatusEffects.Add(statusEffect);
+            if (_statusMessage != null) _statusMessage.ShowAdded(statusEffect.EffectType);
 
             int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
             CPrint.Log($"[{_heroData.DefaultName}] 에게 [{statusEffect.EffectType}] 추가 부여 \n" +
                 $"(이번 효과 : {statusEffect.Damage} 데미지 / {statusEffect.RemainingTurns}턴 |" +
                 $"다음 턴 예정 {statusEffect.EffectType} 합산 데미지 : {currentTotalDamage})");
+            return;
+        }
+
+        EEffectType tokenType = statusEffect.Data.TokenType != EEffectType.None
+            ? statusEffect.Data.TokenType : statusEffect.EffectType;
+        switch (tokenType)
+        {
+            case EEffectType.Crit:
+            case EEffectType.Riposte:
+            case EEffectType.Dodge:
+            case EEffectType.DodgePlus:
+            case EEffectType.Block:
+            case EEffectType.BlockPlus:
+            case EEffectType.Guarded:
+            case EEffectType.Strength:
+            case EEffectType.Speed:
+            case EEffectType.Stealth:
+            case EEffectType.Daze:
+            case EEffectType.Stun:
+            case EEffectType.Blind:
+            case EEffectType.Weak:
+            case EEffectType.Vulnerable:
+            case EEffectType.Taunt:
+            case EEffectType.Immobilize:
+            case EEffectType.Combo:
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
+                if (_statusMessage != null && TokenManager.HasToken(tokenType)) _statusMessage.ShowAdded(tokenType);
+                break;
         }
     }
 
@@ -982,6 +1018,8 @@ public class CPlayer : CEntity
     public override void ResetEntityState()
     {
         if (_heroData == null) return;
+
+        if (_statusMessage != null) _statusMessage.ClearPending();
 
         CancelAction();
         CancelSkillSelection();
