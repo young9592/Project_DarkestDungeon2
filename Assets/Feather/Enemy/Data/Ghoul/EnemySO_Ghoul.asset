@@ -33,10 +33,17 @@ MonoBehaviour:
     _weight: 3
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 2
   - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
     _weight: 2
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 1
+  _targetSelection: 0
   _leavesCorpse: 1
   _corpseSprite: {fileID: 21300000, guid: 9ae080c25854438ab0cdb1c9d79dca52, type: 3}
   _corpseHealth: 5

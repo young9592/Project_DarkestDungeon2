@@ -34,14 +34,24 @@ MonoBehaviour:
     _weight: 3
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 12
+    _condition: 0
   - _skill: {fileID: 11400000, guid: 17c969bc27c678b4b8f3bc2d2ed87966, type: 2}
     _weight: 2
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 2
+    _condition: 0
   - _skill: {fileID: 11400000, guid: 3997648d85372fb4ea0274b1173757a5, type: 2}
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 1
+    _condition: 0
+  _targetSelection: 0
   _leavesCorpse: 1
   _corpseSprite: {fileID: 21300000, guid: bbf97a2ca60d48fe80630228208ebdfb, type: 3}
   _corpseHealth: 5
