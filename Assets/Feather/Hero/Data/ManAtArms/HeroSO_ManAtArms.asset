@@ -35,6 +35,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b8ca58b9258e74942931991c1f1e4764, type: 2}
   - {fileID: 11400000, guid: 921ac2e2eb4dc1349afc9b76785b9019, type: 2}
   - {fileID: 11400000, guid: 380be3d38ce60f140b45327e8cdb6c91, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: 62b8201e633af9b48ad61cd1621529c4, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 2dafb7b051db56e44be7d42cb2718da3, type: 3}
+  _skillSlotBackground: {fileID: 21300000, guid: bad4d308ad14688418ffd7fe1b48a8fa, type: 3}
   _defaultName: "\uBC14\uB9AC\uC2A4\uD0C4"
   _diseaseResistance: 30
   _deathDoorResistance: 60

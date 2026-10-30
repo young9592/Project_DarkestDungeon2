@@ -35,6 +35,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f960cf2b2d5ff640b28298db76dfda0, type: 2}
   - {fileID: 11400000, guid: af5e52047c5321d4092f18e10a909225, type: 2}
   - {fileID: 11400000, guid: dd6390ecccfd675489699d68ec7ac740, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: e191677258321ba48979c6d71fc6a66c, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 86815a1cbfa01fd408f0dd64f51a9d10, type: 3}
+  _skillSlotBackground: {fileID: 21300000, guid: 6d6510a3531e3ce4cb681a493b36e31e, type: 3}
   _defaultName: Highwayman
   _diseaseResistance: 30
   _deathDoorResistance: 60

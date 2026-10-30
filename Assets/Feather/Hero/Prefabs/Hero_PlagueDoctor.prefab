@@ -50,6 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turnImage: {fileID: 0}
+  _isDeathsDoor: 0
+  _isDead: 0
   _heroData: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
   _skillLoadout: {fileID: 11400000, guid: afdfadbd1ce494a4d86b0a7dfcb4fcac, type: 2}
   _actionAnimation: {fileID: 5391368068779402237}
@@ -81,6 +83,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
   - {fileID: 11400000, guid: ee8e939fb2e07bf40a8d10280fac0047, type: 2}
   - {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
+  _returnBlendDuration: 0.12
 --- !u!114 &7167709055371247532
 MonoBehaviour:
   m_ObjectHideFlags: 0

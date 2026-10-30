@@ -17,9 +17,6 @@ public enum EEntityActionState
 }
 public abstract class CEntity : MonoBehaviour
 {
-    [Header("Turn Information")]
-    [SerializeField] private Sprite _turnImage;
-
     [SerializeField] protected bool _isDeathsDoor = false;
     [SerializeField] protected bool _isDead = false;
 
@@ -34,7 +31,6 @@ public abstract class CEntity : MonoBehaviour
     public virtual ERank CurrentRank { get { return ERank.None; } }
     public int BaseSpeed { get { return EntityData != null ? EntityData.Speed : 0; } }
     public int Speed { get { return BaseSpeed + _roundSpeedBonus; } }
-    public Sprite TurnImage { get { return _turnImage; } }
     public EEntityActionState ActionState { get { return _actionState; } }
     public bool IsActionActive { get { return _actionState != EEntityActionState.Idle; } }
     public CEntity ActionTarget { get { return _actionTarget; } }
