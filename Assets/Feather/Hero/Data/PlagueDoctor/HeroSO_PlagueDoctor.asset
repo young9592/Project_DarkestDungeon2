@@ -35,6 +35,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
   - {fileID: 11400000, guid: ee8e939fb2e07bf40a8d10280fac0047, type: 2}
   - {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: 9d621ddb49a23bb469dd6f143389b6a8, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 417a70f1838bd64468a00c03d1ce86c0, type: 3}
+  _skillSlotBackground: {fileID: 21300000, guid: 1e79ea85aba121f4b93995fdcf42bb18, type: 3}
   _defaultName: PlagueDoctor
   _diseaseResistance: 40
   _deathDoorResistance: 60

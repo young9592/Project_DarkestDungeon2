@@ -24,6 +24,7 @@ public abstract class CEntityDataSO : ScriptableObject
     [Header("Info")]
     [SerializeField] private string _id = "";
     [SerializeField] private string _name = "";
+
     [Header("Status")]
     [SerializeField] private int _maxHealth = 10;
     [SerializeField] private int _speed = 1;
@@ -31,6 +32,11 @@ public abstract class CEntityDataSO : ScriptableObject
 
     [Header("Skills")]
     [SerializeField] private List<CSkillDataSO> _availableSkills = new List<CSkillDataSO>();
+
+    [Header("Sprite")]
+    [SerializeField] private Sprite _portraitTurnOrder;
+    [SerializeField] private Sprite _portraitInfo;
+    [SerializeField] private Sprite _skillSlotBackground;
     #endregion
 
     #region Property
@@ -44,6 +50,10 @@ public abstract class CEntityDataSO : ScriptableObject
     {
         get { return _availableSkills; }
     }
+
+    public Sprite PortraitTurnOrder => _portraitTurnOrder;
+    public Sprite PortraitInfo => _portraitInfo;
+    public Sprite SkillSlotBackground => _skillSlotBackground;
     #endregion
 
     protected virtual void OnValidate()

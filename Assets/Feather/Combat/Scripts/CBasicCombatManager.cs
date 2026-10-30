@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Principal;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CBasicCombatManager : MonoBehaviour
@@ -468,12 +466,12 @@ public class CBasicCombatManager : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(4, _turnList[i].entity.Type, _turnList[i].entity.TurnImage);
+                //portraitImage.Initialize(4, _turnList[i].entity.Type, _turnList[i].entity.TurnImage);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(i + 1, _turnList[i].entity.Type, _turnList[i].entity.TurnImage);
+                //portraitImage.Initialize(i + 1, _turnList[i].entity.Type, _turnList[i].entity.TurnImage);
             }
 
             _turnPortraitList.Add(obj);
