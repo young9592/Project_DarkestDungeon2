@@ -23,6 +23,7 @@ MonoBehaviour:
     Stun: 10
     Move: 20
     Debuff: 20
+  _actions: 1
   _availableSkills:
   - {fileID: 11400000, guid: 0a559ca5dc2faa74ea3030581c4e517f, type: 2}
   - {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}

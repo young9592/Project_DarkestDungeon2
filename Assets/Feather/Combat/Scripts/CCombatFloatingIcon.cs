@@ -1,7 +1,7 @@
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class CIcon : MonoBehaviour
+public class CCombatFloatingIcon : MonoBehaviour
 {
     #region Enum
     public enum IconType
@@ -61,11 +61,7 @@ public class CIcon : MonoBehaviour
                 break;
             // 현재 차례 아이콘 표시
             case IconType.Turn:
-                // 현재 차례의 오브젝트 아랫부분
-                MeshRenderer mesh = target.GetComponent<MeshRenderer>();
-                Vector3 targetVec = target.transform.position;
-                Vector3 bottomPos = new Vector3(targetVec.x, mesh.bounds.min.y, targetVec.z);
-                screenPos = Camera.main.WorldToScreenPoint(bottomPos);
+                screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
                 break;
             default:
                 break;

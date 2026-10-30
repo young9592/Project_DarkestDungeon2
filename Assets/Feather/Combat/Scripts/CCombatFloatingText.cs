@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CStateText : MonoBehaviour
+public class CCombatFloatingText : MonoBehaviour
 {
     // 어떤 형식의 출력 메세지인가
     public enum EMessageType
@@ -14,6 +14,8 @@ public class CStateText : MonoBehaviour
         Damage_Crit_Msg,
 
         Heal,
+        Heal_Crit_Msg,
+
         Stress,
 
         Bleed,
@@ -33,13 +35,14 @@ public class CStateText : MonoBehaviour
         Dot,
         Token,
     }
-
     #region Inspector
     [Header("TextPrefab Inspector")]
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Image _iconImage;
     [SerializeField] private Image _iconFrameImage;
     [SerializeField] private Image _iconInnerImage;
+
+    [Header("Option")]
     [SerializeField] private float _duration = 2f;
     [SerializeField] private float _speed = 200f;
 
@@ -71,10 +74,17 @@ public class CStateText : MonoBehaviour
     {
         Move();
     }
+
     // 상호작용시 표시되는 텍스트
     // offset은 여러 메세지가 한번에 출력되는 경우 위치 조정되는걸 구현하기 위함
     public void SetText(Canvas canvas, GameObject target, EMessageType type, string text, Vector2 offset = default)
     {
+        if (canvas == null)
+        {
+            CPrint.Warn("FloatingText Canvas Disconncet.");
+            return;
+        }
+
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
         Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
         Vector2 uiLocalPos;
@@ -95,7 +105,7 @@ public class CStateText : MonoBehaviour
             case EMessageType.None:
                 SetAlignment(ETextType.Default);
                 break;
-                // 죽음의 일격!
+            // 죽음의 일격!
             case EMessageType.Death:
                 SetAlignment(ETextType.Default);
                 _text.color = new Color32(213, 68, 17, 255);
@@ -103,7 +113,7 @@ public class CStateText : MonoBehaviour
                 // 죽음의 일격! 메세지 위치조정
                 _rectTr.anchoredPosition += Vector2.up * 100f;
                 break;
-                // 데미지, 치명타데미지, 치명타! 메세지
+            // 데미지, 치명타데미지, 치명타! 메세지
             case EMessageType.Damage:
                 SetAlignment(ETextType.Default);
                 _speed = 100;
@@ -121,12 +131,19 @@ public class CStateText : MonoBehaviour
                 // 치명타! 메세지 위치조정
                 _rectTr.anchoredPosition += Vector2.up * 50f;
                 break;
-            // 후에 수정 필요할수도 있음
             case EMessageType.Heal:
                 SetAlignment(ETextType.Dot, text);
                 _speed = 100;
                 _iconImage.sprite = _healSprite;
                 _text.color = new Color32(151, 255, 183, 255);
+                break;
+            case EMessageType.Heal_Crit_Msg:
+                SetAlignment(ETextType.Dot, text);
+                _speed = 100;
+                _iconImage.sprite = _healSprite;
+                _text.color = new Color32(151, 255, 183, 255);
+                // 치명타! 메세지 위치조정
+                _rectTr.anchoredPosition += Vector2.up * 50f;
                 break;
             case EMessageType.Bleed:
                 SetAlignment(ETextType.Dot, text);

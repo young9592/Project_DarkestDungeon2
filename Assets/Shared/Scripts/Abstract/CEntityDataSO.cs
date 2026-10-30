@@ -29,6 +29,8 @@ public abstract class CEntityDataSO : ScriptableObject
     [SerializeField] private int _maxHealth = 10;
     [SerializeField] private int _speed = 1;
     [SerializeField] private CResistanceStats _resistance;
+    [SerializeField] private int _actions;   // Çàµ¿È½¼ö
+
 
     [Header("Skills")]
     [SerializeField] private List<CSkillDataSO> _availableSkills = new List<CSkillDataSO>();
@@ -45,7 +47,7 @@ public abstract class CEntityDataSO : ScriptableObject
     public int MaxHealth => _maxHealth;
     public int Speed => _speed;
     public CResistanceStats Resistance => _resistance;
-
+    public int Actions => _actions;
     public IReadOnlyList<CSkillDataSO> AvailableSkills
     {
         get { return _availableSkills; }
