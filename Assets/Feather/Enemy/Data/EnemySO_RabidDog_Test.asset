@@ -38,6 +38,7 @@ MonoBehaviour:
   _corpseWidth: 0.014
   _skillRules:
   - _skill: {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
+    _rankMovement: -1
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100
@@ -45,6 +46,7 @@ MonoBehaviour:
     _preferredRanks: 3
     _condition: 0
   - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
+    _rankMovement: 1
     _weight: 3
     _minHpPercent: 0
     _maxHpPercent: 100

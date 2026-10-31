@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
   m_Name: EffectSO_Spitter_Venom_Spit
   m_EditorClassIdentifier: 
-  _name: Spitter / Venom Spit damage
+  _name: Spitter / Spitter_Venom_Spit
   _effectType: 1
-  _damage: 3
+  _effectTarget: 0
+  _damage: 2
+  _maxDamage: 4
   _duration: 0
-  _baseChance: 100
+  _baseChance: 20
   _tokenType: 0
   _condition: 0
-  _strategy: {fileID: 11400000, guid: 84075ad42d515fa47a304aa089004efb, type: 2}
+  _strategy: {fileID: 11400000, guid: 87871e4ccc6b4c6f9e1216f0106a3821, type: 2}

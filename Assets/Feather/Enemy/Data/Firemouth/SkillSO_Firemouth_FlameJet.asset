@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Firemouth / Flame Jet
   _skillIcon: {fileID: 0}
-  _useableRank: 6
+  _useableRank: 12
   _targetableRank: 3
   _isGroupTarget: 1
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 81153fe056a595641a0b7ebf00c64cc1, type: 2}
+  - {fileID: 11400000, guid: b686a927e58a4a48a4ea15882ee46289, type: 2}
+  - {fileID: 11400000, guid: 0d85cf6e9c4542f5bcaf6d90c3de3527, type: 2}

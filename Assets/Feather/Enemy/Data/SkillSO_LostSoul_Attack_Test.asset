@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
   m_Name: SkillSO_LostSoul_Attack_Test
   m_EditorClassIdentifier: 
-  _skillName: LostSoul Attack (Test)
+  _skillName: LostSoul / Chomp
   _skillIcon: {fileID: 0}
-  _useableRank: 11
-  _targetableRank: 6
+  _useableRank: 3
+  _targetableRank: 3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: cae51bc958184767ada5b5e0ee09a808, type: 2}
+  - {fileID: 11400000, guid: ed097ae00ba94fe491fcce1b5fb215b4, type: 2}
+  - {fileID: 11400000, guid: ab569a70051c401ba80b34d1face8179, type: 2}

@@ -167,6 +167,7 @@ public class CEnemyAI : MonoBehaviour
             && IsHeroAvailable(_plannedTarget) && _heroes.Contains(_plannedTarget)
             && (IsExecuting || CSkillRankUtility.CanTargetSkill(_plannedSkill, _plannedTarget.CurrentRank))
             && (IsExecuting || CEnemySkillFilter.GetCandidates(_enemy.EnemyData, _enemy.CurrentRank).Contains(_plannedSkill))
+            && (IsExecuting || _enemy.GetRemainingSkillCooldown(_plannedSkill) == 0)
             && (IsExecuting || ArePlannedTargetsValid())
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, _plannedSkill, _enemy.CurrentHp) > 0;
     }

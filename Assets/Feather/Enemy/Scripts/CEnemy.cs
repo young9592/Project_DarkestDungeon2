@@ -15,6 +15,10 @@ public class CEnemy : CEntity
     private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
     private bool _isStartingTurn;
     private readonly List<CEntity> _requestedTargets = new List<CEntity>();
+    private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
+    private CEnemyFormationMovement _formationMovement;
+    private CSkillDataSO _movementSkill;
+    public CEnemyFormationMovement FormationMovement { get { return _formationMovement; } }
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
     private CEntityDeathPresentation _deathPresentation;
@@ -63,6 +67,8 @@ public class CEnemy : CEntity
     protected override void Awake()
     {
         base.Awake();
+        _formationMovement = GetComponent<CEnemyFormationMovement>();
+        if (_formationMovement == null) _formationMovement = gameObject.AddComponent<CEnemyFormationMovement>();
         _deathPresentation = GetComponent<CEntityDeathPresentation>();
         if (_deathPresentation == null)
         {
@@ -109,7 +115,8 @@ public class CEnemy : CEntity
     {
         get { return (_attackAnimation != null && _attackAnimation.IsBusy)
             || (_skillFeedback != null && _skillFeedback.IsBusy)
-            || (_deathPresentation != null && _deathPresentation.IsBusy); }
+            || (_deathPresentation != null && _deathPresentation.IsBusy)
+            || (_formationMovement != null && _formationMovement.IsMoving); }
     }
 
     public bool IsAttackPresentationPlaying
@@ -192,6 +199,9 @@ public class CEnemy : CEntity
 
     private void HandleAttackCompleted()
     {
+        CSkillDataSO movementSkill = _movementSkill;
+        _movementSkill = null;
+        if (ActionState == EEntityActionState.Executing && _formationMovement != null) _formationMovement.TryMove(movementSkill);
         OnAttackPresentationCompleted?.Invoke(this);
         TryCompleteAction();
     }
@@ -252,6 +262,7 @@ public class CEnemy : CEntity
     protected override void OnActionEnded()
     {
         _requestedTargets.Clear();
+        _movementSkill = null;
     }
 
     public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets, CEntity primaryTarget, CSkillDataSO skill)
@@ -297,11 +308,15 @@ public class CEnemy : CEntity
 
     private bool StartAttackPresentation()
     {
-        return TryPlayAttack(ActionSkill);
+        if (!TryPlayAttack(ActionSkill)) return false;
+        _movementSkill = ActionSkill;
+        return true;
     }
 
     protected override void OnActionCancelled()
     {
+        _movementSkill = null;
+        if (_formationMovement != null && _formationMovement.IsMoving) _formationMovement.SnapToRank();
         if (_attackAnimation != null)
         {
             _attackAnimation.CancelPlayback();
@@ -321,12 +336,26 @@ public class CEnemy : CEntity
 
     public List<CSkillDataSO> GetSkillCandidates()
     {
-        return CEnemySkillFilter.GetCandidates(_enemyData, _currentRank);
+        return FilterSkillCooldowns(CEnemySkillFilter.GetCandidates(_enemyData, _currentRank));
     }
 
     public List<CSkillDataSO> GetSkillCandidates(ERank targetRank)
     {
-        return CEnemySkillFilter.GetCandidates(_enemyData, _currentRank, targetRank);
+        return FilterSkillCooldowns(CEnemySkillFilter.GetCandidates(_enemyData, _currentRank, targetRank));
+    }
+
+    public int GetRemainingSkillCooldown(CSkillDataSO skill)
+    {
+        return _skillCooldowns.GetRemaining(skill);
+    }
+
+    private List<CSkillDataSO> FilterSkillCooldowns(List<CSkillDataSO> skills)
+    {
+        for (int i = skills.Count - 1; i >= 0; i--)
+        {
+            if (!_skillCooldowns.CanUse(skills[i])) skills.RemoveAt(i);
+        }
+        return skills;
     }
 
     public CSkillDataSO SelectSkill()
@@ -422,7 +451,9 @@ public class CEnemy : CEntity
         }
 
         // 현재 열에 맞는 스킬 연출 요청
-        return _attackAnimation.TryPlayAttack(skill);
+        if (!_attackAnimation.TryPlayAttack(skill)) return false;
+        _skillCooldowns.StartCooldown(skill);
+        return true;
     }
 
     public override void TakeDamage(int finalDamage)
@@ -526,6 +557,7 @@ public class CEnemy : CEntity
         _currentHp = _enemyData.MaxHealth;
         TokenManager.ClearAllTokens();
         _activeStatusEffects.Clear();
+        _skillCooldowns.Clear();
     }
 
     // 턴 진행 주체가 턴 시작마다 한 번 호출합니다. 행동 재시도에는 호출하지 않습니다.
@@ -543,6 +575,7 @@ public class CEnemy : CEntity
         }
 
         _isStartingTurn = true;
+        _skillCooldowns.BeginTurn(isExtraAction);
         try
         {
             if (!isExtraAction)

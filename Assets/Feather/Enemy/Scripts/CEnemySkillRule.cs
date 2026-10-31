@@ -14,6 +14,8 @@ public enum EEnemySkillCondition
 public class CEnemySkillRule
 {
     [SerializeField] private CSkillDataSO _skill;
+    [SerializeField, Range(-3, 3)] private int _rankMovement;
+    public int RankMovement { get { return Mathf.Clamp(_rankMovement, -3, 3); } }
     [Tooltip("같이 선택할 수 있는 스킬 사이의 비중입니다. 0이면 자동 선택에서 제외합니다.")]
     [SerializeField, Range(0, 100)] private int _weight = 1;
 

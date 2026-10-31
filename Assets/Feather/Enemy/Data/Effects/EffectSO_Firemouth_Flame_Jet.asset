@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
   m_Name: EffectSO_Firemouth_Flame_Jet
   m_EditorClassIdentifier: 
-  _name: Firemouth / Flame Jet damage
+  _name: Firemouth / Firemouth_Flame_Jet
   _effectType: 1
-  _damage: 4
+  _effectTarget: 0
+  _damage: 2
+  _maxDamage: 3
   _duration: 0
-  _baseChance: 100
+  _baseChance: 10
   _tokenType: 0
   _condition: 0
-  _strategy: {fileID: 11400000, guid: 84075ad42d515fa47a304aa089004efb, type: 2}
+  _strategy: {fileID: 11400000, guid: 7aae06ed4ec44376b25201d191a7b020, type: 2}

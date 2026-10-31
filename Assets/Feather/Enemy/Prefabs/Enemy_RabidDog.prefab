@@ -53,8 +53,8 @@ MonoBehaviour:
     _attackState: Base Layer.Attack
     _completionState: Base Layer.AttackPose
   - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
-    _attackState: Base Layer.Howl
-    _completionState: Base Layer.HowlPose
+    _attackState: Base Layer.Attack
+    _completionState: Base Layer.AttackPose
 --- !u!114 &2481291059542486020
 MonoBehaviour:
   m_ObjectHideFlags: 0
