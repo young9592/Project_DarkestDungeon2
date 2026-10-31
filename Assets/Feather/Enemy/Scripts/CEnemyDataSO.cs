@@ -1,6 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EEnemyTargetSelection
+{
+    Random,
+    Frontmost,
+    Rearmost
+}
+
 [CreateAssetMenu(menuName = "Data/Entity/Enemy", fileName = "EnemySO_")]
 public class CEnemyDataSO : CEntityDataSO
 {
@@ -22,6 +29,7 @@ public class CEnemyDataSO : CEntityDataSO
     [Header("Skill Selection")]
     [Tooltip("공통 스킬 목록에 있는 스킬의 선택 규칙입니다. 설정하지 않은 스킬은 체력 제한 없이 비중 1로 선택합니다.")]
     [SerializeField] private List<CEnemySkillRule> _skillRules = new List<CEnemySkillRule>();
+    [SerializeField] private EEnemyTargetSelection _targetSelection;
     #endregion
 
     #region Property
@@ -30,6 +38,10 @@ public class CEnemyDataSO : CEntityDataSO
     public Sprite CorpseSprite { get { return _corpseSprite; } }
     public int CorpseHealth { get { return Mathf.Max(1, _corpseHealth); } }
     public float CorpseWidth { get { return Mathf.Max(0.001f, _corpseWidth); } }
+    public EEnemyTargetSelection TargetSelection
+    {
+        get { return _targetSelection; }
+    }
     public int FormationSize
     {
         get { return _formationSize; }

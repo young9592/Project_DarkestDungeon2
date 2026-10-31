@@ -41,7 +41,14 @@ MonoBehaviour:
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 3
+    _condition: 0
   - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
     _weight: 3
     _minHpPercent: 0
-    _maxHpPercent: 50
+    _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 4
+    _condition: 0
+  _targetSelection: 1

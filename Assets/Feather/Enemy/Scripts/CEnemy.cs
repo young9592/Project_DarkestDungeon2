@@ -14,6 +14,7 @@ public class CEnemy : CEntity
     private bool _isInitialized;
     private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
     private bool _isStartingTurn;
+    private readonly List<CEntity> _requestedTargets = new List<CEntity>();
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
     private CEntityDeathPresentation _deathPresentation;
@@ -223,15 +224,75 @@ public class CEnemy : CEntity
 
     protected override bool CanExecuteRequestedAction()
     {
-        return _currentHp > 0 && ActionSkill != null
+        if (!(_currentHp > 0 && ActionSkill != null
             && GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
-            && CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) > 0;
+            && CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) > 0)) return false;
+
+        CEnemyAI ai = GetComponent<CEnemyAI>();
+        if (ai != null && ai.PlannedSkill == ActionSkill && !ai.IsPlanValid()) return false;
+
+        for (int i = 0; i < _requestedTargets.Count; i++)
+        {
+            CEntity target = _requestedTargets[i];
+            if (!CEnemyTargetFilter.IsAvailable(target)
+                || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
+        }
+        return true;
     }
 
     protected override bool TryStartActionPresentation()
     {
-        return _actionExecution != null && _actionExecution.TryExecute(ActionSkill,
-            new CEntity[] { ActionTarget }, StartAttackPresentation);
+        if (_requestedTargets.Count == 0) _requestedTargets.Add(ActionTarget);
+        bool started = _actionExecution != null && _actionExecution.TryExecute(ActionSkill,
+            _requestedTargets, StartAttackPresentation);
+        if (started && !ActionSkill.IsGroupTarget) ActionTarget.TokenManager.ConsumeToken(EEffectType.Taunt);
+        return started;
+    }
+
+    protected override void OnActionEnded()
+    {
+        _requestedTargets.Clear();
+    }
+
+    public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets, CEntity primaryTarget, CSkillDataSO skill)
+    {
+        if (targets == null || targets.Count == 0 || primaryTarget == null
+            || !CanRequestSkillAction(primaryTarget, primaryTarget.CurrentRank, skill)
+            || (!skill.IsGroupTarget && targets.Count != 1))
+        {
+            return false;
+        }
+
+        bool hasPrimaryTarget = false;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CEntity target = targets[i];
+            if (!CEnemyTargetFilter.IsAvailable(target)
+                || !CSkillRankUtility.CanTargetSkill(skill, target.CurrentRank)) return false;
+            if (target == primaryTarget) hasPrimaryTarget = true;
+        }
+        if (!hasPrimaryTarget) return false;
+        _requestedTargets.Clear();
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!_requestedTargets.Contains(targets[i])) _requestedTargets.Add(targets[i]);
+        }
+
+        // 같은 요청이 다시 들어오지 않게 막기
+        _isRequestingSkill = true;
+        try
+        {
+            if (!NotifyActionRequest(primaryTarget, skill))
+            {
+                OnSkillActionRequested?.Invoke(this, primaryTarget, skill);
+            }
+        }
+        finally
+        {
+            _isRequestingSkill = false;
+        }
+
+        return true;
     }
 
     private bool StartAttackPresentation()
@@ -338,26 +399,8 @@ public class CEnemy : CEntity
     // 의도에 표시한 스킬로 요청
     public bool TryRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
     {
-        if (!CanRequestSkillAction(target, targetRank, skill))
-        {
-            return false;
-        }
-
-        // 같은 요청이 다시 들어오지 않게 막기
-        _isRequestingSkill = true;
-        try
-        {
-            if (!NotifyActionRequest(target, skill))
-            {
-                OnSkillActionRequested?.Invoke(this, target, skill);
-            }
-        }
-        finally
-        {
-            _isRequestingSkill = false;
-        }
-
-        return true;
+        if (!CanRequestSkillAction(target, targetRank, skill)) return false;
+        return TryRequestSkillAction(new CEntity[] { target }, target, skill);
     }
 
     public bool TryPlayAttack(CSkillDataSO skill)

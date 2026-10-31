@@ -62,7 +62,7 @@ public class CEnemyAutoActionTest : MonoBehaviour
     {
         if (!_isOpen || _routine != null) return;
         for (int i = 0; i < _actors.Count; i++)
-            if (_actors[i] != null) _actors[i].TryPlanAction(_heroes);
+            if (_actors[i] != null) _actors[i].TryPlanAction(_heroes, _groupTest.SpawnedEnemies);
     }
 
     public void RunPlannedActions()
@@ -99,7 +99,7 @@ public class CEnemyAutoActionTest : MonoBehaviour
             }
 
             // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인합니다.
-            if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes)) || !enemy.TryBeginAction())
+            if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes, _groupTest.SpawnedEnemies)) || !enemy.TryBeginAction())
             {
                 _skipped++;
                 actor.CancelPlan();

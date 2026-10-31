@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CEnemyIntentTest : MonoBehaviour
 {
@@ -13,8 +14,22 @@ public class CEnemyIntentTest : MonoBehaviour
     private CEnemyAI _autoAction;
     private CEntity _highlightTarget;
     private Renderer[] _targetRenderers;
+    private readonly List<CEntity> _emptyTargets = new List<CEntity>();
     public bool ShowLabel { get; set; } = true;
     public bool ShowTarget { get; set; } = true;
+
+    public IReadOnlyList<CEntity> IntentTargets
+    {
+        get
+        {
+            if (!ShowTarget || !isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled
+                || _enemy.IsDeathPresented || _autoAction == null || !_autoAction.isActiveAndEnabled)
+            {
+                return _emptyTargets;
+            }
+            return _autoAction.PlannedTargets;
+        }
+    }
 
     public CEntity IntentTarget
     {
@@ -241,13 +256,22 @@ public class CEnemyIntentTest : MonoBehaviour
         GUI.Label(new Rect(left, area.y + 23.0f, area.xMax - left - 4.0f, 20.0f), skill.SkillName);
         if (target != null)
         {
-            GUI.Label(new Rect(left, area.y + 43.0f, area.xMax - left - 4.0f, 20.0f), "Target: " + target.name);
+            string targetText = skill.IsGroupTarget ? "Targets: " + IntentTargets.Count : "Target: " + target.name;
+            GUI.Label(new Rect(left, area.y + 43.0f, area.xMax - left - 4.0f, 20.0f), targetText);
         }
     }
 
     private void DrawTargetIntent()
     {
-        CEntity target = IntentTarget;
+        IReadOnlyList<CEntity> targets = IntentTargets;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (CEnemyTargetFilter.IsAvailable(targets[i])) DrawTargetIntent(targets[i]);
+        }
+    }
+
+    private void DrawTargetIntent(CEntity target)
+    {
         if (target == null || _camera == null || _animation == null) return;
         if (_highlightTarget != target)
         {

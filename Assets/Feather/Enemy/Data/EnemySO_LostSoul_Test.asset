@@ -36,4 +36,19 @@ MonoBehaviour:
   _corpseSprite: {fileID: 21300000, guid: 7d58255767df402b9e2d4ca98e7b9509, type: 3}
   _corpseHealth: 5
   _corpseWidth: 0.014
-  _skillRules: []
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 4
+  - _skill: {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 3
+  _targetSelection: 0
