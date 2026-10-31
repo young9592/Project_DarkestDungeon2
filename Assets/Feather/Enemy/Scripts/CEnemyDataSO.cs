@@ -30,10 +30,18 @@ public class CEnemyDataSO : CEntityDataSO
     [Tooltip("공통 스킬 목록에 있는 스킬의 선택 규칙입니다. 설정하지 않은 스킬은 체력 제한 없이 비중 1로 선택합니다.")]
     [SerializeField] private List<CEnemySkillRule> _skillRules = new List<CEnemySkillRule>();
     [SerializeField] private EEnemyTargetSelection _targetSelection;
+
+    [Header("Starting Token")]
+    [SerializeField] private EEffectType _startingToken;
+    [SerializeField, Min(0)] private int _startingTokenCount;
+    [SerializeField, Range(0, 100)] private int _extraStartingTokenChance;
     #endregion
 
     #region Property
     public int DeathDoorCount => _deathDoorCount;
+    public EEffectType StartingToken { get { return _startingToken; } }
+    public int StartingTokenCount { get { return Mathf.Max(0, _startingTokenCount); } }
+    public int ExtraStartingTokenChance { get { return Mathf.Clamp(_extraStartingTokenChance, 0, 100); } }
     public bool LeavesCorpse { get { return _leavesCorpse; } }
     public Sprite CorpseSprite { get { return _corpseSprite; } }
     public int CorpseHealth { get { return Mathf.Max(1, _corpseHealth); } }
@@ -69,6 +77,8 @@ public class CEnemyDataSO : CEntityDataSO
         _formationSize = Mathf.Clamp(_formationSize, 1, 4);
 
         _deathDoorCount = Mathf.Max(0, _deathDoorCount);
+        _startingTokenCount = Mathf.Max(0, _startingTokenCount);
+        _extraStartingTokenChance = Mathf.Clamp(_extraStartingTokenChance, 0, 100);
         if (_skillRules == null) return;
 
         List<CSkillDataSO> configuredSkills = new List<CSkillDataSO>();
