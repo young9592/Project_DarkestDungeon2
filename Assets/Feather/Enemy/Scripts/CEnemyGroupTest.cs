@@ -151,6 +151,10 @@ public class CEnemyGroupTest : MonoBehaviour
             if (enemy.Corpse != null) enemy.Corpse.OnRemoved += HandleCorpseRemoved;
         }
 
+        for (int i = 0; i < _spawnedEnemies.Count; i++)
+        {
+            _spawnedEnemies[i].FormationMovement.Configure(_spawnedEnemies, _rankSlots);
+        }
         TrySelectEnemy(0);
         if (_groupOptions != null)
         {

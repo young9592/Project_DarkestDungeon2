@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Ghoul / Skull Toss
   _skillIcon: {fileID: 0}
-  _useableRank: -1
+  _useableRank: 15
   _targetableRank: 12
-  _isGroupTarget: 0
-  _cooldown: 0
+  _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: f5f9d8ad62d83e744b2aa11b8c797b8e, type: 2}
+  - {fileID: 11400000, guid: 83ee486e82784efa91de8c0a93ca1f02, type: 2}
+  - {fileID: 11400000, guid: 8c79d5da0ae44c218f087972e7019fd5, type: 2}
+  - {fileID: 11400000, guid: ba96f63a41be41788f3d68c022c1e57f, type: 2}

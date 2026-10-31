@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: enemy_ghoul
   _name: Ghoul
-  _maxHealth: 40
-  _speed: 2
+  _maxHealth: 36
+  _speed: 4
   _resistance:
-    Bleed: 0
-    Blight: 0
-    Burn: 0
-    Stun: 0
-    Move: 0
-    Debuff: 0
+    Bleed: 20
+    Blight: 20
+    Burn: 20
+    Stun: 50
+    Move: 50
+    Debuff: 20
   _availableSkills:
   - {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
   - {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
@@ -30,14 +30,28 @@ MonoBehaviour:
   _deathDoorCount: 0
   _skillRules:
   - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
+    _selfToken: 11
+    _selfTokenCount: 1
     _weight: 3
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 2
   - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
+    _selfToken: 11
+    _selfTokenCount: 1
     _weight: 2
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 1
+  _targetSelection: 0
   _leavesCorpse: 1
   _corpseSprite: {fileID: 21300000, guid: 9ae080c25854438ab0cdb1c9d79dca52, type: 3}
   _corpseHealth: 5
   _corpseWidth: 0.022
+  _startingToken: 11
+  _startingTokenCount: 1
+  _extraStartingTokenChance: 0

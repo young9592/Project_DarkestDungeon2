@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
   m_Name: SkillSO_RabidDog_Attack_Test
   m_EditorClassIdentifier: 
-  _skillName: RabidDog Attack (Test)
+  _skillName: RabidDog / Rabid Rush
   _skillIcon: {fileID: 0}
-  _useableRank: 3
+  _useableRank: 7
   _targetableRank: 3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: cae51bc958184767ada5b5e0ee09a808, type: 2}
+  - {fileID: 11400000, guid: ea0f6fd95b9146be85ed368f9f57eeec, type: 2}

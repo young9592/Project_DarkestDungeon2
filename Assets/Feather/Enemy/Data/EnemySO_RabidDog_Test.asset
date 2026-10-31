@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: enemy_rabid_dog_test
   _name: RabidDog (Test)
-  _maxHealth: 10
-  _speed: 1
+  _maxHealth: 14
+  _speed: 4
   _resistance:
-    Bleed: 0
-    Blight: 0
-    Burn: 0
-    Stun: 0
-    Move: 0
-    Debuff: 0
+    Bleed: 40
+    Blight: 40
+    Burn: 20
+    Stun: 20
+    Move: 10
+    Debuff: 10
   _actions: 1
   _availableSkills:
   - {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
@@ -38,10 +38,24 @@ MonoBehaviour:
   _corpseWidth: 0.014
   _skillRules:
   - _skill: {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
+    _selfToken: 9
+    _selfTokenCount: 1
+    _rankMovement: -1
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 3
+    _condition: 0
   - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
+    _rankMovement: 1
     _weight: 3
     _minHpPercent: 0
-    _maxHpPercent: 50
+    _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 4
+    _condition: 0
+  _targetSelection: 1
+  _startingToken: 9
+  _startingTokenCount: 1
+  _extraStartingTokenChance: 0

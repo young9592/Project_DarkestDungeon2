@@ -13,6 +13,32 @@ public static class CEnemySkillSelector
         return candidates[selectedIndex];
     }
 
+    public static CSkillDataSO SelectPatternSkill(CEnemyDataSO enemyData, List<CSkillDataSO> candidates,
+        int currentHp, ERank currentRank, bool hasAlly, bool allyInFront)
+    {
+        if (enemyData == null || candidates == null) return null;
+
+        int highestPriority = 0;
+        List<CSkillDataSO> preferred = new List<CSkillDataSO>();
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            CSkillDataSO skill = candidates[i];
+            if (GetSelectionWeight(enemyData, skill, currentHp) <= 0) continue;
+
+            CEnemySkillRule rule = enemyData.GetSkillRule(skill);
+            int priority = rule != null ? rule.GetPriority(currentRank, hasAlly, allyInFront) : 0;
+            if (priority < highestPriority) continue;
+            if (priority > highestPriority)
+            {
+                highestPriority = priority;
+                preferred.Clear();
+            }
+            if (!preferred.Contains(skill)) preferred.Add(skill);
+        }
+
+        return SelectSkill(enemyData, preferred, currentHp);
+    }
+
     public static int GetSelectionWeight(CEnemyDataSO enemyData, CSkillDataSO skill, int currentHp)
     {
         if (enemyData == null || skill == null) return 0;
