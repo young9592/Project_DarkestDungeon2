@@ -18,6 +18,7 @@ public class CEnemy : CEntity
     private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
     private CEnemyFormationMovement _formationMovement;
     private CSkillDataSO _movementSkill;
+    private CSkillDataSO _selfTokenSkill;
     public CEnemyFormationMovement FormationMovement { get { return _formationMovement; } }
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
@@ -108,6 +109,24 @@ public class CEnemy : CEntity
         }
 
         _isInitialized = true;
+        ApplyStartingToken();
+    }
+
+    private void ApplyStartingToken()
+    {
+        if (_enemyData.StartingToken == EEffectType.None) return;
+        int count = _enemyData.StartingTokenCount;
+        if (_enemyData.ExtraStartingTokenChance > 0
+            && UnityEngine.Random.Range(0, 100) < _enemyData.ExtraStartingTokenChance) count++;
+        if (count > 0) TokenManager.AddToken(_enemyData.StartingToken, count);
+    }
+
+    private void ApplySkillSelfToken(CSkillDataSO skill)
+    {
+        if (skill == null || _isDead || _currentHp <= 0 || IsDeathPresented) return;
+        CEnemySkillRule rule = _enemyData.GetSkillRule(skill);
+        if (rule == null || rule.SelfToken == EEffectType.None || rule.SelfTokenCount <= 0) return;
+        TokenManager.AddToken(rule.SelfToken, rule.SelfTokenCount);
     }
 
     // 효과 처리와 별도로 연출 상태 제공
@@ -261,6 +280,9 @@ public class CEnemy : CEntity
 
     protected override void OnActionEnded()
     {
+        CSkillDataSO selfTokenSkill = _selfTokenSkill;
+        _selfTokenSkill = null;
+        ApplySkillSelfToken(selfTokenSkill);
         _requestedTargets.Clear();
         _movementSkill = null;
     }
@@ -310,11 +332,13 @@ public class CEnemy : CEntity
     {
         if (!TryPlayAttack(ActionSkill)) return false;
         _movementSkill = ActionSkill;
+        _selfTokenSkill = ActionSkill;
         return true;
     }
 
     protected override void OnActionCancelled()
     {
+        _selfTokenSkill = null;
         _movementSkill = null;
         if (_formationMovement != null && _formationMovement.IsMoving) _formationMovement.SnapToRank();
         if (_attackAnimation != null)
@@ -556,6 +580,7 @@ public class CEnemy : CEntity
         _isDeathsDoor = false;
         _currentHp = _enemyData.MaxHealth;
         TokenManager.ClearAllTokens();
+        ApplyStartingToken();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
     }
