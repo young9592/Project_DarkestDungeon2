@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CBasicCombatManager : MonoBehaviour
@@ -35,8 +36,10 @@ public class CBasicCombatManager : MonoBehaviour
     [Header("Draw Canvas")]
     [SerializeField] private Canvas _canvas;
 
-    [Header("HeroParty")]
+    [Header("Party")]
     [SerializeField] private CHeroParty _heroParty;
+    [SerializeField] private CEnemyParty _enemyParty;
+
 
     [Header("MessageManager")]
     [SerializeField] private CCombatFloatingMessageManager _messageManager;
@@ -147,7 +150,27 @@ public class CBasicCombatManager : MonoBehaviour
     private void Awake()
     {
         // TODO : 널체크  
+        bool isNull = false;
 
+
+        if(_heroParty == null)
+        {
+            CPrint.Error($"{gameObject.name} Hero Party is null.");
+            isNull = true;
+        }
+
+        if (_enemyParty == null)
+        {
+            CPrint.Error($"{gameObject.name} Enemy Party is null.");
+            isNull = true;
+        }
+
+        // 최종결과
+        if (isNull)
+        {
+            enabled = false;
+            return;
+        }
 
         #region 리스너 등록
         for (int i = 0; i < _skillSlot.Count; i++)
@@ -163,7 +186,9 @@ public class CBasicCombatManager : MonoBehaviour
     private void OnActionPass()
     {
         _pass = true;
+        _turnList[0].entity.TryBeginAction();
     }
+    // 스킬 선택
     private void OnSelectSkill(int idx)
     {
         if (!_skillListPanel.activeSelf)
@@ -188,8 +213,8 @@ public class CBasicCombatManager : MonoBehaviour
         _cursorSkillName.text = skillSO.SkillName;
 
         _cursorSkill.SetActive(true);
-
-        // TODO : 해당 영웅의 스킬 사용모션 동작
+        
+        // 영웅의 스킬 사전준비 모션
         hero.SelectSkill(idx);
 
     }
@@ -225,12 +250,6 @@ public class CBasicCombatManager : MonoBehaviour
             {
                 _roundState = RoundState.Ready;
             }
-            if(_entityList.Count < _entityStateList.Count)
-            {
-                CPrint.Error("상태창이 더 많이 생성되었습니다. 체크 필요");
-                enabled = false;
-                return;
-            }
         }
         // 턴순서 리스트가 준비가 되었는가?
         else if (_roundState == RoundState.Ready)
@@ -249,18 +268,24 @@ public class CBasicCombatManager : MonoBehaviour
             }
         }
     }
+    // 라운드 상태에 따른 행동
     private void ActiveState()
     {
         switch (_roundState)
         {
             case RoundState.Wait:
-                if (CHeroParty.IsReady)
+                if (CHeroParty.IsReady && CEnemyParty.IsReady)
                 {
                     for (int i = 0; i < _heroParty.HeroList.Count; i++)
                     {
                         _entityList.Add(_heroParty.HeroList[i]);
-                        // →← TODO : 추후 구독 제거작업 필수!
                         _heroParty.HeroList[i].OnActionCompleted += DoAction;
+                    }
+
+                    for(int i = 0; i < _enemyParty.EnemyList.Count; i++)
+                    {
+                        _entityList.Add(_enemyParty.EnemyList[i]);
+                        _enemyParty.EnemyList[i].OnActionCompleted += DoAction;
                     }
 
                     for (int i = 0; i < _entityList.Count; i++)
@@ -297,8 +322,16 @@ public class CBasicCombatManager : MonoBehaviour
             // 보스 개체는 행동 횟수를 여러번 가집니다.
             for (int actions = 0; actions < _entityList[i].EntityData.Actions; actions++)
             {
+                // 스피드 토큰을 가지고 있을시 행동횟수 1번 속도 +100 보정
+                bool hasToken = _entityList[i].TokenManager.ConsumeToken(EEffectType.Speed);
+
+                if (hasToken)
+                {
+                    _messageManager.ShowMessage(_entityList[i].gameObject, CCombatFloatingText.EMessageType.Speed, "속도!");
+                }
+
                 _entityList[i].RoundRandomSpeed();
-                _turnList.Add((_entityList[i], _entityList[i].Speed));
+                _turnList.Add((_entityList[i], _entityList[i].Speed + (hasToken ? 100 : 0)));
             }
         }
 
@@ -420,7 +453,6 @@ public class CBasicCombatManager : MonoBehaviour
 
         if (isStuned)
         {
-            //ContainToken(_turnList[0].entity, EEffectType.Stun);
             return EntityState.Stun;
         }
 
@@ -428,7 +460,6 @@ public class CBasicCombatManager : MonoBehaviour
 
         if (isDazed)
         {
-            //ContainToken(_turnList[0].entity, EEffectType.Daze);
             return EntityState.Daze;
         }
 
@@ -469,50 +500,7 @@ public class CBasicCombatManager : MonoBehaviour
             _messageManager.ShowMessage(_turnList[0].entity.gameObject, dotType[i], dotList[i].ToString(), default, delay * 0.3f);
             delay++;
         }
-
-        // 체력 및 도트 남았는지 후처리
-        //_entityStateList[_turnList[0].entity].SetHealth();
-        //ContainDot(_turnList[0].entity, ishero);
     }
-    // 도트 처리 후 아직 남았는가?
-    private void ContainDot(CEntity entity, bool isHero)
-    {
-        List<EEffectType> dotList = new List<EEffectType>() { EEffectType.Bleed, EEffectType.Blight, EEffectType.Burn };
-
-        if (isHero)
-        {
-            CPlayer hero = entity as CPlayer;
-
-            for (int i = 0; i < dotList.Count; i++)
-            {
-                if (hero.GetTotalDotDamageByType(dotList[i]) <= 0)
-                {
-                    _entityStateList[entity].SetEffect(dotList[i], false);
-                }
-            }
-        }
-        else
-        {
-            CEnemy enemy = entity as CEnemy;
-
-            for (int i = 0; i < dotList.Count; i++)
-            {
-                if (enemy.GetTotalDotDamageByType(dotList[i]) <= 0)
-                {
-                    _entityStateList[entity].SetEffect(dotList[i], false);
-                }
-            }
-        }
-    }
-    // 토큰 체크
-    private void ContainToken(CEntity entity, EEffectType effectType)
-    {
-        if (!entity.TokenManager.HasToken(effectType))
-        {
-            _entityStateList[entity].SetEffect(effectType, false);
-        }
-    }
-
     // 턴이 왔는데 도트뎀으로 죽은 적들 처리
     private IEnumerator CoDeath()
     {
@@ -716,8 +704,7 @@ public class CBasicCombatManager : MonoBehaviour
                 _enemyInfo.SetActive(true);
             }
             // →← TODO : 행동을 완료하였을 때 처리
-
-            doAction = _actionCompleted;
+            doAction = Keyboard.current.aKey.isPressed;
             yield return null;
         }
 
@@ -731,6 +718,7 @@ public class CBasicCombatManager : MonoBehaviour
 
         if (!_isAfterDead)
         {
+            _turnList[0].entity.TryBeginAction();
             //CheckAddExtraTurn(CTempEntity.EJewelryType.TurnEnd);
             CheckTurnState();
         }
@@ -739,6 +727,7 @@ public class CBasicCombatManager : MonoBehaviour
         _coroutine = null;
     }
 
+    // TODO
     private void DoAction(CEntity entity)
     {
         _actionCompleted = true;

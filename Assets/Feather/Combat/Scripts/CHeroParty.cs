@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +25,18 @@ public class CHeroParty : MonoBehaviour
 
     private void Start()
     {
+        if (_heroPartyPreset == null)
+        {
+            CPrint.Warn($"{gameObject.name} Preset is null.");
+            return;
+        }
+
+        if (_heroRankPosition == null)
+        {
+            CPrint.Warn($"{gameObject.name} Rank Position is null.");
+        }
+
+
         if (_isReady)
         {
             return;
@@ -63,7 +74,6 @@ public class CHeroParty : MonoBehaviour
 
             // ÇÁ¸®ÆÕ Active
             heroPrefab.gameObject.SetActive(true);
-            heroPrefab.gameObject.transform.GetChild(0).gameObject.SetActive(true);
 
             // Scale Á¶Á¤
             heroPrefab.gameObject.transform.localScale = Vector3.one * _entityScale;
