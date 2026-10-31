@@ -15,7 +15,9 @@ MonoBehaviour:
   _skillName: Spitter / Venom Spit
   _skillIcon: {fileID: 0}
   _useableRank: 12
-  _targetableRank: 12
+  _targetableRank: 15
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: fc58ab03d20c0be42af9e153b004ae16, type: 2}
+  - {fileID: 11400000, guid: fd6fc76b280548b1b14cf350f8b17a9b, type: 2}
+  - {fileID: 11400000, guid: 3d54be2f29404948a1099aff467eb6df, type: 2}

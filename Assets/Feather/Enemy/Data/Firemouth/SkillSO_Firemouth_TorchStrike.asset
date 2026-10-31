@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
   m_Name: SkillSO_Firemouth_TorchStrike
   m_EditorClassIdentifier: 
-  _skillName: Firemouth / Torch Strike
+  _skillName: Firemouth / Flint Strike
   _skillIcon: {fileID: 0}
-  _useableRank: 3
+  _useableRank: 1
   _targetableRank: 3
   _cooldown: 0
   _effectList:

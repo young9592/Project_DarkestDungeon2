@@ -15,7 +15,8 @@ MonoBehaviour:
   _skillName: Firemouth / Fire Breath
   _skillIcon: {fileID: 0}
   _useableRank: 14
-  _targetableRank: 12
+  _targetableRank: 15
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 6224761e15d0e96439e94f0d57e5289d, type: 2}
+  - {fileID: 11400000, guid: aeb5fbeb059e421faddef7a46529e54a, type: 2}
