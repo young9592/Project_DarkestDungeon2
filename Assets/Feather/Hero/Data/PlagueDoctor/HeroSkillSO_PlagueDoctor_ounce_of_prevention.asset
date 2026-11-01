@@ -16,7 +16,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 5a23097b9c9c3e34ea57515b283c10d4, type: 3}
   _useableRank: 12
   _targetableRank: 15
-  _cooldown: 0
+  _cooldown: 3
   _effectList: []
   _target: 5
   _startState: Base Layer.OriginalAntic_PlagueDoctor_ounce_of_prevention

@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Take Aim
   _skillIcon: {fileID: 21300000, guid: 64c36537fdee694498ab4cc3c7b46fdc, type: 3}
-  _useableRank: -1
-  _targetableRank: -1
-  _isGroupTarget: 0
-  _cooldown: 0
+  _useableRank: 15
+  _targetableRank: 15
+  _cooldown: 2
   _effectList: []
   _usesPerBattle: 0
   _baseSkill: {fileID: 0}

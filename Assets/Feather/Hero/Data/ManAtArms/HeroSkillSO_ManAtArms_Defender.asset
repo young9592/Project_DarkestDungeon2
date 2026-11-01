@@ -16,7 +16,7 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: a3ca94341216902498f03069edbe1b2e, type: 3}
   _useableRank: 15
   _targetableRank: 15
-  _cooldown: 0
+  _cooldown: 1
   _effectList: []
   _target: 1
   _startState: Base Layer.OriginalAntic_ManAtArms_Defender
