@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CCombatUI : MonoBehaviour
 {
+    #region Inspector
     [Header("Draw Canvas")]
     [SerializeField] private Canvas _canvas;
 
@@ -77,18 +79,26 @@ public class CCombatUI : MonoBehaviour
     [Header("Turnorder Prefab")]
     [SerializeField] private GameObject _turnOrderRoot;
     [SerializeField] private GameObject _turnOrderPrefab;
+    #endregion
 
 
 
     #region Field
     private int _round = 0;
+
     private bool _pass = false;
+
+    private bool _cursorRank = false;
     private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
     public CEntity TurnEntity => _combatManager.MyTurn;
-    public bool Pass { get; set; }
+    public bool Pass
+    {
+        get { return _pass; }
+        set { _pass = value; }
+    }
     #endregion
 
     private void Awake()
@@ -174,16 +184,11 @@ public class CCombatUI : MonoBehaviour
         }
         #endregion
 
-
-
         for (int i = 0; i < _skillSlot.Count; i++)
         {
             int idx = i;
             _skillSlot[i].GetComponent<Button>().onClick.AddListener(() => OnSelectSkill(idx));
         }
-
-        _passBtn.GetComponent<Button>().onClick.AddListener(OnPressActionPass);
-
 
         if (CInputDispatcher.Instance != null)
         {
@@ -291,9 +296,7 @@ public class CCombatUI : MonoBehaviour
         CPortraitImage.IsDirty = false;
     }
 
-    /// <summary>
-    /// 다음 라운드로 변경
-    /// </summary>
+    // 다음 라운드로 변경
     public void NextRound(int turnListCount)
     {
         if (turnListCount == 0)
@@ -306,39 +309,71 @@ public class CCombatUI : MonoBehaviour
     }
 
 
-    /// <summary>
-    /// 턴넘김 선택 UI
-    /// </summary>
-    public void OnSelectActionPass()
-    {
-
-    }
-
-    // 턴넘김
+    // 버튼을 누른채로 몇초 지나면 패스 적용
     public void OnPressActionPass()
     {
         if (TurnEntity == null)
         {
-            _pass = false;
             return;
         }
 
-        _pass = true;
-        TurnEntity.TryBeginAction();
+        if (TurnEntity is not CPlayer)
+        {
+            return;
+        }
+
+        RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
+        RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
+        cursorTr.anchoredPosition = rectTr.anchoredPosition;
+
+        // 커서 이동
+        _cursorRank = false;
+        _cursorDiamond.SetActive(true);
+        _cursorSkill.SetActive(false);
     }
 
-    /// <summary>
-    /// 자리변경 선택 UI
-    /// </summary>
-    public void OnSelectRankChange()
+    // 턴넘김
+    public void ActionPass()
     {
-
+        _pass = true;
+        CloseHeroInfomation();
     }
 
+    // 자리 변경 UI
     public void OnPressRankChange()
     {
+        if (TurnEntity == null)
+        {
+            return;
+        }
+
+        if (TurnEntity is not CPlayer)
+        {
+            return;
+        }
+
+        RectTransform rectTr = _rankChangeBtn.GetComponent<RectTransform>();
+        RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
+        cursorTr.anchoredPosition = rectTr.anchoredPosition;
+
+        _cursorRank = true;
+        _cursorDiamond.SetActive(true);
+        _cursorSkill.SetActive(false);
+    }
+
+    // 랭크 변경 시도
+    public void RankChange()
+    {
+        if (!_cursorRank)
+        {
+            return;
+        }
+
+        // TODO 자리변경 시도
 
     }
+
+
 
     // 스킬 선택
     private void OnSelectSkill(int idx)
@@ -370,21 +405,38 @@ public class CCombatUI : MonoBehaviour
 
         _cursorSkillName.text = skillSO.SkillName;
 
-        _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
-        _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
-        _AlliesRank[2].enabled = ((usableRank & ERank.Rank3) != 0 ? true : false);
-        _AlliesRank[3].enabled = ((usableRank & ERank.Rank4) != 0 ? true : false);
+        CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 
-        _targetRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-        _targetRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-        _targetRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-        _targetRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+        if(heroSkillSO.Target != EHeroSkillTarget.Self)
+        {
+            _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
+            _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
+            _AlliesRank[2].enabled = ((usableRank & ERank.Rank3) != 0 ? true : false);
+            _AlliesRank[3].enabled = ((usableRank & ERank.Rank4) != 0 ? true : false);
 
-        _targetRankPanel.SetActive((targetRank & (ERank.Rank1 | ERank.Rank2 | ERank.Rank3 | ERank.Rank4)) == 0 ? false : true);
+            _targetRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
+            _targetRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
+            _targetRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
+            _targetRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
 
-        _cursorSkillInfo.SetActive(true);
+            _targetRankPanel.SetActive((targetRank & (ERank.Rank1 | ERank.Rank2 | ERank.Rank3 | ERank.Rank4)) == 0 ? false : true);
+        }
+        else
+        {
+            _AlliesRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
+            _AlliesRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
+            _AlliesRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
+            _AlliesRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            _targetRankPanel.SetActive(false);
+        }
+
+
+
+
+            _cursorSkillInfo.SetActive(true);
         _cursorSkill.SetActive(true);
         _cursorDiamond.SetActive(false);
+        _cursorRank = false;
 
         // 영웅의 스킬 사전준비 모션
         hero.SelectSkill(idx);
@@ -393,12 +445,14 @@ public class CCombatUI : MonoBehaviour
     /// 영웅 정보 및 스킬 인터페이스 활성화
     /// </summary>
     /// <param name="entity">엔티티 대상</param>
-    public void OpenHeroInfomation(CPlayer hero)
+    public void OpenHeroInfomation(CPlayer hero, CHeroBattleInput battleInput)
     {
         if (hero == null)
         {
             return;
         }
+        _heroInfo.SetActive(true);
+        _skillListPanel.SetActive(true);
 
         CHeroDataSO heroSO = hero.HeroData;
 
@@ -406,13 +460,12 @@ public class CCombatUI : MonoBehaviour
         {
             _skillSlot[i].GetComponent<Image>().sprite = heroSO.SkillSlotBackground;
             _skillImage[i].sprite = hero.EquippedSkills[i].SkillIcon;
+            battleInput.SelectSkill(i);
         }
 
         _heroName.text = heroSO.DefaultName;
         _heroPortrait.GetComponent<Image>().sprite = heroSO.PortraitInfo;
 
-        _heroInfo.SetActive(true);
-        _skillListPanel.SetActive(true);
     }
     /// <summary>
     /// 영웅 상태창 + 스킬리스트 + 선택스킬 정보창 끄기
@@ -424,6 +477,13 @@ public class CCombatUI : MonoBehaviour
         _cursorSkillInfo.SetActive(false);
         _cursorSkill.SetActive(false);
         _cursorDiamond.SetActive(false);
+        _currentSkillName.gameObject.SetActive(false);
+    }
+
+    public void UseSkill(CSkillDataSO skillDataSO)
+    {
+        _currentSkillName.text = skillDataSO.SkillName;
+        _currentSkillName.gameObject.SetActive(true);
     }
     /// <summary>
     /// 적 정보 탭 활성화

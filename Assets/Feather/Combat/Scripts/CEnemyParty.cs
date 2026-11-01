@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,13 +17,13 @@ public class CEnemyParty : MonoBehaviour
     #endregion
 
     #region Field
-    private List<CEntity> _enemyList = new List<CEntity>();
+    private List<CEnemy> _enemyList = new List<CEnemy>();
     private static bool _isReady = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public List<CEntity> EnemyList => _enemyList;
+    public List<CEnemy> EnemyList => _enemyList;
     #endregion
     void Start()
     {
@@ -48,29 +49,24 @@ public class CEnemyParty : MonoBehaviour
 
             // 위치 조정
             Vector3 vec = Vector3.zero;
+            int size = _enemyPartyPreset.Entries[i].EnemyPrefab.EnemyData.FormationSize;
+
 
             switch (_enemyPartyPreset.Entries[i].Rank)
             {
                 case ERank.None:
                     break;
                 case ERank.Rank1:
-                    if (_enemyPartyPreset.Entries[i].EnemyPrefab.EnemyData.FormationSize == 1)
-                    {
-                        vec = _enemyRankPosition[0].transform.position;
-                    }
-                    else
-                    {
-
-                    }
+                    vec = SizeOffsetPosition(0, size);
                     break;
                 case ERank.Rank2:
-                    vec = _enemyRankPosition[1].transform.position;
+                    vec = SizeOffsetPosition(1, size);
                     break;
                 case ERank.Rank3:
-                    vec = _enemyRankPosition[2].transform.position;
+                    vec = SizeOffsetPosition(2, size);
                     break;
                 case ERank.Rank4:
-                    vec = _enemyRankPosition[3].transform.position;
+                    vec = SizeOffsetPosition(3, size);
                     break;
                 default:
                     break;
@@ -97,5 +93,31 @@ public class CEnemyParty : MonoBehaviour
 
         // 준비 완료
         _isReady = true;
+    }
+
+    private Vector3 SizeOffsetPosition(int rank, int size)
+    {
+        Vector3 vec = Vector3.zero;
+
+        if (rank + size > 4)
+        {
+            CPrint.Log("배치 오류 SO 확인필요");
+            return Vector3.zero;
+        }
+
+        if (size == 1)
+        {
+            vec = _enemyRankPosition[rank].transform.position;
+        }
+        else
+        {
+            for (int j = rank; j <= size; j++)
+            {
+                vec += _enemyRankPosition[j].transform.position;
+            }
+            vec /= size;
+        }
+
+        return vec;
     }
 }

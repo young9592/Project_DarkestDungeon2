@@ -14,13 +14,13 @@ public class CHeroParty : MonoBehaviour
     #endregion
 
     #region Field
-    private List<CEntity> _heroList = new List<CEntity>();
+    private List<CPlayer> _heroList = new List<CPlayer>();
     private static bool _isReady = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public List<CEntity> HeroList => _heroList;
+    public List<CPlayer> HeroList => _heroList;
     #endregion
 
     private void Start()
