@@ -17,6 +17,7 @@ MonoBehaviour:
   _useableRank: 12
   _targetableRank: -1
   _cooldown: 0
+  _usesPerBattle: 3
   _effectList:
   - {fileID: 11400000, guid: 9c7129f8a9270c64eb4068232e0ba430, type: 2}
   _target: 4
