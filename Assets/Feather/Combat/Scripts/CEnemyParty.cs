@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CEnemyParty : MonoBehaviour
@@ -25,13 +26,13 @@ public class CEnemyParty : MonoBehaviour
     #endregion
     void Start()
     {
-        if(_enemyPartyPreset == null)
+        if (_enemyPartyPreset == null)
         {
             CPrint.Warn($"{gameObject.name} Preset is null.");
             return;
         }
-        
-        if(_enemyRankPosition == null)
+
+        if (_enemyRankPosition == null)
         {
             CPrint.Warn($"{gameObject.name} Rank Position is null.");
         }
@@ -53,7 +54,14 @@ public class CEnemyParty : MonoBehaviour
                 case ERank.None:
                     break;
                 case ERank.Rank1:
-                    vec = _enemyRankPosition[0].transform.position;
+                    if (_enemyPartyPreset.Entries[i].EnemyPrefab.EnemyData.FormationSize == 1)
+                    {
+                        vec = _enemyRankPosition[0].transform.position;
+                    }
+                    else
+                    {
+
+                    }
                     break;
                 case ERank.Rank2:
                     vec = _enemyRankPosition[1].transform.position;
