@@ -39,6 +39,7 @@ public abstract class CEntity : MonoBehaviour
     public virtual void CureStatusEffect(EEffectType targetType = EEffectType.None) { }
     public CTokenManager TokenManager { get; private set ; }
     public virtual void ResetEntityState() { }
+    public virtual int DetonateAllDots() { return 0; }
 
     public bool IsDeathsDoor 
     { 

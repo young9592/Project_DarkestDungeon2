@@ -116,4 +116,65 @@ public class CTokenManager
         }
     }
 
+    private static readonly EEffectType[] _positiveTokens = new EEffectType[]
+    {
+        EEffectType.Block, EEffectType.BlockPlus,
+        EEffectType.Dodge, EEffectType.DodgePlus,
+        EEffectType.Strength, EEffectType.Crit,
+        EEffectType.Speed, EEffectType.Taunt
+    };
+
+    private static readonly EEffectType[] _negativeTokens = new EEffectType[]
+    {
+        EEffectType.Blind, EEffectType.Weak,
+        EEffectType.Vulnerable, EEffectType.Stun,
+        EEffectType.Combo
+    };
+
+    /// <summary>
+    /// 특정 토큰 스택 제거
+    /// </summary>
+    public int RemoveTokenAll(EEffectType tokenType)
+    {
+        if (_tokenStacks.TryGetValue(tokenType, out int count) && count > 0)
+        {
+            _tokenStacks.Remove(tokenType);
+            CPrint.Log($"[Token] [{tokenType}] 토큰 {count}개 제거됨");
+            return count;
+        }
+        return 0;
+    }
+
+    public int RemoveTokensByCategory(bool removePositive)
+    {
+        EEffectType[] targetList = removePositive ? _positiveTokens : _negativeTokens;
+        int totalRemoved = 0;
+
+        for (int i = 0; i < targetList.Length; i++)
+        {
+            totalRemoved += RemoveTokenAll(targetList[i]);
+        }
+        return totalRemoved;
+    }
+
+    public int StealPositiveTokensTo(CTokenManager receiver, int maxTypesCount = 2)
+    {
+        if (receiver == null) return 0;
+
+        int stolenTypes = 0;
+        for (int i = 0; i < _positiveTokens.Length; i++)
+        {
+            if (stolenTypes >= maxTypesCount) break;
+
+            EEffectType type = _positiveTokens[i];
+            if (_tokenStacks.TryGetValue(type, out int count) && count > 0)
+            {
+                _tokenStacks.Remove(type);
+                receiver.AddToken(type, count);
+                stolenTypes++;
+                CPrint.Log($"[Token 강탈] [{type}] 토큰 {count}개를 강탈하였습니다");
+            }
+        }
+        return stolenTypes;
+    }
 }

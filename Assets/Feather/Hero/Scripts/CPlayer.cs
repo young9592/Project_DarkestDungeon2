@@ -1054,4 +1054,23 @@ public class CPlayer : CEntity
 
         CPrint.Log($"[{_heroData.DefaultName}] 상태 완전 초기화");
     }
+
+    public override int DetonateAllDots()
+    {
+        if (_isDead || _activeStatusEffects.Count == 0) return 0;
+
+        int totalBurstDamage = 0;
+
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            int remainingDamage = effect.Damage * effect.RemainingTurns;
+            totalBurstDamage += remainingDamage;
+
+            CPrint.Log($"[도트 폭발] [{effect.EffectType}] ({effect.Damage}뎀 x {effect.RemainingTurns}턴 = {remainingDamage} 정산 및 소모");
+            _activeStatusEffects.RemoveAt(i);
+        }
+
+        return totalBurstDamage;
+    }
 }
