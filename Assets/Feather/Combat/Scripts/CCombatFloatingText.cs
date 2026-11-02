@@ -24,6 +24,7 @@ public class CCombatFloatingText : MonoBehaviour
 
         Daze,
         Stun,
+        Speed,
 
         Death_Door,
         Death
@@ -53,6 +54,7 @@ public class CCombatFloatingText : MonoBehaviour
     [SerializeField] private Sprite _dazeSprite;
     [SerializeField] private Sprite _stunSprite;
     [SerializeField] private Sprite _healSprite;
+    [SerializeField] private Sprite _speedSprite;
     #endregion
 
     #region Field
@@ -138,9 +140,8 @@ public class CCombatFloatingText : MonoBehaviour
                 _text.color = new Color32(151, 255, 183, 255);
                 break;
             case EMessageType.Heal_Crit_Msg:
-                SetAlignment(ETextType.Dot, text);
+                SetAlignment(ETextType.Default, text);
                 _speed = 100;
-                _iconImage.sprite = _healSprite;
                 _text.color = new Color32(151, 255, 183, 255);
                 // 치명타! 메세지 위치조정
                 _rectTr.anchoredPosition += Vector2.up * 50f;
@@ -167,6 +168,12 @@ public class CCombatFloatingText : MonoBehaviour
             case EMessageType.Daze:
                 _iconImage.sprite = _dazeSprite;
                 SetAlignment(ETextType.Token, text);
+                break;
+            case EMessageType.Speed:
+                _iconImage.sprite = _speedSprite;
+                SetAlignment(ETextType.Token, text);
+                break;
+            default:
                 break;
 
         }

@@ -14,15 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Tracking Shot
   _skillIcon: {fileID: 21300000, guid: 8b14773f52101d14a94f3ca2e1c2ff5d, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList: []
+  _usesPerBattle: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_tracking_shot
   _endState: Base Layer.OriginalRecover_Highwayman_tracking_shot
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_point_blank_shot
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_tracking_shot

@@ -190,7 +190,6 @@ public class CEntityState : MonoBehaviour
                     int haveDamage = enemy.GetTotalDotDamageByType(effect);
                     bool remainDot = (haveDamage > 0 ? true : false);
                     SetEffect(effect, remainDot);
-
                 }
             }
             else

@@ -492,6 +492,27 @@ public class CHeroPartyTest : MonoBehaviour
         return _heroes[index].TryBeginAction();
     }
 
+    public bool TryBeginSelectedHeroTurn(bool isExtraAction)
+    {
+        if (!_isOpen || _isPreviewSuspended || IsPreparing || IsBusy || SelectedHero == null
+            || !SelectedHero.isActiveAndEnabled || SelectedHero.IsDead || SelectedHero.IsDeathPresented)
+        {
+            return false;
+        }
+
+        CPlayer hero = SelectedHero;
+        hero.CancelAction();
+        hero.OnTurnStart(isExtraAction);
+        if (hero.IsDead || hero.IsDeathPresented) return false;
+        if (hero.IsTurnSkipped)
+        {
+            // 테스트 씬에서는 전투 관리자 대신 기절 소모
+            hero.TokenManager.ConsumeToken(EEffectType.Stun);
+            return false;
+        }
+        return TrySelectHero(_selectedIndex);
+    }
+
     private void BindTargets()
     {
         _input.SetTargets(_groupTest.SpawnedEnemies, _rankStep);
@@ -765,7 +786,7 @@ public class CHeroPartyTest : MonoBehaviour
             return;
         }
 
-        GUILayout.BeginArea(new Rect(15, 15, 340, 110), GUI.skin.box);
+        GUILayout.BeginArea(new Rect(15, 15, 340, 140), GUI.skin.box);
         GUILayout.Label("Hero party / requests: " + _requests);
         GUI.enabled = !IsPreparing && !IsBusy;
         GUILayout.BeginHorizontal();
@@ -817,6 +838,9 @@ public class CHeroPartyTest : MonoBehaviour
                 TryMoveSelectedToNextRank();
             }
 
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Next Hero turn")) TryBeginSelectedHeroTurn(false);
             GUILayout.EndHorizontal();
             GUILayout.Label(_lastRequest);
         }

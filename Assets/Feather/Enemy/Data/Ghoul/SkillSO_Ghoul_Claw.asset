@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Ghoul / Claw
   _skillIcon: {fileID: 0}
-  _useableRank: 15
+  _useableRank: -1
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 60ae173acd4dc9141990c0b6e54b07d6, type: 2}

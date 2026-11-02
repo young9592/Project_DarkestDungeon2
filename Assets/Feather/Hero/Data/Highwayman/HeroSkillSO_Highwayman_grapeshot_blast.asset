@@ -14,16 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Grapeshot Blast
   _skillIcon: {fileID: 21300000, guid: dce3eb82630207f459e9ad16cac7ac92, type: 3}
-  _useableRank: 15
+  _useableRank: -1
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 1c6e67680e03f154ea93f28189ec5540, type: 2}
+  _usesPerBattle: 0
+  _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_Highwayman_grapeshot_blast
   _endState: Base Layer.OriginalRecover_Highwayman_grapeshot_blast
   _presentationNote: Shares the hip-shot motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_point_blank_shot
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_grapeshot_blast

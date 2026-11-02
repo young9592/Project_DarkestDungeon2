@@ -41,6 +41,7 @@ public class CCombatDebugMenu : MonoBehaviour
         _applyOptionList.Add("현기증", EEffectType.Daze);
         _applyOptionList.Add("기절", EEffectType.Stun);
         _applyOptionList.Add("추가행동", EEffectType.None);
+        _applyOptionList.Add("속도", EEffectType.Speed);
 
         for (int i = 0; i < _effectSOList.Count; i++)
         {
@@ -167,45 +168,15 @@ public class CCombatDebugMenu : MonoBehaviour
                     _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal * 2}");
                     _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Heal_Crit_Msg, "치명타!");
                 }
-
-                //entityStates[entities[_selectedEntitytIdx]].SetHealth();
                 break;
             case EEffectType.Bleed:
             case EEffectType.Blight:
             case EEffectType.Burn:
             case EEffectType.Daze:
             case EEffectType.Stun:
+            case EEffectType.Speed:
                 CEffect effect = new CEffect(_effectList[applyOption]);
-                CCombatFloatingText.EMessageType messageType = CCombatFloatingText.EMessageType.None;
-
-                switch (applyOption)
-                {
-                    case EEffectType.Bleed:
-                        messageType = CCombatFloatingText.EMessageType.Bleed;
-                        break;
-                    case EEffectType.Blight:
-                        messageType = CCombatFloatingText.EMessageType.Blight;
-                        break;
-                    case EEffectType.Burn:
-                        messageType = CCombatFloatingText.EMessageType.Burn;
-                        break;
-                    case EEffectType.Daze:
-                        messageType = CCombatFloatingText.EMessageType.Daze;
-                        break;
-                    case EEffectType.Stun:
-                        messageType = CCombatFloatingText.EMessageType.Stun;
-                        break;
-                }
-
                 entities[_selectedEntitytIdx].ApplyStatusEffect(effect);
-                // 토큰은 Apply로 적용 되지 않는거같아서 토큰매니저로 일단 직접 쏴주겠습니다.
-                if (applyOption == EEffectType.Stun || applyOption == EEffectType.Daze)
-                {
-                    entities[_selectedEntitytIdx].TokenManager.AddToken(applyOption);
-                }
-
-                _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, messageType, applyOptionText);
-                //entityStates[entities[_selectedEntitytIdx]].SetEffect(applyOption, true);
                 break;
             // 추가행동
             case EEffectType.None:

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,17 +14,29 @@ public class CHeroParty : MonoBehaviour
     #endregion
 
     #region Field
-    private List<CEntity> _heroList = new List<CEntity>();
+    private List<CPlayer> _heroList = new List<CPlayer>();
     private static bool _isReady = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public List<CEntity> HeroList => _heroList;
+    public List<CPlayer> HeroList => _heroList;
     #endregion
 
     private void Start()
     {
+        if (_heroPartyPreset == null)
+        {
+            CPrint.Warn($"{gameObject.name} Preset is null.");
+            return;
+        }
+
+        if (_heroRankPosition == null)
+        {
+            CPrint.Warn($"{gameObject.name} Rank Position is null.");
+        }
+
+
         if (_isReady)
         {
             return;
@@ -63,7 +74,6 @@ public class CHeroParty : MonoBehaviour
 
             // ÇÁ¸®ÆÕ Active
             heroPrefab.gameObject.SetActive(true);
-            heroPrefab.gameObject.transform.GetChild(0).gameObject.SetActive(true);
 
             // Scale Á¶Á¤
             heroPrefab.gameObject.transform.localScale = Vector3.one * _entityScale;

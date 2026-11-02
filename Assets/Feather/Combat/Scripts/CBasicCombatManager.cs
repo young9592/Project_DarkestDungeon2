@@ -1,12 +1,14 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using static UnityEngine.GraphicsBuffer;
 
 public class CBasicCombatManager : MonoBehaviour
 {
+    // 라운드 상태
     public enum RoundState
     {
         None,
@@ -21,28 +23,36 @@ public class CBasicCombatManager : MonoBehaviour
         Normal,         // 일반턴
         Extra           // 추가턴
     }
-
+    // 현재 엔티티 상태
     public enum EntityState
     {
         Success,
         Dead,
         Stun,
         Daze,
+        MeltDown,
     }
 
 
     #region Inspector
-    [Header("Draw Canvas")]
-    [SerializeField] private Canvas _canvas;
 
-    [Header("HeroParty")]
+
+    [Header("Party")]
     [SerializeField] private CHeroParty _heroParty;
+    [SerializeField] private CEnemyParty _enemyParty;
+
+    [Header("BattleInput")]
+    [SerializeField] private CHeroBattleInput _heroBattleInput;
+
+    [Header("Combat UI")]
+    [SerializeField] private CCombatUI _combatUI;
 
     [Header("MessageManager")]
     [SerializeField] private CCombatFloatingMessageManager _messageManager;
 
     [Header("Debug Menu")]
     [SerializeField] private CCombatDebugMenu _debugMenu;
+    [SerializeField] private bool _debugMode = true;
 
     [Header("CombatManager State")]
     // 현재 필드에 서있는 엔티티 리스트
@@ -50,75 +60,9 @@ public class CBasicCombatManager : MonoBehaviour
     // 현재 라운드 상태
     [SerializeField] private RoundState _roundState = RoundState.None;
 
-    [Header("Hero Infomation")]
-    // 영웅 정보 패널
-    [SerializeField] private GameObject _heroInfo;
-    [SerializeField] private GameObject _heroPortrait;
-    [SerializeField] private TextMeshProUGUI _heroName;
-
-    [SerializeField] private GameObject _heroSkillPanel;
-    [SerializeField] private TextMeshProUGUI _heroSkillMainDesc;
-    [SerializeField] private TextMeshProUGUI _heroSkillSubDesc;
-
-    [Header("Skill Panel")]
-    // 영웅 스킬 항목
-    [SerializeField] private GameObject _skillListPanel;
-    // 현재 동작중인 스킬 이름
-    [SerializeField] private TextMeshProUGUI _currentSkillName;
-    // 스킬 패널
-    [SerializeField] private GameObject _cursorSkillInfo;
-    [SerializeField] private GameObject _cursorSkill;
-    [SerializeField] private TextMeshProUGUI _cursorSkillName;
-    // 현재 스킬의 적과 아군의 랭크 표시
-    [SerializeField] private GameObject _AlliesRankPanel;
-    [SerializeField] private List<Image> _AlliesRank;
-    [SerializeField] private GameObject _targetRankPanel;
-    [SerializeField] private List<Image> _targetRank;
-    // 5개 슬롯과 스킬
-    [SerializeField] private List<GameObject> _skillSlot;
-    [SerializeField] private List<Image> _skillImage;
-    // 전투 아이템
-    [SerializeField] private GameObject _combatItemSlot;
-    [SerializeField] private Image _combatItemImage;
-    // 자리 변경
-    [SerializeField] private GameObject _rankChangeBtn;
-    // 한턴 쉬기
-    [SerializeField] private GameObject _passBtn;
-
-    [Header("Enemy Infomation")]
-    [SerializeField] private GameObject _enemyInfo;
-    [SerializeField] private GameObject _enemyPortrait;
-    [SerializeField] private TextMeshProUGUI _enemyName;
-    // 적 상세항목 패널
-    [SerializeField] private GameObject _enemyStatus;
-    [SerializeField] private TextMeshProUGUI _enemyType;
-    // HP
-    [SerializeField] private TextMeshProUGUI _enemyMaxHealth;
-    [SerializeField] private TextMeshProUGUI _enemyCurHealth;
-    [SerializeField] private Image _enemyHpBarFill;
-    // Status
-    [SerializeField] private TextMeshProUGUI _enemySpeed;
-    [SerializeField] private TextMeshProUGUI _enemyBleedResist;
-    [SerializeField] private TextMeshProUGUI _enemyBlightResist;
-    [SerializeField] private TextMeshProUGUI _enemyBurnResist;
-    [SerializeField] private TextMeshProUGUI _enemyStunResist;
-    [SerializeField] private TextMeshProUGUI _enemyMoveResist;
-    [SerializeField] private TextMeshProUGUI _enemyWeakResist;
-
-    [Header("Entity State Prefab")]
-    [SerializeField] private GameObject _entityStateRoot;
-    [SerializeField] private GameObject _entityStatePrefab;
-
-    // 턴 초상화 이미지 프리팹과 보관 위치
-    [Header("Turnorder Prefab")]
-    [SerializeField] private GameObject _turnOrderRoot;
-    [SerializeField] private GameObject _turnOrderPrefab;
-
-    [Header("Round Text")]
-    [SerializeField] private TextMeshProUGUI _roundText;
-
     [Header("Option")]
     [SerializeField] private float _actionDelay = 3.5f;
+    [SerializeField] private float _turnSkipDelay = 1.5f;
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
     #endregion
 
@@ -129,89 +73,48 @@ public class CBasicCombatManager : MonoBehaviour
     private List<(CEntity entity, int turnSpeed)> _turnList = new List<(CEntity, int)>();
     // 초상화 리스트
     private List<GameObject> _turnPortraitList = new List<GameObject>();
-    private GameObject _myTurn = null;
+    private GameObject _myTurnHighlight = null;
     private Coroutine _coroutine = null;
-    private int _round = 0;
     private TurnState _currentTurnState = TurnState.Normal;
-    // 턴 넘김 확인
-    private bool _pass = false;
-    // 행동 완료 알림
-    private bool _actionCompleted = false;
+    private bool _doingAction = false;
+    private CSkillDataSO _currentActionSkillData;
+    // 인스펙터 널 체크
+    private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
     public List<CEntity> EntityList => _entityList;
     public Dictionary<CEntity, CEntityState> EntityStateList => _entityStateList;
+    public CEntity MyTurn => _turnList.Count != 0 ? _turnList[0].entity : null;
     #endregion
 
     private void Awake()
     {
-        // TODO : 널체크  
+        #region Null Check
+        _checkList.Add(_heroParty);
+        _checkList.Add(_enemyParty);
+        _checkList.Add(_combatUI);
+        _checkList.Add(_messageManager);
 
-
-        #region 리스너 등록
-        for (int i = 0; i < _skillSlot.Count; i++)
+        if (_debugMode)
         {
-            int idx = i;
-            _skillSlot[i].GetComponent<Button>().onClick.AddListener(() => OnSelectSkill(idx));
+            _checkList.Add(_debugMenu);
         }
 
-        _passBtn.GetComponent<Button>().onClick.AddListener(OnActionPass);
+        if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
+        {
+            enabled = false;
+            return;
+        }
         #endregion
     }
-    // 턴넘김
-    private void OnActionPass()
-    {
-        _pass = true;
-    }
-    private void OnSelectSkill(int idx)
-    {
-        if (!_skillListPanel.activeSelf)
-        {
-            return;
-        }
-
-        if (_turnList[0].entity is not CPlayer)
-        {
-            return;
-        }
-
-        RectTransform SkillSlot = _skillSlot[idx].GetComponent<RectTransform>();
-        RectTransform cursorRectTr = _cursorSkill.GetComponent<RectTransform>();
-        cursorRectTr.anchoredPosition = SkillSlot.anchoredPosition;
-
-        CPlayer hero = _turnList[0].entity as CPlayer;
-
-        CSkillDataSO skillSO = hero.EquippedSkills[idx];
-
-        _cursorSkillInfo.SetActive(true);
-        _cursorSkillName.text = skillSO.SkillName;
-
-        _cursorSkill.SetActive(true);
-
-        // TODO : 해당 영웅의 스킬 사용모션 동작
-        hero.SelectSkill(idx);
-
-    }
-
-    private void Start()
-    {
-        if (CInputDispatcher.Instance != null)
-        {
-            // 스킬 사용 키 등록
-            CInputDispatcher.Instance.OnSkill += OnSelectSkill;
-            CPrint.Log("디스패쳐와 연결 완료");
-        }
-    }
-
-
 
     private void Update()
     {
         ChangeState();
         ActiveState();
     }
-
+    // 라운드 상태 변경
     private void ChangeState()
     {
         if (_roundState == RoundState.None)
@@ -224,12 +127,6 @@ public class CBasicCombatManager : MonoBehaviour
             if (_entityList.Count == _entityStateList.Count)
             {
                 _roundState = RoundState.Ready;
-            }
-            if(_entityList.Count < _entityStateList.Count)
-            {
-                CPrint.Error("상태창이 더 많이 생성되었습니다. 체크 필요");
-                enabled = false;
-                return;
             }
         }
         // 턴순서 리스트가 준비가 되었는가?
@@ -249,29 +146,34 @@ public class CBasicCombatManager : MonoBehaviour
             }
         }
     }
+    // 라운드 상태에 따른 행동
     private void ActiveState()
     {
         switch (_roundState)
         {
             case RoundState.Wait:
-                if (CHeroParty.IsReady)
+                if (CHeroParty.IsReady && CEnemyParty.IsReady)
                 {
                     for (int i = 0; i < _heroParty.HeroList.Count; i++)
                     {
                         _entityList.Add(_heroParty.HeroList[i]);
-                        // →← TODO : 추후 구독 제거작업 필수!
-                        _heroParty.HeroList[i].OnActionCompleted += DoAction;
+                    }
+
+                    for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+                    {
+                        _entityList.Add(_enemyParty.EnemyList[i]);
                     }
 
                     for (int i = 0; i < _entityList.Count; i++)
                     {
-                        // 엔티티 상태창 추가
-                        CEntityState entityState = Instantiate(_entityStatePrefab, _entityStateRoot.transform).GetComponent<CEntityState>();
-                        entityState.Initialize(_canvas, _entityList[i].gameObject);
-                        _entityStateList.Add(_entityList[i], entityState);
+                        _entityStateList.Add(_entityList[i], _combatUI.CreateStateUI(_entityList[i]));
                     }
 
-                    _debugMenu.Initialize();
+                    // 디버그 모드면 디버그 메뉴 추가
+                    if (_debugMode)
+                    {
+                        _debugMenu.Initialize();
+                    }
                 }
                 break;
             case RoundState.Ready:
@@ -297,8 +199,16 @@ public class CBasicCombatManager : MonoBehaviour
             // 보스 개체는 행동 횟수를 여러번 가집니다.
             for (int actions = 0; actions < _entityList[i].EntityData.Actions; actions++)
             {
+                // 스피드 토큰을 가지고 있을시 행동횟수 1번 속도 +100 보정
+                bool hasToken = _entityList[i].TokenManager.ConsumeToken(EEffectType.Speed);
+
+                if (hasToken)
+                {
+                    _messageManager.ShowMessage(_entityList[i].gameObject, CCombatFloatingText.EMessageType.Speed, "속도!");
+                }
+
                 _entityList[i].RoundRandomSpeed();
-                _turnList.Add((_entityList[i], _entityList[i].Speed));
+                _turnList.Add((_entityList[i], _entityList[i].Speed + (hasToken ? 100 : 0)));
             }
         }
 
@@ -321,30 +231,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         // 턴 이미지 세팅 및 생성
-        for (int i = 0; i < _turnList.Count; i++)
-        {
-            GameObject obj = Instantiate(_turnOrderPrefab, _turnOrderRoot.transform);
-
-            CPortraitImage portraitImage = obj.GetComponent<CPortraitImage>();
-
-            Sprite portrait = _turnList[i].entity.EntityData.PortraitTurnOrder;
-            // 초상화 마커 그리기
-            bool isHero = _turnList[i].entity is CPlayer;
-            EEntityType entityType = isHero ? EEntityType.Hero : EEntityType.Enemy;
-
-            // 4 3 2 1 초상화 배치 및 이동
-            if (i < 4)
-            {
-                portraitImage.Initialize(4, entityType, portrait);
-                portraitImage.Move(i + 1);
-            }
-            else
-            {
-                portraitImage.Initialize(i + 1, entityType, portrait);
-            }
-
-            _turnPortraitList.Add(obj);
-        }
+        _turnPortraitList = _combatUI.CreateTurnOrderPortraitList(_turnList);
 
         // Debug
         for (int i = 0; i < _turnList.Count; i++)
@@ -353,7 +240,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         // 라운드 올리기
-        NextRound();
+        _combatUI.NextRound(_turnList.Count);
     }
     private void ActionEntity()
     {
@@ -367,12 +254,13 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        if (_myTurn != null)
+        if (_myTurnHighlight != null)
         {
-            Destroy(_myTurn);
+            Destroy(_myTurnHighlight);
         }
 
-        _myTurn = _messageManager.ShowIcon(_turnList[0].entity.gameObject, CCombatFloatingIcon.IconType.Turn);
+        // TODO : 자신턴에 자신을 치유하는 모션을 적용하니 변경되었습니다. 수정 필요 
+        _myTurnHighlight = _messageManager.ShowIcon(MyTurn.gameObject, CCombatFloatingIcon.IconType.Turn);
 
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
@@ -393,6 +281,7 @@ public class CBasicCombatManager : MonoBehaviour
                 _coroutine = StartCoroutine(CoDaze());
                 break;
                 // TODO : 멘탈붕괴에 대한 행동처리 필요
+
         }
     }
     // 엔티티 상태 체크
@@ -403,7 +292,7 @@ public class CBasicCombatManager : MonoBehaviour
             DotProcess();
         }
 
-        if (_turnList[0].entity.IsDead)
+        if (MyTurn.IsDead)
         {
             return EntityState.Dead;
         }
@@ -416,19 +305,17 @@ public class CBasicCombatManager : MonoBehaviour
 
         }
 
-        bool isStuned = _turnList[0].entity.TokenManager.ConsumeToken(EEffectType.Stun);
+        bool isStuned = MyTurn.TokenManager.ConsumeToken(EEffectType.Stun);
 
         if (isStuned)
         {
-            //ContainToken(_turnList[0].entity, EEffectType.Stun);
             return EntityState.Stun;
         }
 
-        bool isDazed = _turnList[0].entity.TokenManager.ConsumeToken(EEffectType.Daze);
+        bool isDazed = MyTurn.TokenManager.ConsumeToken(EEffectType.Daze);
 
         if (isDazed)
         {
-            //ContainToken(_turnList[0].entity, EEffectType.Daze);
             return EntityState.Daze;
         }
 
@@ -437,13 +324,13 @@ public class CBasicCombatManager : MonoBehaviour
     private void DotProcess()
     {
         // DOT 데미지 들어오는거 체크 후 죽음 상태로 변경
-        bool ishero = _turnList[0].entity is CPlayer;
+        bool ishero = MyTurn is CPlayer;
 
         (int bleed, int blight, int burn) total = (0, 0, 0);
 
         if (ishero)
         {
-            CPlayer hero = _turnList[0].entity as CPlayer;
+            CPlayer hero = MyTurn as CPlayer;
             // 현재 턴에 들어올 데미지 가져오기
             total = (hero.GetTotalDotDamageByType(EEffectType.Bleed), hero.GetTotalDotDamageByType(EEffectType.Blight), hero.GetTotalDotDamageByType(EEffectType.Burn));
             // 도트 데미지 적용
@@ -451,7 +338,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
         else
         {
-            CEnemy enemy = _turnList[0].entity as CEnemy;
+            CEnemy enemy = MyTurn as CEnemy;
             total = (enemy.GetTotalDotDamageByType(EEffectType.Bleed), enemy.GetTotalDotDamageByType(EEffectType.Blight), enemy.GetTotalDotDamageByType(EEffectType.Burn));
             enemy.OnTurnStart();
         }
@@ -469,54 +356,11 @@ public class CBasicCombatManager : MonoBehaviour
             _messageManager.ShowMessage(_turnList[0].entity.gameObject, dotType[i], dotList[i].ToString(), default, delay * 0.3f);
             delay++;
         }
-
-        // 체력 및 도트 남았는지 후처리
-        //_entityStateList[_turnList[0].entity].SetHealth();
-        //ContainDot(_turnList[0].entity, ishero);
     }
-    // 도트 처리 후 아직 남았는가?
-    private void ContainDot(CEntity entity, bool isHero)
-    {
-        List<EEffectType> dotList = new List<EEffectType>() { EEffectType.Bleed, EEffectType.Blight, EEffectType.Burn };
-
-        if (isHero)
-        {
-            CPlayer hero = entity as CPlayer;
-
-            for (int i = 0; i < dotList.Count; i++)
-            {
-                if (hero.GetTotalDotDamageByType(dotList[i]) <= 0)
-                {
-                    _entityStateList[entity].SetEffect(dotList[i], false);
-                }
-            }
-        }
-        else
-        {
-            CEnemy enemy = entity as CEnemy;
-
-            for (int i = 0; i < dotList.Count; i++)
-            {
-                if (enemy.GetTotalDotDamageByType(dotList[i]) <= 0)
-                {
-                    _entityStateList[entity].SetEffect(dotList[i], false);
-                }
-            }
-        }
-    }
-    // 토큰 체크
-    private void ContainToken(CEntity entity, EEffectType effectType)
-    {
-        if (!entity.TokenManager.HasToken(effectType))
-        {
-            _entityStateList[entity].SetEffect(effectType, false);
-        }
-    }
-
     // 턴이 왔는데 도트뎀으로 죽은 적들 처리
     private IEnumerator CoDeath()
     {
-        yield return new WaitForSeconds(_actionDelay);
+        yield return new WaitForSeconds(_turnSkipDelay);
         for (int i = 0; i < _entityList.Count; i++)
         {
             if (_turnList[0].entity.Equals(_entityList[i]))
@@ -527,7 +371,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
         // 디버그용 드롭박스
         _debugMenu.SetDropboxEntityList();
-        MoveTurnOrder(true);
+        _combatUI.MoveTurnOrder(_turnPortraitList, true);
         _coroutine = null;
     }
     // 엔티티끼리 상호작용하고 죽은 엔티티를 확인
@@ -546,7 +390,7 @@ public class CBasicCombatManager : MonoBehaviour
         {
             // 디버그용 드롭박스
             _debugMenu.SetDropboxEntityList();
-            MoveTurnOrder(true);
+            _combatUI.MoveTurnOrder(_turnPortraitList, true);
         }
     }
     // 죽은 적 리스트에서 제거
@@ -554,17 +398,43 @@ public class CBasicCombatManager : MonoBehaviour
     {
         CEntity entity = _entityList[index];
 
-        // 턴 리스트와 턴순서 초상화 리스트에서 죽은 개체 확인
-        for (int i = _turnList.Count - 1; i >= 0; i--)
+        bool isHero = entity is CPlayer;
+        
+        if (isHero)
         {
-            // 동일한 엔티티인지 확인
-            if (entity.Equals(_turnList[i].entity))
+            for(int i = _heroParty.HeroList.Count - 1; i >= 0; i--)
             {
-                _turnList.RemoveAt(i);
-                Destroy(_turnPortraitList[i], _portraitRemoveDelay);
-                _turnPortraitList.RemoveAt(i);
+                if (entity.Equals(_heroParty.HeroList[i]))
+                {
+                    _heroParty.HeroList.RemoveAt(i);
+                    break;
+                }
             }
         }
+        else
+        {
+            for (int i = _enemyParty.EnemyList.Count - 1; i >= 0; i--)
+            {
+                if (entity.Equals(_enemyParty.EnemyList[i]))
+                {
+                    _enemyParty.EnemyList.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+
+            // 턴 리스트와 턴순서 초상화 리스트에서 죽은 개체 확인
+            for (int i = _turnList.Count - 1; i >= 0; i--)
+            {
+                // 동일한 엔티티인지 확인
+                if (entity.Equals(_turnList[i].entity))
+                {
+                    _turnList.RemoveAt(i);
+                    Destroy(_turnPortraitList[i], _portraitRemoveDelay);
+                    _turnPortraitList.RemoveAt(i);
+                }
+            }
         // TODO : 죽으면 원래 시체가 남기 때문에 임시 구현
         // 시체를 해당 위치에 생성하는 방식도 필요.
         _messageManager.ShowIcon(_entityList[index].gameObject, CCombatFloatingIcon.IconType.DeathStemp);
@@ -580,7 +450,7 @@ public class CBasicCombatManager : MonoBehaviour
         _messageManager.ShowMessage(_turnList[0].entity.gameObject, CCombatFloatingText.EMessageType.Stun, "기절!");
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_actionDelay);
-        MoveTurnOrder();
+        _combatUI.MoveTurnOrder(_turnPortraitList);
         Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
         _turnPortraitList.RemoveAt(0);
         _coroutine = null;
@@ -592,10 +462,9 @@ public class CBasicCombatManager : MonoBehaviour
 
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
-        yield return new WaitForSeconds(_actionDelay);
-        GameObject copyObj = Instantiate(_turnPortraitList[0], _turnOrderRoot.transform);
-        _turnPortraitList.Add(copyObj);
-        MoveTurnOrder();
+        yield return new WaitForSeconds(_turnSkipDelay);
+        _turnPortraitList.Add(_combatUI.CopyTurnOrderPortrait(_turnPortraitList[0]));
+        _combatUI.MoveTurnOrder(_turnPortraitList);
         _turnPortraitList.RemoveAt(0);
         _coroutine = null;
     }
@@ -608,172 +477,99 @@ public class CBasicCombatManager : MonoBehaviour
     private IEnumerator CoAction()
     {
         bool doAction = false;
+        bool isHero = MyTurn is CPlayer;
 
-        Vector3 mousePos;
-        Ray ray;
-        _cursorSkillInfo.SetActive(false);
-        _cursorSkill.SetActive(false);
-        // 턴 시작 시 추가 행동 악세사리 확인
-        //CheckAddExtraTurn(CTempEntity.EJewelryType.TurnStart);
+        OpenTurnSetting();
+
+
+        MyTurn.OnActionRequested += OnAction;
+
+
+        // Could : 턴 시작 시 추가 행동 악세사리 확인
 
         // 액션할때까지 기다리기  
         while (!doAction)
         {
-            if (_pass)
+            if (_combatUI.Pass)
             {
+                CPrint.Log("Pass 감지!");
+                doAction = true;
                 break;
             }
 
-            // 현재 행동턴이 적인지 아군인지 구별하여 인터페이스를 동작시켜야 합니다.
-            // 해당 코드는 완성에만 목표로 작성된 문법이니 최적화가 필요합니다.
-            bool isHero = _turnList[0].entity is CPlayer;
-
-            // 히어로일 때
-            // 1.적에게 마우스를 올렸을 때 정보가 나와야 합니다.
-            // 2.현재 턴인 히어로의 정보가 나와야합니다.
             if (isHero)
             {
-                CPlayer hero = _turnList[0].entity as CPlayer;
-                CHeroDataSO heroSO = (CHeroDataSO)hero.EntityData;
-
-                // 플레이어 UI [ TODO : 추후 한번만 변경되도록 구현해야합니다. ]
-                _heroInfo.SetActive(true);
-                _skillListPanel.SetActive(true);
-
-                for (int i = 0; i < _skillSlot.Count; i++)
+                doAction = _doingAction;
+                if (_doingAction)
                 {
-                    _skillSlot[i].GetComponent<Image>().sprite = heroSO.SkillSlotBackground;
-                    _skillImage[i].sprite = hero.EquippedSkills[i].SkillIcon;
-                }
-
-                _heroName.text = heroSO.DefaultName;
-                _heroPortrait.GetComponent<Image>().sprite = heroSO.PortraitInfo;
-
-                // 적 UI
-                mousePos = Input.mousePosition;
-                ray = Camera.main.ScreenPointToRay(mousePos);
-
-                Physics.Raycast(ray, out RaycastHit hitInfo);
-
-                if (hitInfo.collider != null)
-                {
-                    // 임시 : 현재 TempEntity라서 추후에 뜯어고쳐야합니다.
-                    bool isEnemy = hitInfo.collider.gameObject.TryGetComponent<CEnemy>(out CEnemy hitEntity);
-
-                    if (isEnemy)
-                    {
-                        CEnemyDataSO enemyDataSO = hitEntity.EnemyData;
-
-                        _enemyName.text = enemyDataSO.Name;
-                        _enemyPortrait.GetComponent<Image>().sprite = enemyDataSO.PortraitInfo;
-                        _enemyMaxHealth.text = enemyDataSO.ToString();
-                        _enemyCurHealth.text = hitEntity.CurrentHp.ToString();
-                        _enemyHpBarFill.fillAmount = Mathf.Clamp01((float)hitEntity.CurrentHp / (float)enemyDataSO.MaxHealth);
-
-                        _enemySpeed.text = enemyDataSO.ToString();
-                        _enemyBleedResist.text = enemyDataSO.Resistance.Bleed.ToString();
-                        _enemyBlightResist.text = enemyDataSO.Resistance.Blight.ToString();
-                        _enemyBurnResist.text = enemyDataSO.Resistance.Burn.ToString();
-                        _enemyStunResist.text = enemyDataSO.Resistance.Stun.ToString();
-                        _enemyMoveResist.text = enemyDataSO.Resistance.Move.ToString();
-                        _enemyWeakResist.text = enemyDataSO.Resistance.Debuff.ToString();
-
-                        _enemyInfo.SetActive(true);
-                        _enemyStatus.SetActive(true);
-                    }
-                    else
-                    {
-                        _enemyInfo.SetActive(false);
-                        _enemyStatus.SetActive(false);
-                    }
-                }
-                else
-                {
-                    _enemyInfo.SetActive(false);
-                    _enemyStatus.SetActive(false);
+                    _combatUI.CloseHeroInfomation();
+                    MyTurn.TryStartRequestedAction();
+                    _combatUI.UseSkill(_currentActionSkillData);
+                    _doingAction = false;
                 }
             }
-            // 적의 턴인 경우
             else
             {
-                _heroInfo.SetActive(false);
-                _skillListPanel.SetActive(false);
-
-                CEnemy enemy = _turnList[0].entity as CEnemy;
-                CEnemyDataSO enemyDataSO = enemy.EnemyData;
-
-                // 이름 반영
-                _enemyName.text = enemyDataSO.Name;
-                // 초상화 반영
-                _enemyPortrait.GetComponent<Image>().sprite = enemyDataSO.PortraitInfo;
-
-                // 체력 반영
-                _enemyMaxHealth.text = enemyDataSO.MaxHealth.ToString();
-                _enemyCurHealth.text = enemy.CurrentHp.ToString();
-                _enemyHpBarFill.fillAmount = Mathf.Clamp01((float)enemy.CurrentHp / (float)enemyDataSO.MaxHealth);
-
-
-                _enemyInfo.SetActive(true);
+                doAction = true;
             }
-            // →← TODO : 행동을 완료하였을 때 처리
-
-            doAction = _actionCompleted;
             yield return null;
         }
 
-        _messageManager.ShowMessage(_turnList[0].entity.gameObject, CCombatFloatingText.EMessageType.None, !_pass ? "행동" : "턴넘김");
-        _pass = false;
-        _actionCompleted = false;
+        _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.None, !_combatUI.Pass ? "행동" : "턴넘김");
+
+        if (isHero)
+        {
+            MyTurn.OnActionRequested -= OnAction;
+        }
 
         yield return new WaitForSeconds(_actionDelay);
 
-        bool _isAfterDead = _turnList[0].entity.IsDead;
+        bool _isAfterDead = MyTurn.IsDead;
 
         if (!_isAfterDead)
         {
-            //CheckAddExtraTurn(CTempEntity.EJewelryType.TurnEnd);
+            // Could :추가 턴 악세사리 여부 체크
+
+            // 턴 상태 체크
             CheckTurnState();
         }
 
         CheckEntitiesDeath();
+        _combatUI.Pass = false;
         _coroutine = null;
     }
-
-    private void DoAction(CEntity entity)
+    private void OnAction(CEntity actor, CEntity target, CSkillDataSO skill)
     {
-        _actionCompleted = true;
+        CPrint.Log(actor.name + " -> " + target.name + " / " + skill.SkillName);
+        _currentActionSkillData = skill;
+        _doingAction = true;
+
     }
 
-    #region ExtraActionJewelry
-    /*
-    // Could : 아무래도 아직 악세사리나 특정조건이 없다보니 임시로 만들었습니다.
-    private void CheckAddExtraTurn(CTempEntity.EJewelryType type)
+    // 현재 턴 행동시 UI 오픈
+    private void OpenTurnSetting()
     {
-        if (_turnList[0].entity.IsDead)
-        {
-            return;
-        }
+        _combatUI.CloseHeroInfomation();
+        _combatUI.CloseEnemyInfomation();
 
-        if (_turnList[0].entity.EquipJewelry == type && _currentTurnState == TurnState.Normal)
+        bool isHero = MyTurn is CPlayer;
+
+        if (isHero)
         {
-            _turnList[0].entity.HasExtraTurn = true;
-            ShowUIMessage(_turnList[0].entity.gameObject, CCombatFloatingText.EMessageType.None, "추가 행동");
+            _heroBattleInput.SetHero(MyTurn as CPlayer);
+            _heroBattleInput.SetTargets(_enemyParty.EnemyList, Vector3.zero);
+            _heroBattleInput.AddAllyTargets(_heroParty.HeroList, Vector3.zero);
+            _combatUI.OpenHeroInfomation((CPlayer)MyTurn, _heroBattleInput);
+            MyTurn.TryBeginAction();
+        }
+        // 적의 턴인 경우
+        else
+        {
+            _combatUI.OpenEnemyInfomation((CEnemy)MyTurn, false);
+            MyTurn.TryBeginAction();
         }
     }
-    */
-    #endregion
-
-    #region 추가 행동 체크
-    /*
-    ▶ 추가 행동 체크
-
-    현재 확인한 방식은 
-
-    스킬을 사용 시 추가 행동 획득 [ 적 : 사서 / 아군 : 나병환자 스킬 ]
-    
-    악세사리 [ 턴 시작 혹은 종료 시 / 죽음의 일격 혹은 피격 시 등등..]
-    */
-    #endregion
+    // 추가 행동 체크
     private void CheckTurnState()
     {
         if (_turnList[0].entity.IsDead)
@@ -791,7 +587,7 @@ public class CBasicCombatManager : MonoBehaviour
             else
             {
                 _turnList.RemoveAt(0);
-                MoveTurnOrder();
+                _combatUI.MoveTurnOrder(_turnPortraitList);
                 Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
                 _turnPortraitList.RemoveAt(0);
             }
@@ -800,53 +596,30 @@ public class CBasicCombatManager : MonoBehaviour
         else if (_currentTurnState == TurnState.Extra)
         {
             _turnList.RemoveAt(0);
-            MoveTurnOrder();
+            _combatUI.MoveTurnOrder(_turnPortraitList);
             Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
             _turnPortraitList.RemoveAt(0);
             _currentTurnState = TurnState.Normal;
         }
     }
-    private void MoveTurnOrder(bool isDirty = false)
+}
+
+//Could 시스템
+#region ExtraActionJewelry
+/*
+// Could : 아무래도 아직 악세사리나 특정조건이 없다보니 임시로 만들었습니다.
+private void CheckAddExtraTurn(CTempEntity.EJewelryType type)
+{
+    if (_turnList[0].entity.IsDead)
     {
-        // 죽는 상태에선 단순 하나의 요소만 변경되는 것이 아니기 때문에 리스트와 싱크를 맞춰야한다.
-        if (isDirty)
-        {
-            for (int i = 0; i < _turnPortraitList.Count; i++)
-            {
-                if (_turnPortraitList.Count - 1 < i)
-                {
-                    break;
-                }
-
-                CPortraitImage portraitImage = _turnPortraitList[i].GetComponent<CPortraitImage>();
-
-                portraitImage.Move(i + 1);
-            }
-            return;
-        }
-
-
-        for (int i = 0; i < _turnPortraitList.Count; i++)
-        {
-            if (_turnPortraitList.Count - 1 < i)
-            {
-                break;
-            }
-
-            CPortraitImage portraitImage = _turnPortraitList[i].GetComponent<CPortraitImage>();
-
-            portraitImage.Move(i);
-        }
-        CPortraitImage.IsDirty = false;
+        return;
     }
-    private void NextRound()
-    {
-        if (_turnList.Count == 0)
-        {
-            return;
-        }
 
-        _round++;
-        _roundText.text = _round.ToString();
+    if (_turnList[0].entity.EquipJewelry == type && _currentTurnState == TurnState.Normal)
+    {
+        _turnList[0].entity.HasExtraTurn = true;
+        ShowUIMessage(_turnList[0].entity.gameObject, CCombatFloatingText.EMessageType.None, "추가 행동");
     }
 }
+*/
+#endregion

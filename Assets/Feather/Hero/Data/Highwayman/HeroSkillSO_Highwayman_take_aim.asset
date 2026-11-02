@@ -14,15 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Take Aim
   _skillIcon: {fileID: 21300000, guid: 64c36537fdee694498ab4cc3c7b46fdc, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 2
   _effectList: []
+  _usesPerBattle: 0
+  _baseSkill: {fileID: 0}
   _target: 2
   _startState: Base Layer.OriginalAntic_Highwayman_take_aim
   _endState: Base Layer.OriginalRecover_Highwayman_take_aim
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_take_aim
   _selectionHoldState: Base Layer.SourceReady_take_aim
   _executionStartState: Base Layer.OriginalAction_Highwayman_take_aim
