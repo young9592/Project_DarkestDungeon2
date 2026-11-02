@@ -871,9 +871,9 @@ public class CPlayer : CEntity
                 }
             }
 
-            if (TokenManager.ConsumeToken(EEffectType.Stun))
+            if (TokenManager.HasToken(EEffectType.Stun))
             {
-                CPrint.Log($"[{_heroData.DefaultName}] 기절 토큰 소모\n" +
+                CPrint.Log($"[{_heroData.DefaultName}] 기절 상태 확인\n" +
                     $"이번 턴 행동을 못합니다.");
                 _isTurnSkipped = true;
                 CancelAction();
