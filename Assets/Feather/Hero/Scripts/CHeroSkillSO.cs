@@ -21,6 +21,24 @@ public class CHeroSkillSO : CSkillDataSO
         get { return BaseSkill._usesPerBattle; }
     }
 
+    [Header("Self Movement")]
+    [SerializeField] private bool _moveForwardOneRank;
+    [SerializeField, Range(-3, 3)] private int _rankMovement;
+
+    public int RankMovement
+    {
+        get
+        {
+            if (BaseSkill._rankMovement != 0) return Mathf.Clamp(BaseSkill._rankMovement, -3, 3);
+            return BaseSkill._moveForwardOneRank ? -1 : 0;
+        }
+    }
+
+    public bool MovesForwardOneRank
+    {
+        get { return RankMovement == -1; }
+    }
+
     [Header("Mastery")]
     [SerializeField] private CHeroSkillSO _baseSkill;
 
