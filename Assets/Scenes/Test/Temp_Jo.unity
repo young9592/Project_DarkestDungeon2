@@ -1817,7 +1817,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &383067527
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12524,7 +12524,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1828736091
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14222,8 +14222,8 @@ MonoBehaviour:
   _floatingTextPrefab: {fileID: 6825002355156875358, guid: 5f47edd9f2107334999cf0366b8a4f8e, type: 3}
   _iconPrefabRoot: {fileID: 2119594959}
   _deathStampPrefab: {fileID: 8428275685590659208, guid: 60bed3f9ea804b449b83272e338a9159, type: 3}
-  _stressPrefab: {fileID: 0}
-  _virtuePrefab: {fileID: 0}
+  _stressPrefab: {fileID: 6143967996554263153, guid: e6246af449503d0479a33dd6dce0d246, type: 3}
+  _stressHealPrefab: {fileID: 7234313650641800257, guid: be01fbc9a1f43b24f8bc1de0b5077d69, type: 3}
   _targetPrefab: {fileID: 5629277834582724754, guid: d5018ffea83ac1346850b642f080dffb, type: 3}
 --- !u!4 &2125789384
 Transform:

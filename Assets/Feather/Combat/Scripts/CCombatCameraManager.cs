@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class CCombatCameraManager : MonoBehaviour
 {
+    public enum CameraState
+    {
+        Default,
+        Hero,
+        Enemy
+    }
+
     #region Inspector
     [SerializeField] private Camera _camera;
     [SerializeField] private GameObject _combatPanel;
@@ -32,7 +39,7 @@ public class CCombatCameraManager : MonoBehaviour
     }
     public void ViewLeft()
     {
-
+        
     }
 
     public void ViewRight()

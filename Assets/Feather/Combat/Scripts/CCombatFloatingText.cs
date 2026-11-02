@@ -17,11 +17,11 @@ public class CCombatFloatingText : MonoBehaviour
         Heal_Crit_Msg,
 
         Stress,
-
+        // Dot
         Bleed,
         Blight,
         Burn,
-
+        // Token
         Daze,
         Stun,
         Speed,
@@ -55,6 +55,7 @@ public class CCombatFloatingText : MonoBehaviour
     [SerializeField] private Sprite _stunSprite;
     [SerializeField] private Sprite _healSprite;
     [SerializeField] private Sprite _speedSprite;
+    [SerializeField] private Sprite _deathDoorSprite;
     #endregion
 
     #region Field
@@ -62,6 +63,7 @@ public class CCombatFloatingText : MonoBehaviour
     private RectTransform _iconRectTr;
     private RectTransform _textRectTr;
     private bool _stopText = false;
+    private EMessageType _type;
     #endregion
 
     private void Awake()
@@ -75,6 +77,7 @@ public class CCombatFloatingText : MonoBehaviour
     private void Update()
     {
         Move();
+        PlayAnimation();
     }
 
     // 상호작용시 표시되는 텍스트
@@ -87,14 +90,15 @@ public class CCombatFloatingText : MonoBehaviour
             return;
         }
 
-        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
-        Vector2 uiLocalPos;
+        SkinnedMeshRenderer mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
+
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        Vector2 uiLocalPos;
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(mesh.bounds.center);
 
         _text.text = text;
-        _rectTr.anchoredPosition = uiLocalPos;
+        _type = type;
 
         // 다중 메세지 겹침 위치조정
         if (offset != default)
@@ -114,6 +118,16 @@ public class CCombatFloatingText : MonoBehaviour
                 _stopText = true;
                 // 죽음의 일격! 메세지 위치조정
                 _rectTr.anchoredPosition += Vector2.up * 100f;
+                _rectTr.localScale = Vector3.one * 5f;
+                break;
+            case EMessageType.Death_Door:
+                SetAlignment(ETextType.Dot);
+                _text.color = new Color32(154, 20, 23, 255);
+                _stopText = true;
+                _iconImage.sprite = _deathDoorSprite;
+                // 죽음의 문턱! 메세지 위치조정
+                _rectTr.anchoredPosition += Vector2.down * 50f;
+                _rectTr.localScale = Vector3.one * 5f;
                 break;
             // 데미지, 치명타데미지, 치명타! 메세지
             case EMessageType.Damage:
@@ -144,7 +158,14 @@ public class CCombatFloatingText : MonoBehaviour
                 _speed = 100;
                 _text.color = new Color32(151, 255, 183, 255);
                 // 치명타! 메세지 위치조정
-                _rectTr.anchoredPosition += Vector2.up * 50f;
+                _rectTr.anchoredPosition += Vector2.up * 80f;
+                break;
+            case EMessageType.Stress:
+                SetAlignment(ETextType.Default, text);
+                _speed = -30;
+                _text.color = new Color32(244, 243, 230, 255);
+                Vector2 topVec = new Vector2(mesh.bounds.center.x, mesh.bounds.max.y);
+                screenPos = Camera.main.WorldToScreenPoint(topVec);
                 break;
             case EMessageType.Bleed:
                 SetAlignment(ETextType.Dot, text);
@@ -177,6 +198,10 @@ public class CCombatFloatingText : MonoBehaviour
                 break;
 
         }
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
+        _rectTr.anchoredPosition = uiLocalPos;
+
         gameObject.SetActive(true);
         Destroy(gameObject, _duration);
     }
@@ -229,7 +254,7 @@ public class CCombatFloatingText : MonoBehaviour
         }
     }
 
-    public void Move()
+    private void Move()
     {
         if (!gameObject.activeSelf)
         {
@@ -242,5 +267,18 @@ public class CCombatFloatingText : MonoBehaviour
         }
 
         _rectTr.anchoredPosition += Vector2.up * _speed * Time.deltaTime;
+    }
+
+    private void PlayAnimation()
+    {
+        switch (_type)
+        {
+            case EMessageType.Death_Door:
+            case EMessageType.Death:
+                _rectTr.localScale = Vector3.Lerp(_rectTr.localScale, Vector3.one, 1f - Mathf.Exp(-30 * Time.deltaTime));
+                break;
+            default:
+                break;
+        }
     }
 }

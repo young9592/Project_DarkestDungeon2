@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CCombatFloatingIcon : MonoBehaviour
 {
@@ -9,16 +8,21 @@ public class CCombatFloatingIcon : MonoBehaviour
         None,
         DeathStemp,
         Stress,
-        Virtue,
+        StressHealing,
         Turn,
     }
     #endregion
 
     #region Inspector
-    [Header("Icon Inspector")]
+    // 아이콘마다 다릅니다.
+    [Header("Sub Connect")]
+    [SerializeField] private GameObject _subEffect;
+
+    [Header("Option")]
     [SerializeField] private IconType _iconType = IconType.None;
     [SerializeField] private float _durationTime = 2f;
     [SerializeField] private float _sharpness = 25f;
+    [SerializeField] private Vector2 _offset = Vector2.zero;
     #endregion
 
     #region Field
@@ -44,31 +48,39 @@ public class CCombatFloatingIcon : MonoBehaviour
 
         Vector3 screenPos = Vector3.zero;
 
+
+        SkinnedMeshRenderer mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
+
+
         switch (_iconType)
         {
             // 죽음의 일격 아이콘
             case IconType.DeathStemp:
                 _rectTr.localScale = Vector3.one * 5f;
-                screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
+                screenPos = Camera.main.WorldToScreenPoint(mesh.bounds.center);
                 break;
             // 스트레스 아이콘
             case IconType.Stress:
-
+                _rectTr.localScale = Vector3.one * 5f;
+                Vector2 topVec = new Vector2(mesh.bounds.center.x, mesh.bounds.max.y);
+                screenPos = Camera.main.WorldToScreenPoint(topVec);
                 break;
             // 스트레스 회복 아이콘
-            case IconType.Virtue:
-
+            case IconType.StressHealing:
+                topVec = new Vector2(mesh.bounds.center.x, mesh.bounds.max.y);
+                screenPos = Camera.main.WorldToScreenPoint(topVec);
                 break;
             // 현재 차례 아이콘 표시
             case IconType.Turn:
-                screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
+                Vector2 bottomVec = new Vector2(mesh.bounds.center.x, mesh.bounds.min.y);
+                screenPos = Camera.main.WorldToScreenPoint(bottomVec);
                 break;
             default:
                 break;
         }
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
-        _rectTr.anchoredPosition = uiLocalPos;
+        _rectTr.anchoredPosition = uiLocalPos + _offset;
         _deleteTime = Time.time + _durationTime;
         gameObject.SetActive(true);
 
@@ -94,6 +106,14 @@ public class CCombatFloatingIcon : MonoBehaviour
         {
             case IconType.DeathStemp:
                 _rectTr.localScale = Vector3.Lerp(_rectTr.localScale, Vector3.one, 1f - Mathf.Exp(-_sharpness * Time.deltaTime));
+                break;
+            case IconType.Stress:
+                _rectTr.localScale = Vector3.Lerp(_rectTr.localScale, Vector3.one, 1f - Mathf.Exp(-_sharpness * Time.deltaTime));
+
+                if (_rectTr.localScale.x < Vector3.one.x * 1.1f)
+                {
+
+                }
                 break;
             default:
                 break;

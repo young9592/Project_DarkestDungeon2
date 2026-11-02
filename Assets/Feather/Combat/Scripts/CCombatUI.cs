@@ -407,7 +407,7 @@ public class CCombatUI : MonoBehaviour
 
         CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 
-        if(heroSkillSO.Target != EHeroSkillTarget.Self)
+        if (heroSkillSO.Target != EHeroSkillTarget.Self)
         {
             _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
             _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
@@ -433,7 +433,7 @@ public class CCombatUI : MonoBehaviour
 
 
 
-            _cursorSkillInfo.SetActive(true);
+        _cursorSkillInfo.SetActive(true);
         _cursorSkill.SetActive(true);
         _cursorDiamond.SetActive(false);
         _cursorRank = false;
