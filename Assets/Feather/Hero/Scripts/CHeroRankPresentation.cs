@@ -54,6 +54,7 @@ public class CHeroRankPresentation : MonoBehaviour
     public void Configure(Vector3 frontPosition, Vector3 rankStep, IReadOnlyList<CPlayer> party)
     {
         _party = party;
+        if (_hero != null) _hero.ConfigureParty(party);
         _frontPosition = frontPosition;
         _rankStep = rankStep;
         _isConfigured = true;

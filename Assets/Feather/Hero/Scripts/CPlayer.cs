@@ -47,6 +47,7 @@ public class CPlayer : CEntity
     private bool _isStartingTurn;
     private bool _isTurnSkipped;
     private readonly CHeroSkillUseState _skillUses = new CHeroSkillUseState();
+    private readonly CHeroSkillMovement _skillMovement = new CHeroSkillMovement();
     public CHeroSkillUseState SkillUses
     {
         get { return _skillUses; }
@@ -113,6 +114,7 @@ public class CPlayer : CEntity
 
     protected override void OnActionEnded()
     {
+        _skillMovement.CompleteMovement();
         _actionTargets.Clear();
         CancelSkillSelection();
     }
@@ -267,7 +269,13 @@ public class CPlayer : CEntity
         if (!_skillUses.CanUse(skill)) return false;
         if (_actionAnimation != null && !_actionAnimation.TryPlayAttack(skill)) return false;
         if (!_skillUses.TryUse(skill)) return false;
+        _skillMovement.TryMove(this, skill);
         return true;
+    }
+
+    public void ConfigureParty(IReadOnlyList<CPlayer> party)
+    {
+        _skillMovement.Configure(party);
     }
 
     protected override void OnActionCancelled()
