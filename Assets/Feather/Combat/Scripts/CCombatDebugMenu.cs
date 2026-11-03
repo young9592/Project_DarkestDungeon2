@@ -35,6 +35,8 @@ public class CCombatDebugMenu : MonoBehaviour
     {
         _applyOptionList.Add("데미지", EEffectType.Damage);
         _applyOptionList.Add("회복", EEffectType.Heal);
+        _applyOptionList.Add("스트레스", EEffectType.None);
+        _applyOptionList.Add("스트레스 회복", EEffectType.None);
         _applyOptionList.Add("출혈", EEffectType.Bleed);
         _applyOptionList.Add("중독", EEffectType.Blight);
         _applyOptionList.Add("화상", EEffectType.Burn);
@@ -132,6 +134,7 @@ public class CCombatDebugMenu : MonoBehaviour
 
         string applyOptionText = _selectEffect.options[_selecedtEffectIdx].text;
         EEffectType applyOption = _applyOptionList[applyOptionText];
+        CEntity selectEntity = entities[_selectedEntitytIdx];
 
         switch (applyOption)
         {
@@ -141,17 +144,21 @@ public class CCombatDebugMenu : MonoBehaviour
 
                 if (rand < 6)
                 {
-                    entities[_selectedEntitytIdx].TakeDamage(damage);
-                    _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Damage, $"{damage}");
+                    selectEntity.TakeDamage(damage);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage, $"{damage}");
                 }
                 else
                 {
-                    entities[_selectedEntitytIdx].TakeDamage(damage * 2);
-                    _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Damage_Crit, $"{damage * 2}");
-                    _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Damage_Crit_Msg, "치명타!");
+                    selectEntity.TakeDamage(damage * 2);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit, $"{damage * 2}");
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit_Msg, "치명타!");
                 }
 
-                //entityStates[entities[_selectedEntitytIdx]].SetHealth();
+
+                if (selectEntity.IsDeathsDoor)
+                {
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!");
+                }
                 break;
             case EEffectType.Heal:
                 rand = Random.Range(0, 10);
@@ -159,14 +166,14 @@ public class CCombatDebugMenu : MonoBehaviour
 
                 if (rand < 6)
                 {
-                    entities[_selectedEntitytIdx].TakeDamage(-heal);
-                    _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal}");
+                    selectEntity.TakeDamage(-heal);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal}");
                 }
                 else
                 {
-                    entities[_selectedEntitytIdx].TakeDamage(-heal * 2);
-                    _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal * 2}");
-                    _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.Heal_Crit_Msg, "치명타!");
+                    selectEntity.TakeDamage(-heal * 2);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal * 2}");
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Heal_Crit_Msg, "치명타!");
                 }
                 break;
             case EEffectType.Bleed:
@@ -176,12 +183,30 @@ public class CCombatDebugMenu : MonoBehaviour
             case EEffectType.Stun:
             case EEffectType.Speed:
                 CEffect effect = new CEffect(_effectList[applyOption]);
-                entities[_selectedEntitytIdx].ApplyStatusEffect(effect);
+                selectEntity.ApplyStatusEffect(effect);
                 break;
             // 추가행동
             case EEffectType.None:
-                entities[_selectedEntitytIdx].SetExtraAction(true);
-                _messageManager.ShowMessage(entities[_selectedEntitytIdx].gameObject, CCombatFloatingText.EMessageType.None, "추가 행동 부여");
+                int stress = Random.Range(1, 4);
+
+                if (applyOptionText == "스트레스")
+                {
+                    selectEntity.ModifyStress(stress);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Stress, $"{stress}");
+                    _messageManager.ShowIcon(selectEntity.gameObject, CCombatFloatingIcon.IconType.Stress);
+                }
+                else if (applyOptionText == "스트레스 회복")
+                {
+                    selectEntity.ModifyStress(-stress);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Stress, $"{stress}");
+                    _messageManager.ShowIcon(selectEntity.gameObject, CCombatFloatingIcon.IconType.StressHealing);
+                }
+                else
+                {
+                    selectEntity.SetExtraAction(true);
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.None, "추가 행동 부여");
+                }
+
                 break;
         }
 
