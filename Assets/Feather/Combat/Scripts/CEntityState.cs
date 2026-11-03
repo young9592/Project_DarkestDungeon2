@@ -57,6 +57,7 @@ public class CEntityState : MonoBehaviour
     private bool _initEntity = false;
     private bool _doFollow = false;
     private bool _isHero = false;
+    private bool _rendererCameraMode = false;
     #endregion
 
     #region Property
@@ -81,6 +82,12 @@ public class CEntityState : MonoBehaviour
         {
             CPrint.Warn($"{gameObject.name} : Initialize 값 전달 오류");
             return;
+        }
+
+        // 랜더링 모드 체크
+        if (_canvas.renderMode == RenderMode.ScreenSpaceCamera)
+        {
+            _rendererCameraMode = true;
         }
 
         CEntity entity = _target.GetComponent<CEntity>();
@@ -140,7 +147,7 @@ public class CEntityState : MonoBehaviour
         Vector3 bottomPos = _target.transform.position + _offset;
         Vector3 screenPos = Camera.main.WorldToScreenPoint(bottomPos);
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRectTr, screenPos, null, out Vector2 uiLocalPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRectTr, screenPos, _rendererCameraMode ? Camera.main : null, out Vector2 uiLocalPos);
 
         _rectTr.anchoredPosition = uiLocalPos - new Vector2(0, _rectTr.sizeDelta.y * 0.5f);
     }

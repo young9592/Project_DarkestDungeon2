@@ -64,6 +64,8 @@ public class CCombatFloatingText : MonoBehaviour
     private RectTransform _textRectTr;
     private bool _stopText = false;
     private EMessageType _type;
+    private bool _init = false;
+    private bool _rendererCameraMode = false;
     #endregion
 
     private void Awake()
@@ -90,11 +92,21 @@ public class CCombatFloatingText : MonoBehaviour
             return;
         }
 
+        // 캔버스 랜더러 모드 체크
+        if (!_init)
+        {
+            if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
+            {
+                _rendererCameraMode = true;
+            }
+        }
+
         SkinnedMeshRenderer mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
 
 
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
         Vector2 uiLocalPos;
+
         Vector3 screenPos = Camera.main.WorldToScreenPoint(mesh.bounds.center);
 
         _text.text = text;
@@ -199,7 +211,7 @@ public class CCombatFloatingText : MonoBehaviour
 
         }
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, _rendererCameraMode ? Camera.main : null, out uiLocalPos);
         _rectTr.anchoredPosition = uiLocalPos;
 
         gameObject.SetActive(true);

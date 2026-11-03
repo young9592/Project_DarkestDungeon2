@@ -28,6 +28,8 @@ public class CCombatFloatingIcon : MonoBehaviour
     #region Field
     private RectTransform _rectTr;
     private float _deleteTime = 0f;
+    private bool _init = false;
+    private bool _rendererCameraMode = false;
     #endregion
 
     #region Property
@@ -45,6 +47,15 @@ public class CCombatFloatingIcon : MonoBehaviour
     {
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
         Vector2 uiLocalPos;
+
+        // 캔버스 랜더러 모드 체크
+        if (!_init)
+        {
+            if(canvas.renderMode == RenderMode.ScreenSpaceCamera)
+            {
+                _rendererCameraMode = true;
+            }
+        }
 
         Vector3 screenPos = Vector3.zero;
 
@@ -79,7 +90,7 @@ public class CCombatFloatingIcon : MonoBehaviour
                 break;
         }
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, null, out uiLocalPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, _rendererCameraMode ? Camera.main : null, out uiLocalPos);
         _rectTr.anchoredPosition = uiLocalPos + _offset;
         _deleteTime = Time.time + _durationTime;
         gameObject.SetActive(true);
