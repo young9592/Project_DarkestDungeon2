@@ -19,7 +19,7 @@ MonoBehaviour:
   _rankMovement: 1
   _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: 6d3edf14f25f0664eaa347bf130d3620, type: 2}
+  - {fileID: 11400000, guid: 3fc1d2ebd55446f28ad2b1370505994e, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_StrategicWithdrawal
   _endState: Base Layer.OriginalRecover_ManAtArms_StrategicWithdrawal

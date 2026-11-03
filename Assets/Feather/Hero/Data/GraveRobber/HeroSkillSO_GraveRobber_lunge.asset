@@ -19,7 +19,7 @@ MonoBehaviour:
   _rankMovement: -2
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 83abc83726d14c041be2d30075ea9ef1, type: 2}
+  - {fileID: 11400000, guid: cdd1ceaeda1f4e888cbf11b3be9f8bec, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_lunge
   _endState: Base Layer.OriginalRecover_GraveRobber_lunge

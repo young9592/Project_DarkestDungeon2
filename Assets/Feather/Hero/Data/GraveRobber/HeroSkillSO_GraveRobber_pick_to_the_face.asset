@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 1796987b0a0b10d40a196325c9d714fb, type: 2}
+  - {fileID: 11400000, guid: 36dcc6030f5e4a17a3e5dd739a17c7db, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_pick_to_the_face
   _endState: Base Layer.OriginalRecover_GraveRobber_pick_to_the_face

@@ -19,7 +19,7 @@ MonoBehaviour:
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 1c6e67680e03f154ea93f28189ec5540, type: 2}
+  - {fileID: 11400000, guid: df867a28e5fc43ad97318f9af49537f5, type: 2}
   _usesPerBattle: 0
   _baseSkill: {fileID: 0}
   _target: 3

@@ -585,6 +585,8 @@ public class CEnemy : CEntity
         _isDeathsDoor = false;
         _currentHp = _enemyData.MaxHealth;
         TokenManager.ClearAllTokens();
+        CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
+        if (criticalState != null) criticalState.ClearModifiers();
         ApplyStartingToken();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
@@ -606,6 +608,8 @@ public class CEnemy : CEntity
 
         _isStartingTurn = true;
         _skillCooldowns.BeginTurn(isExtraAction);
+        CHeroCriticalState critical = GetComponent<CHeroCriticalState>();
+        if (!isExtraAction && critical != null) critical.BeginTurn();
         try
         {
             if (!isExtraAction)

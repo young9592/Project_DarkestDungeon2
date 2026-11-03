@@ -19,7 +19,7 @@ MonoBehaviour:
   _rankMovement: -3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 2de3dbe290149d843a9877d20330974c, type: 2}
+  - {fileID: 11400000, guid: 13340db5bcb54e20af2c206430653429, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_HoldtheLine
   _endState: Base Layer.OriginalRecover_ManAtArms_HoldtheLine
