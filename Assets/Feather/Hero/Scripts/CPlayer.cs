@@ -684,6 +684,11 @@ public class CPlayer : CEntity
     // Effect Core 파이프라인에서 최종 연산된 데미지를 받음
     public override void TakeDamage(int finalDamage)
     {
+        ApplyDamage(finalDamage, true);
+    }
+
+    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    {
         if (!isActiveAndEnabled || _isDead || _heroData == null || finalDamage == 0)
         {
             return;
@@ -709,7 +714,7 @@ public class CPlayer : CEntity
         }
 
         // 데미지 피격시 애니메이션 재생
-        if (_actionAnimation != null)
+        if (playHitAnimation && _actionAnimation != null)
         {
             _actionAnimation.TryPlayHit();
         }
@@ -865,7 +870,7 @@ public class CPlayer : CEntity
                     CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
                         $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totlaTickDamage}] 데미지");
 
-                    TakeDamage(totlaTickDamage);
+                    ApplyDamage(totlaTickDamage, false);
 
                     if (_isDead) return;
                 }
