@@ -2,20 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ÀüÅõ Áß ¿£Æ¼Æ¼°¡ º¸À¯ÇÑ ÅäÅ«ÀÇ ½ºÅÃ °ü¸®ÇÏ´Â ÄÄÆ÷³ÍÆ®
+/// ì „íˆ¬ ì¤‘ ì—”í‹°í‹°ê°€ ë³´ìœ í•œ í† í°ì˜ ìŠ¤íƒ ê´€ë¦¬í•˜ëŠ” ì»´í¬ë„ŒíŠ¸
 /// </summary>
 public class CTokenManager
 {
-    // ±âº» ÅäÅ« ÃÖ´ë ÁßÃ¸ ¼öÄ¡ (º¯µ¿ °¡´É)
+    // ê¸°ë³¸ í† í° ìµœëŒ€ ì¤‘ì²© ìˆ˜ì¹˜ (ë³€ë™ ê°€ëŠ¥)
     private const int Max_Token_STACK = 2;
     private const int MAX_COMBO_STACK = 1;
 
-    // ³»°¡ °¡Áö°í ÀÖ´Â ÅäÅ«µé °ü¸®ÇÏ´Â µñ¼Å³Ê¸®
+    // ë‚´ê°€ ê°€ì§€ê³  ìˆëŠ” í† í°ë“¤ ê´€ë¦¬í•˜ëŠ” ë”•ì…”ë„ˆë¦¬
     // Key : EEffectType, Value : Stack
     private Dictionary<EEffectType, int> _tokenStacks = new Dictionary<EEffectType, int>();
 
     /// <summary>
-    /// »õ·Î¿î ÅäÅ« Å‰µæ½Ã È£Ãâ
+    /// ìƒˆë¡œìš´ í† í° Â‰ë“ì‹œ í˜¸ì¶œ
     /// </summary>
     public void AddToken(EEffectType tokenType, int amount = 1)
     {
@@ -26,7 +26,7 @@ public class CTokenManager
             {
                 ConsumeToken(oppositeToken);
                 amount--;
-                CPrint.Log($"[Token] »õ·Î µé¾î¿Â [{tokenType}] ÅäÅ«ÀÌ ±âÁ¸ [{oppositeToken}] ÅäÅ«°ú »ó¼âµÇ¾î ¼Ò¸êÇÕ´Ï´Ù.");
+                CPrint.Log($"[Token] ìƒˆë¡œ ë“¤ì–´ì˜¨ [{tokenType}] í† í°ì´ ê¸°ì¡´ [{oppositeToken}] í† í°ê³¼ ìƒì‡„ë˜ì–´ ì†Œë©¸í•©ë‹ˆë‹¤.");
             }
         }
 
@@ -39,22 +39,22 @@ public class CTokenManager
 
         _tokenStacks[tokenType] += amount;
 
-        // ÅäÅ«º° ÃÖ´ë ÁßÃ¸ ¼ö Á¦ÇÑ
+        // í† í°ë³„ ìµœëŒ€ ì¤‘ì²© ìˆ˜ ì œí•œ
         int maxStack = GetMaxStackLimit(tokenType);
         if (_tokenStacks[tokenType] > maxStack)
         {
             _tokenStacks[tokenType] = maxStack;
         }
 
-        CPrint.Log($"[Token] {tokenType} ÅäÅ« Å‰µæ! (ÇöÀç ½ºÅÃ : {_tokenStacks[tokenType]}");
+        CPrint.Log($"[Token] {tokenType} í† í° Â‰ë“! (í˜„ì¬ ìŠ¤íƒ : {_tokenStacks[tokenType]}");
 
-        // TODO : UI ¸Å´ÏÀú¿¡ ÀÌº¥Æ®¸¦ º¸³» ÅäÅ« Å‰µæ ¾Ö´Ï¸ŞÀÌ¼Ç + ¾ÆÀÌÄÜ °»½Å
+        // TODO : UI ë§¤ë‹ˆì €ì— ì´ë²¤íŠ¸ë¥¼ ë³´ë‚´ í† í° Â‰ë“ ì• ë‹ˆë©”ì´ì…˜ + ì•„ì´ì½˜ ê°±ì‹ 
     }
 
     /// <summary>
-    /// Æ¯Á¤ È¿°ú ¹ßµ¿ Á¶°ÇÀÌ µÇ¾úÀ»½Ã ÅäÅ« 1°³ ¼Ò¸ğ
+    /// íŠ¹ì • íš¨ê³¼ ë°œë™ ì¡°ê±´ì´ ë˜ì—ˆì„ì‹œ í† í° 1ê°œ ì†Œëª¨
     /// </summary>
-    /// ¼Ò¸ğ¿¡ ¼º°ø½Ã true (È¿°ú ¹ßµ¿), ¾øÀ»½Ã false (È¿°ú ¹«½Ã)
+    /// ì†Œëª¨ì— ì„±ê³µì‹œ true (íš¨ê³¼ ë°œë™), ì—†ì„ì‹œ false (íš¨ê³¼ ë¬´ì‹œ)
     public bool ConsumeToken(EEffectType tokenType)
     {
         if (!_tokenStacks.ContainsKey(tokenType) || _tokenStacks[tokenType] <= 0)
@@ -64,16 +64,16 @@ public class CTokenManager
 
         _tokenStacks[tokenType]--;
 
-        CPrint.Log($"[Token] {tokenType} ÅäÅ« ¼Ò¸ğ! (³²Àº ½ºÅÃ : {_tokenStacks[tokenType]}");
+        CPrint.Log($"[Token] {tokenType} í† í° ì†Œëª¨! (ë‚¨ì€ ìŠ¤íƒ : {_tokenStacks[tokenType]}");
 
-        // TODO : UI ¸Å´ÏÀú¿¡ ÀÌº¥Æ® º¸³» ÅäÅ« ±úÁö´Â ¾Ö´Ï¸ŞÀÌ¼Ç ¹× ¾ÆÀÌÄÜ Ãß°¡
+        // TODO : UI ë§¤ë‹ˆì €ì— ì´ë²¤íŠ¸ ë³´ë‚´ í† í° ê¹¨ì§€ëŠ” ì• ë‹ˆë©”ì´ì…˜ ë° ì•„ì´ì½˜ ì¶”ê°€
 
         return true;
     }
 
     /// <summary>
-    /// ÇöÀç ÅäÅ« º¸À¯ÇÏ°í ÀÖ´ÂÁö È®ÀÎ¿ëµµ
-    /// ex : AI ÆÇ´ÜÀÌ³ª ½ºÅ³ ¹ßµ¿ Á¶°Ç Ã¼Å©¿ëÀ¸·Î »ç¿ëÇÒ ¿¹Á¤
+    /// í˜„ì¬ í† í° ë³´ìœ í•˜ê³  ìˆëŠ”ì§€ í™•ì¸ìš©ë„
+    /// ex : AI íŒë‹¨ì´ë‚˜ ìŠ¤í‚¬ ë°œë™ ì¡°ê±´ ì²´í¬ìš©ìœ¼ë¡œ ì‚¬ìš©í•  ì˜ˆì •
     /// </summary>
     public bool HasToken(EEffectType tokenType)
     {
@@ -81,25 +81,25 @@ public class CTokenManager
     }
 
     /// <summary>
-    /// ¸ğµç ÅäÅ«À» ³¯¸± ½Ã »ç¿ë
+    /// ëª¨ë“  í† í°ì„ ë‚ ë¦´ ì‹œ ì‚¬ìš©
     /// </summary>
     public void ClearAllTokens()
     {
         _tokenStacks.Clear();
-        CPrint.Log($"[Token] ¸ğµç ÅäÅ«ÀÌ ÃÊ±âÈ­µÇ¾ú½À´Ï´Ù.");
+        CPrint.Log($"[Token] ëª¨ë“  í† í°ì´ ì´ˆê¸°í™”ë˜ì—ˆìŠµë‹ˆë‹¤.");
     }
 
     /// <summary>
-    /// ÅäÅ« Á¾·ùº° ÃÖ´ë ¸î °³ ±îÁö °¡Áú ¼ö ÀÖ´ÂÁö
+    /// í† í° ì¢…ë¥˜ë³„ ìµœëŒ€ ëª‡ ê°œ ê¹Œì§€ ê°€ì§ˆ ìˆ˜ ìˆëŠ”ì§€
     /// </summary>
     private int GetMaxStackLimit(EEffectType tokenType)
     {
         switch (tokenType)
         {
             case EEffectType.Combo:
-                return MAX_COMBO_STACK; // ÄŞº¸´Â 1°³
+                return MAX_COMBO_STACK; // ì½¤ë³´ëŠ” 1ê°œ
             default:
-                return Max_Token_STACK; // ³ª¸ÓÁö´Â 2°³
+                return Max_Token_STACK; // ë‚˜ë¨¸ì§€ëŠ” 2ê°œ
         }
     }
 
@@ -132,14 +132,14 @@ public class CTokenManager
     };
 
     /// <summary>
-    /// Æ¯Á¤ ÅäÅ« ½ºÅÃ Á¦°Å
+    /// íŠ¹ì • í† í° ìŠ¤íƒ ì œê±°
     /// </summary>
     public int RemoveTokenAll(EEffectType tokenType)
     {
         if (_tokenStacks.TryGetValue(tokenType, out int count) && count > 0)
         {
             _tokenStacks.Remove(tokenType);
-            CPrint.Log($"[Token] [{tokenType}] ÅäÅ« {count}°³ Á¦°ÅµÊ");
+            CPrint.Log($"[Token] [{tokenType}] í† í° {count}ê°œ ì œê±°ë¨");
             return count;
         }
         return 0;
@@ -172,14 +172,14 @@ public class CTokenManager
                 _tokenStacks.Remove(type);
                 receiver.AddToken(type, count);
                 stolenTypes++;
-                CPrint.Log($"[Token °­Å»] [{type}] ÅäÅ« {count}°³¸¦ °­Å»ÇÏ¿´½À´Ï´Ù");
+                CPrint.Log($"[Token ê°•íƒˆ] [{type}] í† í° {count}ê°œë¥¼ ê°•íƒˆí•˜ì˜€ìŠµë‹ˆë‹¤");
             }
         }
         return stolenTypes;
     }
 
     /// <summary>
-    /// º¸À¯ÁßÀÎ ¸ğµç ÅäÅ«(Combo Á¦¿Ü) ¼Ò¸ğÇÏ°í, ¼Ò¸ğµÈ ÃÑ ÅäÅ« °³¼ö ¹İÈ¯
+    /// ë³´ìœ ì¤‘ì¸ ëª¨ë“  í† í°(Combo ì œì™¸) ì†Œëª¨í•˜ê³ , ì†Œëª¨ëœ ì´ í† í° ê°œìˆ˜ ë°˜í™˜
     /// </summary>
     public int ConsumeAllTokensCount()
     {
@@ -201,7 +201,7 @@ public class CTokenManager
 
         if (totalConsumed > 0)
         {
-            CPrint.Log($"[Token] º¸À¯ ÅäÅ« ÃÑ {totalConsumed}°³¸¦ ¼Ò¸ğÇß½À´Ï´Ù.");
+            CPrint.Log($"[Token] ë³´ìœ  í† í° ì´ {totalConsumed}ê°œë¥¼ ì†Œëª¨í–ˆìŠµë‹ˆë‹¤.");
         }
 
         return totalConsumed;
