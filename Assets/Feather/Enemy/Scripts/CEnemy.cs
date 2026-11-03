@@ -482,6 +482,11 @@ public class CEnemy : CEntity
 
     public override void TakeDamage(int finalDamage)
     {
+        ApplyDamage(finalDamage, true);
+    }
+
+    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    {
         if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
         {
             return;
@@ -491,7 +496,7 @@ public class CEnemy : CEntity
         long nextHp = (long)_currentHp - finalDamage;
         _currentHp = (int)Math.Max(0L, Math.Min(_enemyData.MaxHealth, nextHp));
         // 피격에서 사망으로 이어져도 공격자의 완료 대기 유지
-        if (finalDamage > 0 && _attackAnimation != null)
+        if (playHitAnimation && finalDamage > 0 && _attackAnimation != null)
         {
             _attackAnimation.TryPlayHit();
         }
@@ -580,6 +585,8 @@ public class CEnemy : CEntity
         _isDeathsDoor = false;
         _currentHp = _enemyData.MaxHealth;
         TokenManager.ClearAllTokens();
+        CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
+        if (criticalState != null) criticalState.ClearModifiers();
         ApplyStartingToken();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
@@ -601,6 +608,8 @@ public class CEnemy : CEntity
 
         _isStartingTurn = true;
         _skillCooldowns.BeginTurn(isExtraAction);
+        CHeroCriticalState critical = GetComponent<CHeroCriticalState>();
+        if (!isExtraAction && critical != null) critical.BeginTurn();
         try
         {
             if (!isExtraAction)
@@ -625,7 +634,7 @@ public class CEnemy : CEntity
 
                 if (totalDamage > 0)
                 {
-                    TakeDamage((int)Math.Min(int.MaxValue, totalDamage));
+                    ApplyDamage((int)Math.Min(int.MaxValue, totalDamage), false);
                 }
             }
 

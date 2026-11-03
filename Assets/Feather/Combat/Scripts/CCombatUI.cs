@@ -1,7 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks.Triggers;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CCombatUI : MonoBehaviour
@@ -13,9 +14,23 @@ public class CCombatUI : MonoBehaviour
     [Header("CombatMaanger")]
     [SerializeField] private CBasicCombatManager _combatManager;
 
+    [Header("Combat Panel")]
+    [SerializeField] private GameObject _combatFrontPanel;
+    [SerializeField] private GameObject _combatBackPanel;
+    [SerializeField] private GameObject _combatBorder;
+    [SerializeField] private GameObject _combatTriangle;
+    [SerializeField] private GameObject _leftHit;
+    [SerializeField] private GameObject _rightHit;
+    [SerializeField] private TextMeshProUGUI _heroTemptation;
+    [SerializeField] private TextMeshProUGUI _heroTemptationResult;
+    [SerializeField] private GameObject _meltDownBG;
+    // 현재 동작중인 스킬 이름
+    [SerializeField] private TextMeshProUGUI _currentSkillName;
+
     [Header("Hero Infomation")]
     // 영웅 정보 패널
     [SerializeField] private GameObject _heroInfo;
+    [SerializeField] private GameObject _infoTriangle;
     [SerializeField] private GameObject _heroPortrait;
     [SerializeField] private TextMeshProUGUI _heroName;
 
@@ -26,8 +41,6 @@ public class CCombatUI : MonoBehaviour
     [Header("Skill Panel")]
     // 영웅 스킬 항목
     [SerializeField] private GameObject _skillListPanel;
-    // 현재 동작중인 스킬 이름
-    [SerializeField] private TextMeshProUGUI _currentSkillName;
     // 스킬 패널
     [SerializeField] private GameObject _cursorSkillInfo;
     [SerializeField] private GameObject _cursorSkill;
@@ -79,15 +92,19 @@ public class CCombatUI : MonoBehaviour
     [Header("Turnorder Prefab")]
     [SerializeField] private GameObject _turnOrderRoot;
     [SerializeField] private GameObject _turnOrderPrefab;
+
+    [Header("Icon Prefab Root")]
+    [SerializeField] private GameObject _iconRoot;
+
+    [Header("Text Prefab Root")]
+    [SerializeField] private GameObject _textRoot;
     #endregion
 
 
 
     #region Field
     private int _round = 0;
-
     private bool _pass = false;
-
     private bool _cursorRank = false;
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -99,6 +116,7 @@ public class CCombatUI : MonoBehaviour
         get { return _pass; }
         set { _pass = value; }
     }
+    public RectTransform HeroTemptationTextTr => _heroTemptation.gameObject.GetComponent<RectTransform>();
     #endregion
 
     private void Awake()
@@ -106,6 +124,16 @@ public class CCombatUI : MonoBehaviour
         #region Null Check
         _checkList.Add(_canvas);
         _checkList.Add(_combatManager);
+
+        _checkList.Add(_combatFrontPanel);
+        _checkList.Add(_combatBackPanel);
+        _checkList.Add(_combatTriangle);
+        _checkList.Add(_meltDownBG);
+        _checkList.Add(_leftHit);
+        _checkList.Add(_rightHit);
+        _checkList.Add(_heroTemptation);
+        _checkList.Add(_heroTemptationResult);
+
 
         _checkList.Add(_heroInfo);
         _checkList.Add(_heroPortrait);
@@ -176,6 +204,9 @@ public class CCombatUI : MonoBehaviour
 
         _checkList.Add(_turnOrderRoot);
         _checkList.Add(_turnOrderPrefab);
+
+        _checkList.Add(_iconRoot);
+        _checkList.Add(_textRoot);
 
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
         {
@@ -373,8 +404,6 @@ public class CCombatUI : MonoBehaviour
 
     }
 
-
-
     // 스킬 선택
     private void OnSelectSkill(int idx)
     {
@@ -407,7 +436,7 @@ public class CCombatUI : MonoBehaviour
 
         CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 
-        if(heroSkillSO.Target != EHeroSkillTarget.Self)
+        if (heroSkillSO.Target != EHeroSkillTarget.Self)
         {
             _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
             _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
@@ -432,8 +461,7 @@ public class CCombatUI : MonoBehaviour
 
 
 
-
-            _cursorSkillInfo.SetActive(true);
+        _cursorSkillInfo.SetActive(true);
         _cursorSkill.SetActive(true);
         _cursorDiamond.SetActive(false);
         _cursorRank = false;
@@ -451,8 +479,6 @@ public class CCombatUI : MonoBehaviour
         {
             return;
         }
-        _heroInfo.SetActive(true);
-        _skillListPanel.SetActive(true);
 
         CHeroDataSO heroSO = hero.HeroData;
 
@@ -466,24 +492,19 @@ public class CCombatUI : MonoBehaviour
         _heroName.text = heroSO.DefaultName;
         _heroPortrait.GetComponent<Image>().sprite = heroSO.PortraitInfo;
 
+        _heroInfo.SetActive(true);
+        _skillListPanel.SetActive(true);
+        _infoTriangle.SetActive(true);
     }
-    /// <summary>
-    /// 영웅 상태창 + 스킬리스트 + 선택스킬 정보창 끄기
-    /// </summary>
     public void CloseHeroInfomation()
     {
         _heroInfo.SetActive(false);
         _skillListPanel.SetActive(false);
+        _infoTriangle.SetActive(false);
         _cursorSkillInfo.SetActive(false);
         _cursorSkill.SetActive(false);
         _cursorDiamond.SetActive(false);
         _currentSkillName.gameObject.SetActive(false);
-    }
-
-    public void UseSkill(CSkillDataSO skillDataSO)
-    {
-        _currentSkillName.text = skillDataSO.SkillName;
-        _currentSkillName.gameObject.SetActive(true);
     }
     /// <summary>
     /// 적 정보 탭 활성화
@@ -519,12 +540,86 @@ public class CCombatUI : MonoBehaviour
             _enemyResistStatus.SetActive(true);
         }
     }
-    /// <summary>
-    /// 적 정보창 끄기
-    /// </summary>
     public void CloseEnemyInfomation()
     {
         _enemyInfo.SetActive(false);
         _enemyResistStatus.SetActive(false);
     }
+    // 스킬 사용 시 처리
+    public void UseSkill(CSkillDataSO skillDataSO)
+    {
+        CloseHeroInfomation();
+
+        _currentSkillName.text = skillDataSO.SkillName;
+        OpenCombatPanel();
+        _combatTriangle.SetActive(true);
+        _currentSkillName.gameObject.SetActive(true);
+    }
+    // 전투 패널 활성화
+    public void OpenCombatPanel()
+    {
+        ResetCombatPanel();
+        _combatFrontPanel.SetActive(true);
+    }
+    public void CloseCombatPanel()
+    {
+        _combatFrontPanel.SetActive(false);
+        _combatBackPanel.SetActive(false);
+    }
+    public void ResetCombatPanel()
+    {
+        _combatFrontPanel.SetActive(false);
+        _combatBackPanel.SetActive(false);
+        _combatBorder.SetActive(false);
+        _combatTriangle.SetActive(false);
+        _leftHit.SetActive(false);
+        _rightHit.SetActive(false);
+        _heroTemptation.gameObject.SetActive(false);
+        _heroTemptationResult.gameObject.SetActive(false);
+        _currentSkillName.gameObject.SetActive(false);
+        _meltDownBG.SetActive(false);
+    }
+    public void AttackLeft()
+    {
+        _rightHit.SetActive(true);
+        _leftHit.SetActive(false);
+    }
+    public void AttackRight()
+    {
+        _rightHit.SetActive(false);
+        _leftHit.SetActive(true);
+    }
+    // 누군가의 의지가 시험받고 있습니다.
+    public void OpenTemptation(CPlayer hero)
+    {
+        _combatFrontPanel.SetActive(true);
+        _heroTemptation.gameObject.SetActive(true);
+
+        _heroTemptation.text = hero.HeroData.DefaultName + "의 의지가 시험받고 있습니다...";
+    }
+    public void OpenMeltDown()
+    {
+        ResetCombatPanel();
+        _heroTemptationResult.gameObject.SetActive(true);
+        _combatFrontPanel.SetActive(true);
+        _combatBackPanel.SetActive(true);
+        _combatBorder.SetActive(true);
+        _combatTriangle.SetActive(true);
+        _meltDownBG.SetActive(true);
+        _heroTemptationResult.text = "붕괴";
+    }
+    // 영웅의 기상 연출
+    public void OpenResolute()
+    {
+
+    }
+
+    public void TogglePrefabRoot(bool toggle)
+    {
+        _turnOrderRoot.SetActive(toggle);
+        _entityStateRoot.SetActive(toggle);
+        _iconRoot.SetActive(toggle);
+        _textRoot.SetActive(toggle);
+    }
+    
 }

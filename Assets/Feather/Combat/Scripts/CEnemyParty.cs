@@ -1,7 +1,4 @@
-
 using System.Collections.Generic;
-using System.Drawing;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CEnemyParty : MonoBehaviour
@@ -18,6 +15,7 @@ public class CEnemyParty : MonoBehaviour
 
     #region Field
     private List<CEnemy> _enemyList = new List<CEnemy>();
+
     private static bool _isReady = false;
     #endregion
 

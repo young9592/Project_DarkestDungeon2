@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 22f68d69468b28d45b4b57818e87424c, type: 2}
+  - {fileID: 11400000, guid: 35a6fb4b2dd245199678347e9aad7684, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_noxious_blast
   _endState: Base Layer.OriginalRecover_PlagueDoctor_noxious_blast
