@@ -177,4 +177,33 @@ public class CTokenManager
         }
         return stolenTypes;
     }
+
+    /// <summary>
+    /// 보유중인 모든 토큰(Combo 제외) 소모하고, 소모된 총 토큰 개수 반환
+    /// </summary>
+    public int ConsumeAllTokensCount()
+    {
+        int totalConsumed = 0;
+        List<EEffectType> keys = new List<EEffectType>(_tokenStacks.Keys);
+        
+        for (int i = 0; i < keys.Count; i++)
+        {
+            EEffectType type = keys[i];
+            if (type == EEffectType.Combo) continue;
+
+            int count = _tokenStacks[type];
+            if (count > 0)
+            {
+                totalConsumed += count;
+                _tokenStacks.Remove(type);
+            }
+        }
+
+        if (totalConsumed > 0)
+        {
+            CPrint.Log($"[Token] 보유 토큰 총 {totalConsumed}개를 소모했습니다.");
+        }
+
+        return totalConsumed;
+    }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_EmboldeningVapours
+  m_EditorClassIdentifier: 
+  _skillName: "\uACE0\uBB34\uC758 \uC99D\uAE30"
+  _skillIcon: {fileID: 0}
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: 24eb3deb44d16c34989ee10164cf2219, type: 2}
+  - {fileID: 11400000, guid: e21826cb18f500a418742090bf99f3c6, type: 2}
