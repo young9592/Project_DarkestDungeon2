@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 14
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 3579f3f189b9b4d47b301fe8f6fc7198, type: 2}
+  - {fileID: 11400000, guid: 916116a4e6784d1190f57faa3bdb1bd2, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_thrown_dagger
   _endState: Base Layer.OriginalRecover_GraveRobber_thrown_dagger

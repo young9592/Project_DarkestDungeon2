@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 6
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 4c851991c5257114a9ed0b042147ca36, type: 2}
+  - {fileID: 11400000, guid: 79e1b388490e4f5b8b5d7753003d2962, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_double_tap
   _endState: Base Layer.OriginalRecover_Highwayman_double_tap

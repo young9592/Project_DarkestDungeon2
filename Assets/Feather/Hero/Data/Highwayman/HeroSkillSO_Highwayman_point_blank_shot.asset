@@ -19,7 +19,7 @@ MonoBehaviour:
   _rankMovement: 1
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 2d867b567533c8942978b8c63ca04c0f, type: 2}
+  - {fileID: 11400000, guid: 90fa0f5c52134be8968dcbd0d200c5fc, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_point_blank_shot
   _endState: Base Layer.OriginalRecover_Highwayman_point_blank_shot

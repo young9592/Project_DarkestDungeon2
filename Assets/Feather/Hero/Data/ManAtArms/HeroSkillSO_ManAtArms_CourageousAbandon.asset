@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 1
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 52e87ebe1387762419e02578df6bfe95, type: 2}
+  - {fileID: 11400000, guid: 0e654f1227b44e96a72728f1cdf915d4, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_CourageousAbandon
   _endState: Base Layer.OriginalRecover_ManAtArms_CourageousAbandon
