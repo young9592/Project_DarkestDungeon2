@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 7
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 1ff4dc20de60aef478a1d3e638332868, type: 2}
+  - {fileID: 11400000, guid: 3640325bc5504724afc0c42a62c3ec97, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_glint_in_the_dark
   _endState: Base Layer.OriginalRecover_GraveRobber_glint_in_the_dark

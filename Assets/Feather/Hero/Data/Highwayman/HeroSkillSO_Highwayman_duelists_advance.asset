@@ -19,7 +19,7 @@ MonoBehaviour:
   _moveForwardOneRank: 1
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 71a143cb121432c49819066a37b23b34, type: 2}
+  - {fileID: 11400000, guid: c096a782e8aa4b41838971c00046033d, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_duelists_advance
   _endState: Base Layer.OriginalRecover_Highwayman_duelists_advance

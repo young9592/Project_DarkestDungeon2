@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: ae977be67ec39214990fdda76a953b5a, type: 2}
+  - {fileID: 11400000, guid: ef735276807e42e89b95a7aec07579e4, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_wicked_slice
   _endState: Base Layer.OriginalRecover_Highwayman_wicked_slice

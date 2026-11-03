@@ -436,6 +436,8 @@ public class CPlayer : CEntity
         _currentStress = state.Stress;
         _isDeathsDoor = !_isDead && _currentHp == 0;
         TokenManager.ClearAllTokens();
+        CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
+        if (criticalState != null) criticalState.ClearModifiers();
         _activeStatusEffects.Clear();
         if (_isDeathsDoor) TokenManager.AddToken(EEffectType.Weak, 1);
         if (previousHealth != _currentHp) OnHealthChanged?.Invoke(this, previousHealth, _currentHp);
@@ -835,6 +837,8 @@ public class CPlayer : CEntity
 
         _isStartingTurn = true;
         _skillUses.BeginTurn();
+        CHeroCriticalState critical = GetComponent<CHeroCriticalState>();
+        if (critical != null) critical.BeginTurn();
         try
         {
             _isTurnSkipped = false;
@@ -864,13 +868,13 @@ public class CPlayer : CEntity
                     }
                 }
 
-                int totlaTickDamage = bleedDamage + blightDamage + burnDamage;
-                if (totlaTickDamage > 0)
+                int totalTickDamage = bleedDamage + blightDamage + burnDamage;
+                if (totalTickDamage > 0)
                 {
                     CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
-                        $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totlaTickDamage}] 데미지");
+                        $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totalTickDamage}] 데미지");
 
-                    ApplyDamage(totlaTickDamage, false);
+                    ApplyDamage(totalTickDamage, false);
 
                     if (_isDead) return;
                 }
@@ -960,6 +964,8 @@ public class CPlayer : CEntity
         _currentHp = 0;
 
         TokenManager.ClearAllTokens();
+        CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
+        if (criticalState != null) criticalState.ClearModifiers();
         _activeStatusEffects.Clear();
         CancelSkillSelection();
         CancelAction();
@@ -1049,6 +1055,8 @@ public class CPlayer : CEntity
         _currentStress = 0;
 
         TokenManager.ClearAllTokens();
+        CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
+        if (criticalState != null) criticalState.ClearModifiers();
         _skillUses.Clear();
         _activeStatusEffects.Clear();
         CancelSkillSelection();
