@@ -21,3 +21,4 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 1fc2313378f4bb147a81d0a17a109dc4, type: 2}
   - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
+  - {fileID: 11400000, guid: bf7d725b37b67d04ca304639f6315278, type: 2}

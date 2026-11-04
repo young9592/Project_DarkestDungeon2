@@ -17,7 +17,7 @@ MonoBehaviour:
   _effectTarget: 1
   _damage: 1
   _maxDamage: 0
-  _duration: 3
+  _duration: 0
   _baseChance: 100
   _tokenType: 12
   _condition: 0

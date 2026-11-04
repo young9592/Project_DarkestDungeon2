@@ -40,6 +40,7 @@ public abstract class CEntity : MonoBehaviour
     public CTokenManager TokenManager { get; private set ; }
     public virtual void ResetEntityState() { }
     public virtual int DetonateAllDots() { return 0; }
+    public CEntity GuardProtector { get; private set; }
 
     public bool IsDeathsDoor 
     { 
@@ -185,4 +186,9 @@ public abstract class CEntity : MonoBehaviour
     public abstract void ApplyStatusEffect(CEffect statusEffect);
 
     // TODO : 토큰 흭득 / 차감 등도 필요시 여기에 분리해서 추가 할 수도?
+
+    public void SetGuardProtector(CEntity protector)
+    {
+        GuardProtector = protector;
+    }
 }

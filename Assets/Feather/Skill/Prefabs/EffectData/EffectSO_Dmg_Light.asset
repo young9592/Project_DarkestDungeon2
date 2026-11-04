@@ -15,8 +15,8 @@ MonoBehaviour:
   _name: "\uACAC\uC81C \uD0C0\uACA9"
   _effectType: 1
   _effectTarget: 0
-  _damage: 1
-  _maxDamage: 2
+  _damage: 2
+  _maxDamage: 4
   _duration: 0
   _baseChance: 100
   _tokenType: 0
