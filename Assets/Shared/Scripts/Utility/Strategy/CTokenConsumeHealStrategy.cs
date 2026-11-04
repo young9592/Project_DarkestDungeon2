@@ -10,6 +10,12 @@ public class CTokenConsumeHealStrategy : CEffectStrategy
     {
         if (context == null || context.Target == null || context.Target.TokenManager == null) return;
 
+        if (!context.IsHit)
+        {
+            CPrint.Log($"[{effectData.Name}] : 명중 실패(IsHit == false) 상태이므로 토큰 소모 및 회복 스킵합니다.");
+            return;
+        }
+
         int consumedCount = context.Target.TokenManager.ConsumeAllTokensCount();
 
         if (consumedCount <= 0)
