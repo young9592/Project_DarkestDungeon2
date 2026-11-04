@@ -17,6 +17,9 @@ public class CCombatFloatingMessageManager : MonoBehaviour
     [SerializeField] private GameObject _deathStampPrefab;
     [SerializeField] private GameObject _stressPrefab;
     [SerializeField] private GameObject _stressHealPrefab;
+
+    [Header("Turn Prefab")]
+    [SerializeField] private GameObject _turnGuideRoot;
     [SerializeField] private GameObject _targetPrefab;
     #endregion
 
@@ -48,7 +51,7 @@ public class CCombatFloatingMessageManager : MonoBehaviour
             case CCombatFloatingIcon.IconType.None:
                 break;
             case CCombatFloatingIcon.IconType.DeathStemp:
-                iconPrefab = _deathStampPrefab; 
+                iconPrefab = _deathStampPrefab;
                 break;
             case CCombatFloatingIcon.IconType.Stress:
                 iconPrefab = _stressPrefab;
@@ -64,7 +67,7 @@ public class CCombatFloatingMessageManager : MonoBehaviour
         }
 
 
-        GameObject showPrefab = Instantiate(iconPrefab, _iconPrefabRoot.transform);
+        GameObject showPrefab = Instantiate(iconPrefab, iconType == CCombatFloatingIcon.IconType.Turn ? _turnGuideRoot.transform : _iconPrefabRoot.transform);
         CCombatFloatingIcon icon = showPrefab.GetComponent<CCombatFloatingIcon>();
 
         if (delay == 0f)

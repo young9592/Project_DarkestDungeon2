@@ -16,14 +16,16 @@ public class CCombatUI : MonoBehaviour
 
     [Header("Combat Panel")]
     [SerializeField] private GameObject _combatFrontPanel;
-    [SerializeField] private GameObject _combatBackPanel;
+    [SerializeField] private GameObject _meltdownPanel;
+    [SerializeField] private GameObject _meltDownFront;
+    [SerializeField] private GameObject _resolutePanel;
+    [SerializeField] private GameObject _resoluteFront;
     [SerializeField] private GameObject _combatBorder;
     [SerializeField] private GameObject _combatTriangle;
     [SerializeField] private GameObject _leftHit;
     [SerializeField] private GameObject _rightHit;
     [SerializeField] private TextMeshProUGUI _heroTemptation;
     [SerializeField] private TextMeshProUGUI _heroTemptationResult;
-    [SerializeField] private GameObject _meltDownBG;
     // 현재 동작중인 스킬 이름
     [SerializeField] private TextMeshProUGUI _currentSkillName;
 
@@ -96,6 +98,9 @@ public class CCombatUI : MonoBehaviour
     [Header("Icon Prefab Root")]
     [SerializeField] private GameObject _iconRoot;
 
+    [Header("TurnGuide Root")]
+    [SerializeField] private GameObject _turnGuideRoot;
+
     [Header("Text Prefab Root")]
     [SerializeField] private GameObject _textRoot;
     #endregion
@@ -111,6 +116,7 @@ public class CCombatUI : MonoBehaviour
 
     #region Property
     public CEntity TurnEntity => _combatManager.MyTurn;
+    
     public bool Pass
     {
         get { return _pass; }
@@ -126,9 +132,11 @@ public class CCombatUI : MonoBehaviour
         _checkList.Add(_combatManager);
 
         _checkList.Add(_combatFrontPanel);
-        _checkList.Add(_combatBackPanel);
+        _checkList.Add(_resolutePanel);
+        _checkList.Add(_meltdownPanel);
         _checkList.Add(_combatTriangle);
-        _checkList.Add(_meltDownBG);
+        _checkList.Add(_meltDownFront);
+        _checkList.Add(_resoluteFront);
         _checkList.Add(_leftHit);
         _checkList.Add(_rightHit);
         _checkList.Add(_heroTemptation);
@@ -206,6 +214,7 @@ public class CCombatUI : MonoBehaviour
         _checkList.Add(_turnOrderPrefab);
 
         _checkList.Add(_iconRoot);
+        _checkList.Add(_turnGuideRoot);
         _checkList.Add(_textRoot);
 
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
@@ -552,6 +561,7 @@ public class CCombatUI : MonoBehaviour
 
         _currentSkillName.text = skillDataSO.SkillName;
         OpenCombatPanel();
+        _combatBorder.SetActive(true);
         _combatTriangle.SetActive(true);
         _currentSkillName.gameObject.SetActive(true);
     }
@@ -564,12 +574,12 @@ public class CCombatUI : MonoBehaviour
     public void CloseCombatPanel()
     {
         _combatFrontPanel.SetActive(false);
-        _combatBackPanel.SetActive(false);
     }
     public void ResetCombatPanel()
     {
         _combatFrontPanel.SetActive(false);
-        _combatBackPanel.SetActive(false);
+        _meltdownPanel.SetActive(false);
+        _resolutePanel.SetActive(false);
         _combatBorder.SetActive(false);
         _combatTriangle.SetActive(false);
         _leftHit.SetActive(false);
@@ -577,21 +587,24 @@ public class CCombatUI : MonoBehaviour
         _heroTemptation.gameObject.SetActive(false);
         _heroTemptationResult.gameObject.SetActive(false);
         _currentSkillName.gameObject.SetActive(false);
-        _meltDownBG.SetActive(false);
+        _meltDownFront.SetActive(false);
+        _resoluteFront.SetActive(false);
     }
     public void AttackLeft()
-    {
-        _rightHit.SetActive(true);
-        _leftHit.SetActive(false);
-    }
-    public void AttackRight()
     {
         _rightHit.SetActive(false);
         _leftHit.SetActive(true);
     }
+    public void AttackRight()
+    {
+        _rightHit.SetActive(true);
+        _leftHit.SetActive(false);
+    }
     // 누군가의 의지가 시험받고 있습니다.
     public void OpenTemptation(CPlayer hero)
     {
+        ResetCombatPanel();
+
         _combatFrontPanel.SetActive(true);
         _heroTemptation.gameObject.SetActive(true);
 
@@ -600,18 +613,29 @@ public class CCombatUI : MonoBehaviour
     public void OpenMeltDown()
     {
         ResetCombatPanel();
+        
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
-        _combatBackPanel.SetActive(true);
+        _meltdownPanel.SetActive(true);
         _combatBorder.SetActive(true);
         _combatTriangle.SetActive(true);
-        _meltDownBG.SetActive(true);
+        _meltDownFront.SetActive(true);
         _heroTemptationResult.text = "붕괴";
+        _heroTemptationResult.color = new Color32(13, 179, 218, 255);
     }
     // 영웅의 기상 연출
     public void OpenResolute()
     {
-
+        ResetCombatPanel();
+        
+        _heroTemptationResult.gameObject.SetActive(true);
+        _combatFrontPanel.SetActive(true);
+        _resolutePanel.SetActive(true);
+        _combatBorder.SetActive(true);
+        _combatTriangle.SetActive(true);
+        _resoluteFront.SetActive(true);
+        _heroTemptationResult.text = "결의";
+        _heroTemptationResult.color = new Color32(252, 219, 248, 255);
     }
 
     public void TogglePrefabRoot(bool toggle)
@@ -620,6 +644,14 @@ public class CCombatUI : MonoBehaviour
         _entityStateRoot.SetActive(toggle);
         _iconRoot.SetActive(toggle);
         _textRoot.SetActive(toggle);
+        _turnGuideRoot.SetActive(toggle);
     }
-    
+    public void ToggleTurnGuideRoot(bool toggle)
+    {
+        _turnGuideRoot.SetActive(toggle);
+    }
+    public void ToggleEntityStateRoot(bool toggle)
+    {
+        _entityStateRoot.SetActive(toggle);
+    }
 }
