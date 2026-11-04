@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_PlagueDoctor_incisionMastered
+  m_EditorClassIdentifier: 
+  _skillName: Incision+
+  _skillIcon: {fileID: 21300000, guid: fd2979c17340b1447a7f4c15415d3e89, type: 3}
+  _useableRank: 7
+  _targetableRank: 3
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: efba96012f824db9a9423ae35f9d5e49, type: 2}
+  - {fileID: 11400000, guid: 614fcdd15b254aaa924ce79ffa8bef15, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_incision
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_incision
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_knifeslash
+  _selectionHoldState: Base Layer.SourceReady_knifeslash
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_incision
+  _feedback: {fileID: 11400000, guid: 1d28a5469177c964484454010f3a4098, type: 2}
+  _baseSkill: {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}

@@ -160,6 +160,7 @@ public class CHeroPartyPresets : MonoBehaviour
 
     private string FindSkillId(CSkillDataSO skill)
     {
+        skill = CHeroSkillSO.GetBaseSkill(skill);
         if (_skillBindings == null) return null;
         for (int i = 0; i < _skillBindings.Length; i++)
         {

@@ -22056,6 +22056,7 @@ MonoBehaviour:
   _preparation: {fileID: 2119557194}
   _presets: {fileID: 2119557196}
   _enemyPreview: {fileID: 2119557195}
+  _masteryCatalog: {fileID: 11400000, guid: 291a46d1be474dc99c96191d197eef76, type: 2}
 --- !u!4 &2119557193
 Transform:
   m_ObjectHideFlags: 0
