@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CBasicCombatManager : MonoBehaviour
@@ -501,7 +502,6 @@ public class CBasicCombatManager : MonoBehaviour
 
         MyTurn.OnActionRequested += OnAction;
 
-
         // Could : 턴 시작 시 추가 행동 악세사리 확인
 
         // 액션할때까지 기다리기  
@@ -509,10 +509,11 @@ public class CBasicCombatManager : MonoBehaviour
         {
             if (_combatUI.Pass)
             {
-                CPrint.Log("Pass 감지!");
                 doAction = true;
+                _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.None, "턴넘김");
                 break;
             }
+
 
             if (isHero)
             {
@@ -526,15 +527,28 @@ public class CBasicCombatManager : MonoBehaviour
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
                     _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                     yield return _combatCoroutine;
-                    
+
                     _combatCoroutine = null;
                     _doingAction = false;
-                    _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.None, !_combatUI.Pass ? "행동" : "턴넘김");
                 }
             }
             else
             {
-                doAction = true;
+                CEnemyAI actor = MyTurn.GetComponent<CEnemyAI>();
+                actor.TryRequestPlannedAction();
+                doAction = _doingAction;
+                if (_doingAction)
+                {
+                    MyTurn.TryStartRequestedAction();
+                    _combatUI.UseSkill(_currentActionSkillData);
+                    CEntity target = ((CEnemy)MyTurn).ActionTarget;
+                    List<CEntity> targets = new List<CEntity> { target };
+                    _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
+                    yield return _combatCoroutine;
+
+                    _combatCoroutine = null;
+                    _doingAction = false;
+                }
             }
             yield return null;
         }
@@ -581,6 +595,7 @@ public class CBasicCombatManager : MonoBehaviour
         _combatUI.Pass = false;
         _coroutine = null;
     }
+    // 현재 사용할 스킬 데이터
     private void OnAction(CEntity actor, CEntity target, CSkillDataSO skill)
     {
         CPrint.Log(actor.name + " -> " + target.name + " / " + skill.SkillName);
@@ -607,8 +622,18 @@ public class CBasicCombatManager : MonoBehaviour
         // 적의 턴인 경우
         else
         {
-            _combatUI.OpenEnemyInfomation((CEnemy)MyTurn, false);
-            MyTurn.TryBeginAction();
+            CEnemy enemy = MyTurn as CEnemy;
+            _combatUI.OpenEnemyInfomation(enemy, false);
+
+            CEnemyAI actor = enemy.GetComponent<CEnemyAI>();
+
+            if (actor == null)
+            {
+                 actor = enemy.gameObject.AddComponent<CEnemyAI>();
+            }
+
+            actor.TryPlanAction(_heroParty.HeroList, _enemyParty.EnemyList);
+            enemy.TryBeginAction();
         }
     }
     // 추가 행동 체크
