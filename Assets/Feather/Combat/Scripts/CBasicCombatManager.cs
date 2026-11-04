@@ -323,7 +323,7 @@ public class CBasicCombatManager : MonoBehaviour
         {
             return EntityState.Daze;
         }
-        
+
         return EntityState.Success;
     }
     private void DotProcess()
@@ -517,10 +517,10 @@ public class CBasicCombatManager : MonoBehaviour
                 {
                     _combatUI.CloseHeroInfomation();
                     MyTurn.TryStartRequestedAction();
+                    // 전투 화면연출
                     _combatUI.UseSkill(_currentActionSkillData);
-
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
-                    _combatCameraManager.CombatZoomIn(MyTurn, targets, _currentActionSkillData);
+                    _combatCameraManager.CombatAction(MyTurn, targets);
                     _doingAction = false;
                 }
             }
@@ -541,6 +541,8 @@ public class CBasicCombatManager : MonoBehaviour
         yield return new WaitForSeconds(_actionDelay);
 
         _combatUI.CloseCombatPanel();
+        _combatUI.CloseHeroInfomation();
+        _combatUI.CloseEnemyInfomation();
 
         bool _isAfterDead = MyTurn.IsDead;
 
@@ -553,6 +555,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         CheckEntitiesDeath();
+
         _combatUI.Pass = false;
         _coroutine = null;
     }
