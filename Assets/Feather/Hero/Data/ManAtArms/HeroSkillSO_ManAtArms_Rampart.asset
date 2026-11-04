@@ -19,7 +19,7 @@ MonoBehaviour:
   _rankMovement: -1
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 6de2aa9d7f0910342a26326079451e9a, type: 2}
+  - {fileID: 11400000, guid: 0fa2feedc9c14d5ca73009b8b125b4e0, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_Rampart
   _endState: Base Layer.OriginalRecover_ManAtArms_Rampart

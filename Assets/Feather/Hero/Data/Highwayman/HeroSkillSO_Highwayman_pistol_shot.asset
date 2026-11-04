@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 14
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 32d7afff7db261a4dabd70f04632f2ea, type: 2}
+  - {fileID: 11400000, guid: e12cabc2ac1844a49948ed357a86870c, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_pistol_shot
   _endState: Base Layer.OriginalRecover_Highwayman_pistol_shot

@@ -18,7 +18,7 @@ MonoBehaviour:
   _targetableRank: 3
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 702f0a63389a6bc4a8c4ecd72412f7a5, type: 2}
+  - {fileID: 11400000, guid: 79d8a10f786d411f9258b21cc60cd9dc, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_incision
   _endState: Base Layer.OriginalRecover_PlagueDoctor_incision

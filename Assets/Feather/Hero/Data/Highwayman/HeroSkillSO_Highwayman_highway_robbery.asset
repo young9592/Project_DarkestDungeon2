@@ -17,7 +17,9 @@ MonoBehaviour:
   _useableRank: 14
   _targetableRank: 7
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 31208d68842142df8e5b3f472d21ab41, type: 2}
+  - {fileID: 11400000, guid: 9f198b4a9d424b3090964a37ccffcef0, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_highway_robbery
   _endState: Base Layer.OriginalRecover_Highwayman_highway_robbery

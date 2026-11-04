@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
-  m_Name: SkillSO_PlagueGrenade
+  m_Name: SkillSO_CauseOfDeath
   m_EditorClassIdentifier: 
-  _skillName: "\uC5ED\uBCD1 \uC218\uB958\uD0C4"
+  _skillName: "\uC6D0\uC778 \uADDC\uBA85"
   _skillIcon: {fileID: 0}
-  _useableRank: 0
-  _targetableRank: 0
-  _cooldown: 0
+  _useableRank: 14
+  _targetableRank: 7
+  _isGroupTarget: 0
+  _cooldown: 2
   _effectList:
-  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
-  - {fileID: 11400000, guid: 6666c9ff0bb2e024dbfbb0c685f4f0e1, type: 2}
-  - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
+  - {fileID: 11400000, guid: cd9de734b6f65ed4fba86ca58fe4aee0, type: 2}

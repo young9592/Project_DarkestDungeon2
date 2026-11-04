@@ -4,52 +4,38 @@ using UnityEngine;
 
 public class CTheInnUINavigationBar : MonoBehaviour
 {
-    #region Inspector
-    [SerializeField] private CTheInnUIBiome _biome;
+    public enum EInnUI
+    {
+        None,
+        Biome,
+        Coach,
+        Upgrade,
+        Store,
+        Candle,
+        Journal
+    }
 
+    #region Inspector
     [SerializeField] private TMP_Text _navigationTitleText;
+
+    [SerializeField] private GameObject _charactorStateUI;
+    [SerializeField] private GameObject _selectRestText;
     [SerializeField] private GameObject _restText;
     #endregion
 
+    private GameObject _currentOpenObject;
+
+    private EInnUI _currentOpenUI = EInnUI.None;
+
     private string _originalTitleText = "Torch and Crown";
+
     private bool _isBiomeSelected = false;
     private bool _isUIOpen;
 
-    public bool IsBiomeSelected => _isBiomeSelected;
-    public bool ISUIOpen => _isUIOpen;
-
     private void Update()
     {
-        _restText.SetActive(_isBiomeSelected && !_isUIOpen);
-    }
-    public void OpenJournalIcon()
-    {
-
-    }
-
-    public void OpenCandleIcon()
-    {
-
-    }
-
-    public void OpenStoreIcon()
-    {
-
-    }
-
-    public void OpenUpgradeIcon()
-    {
-
-    }
-
-    public void OpenCoachIcon()
-    {
-
-    }
-
-    public void OpenBiomeIcon()
-    {
-        _biome.BiomeUIOpen();
+        _restText.SetActive(!_isBiomeSelected && !_isUIOpen);
+        _selectRestText.SetActive(_isBiomeSelected && !_isUIOpen);
     }
 
     public void ClickRestText()
@@ -75,23 +61,35 @@ public class CTheInnUINavigationBar : MonoBehaviour
 
     public void ToggleUI(GameObject targetUI, string titleText)
     {
-        targetUI.SetActive(!targetUI.activeSelf);
-
-        if (targetUI.activeSelf)
+        if (_currentOpenObject == targetUI)
         {
-            SetUIOpen(true);
-            UpdateNavigationTitleText(titleText);
-        }
-        else
-        {
+            _currentOpenObject.SetActive(false);
+            _currentOpenObject = null;
             SetUIOpen(false);
+            _charactorStateUI.SetActive(true);
             RestoreNavigationTitleText();
+            return;
         }
+
+        if (_currentOpenObject != null)
+        {
+            _currentOpenObject.SetActive(false);
+        }
+
+        targetUI.SetActive(true);
+        _currentOpenObject = targetUI;
+
+        SetUIOpen(true);
+        _charactorStateUI.SetActive(false);
+        UpdateNavigationTitleText(titleText);
+
     }
+
     public void UpdateNavigationTitleText(string text)
     {
         _navigationTitleText.text = text;
     }
+
     public void RestoreNavigationTitleText()
     {
         UpdateNavigationTitleText(_originalTitleText);
