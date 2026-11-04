@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CCombatCameraManager : MonoBehaviour
@@ -33,6 +32,9 @@ public class CCombatCameraManager : MonoBehaviour
     [SerializeField] private CCombatUI _combatUI;
     [SerializeField] private Camera _camera;
 
+    [Header("Option")]
+    [SerializeField] private string _highlightLayerName = "Highlight";
+    [SerializeField] private string _defaultLayerName = "Default";
     #endregion
 
     #region Field
@@ -48,9 +50,25 @@ public class CCombatCameraManager : MonoBehaviour
 
     private void Awake()
     {
-        if (_camera == null)
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _camera))
         {
-            _camera = Camera.main;
+            enabled = false;
+            return;
+        }
+
+        if(CPrint.NullUnityObjectCheck(gameObject.name, _combatUI))
+        {
+            enabled = false;
+            return;
+        }
+
+        int layer = LayerMask.NameToLayer(_highlightLayerName);
+        
+        if(layer == -1)
+        {
+            CPrint.Error($"{gameObject.name} 강조 레이어 설정 오류.");
+            enabled = false;
+            return;
         }
 
         _cameraTr = _camera.transform;
@@ -376,9 +394,11 @@ public class CCombatCameraManager : MonoBehaviour
         // TODO : 확률에 따라 영웅의 기상 혹은 붕괴 연출 나눠야합니다.
         _combatUI.OpenMeltDown();
 
-        // 붕괴 연출
+        // 붕괴 연출 준비
         _camera.orthographicSize = 1f;
 
+        int layer = LayerMask.NameToLayer(_highlightLayerName);
+        HighlightCharacter(hero.gameObject, layer);
 
         // 영웅 초기값 저장
         Vector3 initPos = hero.gameObject.transform.position;
@@ -406,9 +426,8 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
 
-        // 임시 설정
-        hero.ModifyStress(10);
-
+        // 붕괴 연출 발생 시키기
+        
 
 
         delay = 2f;
@@ -465,8 +484,21 @@ public class CCombatCameraManager : MonoBehaviour
         heroTr.rotation = initQuat;
         heroTr.localScale = initScale;
         _camera.orthographicSize = 5f;
+        
+        layer = LayerMask.NameToLayer(_defaultLayerName);
+        HighlightCharacter(hero.gameObject, layer);
 
         _meltdownCoroutineCompleted = true;
         _coroutine = null;
+    }
+
+    private void HighlightCharacter(GameObject target, int layer)
+    {
+        target.layer = layer;
+
+        for(int i = 0; i < target.transform.childCount; i++)
+        {
+            HighlightCharacter(target.transform.GetChild(i).gameObject, layer);
+        }
     }
 }

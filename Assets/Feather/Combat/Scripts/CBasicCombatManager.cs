@@ -76,7 +76,6 @@ public class CBasicCombatManager : MonoBehaviour
     private TurnState _currentTurnState = TurnState.Normal;
     private bool _doingAction = false;
     private CSkillDataSO _currentActionSkillData;
-    private bool _firstMeltdownTest = false;
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -297,15 +296,12 @@ public class CBasicCombatManager : MonoBehaviour
             return EntityState.Dead;
         }
 
-        // TODO : 스트레스 받았을 시 연출 추가
-        // TODO : 현재 턴 엔티티의 스트레스 상태 체크 후 넘겨주기 
-        if (MyTurn is CPlayer hero && !_firstMeltdownTest)
+        if (MyTurn is CPlayer hero)
         {
-            bool isMeltdown = true;
+            bool isMeltdown = hero.CurrentStress >= 10;
 
             if (isMeltdown)
             {
-                _firstMeltdownTest = true;
                 return EntityState.MeltDown;
             }
         }
