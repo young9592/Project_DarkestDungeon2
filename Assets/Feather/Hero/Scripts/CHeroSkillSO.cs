@@ -141,6 +141,17 @@ public class CHeroSkillSO : CSkillDataSO
             return false;
         }
 
+        if (EffectList != null)
+        {
+            for (int i = 0; i < EffectList.Count; i++)
+            {
+                CEffectSO effect = EffectList[i];
+                if (effect == null || !(effect.Strategy is CHeroScienceHealStrategy)) continue;
+                if (!(target is CPlayer scienceTarget) || scienceTarget.HeroData == null
+                    || (long)scienceTarget.CurrentHp * 2 >= scienceTarget.HeroData.MaxHealth) return false;
+            }
+        }
+
         CEnemy enemy = target as CEnemy;
         if (enemy != null && enemy.CurrentHp <= 0)
         {

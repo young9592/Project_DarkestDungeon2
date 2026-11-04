@@ -24,6 +24,8 @@ public class CHeroPartyTest : MonoBehaviour
     [SerializeField] private CHeroPreparationPanel _preparation;
     [SerializeField] private CHeroPartyPresets _presets;
     [SerializeField] private CPartyEnemyPreview _enemyPreview;
+    [Header("Mastery")]
+    [SerializeField] private CHeroMasteryCatalogSO _masteryCatalog;
 
     private readonly List<CPlayer> _heroes = new List<CPlayer>();
     private readonly List<ERank> _displayedRanks = new List<ERank>();
@@ -147,6 +149,10 @@ public class CHeroPartyTest : MonoBehaviour
         {
             gameObject.AddComponent<CHeroRunStateTest>();
         }
+
+        CHeroMasteryTest mastery = GetComponent<CHeroMasteryTest>();
+        if (mastery == null) mastery = gameObject.AddComponent<CHeroMasteryTest>();
+        mastery.Initialize(_masteryCatalog, _input);
 
         if (_camera == null)
         {
@@ -317,6 +323,14 @@ public class CHeroPartyTest : MonoBehaviour
         }
 
         if (runState != null && !runState.TryRestoreBattle(nextHeroes, out _))
+        {
+            nextRoot.SetActive(false);
+            Destroy(nextRoot);
+            return false;
+        }
+
+        CHeroMasteryTest mastery = GetComponent<CHeroMasteryTest>();
+        if (mastery != null && !mastery.TryPrepareHeroes(nextHeroes, runState != null ? runState.RunId : null))
         {
             nextRoot.SetActive(false);
             Destroy(nextRoot);

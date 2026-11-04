@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0579903b0941428d8b277abf6dbf2c, type: 3}
+  m_Name: HeroMasteryCatalogSO_GraveRobber
+  m_EditorClassIdentifier: 
+  _skills:
+  - _id: gr.pick_to_the_face
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: b643f1de7f9cfe944871afeb5ec44d86, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 458c992fe31d401bbcac095c202fbfa6, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 4-7; CRIT 15%"
+    _masteredReference: "DMG 5-9; CRIT 20%"
+    _remainingEffects: "Block piercing, Combo crit, critical Block removal"
+  - _id: gr.thrown_dagger
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: a808e3b236e695f41a4a16f32e606218, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3661fadc4181469a9ab2269ebb8b1730, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 3-6; CRIT 15%"
+    _masteredReference: "DMG 4-8; CRIT 30%"
+    _remainingEffects: "Guard/Dodge piercing, Combo crit"
+  - _id: gr.flashing_daggers
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 6a38b5c54da4a094abf966160a111573, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 7263c9476274442f949d619de4bc19df, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 3-5; CRIT 15%"
+    _masteredReference: "DMG 4-6; CRIT 20%"
+    _remainingEffects: "Stealth Dodge piercing"
+  - _id: gr.poison_dart
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 2157bec6dae0d1149b5a5cbb9e0a9f31, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cc8561b9fb6e43838b19434b3023fd27, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 2-4; CRIT 5%"
+    _masteredReference: "DMG 2-5; CRIT 10%"
+    _remainingEffects: "Combo crit, critical DOT duration"
+  - _id: gr.artemisia
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 0e912bca270b98646aeba9a3e4529409, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f9fed01ed667467d960dfce3eb8de211, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Below 33%: heal 33%; Dodge 3, Speed"
+    _masteredReference: "Below 33%: heal 33%; Dodge+ 3, Speed"
+    _remainingEffects: "use limit, three-token cap; base Dodge evasion is missing in shared damage"
+  - _id: gr.dead_of_night
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 2cef150618dbd024298265fc65c52af6, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: ffaf481d095c4fb8ac9914af508f7555, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Clear corpse; heal 33%"
+    _masteredReference: "Clear corpse; heal 50%; Stealth 2; recover 1 stress"
+    _remainingEffects: ""
+  - _id: gr.glint_in_the_dark
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: fa04fd01907f2934bb5de0f93497b447, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 606a078c813a49b99f11dabbbb33edcb, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 4-7; CRIT 5%"
+    _masteredReference: "DMG 6-9; CRIT 10%"
+    _remainingEffects: "Stealth piercing/removal, Execution"
+  - _id: gr.lunge
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: b7db3cd899fc5cb4aa31893126fdc649, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 94e5e34d2b4b446d9300fde9c8f44da1, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 5-8; CRIT 20%"
+    _masteredReference: "DMG 7-11; CRIT 30%"
+    _remainingEffects: "movement, conditional piercing, critical knockback"
+  - _id: gr.pirouette
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 7e14355942de5694ca9377ae89055bdb, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e94fbf30ba7c4466abd8cba519444d10, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 4-7; CRIT 10%"
+    _masteredReference: "DMG 6-9; CRIT 15%"
+    _remainingEffects: "movement, Stealth-conditioned Daze/Weak, cooldown"
+  - _id: gr.repartee
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 9f4e744f78fd0a84e81b4d9baa8ea205, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: d3f84164001347b19d80ec2234f47825, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Dodge 3, Taunt 2"
+    _masteredReference: "Dodge+ 3, Taunt 2; conditional on-miss Dodge"
+    _remainingEffects: "on-miss Dodge buff, Stealth removal, cooldown, three-token cap; base Dodge evasion is missing in shared damage"
+  - _id: gr.shadow_fade
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 5eaf1ab69225dbf4d8bac9a3c58198a0, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 512374d096544f8298eaf3e54a4bd7d7, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Back 2; Stealth 2"
+    _masteredReference: "Back 2; Stealth 2, Strength 1"
+    _remainingEffects: "movement, cooldown"

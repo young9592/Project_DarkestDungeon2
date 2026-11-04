@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_ManAtArms_BellowMastered
+  m_EditorClassIdentifier: 
+  _skillName: Bellow+
+  _skillIcon: {fileID: 21300000, guid: 5b62467fbd9f51249aab73bbb18a5259, type: 3}
+  _useableRank: -1
+  _targetableRank: -1
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: a645e1595812443c9b96a4bb333c1d29, type: 2}
+  - {fileID: 11400000, guid: 8145697e5b1b4d1b99750f86de9e6981, type: 2}
+  _target: 3
+  _startState: Base Layer.OriginalAntic_ManAtArms_Bellow
+  _endState: Base Layer.OriginalRecover_ManAtArms_Bellow
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_yell
+  _selectionHoldState: Base Layer.SourceReady_yell
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_Bellow
+  _feedback: {fileID: 11400000, guid: 0c3994292cf90d14da377d450e5ec284, type: 2}
+  _baseSkill: {fileID: 11400000, guid: a7ded087f0764e44f8a5db11e69b1e9b, type: 2}

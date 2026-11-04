@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_flashing_daggersMastered
+  m_EditorClassIdentifier: 
+  _skillName: Flashing Daggers+
+  _skillIcon: {fileID: 21300000, guid: d16a29a4c90243449971fb2b00e63627, type: 3}
+  _useableRank: 14
+  _targetableRank: 6
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 89f27ff0af3e40cab16de8cc0422c71b, type: 2}
+  _target: 3
+  _startState: Base Layer.OriginalAntic_GraveRobber_flashing_daggers
+  _endState: Base Layer.OriginalRecover_GraveRobber_flashing_daggers
+  _presentationNote: 
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_flashing_daggers
+  _selectionHoldState: Base Layer.SourceReady_flashing_daggers
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_flashing_daggers
+  _feedback: {fileID: 11400000, guid: 2cca6687f0eb90a4f81fba84348d5eb1, type: 2}
+  _baseSkill: {fileID: 11400000, guid: 6a38b5c54da4a094abf966160a111573, type: 2}

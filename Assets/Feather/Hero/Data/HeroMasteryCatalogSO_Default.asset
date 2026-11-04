@@ -1,0 +1,455 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0579903b0941428d8b277abf6dbf2c, type: 3}
+  m_Name: HeroMasteryCatalogSO_Default
+  m_EditorClassIdentifier: 
+  _skills:
+  - _id: maa.crush
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 8146b6833e2446840957d746a4d6e4f8, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3c532f4079c445d5a3f7e2971f28a3a2, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "DMG 4-6; CRIT 5%"
+    _masteredReference: "DMG 5-7; CRIT 5%"
+    _remainingEffects: "none in configured basic effects"
+  - _id: maa.rampart
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 59dc5dcfae1a0684cb60502b2f8c65bd, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 7e20f4af98054d07939050aaf0072ed7, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "DMG 3-5; CRIT 5%"
+    _masteredReference: "DMG 4-6; CRIT 5%"
+    _remainingEffects: "movement, Daze, Combo Stun"
+  - _id: maa.defender
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 5aa77621179604c41bdd91c3fa4a008b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 9db459c9d8a5417ba3e31da47a85ed5b, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "Guarded 2; self Block 2"
+    _masteredReference: "Guarded 3; self Block+ 2"
+    _remainingEffects: "guard redirection, cooldown, three-token cap"
+  - _id: maa.bolster
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 9a3b4507d7cf16e4b9084b45a2e58ee4, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 74b21d047cb949a69ad223c831ca8f8e, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "Stress 5+: recover 1, caster and ally"
+    _masteredReference: "Stress 5+: recover 2, caster and ally"
+    _remainingEffects: "cooldown"
+  - _id: maa.holdtheline
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 6a9d61d2019098e4f89485594724e3e0, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 4aeee3d15020423f9c8fde6fc99f2e6b, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "DMG 3-6; CRIT 10%"
+    _masteredReference: "DMG 4-7; CRIT 10%"
+    _remainingEffects: "movement, Combo Stun"
+  - _id: maa.bellow
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: a7ded087f0764e44f8a5db11e69b1e9b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 95c2a8e0ba064a49a537db9430d0ccd6, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "Remove Riposte; speed -2"
+    _masteredReference: "Remove Riposte/Crit; speed -3"
+    _remainingEffects: "critical chance; speed debuff, cooldown"
+  - _id: maa.retribution
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: a9624f22000e32f45bdae798895dcd72, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: fa333717200c4c9990660712f8272354, type: 2}
+    _cost: 1
+    _isAvailable: 0
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "Riposte 2, Taunt 2; cooldown 2"
+    _masteredReference: "Riposte 2, Taunt 2; cooldown 1"
+    _remainingEffects: "automatic Riposte, cooldown"
+  - _id: maa.command
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: fa5c3667fd9ed3248ae639f6543ba978, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 674691a96d644e328886e40a6c6f0dd7, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "Remove Blind; Strength 1"
+    _masteredReference: "Remove Blind; Strength 2"
+    _remainingEffects: "cooldown"
+  - _id: maa.standfast
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: b8ca58b9258e74942931991c1f1e4764, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 5892ce6c28d84512ada5a8bd5741fbe4, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "Block 2, Taunt 2; turn-start Block"
+    _masteredReference: "Block+ 2, Taunt 2; turn-start Block"
+    _remainingEffects: "turn-start Block renewal, cooldown"
+  - _id: maa.courageousabandon
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 921ac2e2eb4dc1349afc9b76785b9019, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 092d77050da74f87981d67920dce0b97, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "DMG 6-8; CRIT 10%"
+    _masteredReference: "DMG 8-10; CRIT 20%"
+    _remainingEffects: "Block requirement, Block multiplier, piercing, Execution, Block lockout"
+  - _id: maa.strategicwithdrawal
+    _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 380be3d38ce60f140b45327e8cdb6c91, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: ea13016a8d1e4dde97bc1bae62dadb43, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
+    _baseReference: "DMG 3-6; CRIT 5%"
+    _masteredReference: "DMG 4-7; CRIT 10%"
+    _remainingEffects: "movement, Combo, cooldown, Death Door token"
+  - _id: hwm.wicked_slice
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 42297f9ce4e12b04ea3aba5e192a2fcd, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 6055691643f0414fbd3e792b54f1ce68, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 4-8; CRIT 15%"
+    _masteredReference: "DMG 6-9; CRIT 20%"
+    _remainingEffects: "Execution"
+  - _id: hwm.pistol_shot
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 5014933490c21d14e8e06d3df48d5448, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cacf58696a04433aa180397911efae1a, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 3-6; CRIT 10%"
+    _masteredReference: "DMG 5-8; CRIT 15%"
+    _remainingEffects: "Combo Daze/Stun"
+  - _id: hwm.duelists_advance
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 55e552ab72f9039429cf816d2c5e838b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cb58d2c2e6a34be6ba2882cfb4843559, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 3-5; CRIT 5%"
+    _masteredReference: "DMG 4-6; CRIT 10%"
+    _remainingEffects: "movement, Riposte execution, three-token cap"
+  - _id: hwm.tracking_shot
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 654f47d4128f4dc8ae7a1498fbd01b8b, type: 2}
+    _cost: 1
+    _isAvailable: 0
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge"
+    _masteredReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus for 2 rounds; ignores Dodge"
+    _remainingEffects: "Dodge/DodgePlus gain prevention for 2 rounds"
+  - _id: hwm.take_aim
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 4aa2c7c4a443f234795f0b0fab7ec27b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3cfaedc40fa041628b700424656a18e5, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "Remove Blind; Crit 1"
+    _masteredReference: "Remove Blind; Crit 2"
+    _remainingEffects: "cooldown"
+  - _id: hwm.point_blank_shot
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 0ddba46bdfb0e0448892f6dae642d4a7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 7f3b46406c274489836b8a27075ef6ec, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 6-10; CRIT 10%"
+    _masteredReference: "DMG 10-13; CRIT 15%"
+    _remainingEffects: "movement, knockback, Combo"
+  - _id: hwm.grapeshot_blast
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: fb09b267957424f498adae37a6db9da9, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 484e9eb9338c475eb3006beb2bf7d77b, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 3-5; CRIT 5%"
+    _masteredReference: "DMG 4-6; CRIT 10%"
+    _remainingEffects: "speed debuff, one Strength per critical target"
+  - _id: hwm.open_vein
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 6d45ddd1737e39d4e8a0669d89dc427d, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e3494374faf84dd2a4ddcd9a4816958e, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 3-5; CRIT 5%"
+    _masteredReference: "DMG 4-6; CRIT 10%"
+    _remainingEffects: "Combo Bleed multiplier"
+  - _id: hwm.double_tap
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 3f960cf2b2d5ff640b28298db76dfda0, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: db27055b291b478c9ca3713d417c4e03, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 4-8; CRIT 5%"
+    _masteredReference: "DMG 6-9; CRIT 10%"
+    _remainingEffects: "low-HP damage multiplier, Execution"
+  - _id: hwm.highway_robbery
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: af5e52047c5321d4092f18e10a909225, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 74431e70b6fc482e87d07266c9930ff3, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "Remove 2 positive tokens; target crit -5%"
+    _masteredReference: "Steal 2 positive tokens; target crit -5%, self +5%"
+    _remainingEffects: "cooldown; original token selection order and critical duration extension unverified; shared token cap"
+  - _id: hwm.double_cross
+    _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _baseSkill: {fileID: 11400000, guid: dd6390ecccfd675489699d68ec7ac740, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: ece359c7aa6c4f65b5a2574da9a8ea71, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
+    _baseReference: "DMG 2-4; CRIT 5%"
+    _masteredReference: "DMG 3-5; CRIT 10%"
+    _remainingEffects: "piercing, target Block removal"
+  - _id: gr.pick_to_the_face
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: b643f1de7f9cfe944871afeb5ec44d86, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 458c992fe31d401bbcac095c202fbfa6, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 4-7; CRIT 15%"
+    _masteredReference: "DMG 5-9; CRIT 20%"
+    _remainingEffects: "Block piercing, Combo crit, critical Block removal"
+  - _id: gr.thrown_dagger
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: a808e3b236e695f41a4a16f32e606218, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3661fadc4181469a9ab2269ebb8b1730, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 3-6; CRIT 15%"
+    _masteredReference: "DMG 4-8; CRIT 30%"
+    _remainingEffects: "Guard/Dodge piercing, Combo crit"
+  - _id: gr.flashing_daggers
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 6a38b5c54da4a094abf966160a111573, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 7263c9476274442f949d619de4bc19df, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 3-5; CRIT 15%"
+    _masteredReference: "DMG 4-6; CRIT 20%"
+    _remainingEffects: "Stealth Dodge piercing"
+  - _id: gr.poison_dart
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 2157bec6dae0d1149b5a5cbb9e0a9f31, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cc8561b9fb6e43838b19434b3023fd27, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 2-4; CRIT 5%"
+    _masteredReference: "DMG 2-5; CRIT 10%"
+    _remainingEffects: "Combo crit, critical DOT duration"
+  - _id: gr.artemisia
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 0e912bca270b98646aeba9a3e4529409, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f9fed01ed667467d960dfce3eb8de211, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Below 33%: heal 33%; Dodge 3, Speed"
+    _masteredReference: "Below 33%: heal 33%; Dodge+ 3, Speed"
+    _remainingEffects: "use limit, three-token cap; base Dodge evasion is missing in shared damage"
+  - _id: gr.dead_of_night
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 2cef150618dbd024298265fc65c52af6, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: ffaf481d095c4fb8ac9914af508f7555, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Clear corpse; heal 33%"
+    _masteredReference: "Clear corpse; heal 50%; Stealth 2; recover 1 stress"
+    _remainingEffects: ""
+  - _id: gr.glint_in_the_dark
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: fa04fd01907f2934bb5de0f93497b447, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 606a078c813a49b99f11dabbbb33edcb, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 4-7; CRIT 5%"
+    _masteredReference: "DMG 6-9; CRIT 10%"
+    _remainingEffects: "Stealth piercing/removal, Execution"
+  - _id: gr.lunge
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: b7db3cd899fc5cb4aa31893126fdc649, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 94e5e34d2b4b446d9300fde9c8f44da1, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 5-8; CRIT 20%"
+    _masteredReference: "DMG 7-11; CRIT 30%"
+    _remainingEffects: "movement, conditional piercing, critical knockback"
+  - _id: gr.pirouette
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 7e14355942de5694ca9377ae89055bdb, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e94fbf30ba7c4466abd8cba519444d10, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "DMG 4-7; CRIT 10%"
+    _masteredReference: "DMG 6-9; CRIT 15%"
+    _remainingEffects: "movement, Stealth-conditioned Daze/Weak, cooldown"
+  - _id: gr.repartee
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 9f4e744f78fd0a84e81b4d9baa8ea205, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: d3f84164001347b19d80ec2234f47825, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Dodge 3, Taunt 2"
+    _masteredReference: "Dodge+ 3, Taunt 2; conditional on-miss Dodge"
+    _remainingEffects: "on-miss Dodge buff, Stealth removal, cooldown, three-token cap; base Dodge evasion is missing in shared damage"
+  - _id: gr.shadow_fade
+    _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 5eaf1ab69225dbf4d8bac9a3c58198a0, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 512374d096544f8298eaf3e54a4bd7d7, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
+    _baseReference: "Back 2; Stealth 2"
+    _masteredReference: "Back 2; Stealth 2, Strength 1"
+    _remainingEffects: "movement, cooldown"
+  - _id: pd.noxious_blast
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 0a559ca5dc2faa74ea3030581c4e517f, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 73b5722e43a945db9fbcf3ca66a55962, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "DMG 2-3; CRIT 5%"
+    _masteredReference: "DMG 3-4; CRIT 10%"
+    _remainingEffects: "Combo resistance piercing/duration"
+  - _id: pd.blinding_gas
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: a44125ca8f914f11bbcdbd66ec6c52eb, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Blind; Combo 25%"
+    _masteredReference: "Blind, Daze; Combo 33%"
+    _remainingEffects: "critical chance and non-damage hit checks; cooldown"
+  - _id: pd.incision
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 59d5474bfe82484b849a28a13793651c, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "DMG 3-6; CRIT 10%"
+    _masteredReference: "DMG 4-7; CRIT 15%"
+    _remainingEffects: "Combo resistance piercing/duration"
+  - _id: pd.battlefield_medicine
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 04bc96820433e2b46993c138de9a0f12, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f1ffe72e5ec940d8b9512af12967c565, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Below 50%: heal 20%; cleanse"
+    _masteredReference: "Below 50%: heal 25%; cleanse"
+    _remainingEffects: "use limit"
+  - _id: pd.ounce_of_prevention
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3bf921940a374164a3a077ccb349e4c4, type: 2}
+    _cost: 1
+    _isAvailable: 0
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "DOT resistance 20%; disease resistance 15%"
+    _masteredReference: "DOT/disease resistance 30%; additional resistance 10% (type unverified)"
+    _remainingEffects: "resistance buffs, cooldown"
+  - _id: pd.plague_grenade
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: ea4adf269c67c5549adad2a559a8cda7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3e823df8fbe84d46959001a60d05db32, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "DMG 1-2; CRIT 5%"
+    _masteredReference: "DMG 2-3; CRIT 10%"
+    _remainingEffects: "cooldown"
+  - _id: pd.emboldening_vapours
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 31a2ca9b6b988da4a8c0cb99b1478647, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: fe3dd76d92ae4d30a2f7183e036ce5e9, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Remove Daze; Strength 2"
+    _masteredReference: "Remove Daze/Stun; Strength 2, Speed"
+    _remainingEffects: "cooldown"
+  - _id: pd.disorienting_blast
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: fc255f61bf463f7428a5cbfb08cb82bf, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 74e620b933f640f5b5e3f3f0c9800cdd, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Shuffle, Daze; remove Guard"
+    _masteredReference: "Shuffle, Daze, Weak; Combo Stun; remove Guard"
+    _remainingEffects: "critical chance; shuffle, Guard piercing/removal, cooldown"
+  - _id: pd.indiscriminate_science
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 26d1421c6a134fb7ab68d5ad2efd559b, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Below 50%: heal 10% +10% per positive token"
+    _masteredReference: "Below 50%: heal 10% +10% per positive, +5% per negative token"
+    _remainingEffects: "cooldown; heal rounding unverified"
+  - _id: pd.cause_of_death
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: ee8e939fb2e07bf40a8d10280fac0047, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 36c1608e5d434ebcb0d329c55d7614b5, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Remaining DOT damage 100%"
+    _masteredReference: "Remaining DOT damage 125%; Execution 1"
+    _remainingEffects: "Execution 1, cooldown; conversion rounding unverified"
+  - _id: pd.magnesium_rain
+    _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _baseSkill: {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 0c9f56b5db4342dda525d85154e07fdd, type: 2}
+    _cost: 1
+    _isAvailable: 1
+    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
+    _baseReference: "Burn 3; clear corpses"
+    _masteredReference: "Burn 3; clear corpses; reset cooldowns after clear"
+    _remainingEffects: ""
