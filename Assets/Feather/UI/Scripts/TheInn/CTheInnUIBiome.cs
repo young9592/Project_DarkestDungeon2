@@ -26,6 +26,7 @@ public class CTheInnUIBiome : MonoBehaviour
     {
         RandomBiome();
     }
+
     public void BiomeUIOpen()
     {
         _navigationBar.ToggleUI(_biomeUI, _titleText);
@@ -43,6 +44,7 @@ public class CTheInnUIBiome : MonoBehaviour
         }
 
         _randomBiome1 = Random.Range(0, _biome1.Length);
+
         do
         {
             _randomBiome2 = Random.Range(0, _biome2.Length);
@@ -63,14 +65,6 @@ public class CTheInnUIBiome : MonoBehaviour
             return;
         }
 
-        if (_selectedBiomeGroup == 1 && _selectedBiomeIndex == index)
-        {
-            _selectBiomeUI1[index].SetActive(false);
-            _selectedBiomeIndex = -1;
-            _selectedBiomeGroup = -1;
-            return;
-        }
-
         CloseSelectBiomeUI();
 
         _navigationBar.SelectBiome();
@@ -88,14 +82,6 @@ public class CTheInnUIBiome : MonoBehaviour
             return;
         }
 
-        if (_selectedBiomeGroup == 2 && _selectedBiomeIndex == index)
-        {
-            _selectBiomeUI2[index].SetActive(false);
-            _selectedBiomeIndex = -1;
-            _selectedBiomeGroup = -1;
-            return;
-        }
-
         CloseSelectBiomeUI();
 
         _selectBiomeUI2[index].SetActive(true);
@@ -104,8 +90,8 @@ public class CTheInnUIBiome : MonoBehaviour
 
         _selectedBiomeIndex = index;
         _selectedBiomeGroup = 2;
-
     }
+
     private void CloseSelectBiomeUI()
     {
         for (int i = 0; i < _selectBiomeUI1.Length; i++)
