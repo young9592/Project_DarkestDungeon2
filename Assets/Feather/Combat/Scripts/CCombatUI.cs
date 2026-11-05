@@ -110,6 +110,7 @@ public class CCombatUI : MonoBehaviour
     #region Field
     private int _round = 0;
     private bool _pass = false;
+    private bool _rankChange = false;
     private bool _cursorRank = false;
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -121,6 +122,11 @@ public class CCombatUI : MonoBehaviour
     {
         get { return _pass; }
         set { _pass = value; }
+    }
+    public bool Change
+    {
+        get { return _rankChange; }
+        set { _rankChange = value; }
     }
     public RectTransform HeroTemptationTextTr => _heroTemptation.gameObject.GetComponent<RectTransform>();
     #endregion
@@ -141,7 +147,6 @@ public class CCombatUI : MonoBehaviour
         _checkList.Add(_rightHit);
         _checkList.Add(_heroTemptation);
         _checkList.Add(_heroTemptationResult);
-
 
         _checkList.Add(_heroInfo);
         _checkList.Add(_heroPortrait);

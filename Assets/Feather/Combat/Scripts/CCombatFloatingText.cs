@@ -117,6 +117,9 @@ public class CCombatFloatingText : MonoBehaviour
         {
             _rectTr.anchoredPosition += offset;
         }
+        
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, _rendererCameraMode ? Camera.main : null, out uiLocalPos);
+        _rectTr.anchoredPosition = uiLocalPos;
 
         switch (type)
         {
@@ -211,8 +214,6 @@ public class CCombatFloatingText : MonoBehaviour
 
         }
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, _rendererCameraMode ? Camera.main : null, out uiLocalPos);
-        _rectTr.anchoredPosition = uiLocalPos;
 
         gameObject.SetActive(true);
         Destroy(gameObject, _duration);

@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,7 @@ public class CCombatCameraManager : MonoBehaviour
     [Header("Connect")]
     [SerializeField] private CCombatUI _combatUI;
     [SerializeField] private Camera _camera;
+    [SerializeField] private CCombatFloatingMessageManager _messageManager;
 
     [Header("Option")]
     [SerializeField] private string _highlightLayerName = "Highlight";
@@ -38,6 +40,7 @@ public class CCombatCameraManager : MonoBehaviour
     #endregion
 
     #region Field
+    private HashSet<CEntity> _onceMessage = new HashSet<CEntity>();
     private Transform _cameraTr;
     private Vector3 _initVec;
     #endregion
@@ -51,6 +54,12 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         if (CPrint.NullUnityObjectCheck(gameObject.name, _combatUI))
+        {
+            enabled = false;
+            return;
+        }
+
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _messageManager))
         {
             enabled = false;
             return;
@@ -276,6 +285,8 @@ public class CCombatCameraManager : MonoBehaviour
 
     private IEnumerator CoAction(List<Vector3> entitiesInitPos, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, bool hasRiposeToken)
     {
+        _onceMessage.Clear();
+
         List<Vector3> camInitPos = new List<Vector3>();
 
         float space = 2f * Mathf.Clamp01((5f - entitiesTr.Count) / 4f) + 0.5f;
@@ -289,7 +300,9 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         float delay = 2f;
+        float messageDelay = 0.1f;
         float nextTime = Time.time + delay;
+        float nextMsgTime = Time.time + messageDelay;
         float move = moveDir == CameraMoveDirection.Right ? 0.5f : -0.5f;
         List<Vector3> moveVec = new List<Vector3>();
         _camera.orthographicSize = 2f;
@@ -327,31 +340,57 @@ public class CCombatCameraManager : MonoBehaviour
             for (int i = 0; i < camInitPos.Count; i++)
             {
                 entitiesTr[i].position = Vector3.Lerp(camInitPos[i], moveVec[i], t);
-                entitiesTr[i].gameObject.GetComponentInChildren<Animator>().speed = 0;
-                
-                if(combatTarget == CombatTarget.Hero_Attack)
+
+                GameObject entityObject = entitiesTr[i].gameObject;
+                CEntity entity = entityObject.GetComponent<CEntity>();
+                Animator animator = entityObject.GetComponentInChildren<Animator>();
+                bool isHero = entity is CPlayer;
+
+                if (animator != null)
                 {
-                    if (entitiesTr[i].gameObject.GetComponent<CEntity>() is CPlayer)
-                    {
-                        continue;
-                    }
-
-                    Animator animator = entitiesTr[i].gameObject.GetComponentInChildren<Animator>();
-                    int hit = Animator.StringToHash("Hit");
-
-                    animator.Play(hit);
+                    animator.speed = 0;
                 }
-                else if(combatTarget == CombatTarget.Enemy_Attack)
+
+                if (nextMsgTime > Time.time)
                 {
-                    if (entitiesTr[i].gameObject.GetComponent<CEntity>() is CEnemy)
+                    continue;
+                }
+
+                if (combatTarget == CombatTarget.Hero_Attack || combatTarget == CombatTarget.Enemy_Attack)
+                {
+                    if (_onceMessage.Contains(entity))
                     {
                         continue;
                     }
 
-                    Animator animator = entitiesTr[i].gameObject.GetComponentInChildren<Animator>();
-                    int hit = Animator.StringToHash("Hit");
+                    if (isHero && combatTarget == CombatTarget.Enemy_Attack)
+                    {
+                        if (entity.IsDead)
+                        {
+                            _messageManager.ShowIcon(entityObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death, "Á×À½ÀÇ ÀÏ°Ý!");
+                            _onceMessage.Add(entity);
+                        }
+                        else if (entity.IsDeathsDoor)
+                        {
+                            _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death_Door, "Á×À½ÀÇ ¹®ÅÎ!");
+                            _onceMessage.Add(entity);
+                        }
+                    }
+                    else if(!isHero && combatTarget == CombatTarget.Hero_Attack)
+                    {
+                        if (entity is CEnemyCorpse)
+                        {
+                            continue;
+                        }
 
-                    animator.Play(hit);
+                        if (entity.IsDead)
+                        {
+                            _messageManager.ShowIcon(entityObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death, "Á×À½ÀÇ ÀÏ°Ý!");
+                            _onceMessage.Add(entity);
+                        }
+                    }
                 }
             }
 
@@ -366,7 +405,12 @@ public class CCombatCameraManager : MonoBehaviour
 
         for (int i = 0; i < entitiesTr.Count; i++)
         {
-            entitiesTr[i].gameObject.GetComponentInChildren<Animator>().speed = 1;
+            Animator animator = entitiesTr[i].gameObject.GetComponentInChildren<Animator>();
+
+            if (animator != null)
+            {
+                animator.speed = 1;
+            }
         }
 
         _combatUI.CloseCombatPanel();
