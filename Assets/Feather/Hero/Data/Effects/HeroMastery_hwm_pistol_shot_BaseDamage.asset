@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
   m_Name: HeroMastery_hwm_pistol_shot_BaseDamage
   m_EditorClassIdentifier: 
-  _name: Pistol Shot damage
+  _name: Attack damage
   _effectType: 1
-  _damage: 5
+  _effectTarget: 0
+  _damage: 3
+  _maxDamage: 6
   _duration: 0
   _baseChance: 10
   _tokenType: 0

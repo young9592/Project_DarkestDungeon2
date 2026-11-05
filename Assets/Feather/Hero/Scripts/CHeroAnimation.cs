@@ -45,12 +45,30 @@ public class CHeroAnimation : MonoBehaviour
     public event Action OnHitCompleted;
     public event Action OnHitInterrupted;
 
-    public bool IsBusy { get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued; } }
-    public bool IsMeltingDown { get { return _state == EAnimationState.Meltdown; } }
-    public bool IsMeltdownQueued { get { return _meltdownQueued; } }
-    public bool IsSelecting { get { return _state == EAnimationState.Selecting; } }
-    public bool IsAttacking { get { return _state == EAnimationState.Attack; } }
-    public bool IsHitReacting { get { return _state == EAnimationState.Hit; } }
+    public bool IsBusy
+    {
+        get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued; }
+    }
+    public bool IsMeltingDown
+    {
+        get { return _state == EAnimationState.Meltdown; }
+    }
+    public bool IsMeltdownQueued
+    {
+        get { return _meltdownQueued; }
+    }
+    public bool IsSelecting
+    {
+        get { return _state == EAnimationState.Selecting; }
+    }
+    public bool IsAttacking
+    {
+        get { return _state == EAnimationState.Attack; }
+    }
+    public bool IsHitReacting
+    {
+        get { return _state == EAnimationState.Hit; }
+    }
     public bool IsReady
     {
         get
@@ -332,7 +350,7 @@ public class CHeroAnimation : MonoBehaviour
             _skillWeapons = weapons.ToArray();
             _previousWeaponVisibility = new bool[_skillWeapons.Length];
         }
-        // 준비 자세에서 저장한 표시 상태는 사용 중에도 유지합니다.
+        // 준비 자세에서 저장한 표시 상태는 사용 중에도 유지함
         for (int i = 0; i < _skillWeapons.Length; i++)
         {
             Renderer weapon = _skillWeapons[i];

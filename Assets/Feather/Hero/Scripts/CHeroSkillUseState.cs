@@ -20,7 +20,7 @@ public class CHeroSkillUseState
         for (int i = 0; i < skills.Count; i++)
         {
             CSkillDataSO skill = skills[i];
-            // 사용한 턴을 대기 턴으로 세지 않습니다.
+            // 사용한 턴을 대기 턴으로 세지 않음
             if (_startedCooldowns.Contains(skill)) continue;
             int remaining = _cooldowns[skill] - 1;
             if (remaining <= 0) _cooldowns.Remove(skill);

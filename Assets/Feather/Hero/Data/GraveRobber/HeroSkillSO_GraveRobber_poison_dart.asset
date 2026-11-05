@@ -19,6 +19,7 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: b51e2f10a2f740e9be3c61c6f231b095, type: 2}
+  - {fileID: 11400000, guid: 226bb9dd42324877bf79d8bcd643078b, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_poison_dart
   _endState: Base Layer.OriginalRecover_GraveRobber_poison_dart

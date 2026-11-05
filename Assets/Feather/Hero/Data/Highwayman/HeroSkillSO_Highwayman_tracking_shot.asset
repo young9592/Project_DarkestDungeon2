@@ -18,7 +18,12 @@ MonoBehaviour:
   _targetableRank: -1
   _isGroupTarget: 0
   _cooldown: 0
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 54017fe3f0444feca0cfe304d2bae93f, type: 2}
+  - {fileID: 11400000, guid: ee5504bb3fb44c63a3915b5ca75f39eb, type: 2}
+  - {fileID: 11400000, guid: 3b0ee9b5b9704b5882f56f90243eed61, type: 2}
+  - {fileID: 11400000, guid: a6161f33a9af4158ae3063613391ab59, type: 2}
+  - {fileID: 11400000, guid: b4f533b4afdf421bb6bdf0a69962b6f5, type: 2}
   _usesPerBattle: 0
   _baseSkill: {fileID: 0}
   _target: 0

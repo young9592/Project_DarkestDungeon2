@@ -17,7 +17,9 @@ MonoBehaviour:
   _useableRank: 12
   _targetableRank: 12
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: ec9843aa2f7b4d2cb45f93496e89850b, type: 2}
+  - {fileID: 11400000, guid: 89a3aa69dbd645618e26dd9223314a6e, type: 2}
   _target: 3
   _startState: Base Layer.OriginalAntic_PlagueDoctor_blinding_gas
   _endState: Base Layer.OriginalRecover_PlagueDoctor_blinding_gas

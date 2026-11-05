@@ -20,6 +20,7 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: df867a28e5fc43ad97318f9af49537f5, type: 2}
+  - {fileID: 11400000, guid: b106cf5163694903bcc15026042df0b6, type: 2}
   _usesPerBattle: 0
   _baseSkill: {fileID: 0}
   _target: 3

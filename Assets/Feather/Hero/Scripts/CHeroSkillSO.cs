@@ -117,7 +117,10 @@ public class CHeroSkillSO : CSkillDataSO
         get { return _requiresCorpse; }
     }
 
-    public bool ClearsCorpses { get { return _clearsCorpses || _requiresCorpse; } }
+    public bool ClearsCorpses
+    {
+        get { return _clearsCorpses || _requiresCorpse; }
+    }
 
     public bool CanChooseTarget(CEntity actor, CEntity target)
     {

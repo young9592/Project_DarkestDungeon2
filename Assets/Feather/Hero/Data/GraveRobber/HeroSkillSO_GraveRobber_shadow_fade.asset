@@ -16,9 +16,10 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: da361677baacdc249a5e66c210707e72, type: 3}
   _useableRank: 3
   _targetableRank: 15
-  _rankMovement: 2
   _cooldown: 2
-  _effectList: []
+  _rankMovement: 2
+  _effectList:
+  - {fileID: 11400000, guid: c464378fc0ce41e8b715ac29181fc9cc, type: 2}
   _target: 2
   _startState: Base Layer.OriginalAntic_GraveRobber_shadow_fade
   _endState: Base Layer.OriginalAction_GraveRobber_shadow_fade

@@ -16,8 +16,14 @@ public class CHeroMasteryTest : MonoBehaviour
     private Vector2 _scroll;
     private string _notice = "Open training to choose skill upgrades.";
 
-    public CHeroMasteryService Service { get { return _service; } }
-    public string Notice { get { return _notice; } }
+    public CHeroMasteryService Service
+    {
+        get { return _service; }
+    }
+    public string Notice
+    {
+        get { return _notice; }
+    }
     public string SavePath
     {
         get { return Path.Combine(Application.persistentDataPath, "TempLee", "hero-mastery.json"); }

@@ -18,7 +18,8 @@ MonoBehaviour:
   _targetableRank: 15
   _cooldown: 2
   _effectList:
-  - {fileID: 11400000, guid: 2682e8e19961aaa40a240910a09f4fe1, type: 2}
+  - {fileID: 11400000, guid: 22a3926cb62645dd8529aaff4d1a93c2, type: 2}
+  - {fileID: 11400000, guid: 4b33087fcd37489486643cda1e5c39f6, type: 2}
   _target: 2
   _startState: Base Layer.OriginalAntic_ManAtArms_Retribution
   _endState: Base Layer.OriginalRecover_ManAtArms_Retribution

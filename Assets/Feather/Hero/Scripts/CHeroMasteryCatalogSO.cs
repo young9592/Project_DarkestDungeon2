@@ -18,17 +18,47 @@ public class CHeroMasterySkill
     [SerializeField] private string _masteredReference;
     [SerializeField] private string _remainingEffects;
 
-    public bool IsAvailable { get { return _isAvailable; } }
-    public string ReferenceUrl { get { return _referenceUrl; } }
-    public string BaseReference { get { return _baseReference; } }
-    public string MasteredReference { get { return _masteredReference; } }
-    public string RemainingEffects { get { return _remainingEffects; } }
+    public bool IsAvailable
+    {
+        get { return _isAvailable; }
+    }
+    public string ReferenceUrl
+    {
+        get { return _referenceUrl; }
+    }
+    public string BaseReference
+    {
+        get { return _baseReference; }
+    }
+    public string MasteredReference
+    {
+        get { return _masteredReference; }
+    }
+    public string RemainingEffects
+    {
+        get { return _remainingEffects; }
+    }
 
-    public string Id { get { return _id; } }
-    public CHeroDataSO Hero { get { return _hero; } }
-    public CHeroSkillSO BaseSkill { get { return _baseSkill; } }
-    public CHeroSkillSO MasteredSkill { get { return _masteredSkill; } }
-    public int Cost { get { return _cost; } }
+    public string Id
+    {
+        get { return _id; }
+    }
+    public CHeroDataSO Hero
+    {
+        get { return _hero; }
+    }
+    public CHeroSkillSO BaseSkill
+    {
+        get { return _baseSkill; }
+    }
+    public CHeroSkillSO MasteredSkill
+    {
+        get { return _masteredSkill; }
+    }
+    public int Cost
+    {
+        get { return _cost; }
+    }
 
     public bool IsValid()
     {

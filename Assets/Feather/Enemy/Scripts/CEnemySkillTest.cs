@@ -137,7 +137,7 @@ public class CEnemySkillTest : MonoBehaviour
             return;
         }
 
-        // 연출 연결 테스트고 스킬 효과는 적용하지 않습니다.
+        // 연출 연결 테스트고 스킬 효과는 적용하지 않음
         if (!_enemy.TryPlayAttack())
         {
             _lastRequest = "Rejected: busy / unavailable";
@@ -151,7 +151,7 @@ public class CEnemySkillTest : MonoBehaviour
 
     private void HandleAttackCompleted()
     {
-        // 이 테스트에서 요청한 공격만 완료 횟수에 반영합니다.
+        // 이 테스트에서 요청한 공격만 완료 횟수에 반영함
         if (!_isWaitingForAttack) return;
 
         _isWaitingForAttack = false;

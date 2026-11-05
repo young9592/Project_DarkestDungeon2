@@ -18,6 +18,18 @@ public class CEnemyGroupSO : ScriptableObject
         get { return _entries; }
     }
 
+    internal static CEnemyGroupSO CreateRuntime(List<CEnemyGroupEntry> entries)
+    {
+        CEnemyGroupSO group = CreateInstance<CEnemyGroupSO>();
+        group.hideFlags = HideFlags.DontSave;
+        group.name = "Generated Enemy Group";
+        group._displayName = "Generated Enemy Group";
+        group._entries.AddRange(entries);
+        if (group.TryValidate(out _)) return group;
+        Destroy(group);
+        return null;
+    }
+
     public bool TryValidate(out string message)
     {
         if (_entries == null || _entries.Count == 0)

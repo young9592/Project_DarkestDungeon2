@@ -19,7 +19,9 @@ MonoBehaviour:
   _cooldown: 0
   _usesPerBattle: 3
   _effectList:
-  - {fileID: 11400000, guid: d011635b80cfd724baeea0311471dd1c, type: 2}
+  - {fileID: 11400000, guid: 8116de1b7e9645ccb8dfd1f1dffa3f98, type: 2}
+  - {fileID: 11400000, guid: 31016433b7d94c75804eea1983b78d75, type: 2}
+  - {fileID: 11400000, guid: 0bfebc44ad184f4ba4d0a6c9b87ec7f5, type: 2}
   _target: 2
   _startState: Base Layer.OriginalAntic_GraveRobber_artemisia
   _endState: Base Layer.OriginalRecover_GraveRobber_artemisia

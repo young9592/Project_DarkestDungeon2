@@ -5,7 +5,10 @@ public class CHeroPercentHealStrategy : CEffectStrategy
 {
     [SerializeField, Range(1, 100)] private int _healthThreshold = 100;
 
-    public int HealthThreshold { get { return _healthThreshold; } }
+    public int HealthThreshold
+    {
+        get { return _healthThreshold; }
+    }
 
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
