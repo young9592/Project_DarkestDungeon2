@@ -16,10 +16,12 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: bb350019259f5b24897c6e9c5e89e10d, type: 3}
   _useableRank: 14
   _targetableRank: 3
-  _rankMovement: -3
   _cooldown: 0
+  _rankMovement: -3
   _effectList:
   - {fileID: 11400000, guid: 13340db5bcb54e20af2c206430653429, type: 2}
+  - {fileID: 11400000, guid: 150c3111766f48ff948dfc583428bb91, type: 2}
+  - {fileID: 11400000, guid: 480c575406374e3f95654996459a5e42, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_HoldtheLine
   _endState: Base Layer.OriginalRecover_ManAtArms_HoldtheLine

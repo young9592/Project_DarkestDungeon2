@@ -18,7 +18,9 @@ MonoBehaviour:
   _targetableRank: -1
   _isGroupTarget: 0
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: b1156b49ec2541888d1599dec8633afd, type: 2}
+  - {fileID: 11400000, guid: 884f122e9d514ebcb971aae9f41bd016, type: 2}
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

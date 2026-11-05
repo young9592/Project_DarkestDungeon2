@@ -16,8 +16,8 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 833178409989f4f4ea20f36f834342bf, type: 3}
   _useableRank: 12
   _targetableRank: 7
-  _rankMovement: -2
   _cooldown: 0
+  _rankMovement: -2
   _effectList:
   - {fileID: 11400000, guid: cdd1ceaeda1f4e888cbf11b3be9f8bec, type: 2}
   _target: 0

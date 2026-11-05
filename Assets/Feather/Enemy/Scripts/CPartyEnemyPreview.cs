@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -170,7 +170,7 @@ public class CPartyEnemyPreview : MonoBehaviour
                 continue;
             }
 
-            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인합니다.
+            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인함
             if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes, _groupTest.SpawnedEnemies)) || !enemy.TryBeginAction())
             {
                 _skipped++;

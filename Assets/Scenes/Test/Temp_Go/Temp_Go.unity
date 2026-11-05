@@ -305,17 +305,17 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _skillList:
-  - {fileID: 11400000, guid: f341b47c1f3003743b1416af6de7ad2c, type: 2}
-  - {fileID: 11400000, guid: 0664db84260787f4b9a9a6a7d3198915, type: 2}
-  - {fileID: 11400000, guid: 58bc3386bacd0c440889033198d6bb21, type: 2}
-  - {fileID: 11400000, guid: d48c17e036803f84997e994f9999b35f, type: 2}
-  - {fileID: 11400000, guid: 0e56bb8132272fb428e6bfa765d6f1a0, type: 2}
-  - {fileID: 11400000, guid: b4060a680547f70428a6b723ea099fe4, type: 2}
-  - {fileID: 11400000, guid: 85bb985f8dbed2c46be17f062cf0c661, type: 2}
-  - {fileID: 11400000, guid: 7997fd86acfdcca4fa19fc7a2c76acf7, type: 2}
-  - {fileID: 11400000, guid: a2c345791e5057f47b16fe6589e4038c, type: 2}
-  - {fileID: 11400000, guid: a1938c0b483c1184581adb487a7edca6, type: 2}
-  - {fileID: 11400000, guid: 89489f2312452224c95d021f355dd8c5, type: 2}
+  - {fileID: 11400000, guid: b57213c861cea334680e3b6485476a0a, type: 2}
+  - {fileID: 11400000, guid: d4013fcd5ee5d3d40ad7fe092a7abc2d, type: 2}
+  - {fileID: 11400000, guid: 9ddfe86ec2e86e449a19eb023500ba73, type: 2}
+  - {fileID: 11400000, guid: e8db58a65661fb14f91d428e244f37d1, type: 2}
+  - {fileID: 11400000, guid: 7339fa56e326f5b4aa17ccbd275a3adc, type: 2}
+  - {fileID: 11400000, guid: e4704396544a4214aa26bd214e5fdd5a, type: 2}
+  - {fileID: 11400000, guid: f5c2d6f99ae2ece4ab6d4843c098617f, type: 2}
+  - {fileID: 11400000, guid: eeeb39b6813d102408a734d0131a3257, type: 2}
+  - {fileID: 11400000, guid: c9140872132ed014da7ea5e350a1882b, type: 2}
+  - {fileID: 11400000, guid: 3a579d66f2647ae47a6cc86278382ca7, type: 2}
+  - {fileID: 11400000, guid: f8147cdd41e8c4944b7deed8fb518a05, type: 2}
   _selectIndex: 4
   _dummyAttackSkill: {fileID: 11400000, guid: c0d9286b935a57a4a83fae39b8baafc2, type: 2}
 --- !u!4 &1502528984
@@ -325,55 +325,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502528982}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1610693737
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1610693739}
-  - component: {fileID: 1610693738}
-  m_Layer: 0
-  m_Name: PipelineTester
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1610693738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610693737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0da9e10f1adbe44da74a3a3c47aa3e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _casterPlayer: {fileID: 1230264960}
-  _targetEntity: {fileID: 80861905}
-  _testSkill: {fileID: 11400000, guid: 8a17e2effa3bddb42aa735079a7f26a2, type: 2}
-  _blight3TurnSO: {fileID: 11400000, guid: b48046b88420b684ea67802f2cab1b27, type: 2}
-  _blight2TurnSO: {fileID: 11400000, guid: f643d4556ccda5348afc93ca2ddcbf54, type: 2}
---- !u!4 &1610693739
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610693737}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -575,7 +526,6 @@ SceneRoots:
   - {fileID: 2138917886}
   - {fileID: 1866342343}
   - {fileID: 388313256}
-  - {fileID: 1610693739}
   - {fileID: 1230264961}
   - {fileID: 80861906}
   - {fileID: 1502528984}

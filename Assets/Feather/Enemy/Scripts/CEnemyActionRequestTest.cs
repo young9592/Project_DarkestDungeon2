@@ -139,7 +139,7 @@ public class CEnemyActionRequestTest : MonoBehaviour
     {
         if (!isActiveAndEnabled || actor != _subscribedEnemy) return;
 
-        // 전달받은 요청만 기록하고 전투 실행이나 피해 처리는 하지 않습니다.
+        // 전달받은 요청만 기록하고 전투 실행이나 피해 처리는 하지 않음
         _lastActor = actor;
         _lastTarget = target;
         _lastSkill = skill;

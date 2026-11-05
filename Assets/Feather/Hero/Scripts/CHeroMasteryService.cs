@@ -11,10 +11,108 @@ public class CHeroMasteryService
     private CHeroMasterySaveData _pending;
     private string _innId;
 
-    public bool IsTraining { get { return _pending != null; } }
+    public bool IsTraining
+    {
+        get { return _pending != null; }
+    }
 
-    public int Points { get { return _pending != null ? _pending.Points : (_data != null ? _data.Points : 0); } }
-    public string RunId { get { return _data != null ? _data.RunId : string.Empty; } }
+    public int Points
+    {
+        get { return _pending != null ? _pending.Points : (_data != null ? _data.Points : 0); }
+    }
+    public string RunId
+    {
+        get { return _data != null ? _data.RunId : string.Empty; }
+    }
+
+    public CHeroMasterySaveData CaptureCheckpoint()
+    {
+        return _isLoaded && _data != null && !IsTraining ? Copy() : null;
+    }
+
+    public bool CanRestoreCheckpoint(CHeroMasterySaveData data)
+    {
+        return !IsTraining && IsValid(data);
+    }
+
+    public bool TryRestoreCheckpoint(CHeroMasterySaveData data)
+    {
+        if (!CanRestoreCheckpoint(data)) return false;
+        // 전투 저장 파일로 복원하고 별도 저장은 안 함
+        _data = Copy(data);
+        _isLoaded = true;
+        return true;
+    }
+
+    internal bool TryCaptureSkillIds(CPlayer hero, out string[] ids)
+    {
+        ids = null;
+        if (_catalog == null || hero == null || hero.HeroData == null
+            || hero.EquippedSkills == null || hero.EquippedSkills.Count > 5) return false;
+        string[] captured = new string[hero.EquippedSkills.Count];
+        for (int i = 0; i < captured.Length; i++)
+        {
+            CHeroMasterySkill entry = _catalog.Find(hero.HeroData.Id, hero.EquippedSkills[i]);
+            if (entry == null) return false;
+            captured[i] = entry.Id;
+        }
+        ids = captured;
+        return true;
+    }
+
+    public bool CanApplyCheckpoint(CPlayer hero, CHeroMasterySaveData data, string[] skillIds = null)
+    {
+        CHeroSkillLoadoutSO loadout = CreateCheckpointLoadout(hero, data, skillIds);
+        if (loadout == null) return false;
+        Object.Destroy(loadout);
+        return true;
+    }
+
+    internal bool TryApplyCheckpointLoadout(CPlayer hero, string[] skillIds)
+    {
+        ReleaseUnusedLoadouts();
+        CHeroSkillLoadoutSO loadout = CreateCheckpointLoadout(hero, _data, skillIds);
+        if (loadout == null) return false;
+        if (!hero.TryRestoreLoadout(loadout))
+        {
+            Object.Destroy(loadout);
+            return false;
+        }
+        if (_loadouts.TryGetValue(hero, out CHeroSkillLoadoutSO previous))
+        {
+            Object.Destroy(previous);
+        }
+        _loadouts[hero] = loadout;
+        return true;
+    }
+
+    private CHeroSkillLoadoutSO CreateCheckpointLoadout(CPlayer hero, CHeroMasterySaveData data, string[] skillIds)
+    {
+        if (!CanRestoreCheckpoint(data) || hero == null || hero.HeroData == null
+            || hero.EquippedSkills == null) return null;
+        List<CSkillDataSO> skills = new List<CSkillDataSO>();
+        int count = skillIds != null ? skillIds.Length : hero.EquippedSkills.Count;
+        for (int i = 0; i < count; i++)
+        {
+            CSkillDataSO skill;
+            CHeroMasterySkill entry;
+            if (skillIds != null)
+            {
+                entry = _catalog.Find(skillIds[i]);
+                if (entry == null || entry.Hero.Id != hero.HeroData.Id) return null;
+                skill = entry.BaseSkill;
+            }
+            else
+            {
+                skill = CHeroSkillSO.GetBaseSkill(hero.EquippedSkills[i]);
+                entry = _catalog.Find(hero.HeroData.Id, skill);
+            }
+            if (entry != null && entry.IsAvailable
+                && System.Array.IndexOf(data.MasteredSkillIds, entry.Id) >= 0) skill = entry.MasteredSkill;
+            skills.Add(skill);
+        }
+        return CHeroSkillLoadoutSO.CreateRuntime(hero.HeroData, skills);
+    }
 
     public CHeroMasteryService(CHeroMasteryCatalogSO catalog, string savePath)
     {
@@ -234,12 +332,18 @@ public class CHeroMasteryService
             Object.Destroy(entry.Value);
             removed.Add(entry.Key);
         }
-        for (int i = 0; i < removed.Count; i++) _loadouts.Remove(removed[i]);
+        for (int i = 0; i < removed.Count; i++)
+        {
+            _loadouts.Remove(removed[i]);
+        }
     }
 
     public void ReleaseRuntimeAssets()
     {
-        foreach (CHeroSkillLoadoutSO loadout in _loadouts.Values) Object.Destroy(loadout);
+        foreach (CHeroSkillLoadoutSO loadout in _loadouts.Values)
+        {
+            Object.Destroy(loadout);
+        }
         _loadouts.Clear();
     }
 

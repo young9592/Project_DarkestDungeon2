@@ -17,7 +17,9 @@ MonoBehaviour:
   _useableRank: 15
   _targetableRank: 15
   _cooldown: 2
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: a2746fb7641e44019de6e3ed738ce4fb, type: 2}
+  - {fileID: 11400000, guid: 8ead7ae85c274fb58a351370d744ba5f, type: 2}
   _target: 2
   _startState: Base Layer.Skill9Start
   _endState: Base Layer.Skill9End

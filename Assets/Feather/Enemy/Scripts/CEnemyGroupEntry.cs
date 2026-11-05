@@ -7,6 +7,16 @@ public class CEnemyGroupEntry
     [SerializeField] private CEnemy _enemyPrefab;
     [SerializeField] private ERank _rank = ERank.Rank1;
 
+    public CEnemyGroupEntry()
+    {
+    }
+
+    public CEnemyGroupEntry(CEnemy enemyPrefab, ERank rank)
+    {
+        _enemyPrefab = enemyPrefab;
+        _rank = rank;
+    }
+
     public CEnemy EnemyPrefab
     {
         get { return _enemyPrefab; }
@@ -27,7 +37,10 @@ public class CEnemyGroupEntry
         int start = 0;
         while ((1 << start) != (int)_rank) start++;
         if (start + size > 4) return false;
-        for (int i = 0; i < size; i++) ranks |= (ERank)(1 << (start + i));
+        for (int i = 0; i < size; i++)
+        {
+            ranks |= (ERank)(1 << (start + i));
+        }
         return true;
     }
 }

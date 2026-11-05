@@ -17,7 +17,8 @@ MonoBehaviour:
   _useableRank: 7
   _targetableRank: 7
   _cooldown: 2
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 4e55b80a8cd84b7a91db39d387f7702c, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_cause_of_death
   _endState: Base Layer.OriginalRecover_PlagueDoctor_cause_of_death

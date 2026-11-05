@@ -23,13 +23,40 @@ public class CEnemySkillFeedbackSO : ScriptableObject
     [Header("Intent")]
     [SerializeField] private Color _intentColor = new Color(1.0f, 0.55f, 0.2f);
 
-    public CHeroFeedbackVisual Launch { get { return _launch; } }
-    public CHeroFeedbackVisual Projectile { get { return _projectile; } }
-    public CHeroFeedbackVisual Impact { get { return _impact; } }
-    public EEnemyLaunchOrigin Origin { get { return _origin; } }
-    public float ReleaseTime { get { return _releaseTime; } }
-    public int ShotCount { get { return _shotCount; } }
-    public float ShotSpacing { get { return _shotSpacing; } }
-    public float ArcHeight { get { return _arcHeight; } }
-    public Color IntentColor { get { return _intentColor; } }
+    public CHeroFeedbackVisual Launch
+    {
+        get { return _launch; }
+    }
+    public CHeroFeedbackVisual Projectile
+    {
+        get { return _projectile; }
+    }
+    public CHeroFeedbackVisual Impact
+    {
+        get { return _impact; }
+    }
+    public EEnemyLaunchOrigin Origin
+    {
+        get { return _origin; }
+    }
+    public float ReleaseTime
+    {
+        get { return _releaseTime; }
+    }
+    public int ShotCount
+    {
+        get { return _shotCount; }
+    }
+    public float ShotSpacing
+    {
+        get { return _shotSpacing; }
+    }
+    public float ArcHeight
+    {
+        get { return _arcHeight; }
+    }
+    public Color IntentColor
+    {
+        get { return _intentColor; }
+    }
 }

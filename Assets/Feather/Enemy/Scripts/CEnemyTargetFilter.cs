@@ -26,7 +26,7 @@ public static class CEnemyTargetFilter
             if (!hero.TokenManager.HasToken(EEffectType.Stealth)) hasVisibleTarget = true;
         }
 
-        // 광역 공격은 은신 대상도 포함하며 도발로 범위를 좁히지 않습니다.
+        // 광역 공격은 은신 대상도 포함하며 도발로 범위를 좁히지 않음
         if (skill.IsGroupTarget) return targets;
 
         if (hasVisibleTarget)

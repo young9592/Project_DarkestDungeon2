@@ -18,9 +18,18 @@ public class CHeroStressResolution : MonoBehaviour
     private int _requestId;
     private EHeroStressResult _result;
 
-    public bool IsPending { get { return _isPending; } }
-    public bool HasResult { get { return _hasResult; } }
-    public int RequestId { get { return _requestId; } }
+    public bool IsPending
+    {
+        get { return _isPending; }
+    }
+    public bool HasResult
+    {
+        get { return _hasResult; }
+    }
+    public int RequestId
+    {
+        get { return _requestId; }
+    }
 
     public event Action<CPlayer> OnRequested;
     public event Action<CPlayer, EHeroStressResult> OnApplied;

@@ -12,7 +12,10 @@ public class CHeroPositiveTokenStrategy : CEffectStrategy
         EEffectType.Strength, EEffectType.Speed, EEffectType.Stealth
     };
 
-    public bool StealTokens { get { return _stealTokens; } }
+    public bool StealTokens
+    {
+        get { return _stealTokens; }
+    }
 
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {

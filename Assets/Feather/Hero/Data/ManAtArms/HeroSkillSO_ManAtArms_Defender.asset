@@ -17,7 +17,8 @@ MonoBehaviour:
   _useableRank: 15
   _targetableRank: 15
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 33fd64ed16fe4bef99509745aa912609, type: 2}
   _target: 1
   _startState: Base Layer.OriginalAntic_ManAtArms_Defender
   _endState: Base Layer.OriginalRecover_ManAtArms_Defender

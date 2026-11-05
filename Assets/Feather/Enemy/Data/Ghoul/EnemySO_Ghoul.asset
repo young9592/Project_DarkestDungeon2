@@ -27,7 +27,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
   - {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
   _formationSize: 2
-  _deathDoorCount: 0
+  _deathDoorCount: 1
   _skillRules:
   - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
     _selfToken: 11
@@ -50,6 +50,7 @@ MonoBehaviour:
   _targetSelection: 0
   _leavesCorpse: 1
   _corpseSprite: {fileID: 21300000, guid: 9ae080c25854438ab0cdb1c9d79dca52, type: 3}
+  _corpseData: {fileID: 11400000, guid: 481e3733c6cb4bdda595bbadcddec0f1, type: 2}
   _corpseHealth: 5
   _corpseWidth: 0.022
   _startingToken: 11

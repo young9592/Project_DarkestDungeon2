@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public static class CEnemySkillFilter
 {
-    // 현재 열 조건만 검사합니다. 쿨타임과 실제 대상 유무는 전투에서 판단합니다.
+    // 현재 열 조건만 검사함 쿨타임과 실제 대상 유무는 전투에서 판단함
     public static List<CSkillDataSO> GetCandidates(CEnemyDataSO enemyData, ERank currentRank)
     {
         List<CSkillDataSO> candidates = new List<CSkillDataSO>();
@@ -28,7 +28,7 @@ public static class CEnemySkillFilter
         return candidates;
     }
 
-    // 사용자 열과 대상 열을 검사합니다. 쿨타임과 진영 및 생존 여부는 전투에서 판단합니다.
+    // 사용자 열과 대상 열을 검사함 쿨타임과 진영 및 생존 여부는 전투에서 판단함
     public static List<CSkillDataSO> GetCandidates(CEnemyDataSO enemyData, ERank currentRank, ERank targetRank)
     {
         List<CSkillDataSO> candidates = new List<CSkillDataSO>();

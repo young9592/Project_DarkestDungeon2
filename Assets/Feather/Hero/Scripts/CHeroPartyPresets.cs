@@ -9,8 +9,14 @@ public class CHeroSavedSkillBinding
 {
     [SerializeField] private string _id;
     [SerializeField] private CSkillDataSO _skill;
-    public string Id { get { return _id; } }
-    public CSkillDataSO Skill { get { return _skill; } }
+    public string Id
+    {
+        get { return _id; }
+    }
+    public CSkillDataSO Skill
+    {
+        get { return _skill; }
+    }
 }
 
 public class CHeroPartyPresets : MonoBehaviour
@@ -46,8 +52,14 @@ public class CHeroPartyPresets : MonoBehaviour
         get { return Path.Combine(Application.persistentDataPath, "TempLee", "party-presets.json"); }
     }
 
-    public bool IsOpen { get { return _root != null && _root.activeSelf; } }
-    public string Notice { get { return _notice; } }
+    public bool IsOpen
+    {
+        get { return _root != null && _root.activeSelf; }
+    }
+    public string Notice
+    {
+        get { return _notice; }
+    }
 
     private void Awake()
     {

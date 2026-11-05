@@ -53,6 +53,7 @@ public class CPlayer : CEntity
     {
         get { return _skillUses; }
     }
+
     public bool IsTurnSkipped
     {
         get { return _isTurnSkipped; }
@@ -95,13 +96,22 @@ public class CPlayer : CEntity
     }
 
 
-    public CHeroDataSO HeroData { get { return _heroData; } }
+    public CHeroDataSO HeroData
+    {
+        get { return _heroData; }
+    }
     public override ERank CurrentRank
     {
         get { return _currentRank; }
     }
-    public CSkillDataSO SelectedSkill { get { return _selectedSkill; } }
-    public IReadOnlyList<CSkillDataSO> EquippedSkills { get { return _equippedSkills; } }
+    public CSkillDataSO SelectedSkill
+    {
+        get { return _selectedSkill; }
+    }
+    public IReadOnlyList<CSkillDataSO> EquippedSkills
+    {
+        get { return _equippedSkills; }
+    }
 
     public override CEntityDataSO EntityData
     {
@@ -150,6 +160,21 @@ public class CPlayer : CEntity
             return false;
         }
 
+        SetEquippedLoadout(loadout);
+        return true;
+    }
+
+    internal bool TryRestoreLoadout(CHeroSkillLoadoutSO loadout)
+    {
+        if (_isRequesting || ActionState == EEntityActionState.Requested
+            || ActionState == EEntityActionState.Executing
+            || loadout == null || !loadout.TryValidate(_heroData, out _)) return false;
+        SetEquippedLoadout(loadout);
+        return true;
+    }
+
+    private void SetEquippedLoadout(CHeroSkillLoadoutSO loadout)
+    {
         _equippedSkills.Clear();
         for (int i = 0; i < loadout.Skills.Count; i++)
         {
@@ -158,7 +183,6 @@ public class CPlayer : CEntity
 
         _skillLoadout = loadout;
         CancelSkillSelection();
-        return true;
     }
 
     // 효과 처리와 별도로 연출 상태 제공
@@ -402,7 +426,7 @@ public class CPlayer : CEntity
             return;
         }
 
-        // 장착 목록이 없는 기존 캐릭터는 보유 스킬을 사용합니다.
+        // 장착 목록이 없는 기존 캐릭터는 보유 스킬을 사용함
         if (_heroData.AvailableSkills == null) return;
         for (int i = 0; i < _heroData.AvailableSkills.Count; i++)
         {
@@ -462,9 +486,7 @@ public class CPlayer : CEntity
     }
 
     #region Skill Usage
-    /// </summary>
-    /// 1. 유저가 스킬 버튼 클릭시 호출
-    /// </summary>
+    // 스킬 버튼을 클릭하면 호출함
     public void SelectSkill(int skillIndex)
     {
         TrySelectSkill(skillIndex);
@@ -925,17 +947,17 @@ public class CPlayer : CEntity
         return type == EEffectType.Bleed || type == EEffectType.Blight || type == EEffectType.Burn;
     }
 
-	private void EnterDeathsDoor()
-	{
+    private void EnterDeathsDoor()
+    {
         if (_isDeathsDoor || _isDead) return;
 
         _isDeathsDoor = true;
-		CPrint.Log($"[{_heroData.DefaultName}] 죽음의 문턱 진입 \n 다음 피격 시 생존 난수를 굴립니다.");
+        CPrint.Log($"[{_heroData.DefaultName}] 죽음의 문턱 진입 \n 다음 피격 시 생존 난수를 굴립니다.");
 
         TokenManager.AddToken(EEffectType.Weak, 1);
 
         OnDeathDoorChanged?.Invoke(this, true);
-	}
+    }
 
     private void ExitDeathDoor()
     {
@@ -949,7 +971,7 @@ public class CPlayer : CEntity
 
     private void RollDeathblow()
     {
-        // TODO : CResistanceStat에 Deathblow 스탯 을 만들어서 진행시 _heroData.Resistance.Deathblow로 교체해서 진행할것
+        // TODO: CResistanceStat에 Deathblow 스탯을 추가하면 _heroData.Resistance.Deathblow로 교체할 예정
         int deathblowResist = _heroData != null ? _heroData.DeathDoorResistance : 75;
         int randomRoll = UnityEngine.Random.Range(1, 101);
 
@@ -1076,9 +1098,9 @@ public class CPlayer : CEntity
         _currentStress = 0;
 
         TokenManager.ClearAllTokens();
+        _skillUses.Clear();
         CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
         if (criticalState != null) criticalState.ClearModifiers();
-        _skillUses.Clear();
         _activeStatusEffects.Clear();
         CancelSkillSelection();
 

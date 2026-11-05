@@ -20,9 +20,18 @@ public class CHeroRunStateTest : MonoBehaviour
         get { return Path.Combine(Application.persistentDataPath, "TempLee", "hero-run.json"); }
     }
 
-    public string Notice { get { return _notice; } }
-    public CHeroRunStateService Service { get { return _service; } }
-    public bool IsExpeditionActive { get { return _isExpeditionActive; } }
+    public string Notice
+    {
+        get { return _notice; }
+    }
+    public CHeroRunStateService Service
+    {
+        get { return _service; }
+    }
+    public bool IsExpeditionActive
+    {
+        get { return _isExpeditionActive; }
+    }
 
     private void Awake()
     {
