@@ -11,9 +11,18 @@ public class CHeroTargetView : MonoBehaviour
     private bool _isHighlighted;
     private bool _isHovered;
 
-    public CEntity Entity { get { return _entity; } }
-    public CEnemy Enemy { get { return _enemy; } }
-    public bool IsHighlighted { get { return _isHighlighted; } }
+    public CEntity Entity
+    {
+        get { return _entity; }
+    }
+    public CEnemy Enemy
+    {
+        get { return _enemy; }
+    }
+    public bool IsHighlighted
+    {
+        get { return _isHighlighted; }
+    }
     public bool IsHovered
     {
         get { return _isHovered; }
@@ -44,7 +53,7 @@ public class CHeroTargetView : MonoBehaviour
         int size = _enemy != null && _enemy.EnemyData != null ? _enemy.EnemyData.FormationSize : 1;
         if (_corpse != null) size = _corpse.FormationSize;
         Vector3 footprint = new Vector3(Mathf.Abs(_rankStep.x) * size, bounds.size.y, Mathf.Abs(_rankStep.z) * size);
-        // 모델이 작아도 차지하는 자리 전체를 같은 적으로 선택합니다.
+        // 모델이 작아도 차지하는 자리 전체를 같은 적으로 선택함
         bounds.Encapsulate(new Bounds(new Vector3(transform.position.x, bounds.center.y, transform.position.z), footprint));
         return bounds;
     }
@@ -69,7 +78,10 @@ public class CHeroTargetView : MonoBehaviour
         _isHovered = _isHighlighted && hovered;
     }
 
-    private void OnDisable() { SetHighlight(false, false); }
+    private void OnDisable()
+    {
+        SetHighlight(false, false);
+    }
 
     private void OnGUI()
     {

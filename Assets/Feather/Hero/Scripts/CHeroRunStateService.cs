@@ -7,9 +7,18 @@ public class CHeroRunStateService
     private readonly Dictionary<CPlayer, string> _members = new Dictionary<CPlayer, string>();
     private CHeroRunSaveData _data;
 
-    public bool HasRun { get { return _data != null; } }
-    public string RunId { get { return _data != null ? _data.RunId : string.Empty; } }
-    public int CompletedBattles { get { return _data != null ? _data.CompletedBattles : 0; } }
+    public bool HasRun
+    {
+        get { return _data != null; }
+    }
+    public string RunId
+    {
+        get { return _data != null ? _data.RunId : string.Empty; }
+    }
+    public int CompletedBattles
+    {
+        get { return _data != null ? _data.CompletedBattles : 0; }
+    }
     public bool HasSurvivors
     {
         get

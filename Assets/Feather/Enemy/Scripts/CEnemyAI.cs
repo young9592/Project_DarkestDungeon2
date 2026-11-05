@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CEnemyAI : MonoBehaviour
@@ -12,11 +12,26 @@ public class CEnemyAI : MonoBehaviour
     private CSkillDataSO _retrySkill;
     private bool _hasRequestedAction;
 
-    public CSkillDataSO PlannedSkill { get { return _plannedSkill; } }
-    public CEntity PlannedTarget { get { return _plannedTarget; } }
-    public IReadOnlyList<CEntity> PlannedTargets { get { return _plannedTargets; } }
-    public IReadOnlyList<CEntity> HeroTargets { get { return _heroes; } }
-    public bool IsExecuting { get { return _hasRequestedAction && _enemy.ActionState == EEntityActionState.Executing; } }
+    public CSkillDataSO PlannedSkill
+    {
+        get { return _plannedSkill; }
+    }
+    public CEntity PlannedTarget
+    {
+        get { return _plannedTarget; }
+    }
+    public IReadOnlyList<CEntity> PlannedTargets
+    {
+        get { return _plannedTargets; }
+    }
+    public IReadOnlyList<CEntity> HeroTargets
+    {
+        get { return _heroes; }
+    }
+    public bool IsExecuting
+    {
+        get { return _hasRequestedAction && _enemy.ActionState == EEntityActionState.Executing; }
+    }
 
     private void Awake()
     {
@@ -85,7 +100,7 @@ public class CEnemyAI : MonoBehaviour
             || _enemy.AttackAnimation == null || _enemy.AttackAnimation.IsBusy || _hasRequestedAction
             || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
 
-        if (_enemy.CurrentHp <= 0)
+        if (_enemy.IsDead)
         {
             ClearPlan();
             return false;
@@ -109,7 +124,7 @@ public class CEnemyAI : MonoBehaviour
                 if (ally != null && ally != _enemy && !_allies.Contains(ally)) _allies.Add(ally);
             }
         }
-        // 유효한 의도는 다시 추첨하지 않습니다.
+        // 유효한 의도는 다시 추첨하지 않음
         if (IsPlanValid()) return true;
         CSkillDataSO previousSkill = _plannedSkill != null ? _plannedSkill : _retrySkill;
         ClearPlan();
@@ -122,7 +137,7 @@ public class CEnemyAI : MonoBehaviour
             if (skill == null || usableSkills.Contains(skill)) continue;
             if (CEnemyTargetFilter.GetTargets(skill, _heroes).Count > 0) usableSkills.Add(skill);
         }
-        // 대상 수 때문에 스킬의 비중이 커지지 않도록 스킬을 먼저 고릅니다.
+        // 대상 수가 스킬 선택 확률에 영향 주지 않게 스킬을 먼저 고름
         if (previousSkill != null && usableSkills.Contains(previousSkill)
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, previousSkill, _enemy.CurrentHp) > 0)
         {
@@ -135,7 +150,7 @@ public class CEnemyAI : MonoBehaviour
             for (int i = 0; i < _allies.Count; i++)
             {
                 CEnemy ally = _allies[i];
-                if (!ally.isActiveAndEnabled || ally.IsDead || ally.IsDeathPresented || ally.CurrentHp <= 0) continue;
+                if (!ally.isActiveAndEnabled || ally.IsDead || ally.IsDeathPresented) continue;
                 hasAlly = true;
                 if ((int)ally.CurrentRank < (int)_enemy.CurrentRank) allyInFront = true;
             }
@@ -163,7 +178,7 @@ public class CEnemyAI : MonoBehaviour
     public bool IsPlanValid()
     {
         return _enemy != null && _enemy.isActiveAndEnabled && !_enemy.IsDeathPresented
-            && _enemy.CurrentHp > 0 && _plannedSkill != null
+            && !_enemy.IsDead && _plannedSkill != null
             && IsHeroAvailable(_plannedTarget) && _heroes.Contains(_plannedTarget)
             && (IsExecuting || CSkillRankUtility.CanTargetSkill(_plannedSkill, _plannedTarget.CurrentRank))
             && (IsExecuting || CEnemySkillFilter.GetCandidates(_enemy.EnemyData, _enemy.CurrentRank).Contains(_plannedSkill))
@@ -187,7 +202,7 @@ public class CEnemyAI : MonoBehaviour
 
     private bool RefreshPlan()
     {
-        // 다시 선택할 때 보관한 후보 목록이 비워지지 않도록 복사합니다.
+        // 다시 선택할 때 보관한 후보 목록이 비워지지 않게 복사함
         return TryPlanAction(new List<CEntity>(_heroes), new List<CEnemy>(_allies));
     }
 
@@ -217,7 +232,7 @@ public class CEnemyAI : MonoBehaviour
 
     private bool IsHeroAvailable(CEntity hero)
     {
-        // 체력이 0이어도 죽음의 문 상태일 수 있어서 체력만으로 제외하지 않습니다.
+        // 체력이 0이어도 죽음의 문 상태일 수 있어 체력만으로 제외하지 않음
         return CEnemyTargetFilter.IsAvailable(hero);
     }
 

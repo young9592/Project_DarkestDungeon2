@@ -14,12 +14,30 @@ public class CHeroExpeditionState : MonoBehaviour
     private string _notice;
     private bool _isInitialized;
 
-    public CHeroMasteryService Mastery { get { return _mastery; } }
-    public CHeroBattleStateService Service { get { return _service; } }
-    public string Notice { get { return _notice; } }
-    public string RunId { get { return _service != null ? _service.RunId : string.Empty; } }
-    public string BattleId { get { return _service != null ? _service.BattleId : string.Empty; } }
-    public bool IsReadyForBattle { get { return _service != null && _service.IsReadyForBattle; } }
+    public CHeroMasteryService Mastery
+    {
+        get { return _mastery; }
+    }
+    public CHeroBattleStateService Service
+    {
+        get { return _service; }
+    }
+    public string Notice
+    {
+        get { return _notice; }
+    }
+    public string RunId
+    {
+        get { return _service != null ? _service.RunId : string.Empty; }
+    }
+    public string BattleId
+    {
+        get { return _service != null ? _service.BattleId : string.Empty; }
+    }
+    public bool IsReadyForBattle
+    {
+        get { return _service != null && _service.IsReadyForBattle; }
+    }
 
     public string SavePath
     {
@@ -56,10 +74,11 @@ public class CHeroExpeditionState : MonoBehaviour
         return _service != null && _service.TryCompleteBattle(runId, battleId, heroes, out _notice);
     }
 
-    public bool TryPrepareNextBattle(IReadOnlyList<CPlayer> heroes)
+    // 전투 밖에서 세팅을 확정한 파티는 현재 열과 장착 목록을 넘김
+    public bool TryPrepareNextBattle(IReadOnlyList<CPlayer> heroes, bool useCurrentPartySetup = false)
     {
         return _service != null && _service.TryPrepareNextBattle(RunId,
-            Guid.NewGuid().ToString("N"), heroes, out _notice);
+            Guid.NewGuid().ToString("N"), heroes, out _notice, useCurrentPartySetup);
     }
 
     public bool TryRestoreBattle(IReadOnlyList<CPlayer> heroes)

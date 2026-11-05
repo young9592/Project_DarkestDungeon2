@@ -16,14 +16,44 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     [SerializeField] private AudioClip _impactSound;
     [SerializeField, Range(0.0f, 1.0f)] private float _volume = 0.5f;
 
-    public CHeroFeedbackVisual Launch { get { return _launch; } }
-    public CHeroFeedbackVisual Projectile { get { return _projectile; } }
-    public CHeroFeedbackVisual Impact { get { return _impact; } }
-    public float ReleaseTime { get { return _releaseTime; } }
-    public int ShotCount { get { return _shotCount; } }
-    public float ShotSpacing { get { return _shotSpacing; } }
-    public float ArcHeight { get { return _arcHeight; } }
-    public AudioClip LaunchSound { get { return _launchSound; } }
-    public AudioClip ImpactSound { get { return _impactSound; } }
-    public float Volume { get { return _volume; } }
+    public CHeroFeedbackVisual Launch
+    {
+        get { return _launch; }
+    }
+    public CHeroFeedbackVisual Projectile
+    {
+        get { return _projectile; }
+    }
+    public CHeroFeedbackVisual Impact
+    {
+        get { return _impact; }
+    }
+    public float ReleaseTime
+    {
+        get { return _releaseTime; }
+    }
+    public int ShotCount
+    {
+        get { return _shotCount; }
+    }
+    public float ShotSpacing
+    {
+        get { return _shotSpacing; }
+    }
+    public float ArcHeight
+    {
+        get { return _arcHeight; }
+    }
+    public AudioClip LaunchSound
+    {
+        get { return _launchSound; }
+    }
+    public AudioClip ImpactSound
+    {
+        get { return _impactSound; }
+    }
+    public float Volume
+    {
+        get { return _volume; }
+    }
 }

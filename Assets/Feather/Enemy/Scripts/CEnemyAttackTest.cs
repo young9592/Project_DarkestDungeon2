@@ -95,7 +95,7 @@ public class CEnemyAttackTest : MonoBehaviour
     {
         if (_enemy == null || _pairedEnemy == null) return;
 
-        // 두 적의 연출만 동시에 요청하고 전투 판정은 하지 않습니다.
+        // 두 적의 연출만 동시에 요청하고 전투 판정은 하지 않음
         bool attackAccepted = _enemy.TryPlayAttack();
         bool hitAccepted = _pairedEnemy.TryPlayHit();
         _lastRequest = "Attack: " + (attackAccepted ? "OK" : "rejected")

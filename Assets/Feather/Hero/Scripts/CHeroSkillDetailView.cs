@@ -120,6 +120,8 @@ public class CHeroSkillDetailView : MonoBehaviour
     {
         StringBuilder text = new StringBuilder();
         bool hasDamage = false;
+        bool hasCriticalChance = false;
+        int criticalChance = 0;
         if (skill.EffectList != null)
         {
             for (int i = 0; i < skill.EffectList.Count; i++)
@@ -136,14 +138,54 @@ public class CHeroSkillDetailView : MonoBehaviour
                     text.Append("Corpse clear also occurs on a miss\n");
                     continue;
                 }
+                if (effect.Strategy is CHeroCriticalDamageStrategy || effect.Strategy is CHeroUtilityAccuracyStrategy)
+                {
+                    hasCriticalChance = true;
+                    criticalChance = effect.BaseChance;
+                }
                 if (effect.EffectType == EEffectType.Damage)
                 {
-                    text.Append("Base damage: ").Append(EffectValueText(effect)).Append(" per target\n");
-                    hasDamage = true;
+                    if (effect.Strategy is CHeroDotConversionStrategy)
+                    {
+                        text.Append("Deal ").Append(effect.Damage).Append("% of remaining damage over time\nRemove damage over time\n");
+                    }
+                    else
+                    {
+                        text.Append("Base damage: ").Append(EffectValueText(effect)).Append(" per target\n");
+                    }
+                    hasDamage = hasDamage || !(effect.Strategy is CHeroDotConversionStrategy);
                 }
                 else if (effect.EffectType == EEffectType.Heal)
                 {
-                    text.Append("Restore ").Append(EffectValueText(effect)).Append(" HP\nUp to maximum HP\n");
+                    if (effect.Strategy is CHeroScienceHealStrategy)
+                    {
+                        text.Append("Below 50% HP: restore 10% +10% per positive token\n");
+                        if (heroSkill != null && heroSkill.BaseSkill != heroSkill)
+                        {
+                            text.Append("+5% per negative token\nRemove positive and negative tokens\n");
+                        }
+                        else
+                        {
+                            text.Append("Remove positive tokens\n");
+                        }
+                    }
+                    else if (effect.Strategy is CHeroPercentHealStrategy)
+                    {
+                        text.Append(effect.EffectTarget == EEffectTarget.Self ? "Self: restore " : "Restore ").Append(effect.Damage).Append("% maximum HP\n");
+                        CHeroPercentHealStrategy heal = effect.Strategy as CHeroPercentHealStrategy;
+                        if (heal.HealthThreshold < 100)
+                        {
+                            text.Append("Below ").Append(heal.HealthThreshold).Append("% HP only\n");
+                        }
+                        if (effect.Condition == EEffectCondition.TargetHasCombo)
+                        {
+                            text.Append("When target has Combo\n");
+                        }
+                    }
+                    else
+                    {
+                        text.Append("Restore ").Append(EffectValueText(effect)).Append(" HP\nUp to maximum HP\n");
+                    }
                 }
                 else
                 {
@@ -152,11 +194,14 @@ public class CHeroSkillDetailView : MonoBehaviour
             }
         }
 
+        if (hasCriticalChance)
+        {
+            text.Append("Base CRIT: ").Append(criticalChance).Append("%\n");
+        }
         if (text.Length == 0)
         {
             text.Append("No effect connected yet.\nAnimation preview only.\n");
         }
-        if (heroSkill != null && heroSkill.UsesPerBattle > 0) text.Append("Uses per battle: ").Append(heroSkill.UsesPerBattle).Append("\n");
         if (skill.Cooldown > 0) text.Append("Cooldown: ").Append(skill.Cooldown).Append(" Hero turn(s)\n");
         if (hasDamage)
         {

@@ -19,6 +19,7 @@ MonoBehaviour:
   _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: 0b54211a3883400cb330a5e2b2a91e9f, type: 2}
+  - {fileID: 11400000, guid: 8f95c827ac544bb3baa3d13fe0c7e059, type: 2}
   _target: 3
   _startState: Base Layer.OriginalAntic_PlagueDoctor_plague_grenade
   _endState: Base Layer.OriginalRecover_PlagueDoctor_plague_grenade

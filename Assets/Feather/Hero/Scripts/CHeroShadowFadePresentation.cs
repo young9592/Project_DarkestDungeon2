@@ -152,9 +152,18 @@ public class CHeroShadowFadePresentation : MonoBehaviour
         _echo = Instantiate(_animator.gameObject, _animator.transform.position, _animator.transform.rotation);
         _echo.name = "Shadow Fade Echo";
         _echo.transform.localScale = _animator.transform.lossyScale;
-        foreach (Animator animator in _echo.GetComponentsInChildren<Animator>(true)) animator.enabled = false;
-        foreach (MonoBehaviour script in _echo.GetComponentsInChildren<MonoBehaviour>(true)) script.enabled = false;
-        foreach (Collider collider in _echo.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
+        foreach (Animator animator in _echo.GetComponentsInChildren<Animator>(true))
+        {
+            animator.enabled = false;
+        }
+        foreach (MonoBehaviour script in _echo.GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            script.enabled = false;
+        }
+        foreach (Collider collider in _echo.GetComponentsInChildren<Collider>(true))
+        {
+            collider.enabled = false;
+        }
         Transform[] sourceBones = _animator.GetComponentsInChildren<Transform>(true);
         Transform[] echoBones = _echo.GetComponentsInChildren<Transform>(true);
         for (int i = 1; i < sourceBones.Length && i < echoBones.Length; i++)
@@ -218,8 +227,14 @@ public class CHeroShadowFadePresentation : MonoBehaviour
             _echo = null;
         }
 
-        for (int i = 0; i < _materials.Count; i++) Destroy(_materials[i]);
-        for (int i = 0; i < _echoMaterials.Count; i++) Destroy(_echoMaterials[i]);
+        for (int i = 0; i < _materials.Count; i++)
+        {
+            Destroy(_materials[i]);
+        }
+        for (int i = 0; i < _echoMaterials.Count; i++)
+        {
+            Destroy(_echoMaterials[i]);
+        }
         _materials.Clear();
         _echoMaterials.Clear();
     }

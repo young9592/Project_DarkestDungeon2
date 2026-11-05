@@ -19,6 +19,7 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 84f08232293a4d3fa7477ee9f2ddfa25, type: 2}
+  - {fileID: 11400000, guid: c4ce67750f8e4c6290ee4fbc034762ba, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_open_vein
   _endState: Base Layer.OriginalRecover_Highwayman_open_vein

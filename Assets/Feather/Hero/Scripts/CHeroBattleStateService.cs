@@ -10,11 +10,26 @@ public class CHeroBattleStateService
     private bool _isReadyForBattle;
     private bool _isRestoring;
 
-    public string RunId { get { return _data != null ? _data.Heroes.RunId : string.Empty; } }
-    public string BattleId { get { return _data != null ? _data.BattleId : string.Empty; } }
-    public int CompletedBattles { get { return _data != null ? _data.Heroes.CompletedBattles : 0; } }
-    public bool IsBattleFinished { get { return _data != null && _data.IsBattleFinished; } }
-    public bool IsReadyForBattle { get { return _isReadyForBattle; } }
+    public string RunId
+    {
+        get { return _data != null ? _data.Heroes.RunId : string.Empty; }
+    }
+    public string BattleId
+    {
+        get { return _data != null ? _data.BattleId : string.Empty; }
+    }
+    public int CompletedBattles
+    {
+        get { return _data != null ? _data.Heroes.CompletedBattles : 0; }
+    }
+    public bool IsBattleFinished
+    {
+        get { return _data != null && _data.IsBattleFinished; }
+    }
+    public bool IsReadyForBattle
+    {
+        get { return _isReadyForBattle; }
+    }
     public bool CanPrepareNextBattle
     {
         get
@@ -63,10 +78,12 @@ public class CHeroBattleStateService
         };
         for (int i = 0; i < heroes.Count; i++)
         {
+            if (!TryCaptureLoadout(heroes[i], out string[] skillIds, out message)) return false;
             next.Heroes.Members[i] = new CHeroRunMemberState
             {
                 MemberId = Guid.NewGuid().ToString("N"), HeroId = heroes[i].HeroData.Id,
-                Health = heroes[i].HeroData.MaxHealth
+                Health = heroes[i].HeroData.MaxHealth,
+                Rank = heroes[i].CurrentRank, SkillIds = skillIds
             };
         }
         return CommitAndRestore(next, heroes, out message);
@@ -92,7 +109,11 @@ public class CHeroBattleStateService
             if (!_members.TryGetValue(hero, out string id) || id != _data.Heroes.Members[i].MemberId
                 || hero.HeroData.Id != _data.Heroes.Members[i].HeroId
                 || (hero.StressResolution != null && hero.StressResolution.IsPending)) return false;
-            next.Heroes.Members[i] = hero.CaptureRunState(id);
+            if (!TryCaptureLoadout(hero, out string[] skillIds, out message)) return false;
+            CHeroRunMemberState member = hero.CaptureRunState(id);
+            member.Rank = hero.CurrentRank;
+            member.SkillIds = skillIds;
+            next.Heroes.Members[i] = member;
         }
         if (!_store.TryWrite(next, _data.SaveId, out message)) return false;
         _data = next;
@@ -100,7 +121,8 @@ public class CHeroBattleStateService
         return true;
     }
 
-    public bool TryPrepareNextBattle(string runId, string nextBattleId, IReadOnlyList<CPlayer> heroes, out string message)
+    public bool TryPrepareNextBattle(string runId, string nextBattleId, IReadOnlyList<CPlayer> heroes,
+        out string message, bool useCurrentPartySetup = false)
     {
         message = "Finish the current battle with survivors before continuing.";
         if (runId != RunId || !CanPrepareNextBattle || nextBattleId == BattleId) return false;
@@ -111,6 +133,21 @@ public class CHeroBattleStateService
         next.SaveId = Guid.NewGuid().ToString("N");
         next.IsBattleFinished = false;
         next.Mastery = mastery;
+        if (useCurrentPartySetup)
+        {
+            message = "Party setup does not match the saved expedition.";
+            if (!CanUseHeroes(heroes) || heroes.Count != next.Heroes.Members.Length) return false;
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                CPlayer hero = heroes[i];
+                CHeroRunMemberState member = next.Heroes.Members[i];
+                if (hero.HeroData.Id != member.HeroId
+                    || (_members.TryGetValue(hero, out string memberId) && memberId != member.MemberId)) return false;
+                if (!TryCaptureLoadout(hero, out string[] skillIds, out message)) return false;
+                member.Rank = hero.CurrentRank;
+                member.SkillIds = skillIds;
+            }
+        }
         return CommitAndRestore(next, heroes, out message);
     }
 
@@ -139,8 +176,10 @@ public class CHeroBattleStateService
             || !_mastery.CanRestoreCheckpoint(data.Mastery) || heroes.Count != data.Heroes.Members.Length) return false;
         for (int i = 0; i < heroes.Count; i++)
         {
-            if (!heroes[i].CanRestoreRunState(data.Heroes.Members[i])
-                || !_mastery.CanApplyCheckpoint(heroes[i], data.Mastery)) return false;
+            CHeroRunMemberState member = data.Heroes.Members[i];
+            if (!heroes[i].CanRestoreRunState(member)
+                || !_mastery.CanApplyCheckpoint(heroes[i], data.Mastery,
+                    member.Rank != ERank.None ? member.SkillIds : null)) return false;
         }
         return true;
     }
@@ -157,10 +196,20 @@ public class CHeroBattleStateService
             for (int i = 0; i < heroes.Count; i++)
             {
                 CPlayer hero = heroes[i];
-                if (!hero.TryRestoreRunState(data.Heroes.Members[i])) return false;
+                CHeroRunMemberState member = data.Heroes.Members[i];
+                if (member.Rank != ERank.None)
+                {
+                    if (!hero.TrySetRank(member.Rank) || !_mastery.TryApplyCheckpointLoadout(hero, member.SkillIds))
+                        return false;
+                    if (hero.RankPresentation != null)
+                    {
+                        hero.RankPresentation.SnapToRank();
+                    }
+                }
+                if (!hero.TryRestoreRunState(member)) return false;
                 hero.SkillUses.Clear();
-                if (!hero.IsDead && !_mastery.TryApply(hero)) return false;
-                _members.Add(hero, data.Heroes.Members[i].MemberId);
+                if (member.Rank == ERank.None && !hero.IsDead && !_mastery.TryApply(hero)) return false;
+                _members.Add(hero, member.MemberId);
             }
             _isReadyForBattle = !data.IsBattleFinished;
             return true;
@@ -169,6 +218,14 @@ public class CHeroBattleStateService
         {
             _isRestoring = false;
         }
+    }
+
+    private bool TryCaptureLoadout(CPlayer hero, out string[] skillIds, out string message)
+    {
+        skillIds = null;
+        message = "Hero rank or equipped skills cannot be saved.";
+        return _mastery != null && CSkillRankUtility.IsSingleRank(hero.CurrentRank)
+            && _mastery.TryCaptureSkillIds(hero, out skillIds);
     }
 
     private bool CanUseHeroes(IReadOnlyList<CPlayer> heroes)
@@ -195,7 +252,8 @@ public class CHeroBattleStateService
             members[i] = new CHeroRunMemberState
             {
                 MemberId = old.MemberId, HeroId = old.HeroId, Health = old.Health,
-                Stress = old.Stress, IsDead = old.IsDead
+                Stress = old.Stress, IsDead = old.IsDead, Rank = old.Rank,
+                SkillIds = old.SkillIds != null ? (string[])old.SkillIds.Clone() : null
             };
         }
         return new CHeroBattleSaveData

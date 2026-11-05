@@ -21,7 +21,10 @@ public class CEnemyAutoActionTest : MonoBehaviour
     private int _interrupted;
     private int _skipped;
 
-    public IReadOnlyList<CEnemyAI> Actors { get { return _actors; } }
+    public IReadOnlyList<CEnemyAI> Actors
+    {
+        get { return _actors; }
+    }
 
     public bool OpenTest()
     {
@@ -98,7 +101,7 @@ public class CEnemyAutoActionTest : MonoBehaviour
                 continue;
             }
 
-            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인합니다.
+            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인함
             if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes, _groupTest.SpawnedEnemies)) || !enemy.TryBeginAction())
             {
                 _skipped++;
@@ -118,12 +121,18 @@ public class CEnemyAutoActionTest : MonoBehaviour
 
     private void HandleRequest(CEntity actor, CEntity target, CSkillDataSO skill)
     {
-        // 실제 전투 관리자 대신 연출 시작만 요청하고 효과는 적용하지 않습니다.
+        // 실제 전투 관리자 대신 연출 시작만 요청하고 효과는 적용하지 않음
         actor.TryStartRequestedAction();
     }
 
-    private void HandleCompleted(CEntity actor) { _completed++; }
-    private void HandleInterrupted(CEntity actor) { _interrupted++; }
+    private void HandleCompleted(CEntity actor)
+    {
+        _completed++;
+    }
+    private void HandleInterrupted(CEntity actor)
+    {
+        _interrupted++;
+    }
 
     public void CloseTest()
     {
@@ -148,7 +157,10 @@ public class CEnemyAutoActionTest : MonoBehaviour
         _isOpen = false;
     }
 
-    private void OnDisable() { CloseTest(); }
+    private void OnDisable()
+    {
+        CloseTest();
+    }
 
     private void OnGUI()
     {

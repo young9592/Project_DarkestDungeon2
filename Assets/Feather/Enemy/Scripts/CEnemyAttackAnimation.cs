@@ -127,6 +127,17 @@ public class CEnemyAttackAnimation : MonoBehaviour
         }
     }
 
+    public void CompleteHitForDeath()
+    {
+        if (!IsHitReacting)
+        {
+            return;
+        }
+
+        PlayIdle();
+        OnHitCompleted?.Invoke();
+    }
+
     private void LateUpdate()
     {
         if (_needsIdle && IsReady)
@@ -164,17 +175,6 @@ public class CEnemyAttackAnimation : MonoBehaviour
                 OnHitCompleted?.Invoke();
                 break;
         }
-    }
-
-    public void CompleteHitForDeath()
-    {
-        if (!IsHitReacting)
-        {
-            return;
-        }
-
-        PlayIdle();
-        OnHitCompleted?.Invoke();
     }
 
     public bool TryPlayAttack()

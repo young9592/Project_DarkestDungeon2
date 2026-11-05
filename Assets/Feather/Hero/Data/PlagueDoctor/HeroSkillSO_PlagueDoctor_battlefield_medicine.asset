@@ -19,7 +19,10 @@ MonoBehaviour:
   _cooldown: 0
   _usesPerBattle: 3
   _effectList:
-  - {fileID: 11400000, guid: 9c7129f8a9270c64eb4068232e0ba430, type: 2}
+  - {fileID: 11400000, guid: 1cecfa41483e4b9abb264c172e7e6e76, type: 2}
+  - {fileID: 11400000, guid: e531d1c958d44465a032aa0d0fa9eb08, type: 2}
+  - {fileID: 11400000, guid: 107d02f63fcb4fdfbff367e295373a9a, type: 2}
+  - {fileID: 11400000, guid: 21df1840b0234b31b361fe60ede119e2, type: 2}
   _target: 4
   _startState: Base Layer.OriginalAntic_PlagueDoctor_battlefield_medicine
   _endState: Base Layer.OriginalRecover_PlagueDoctor_battlefield_medicine

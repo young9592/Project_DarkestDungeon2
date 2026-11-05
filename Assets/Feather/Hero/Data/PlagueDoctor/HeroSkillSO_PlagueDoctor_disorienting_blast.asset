@@ -17,7 +17,8 @@ MonoBehaviour:
   _useableRank: 14
   _targetableRank: 14
   _cooldown: 0
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: fc8d8fb71ed046f0ac1c5bbd250843eb, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_disorienting_blast
   _endState: Base Layer.OriginalRecover_PlagueDoctor_disorienting_blast

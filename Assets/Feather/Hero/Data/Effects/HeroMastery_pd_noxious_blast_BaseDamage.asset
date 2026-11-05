@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
   m_Name: HeroMastery_pd_noxious_blast_BaseDamage
   m_EditorClassIdentifier: 
-  _name: Noxious Blast damage
+  _name: Attack damage
   _effectType: 1
+  _effectTarget: 0
   _damage: 2
+  _maxDamage: 3
   _duration: 0
   _baseChance: 5
   _tokenType: 0

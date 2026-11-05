@@ -19,6 +19,7 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 60c4cb1f0729427e8f3eecdf577b39de, type: 2}
+  - {fileID: 11400000, guid: 8065851c7ff046d1ab15bed3943d902d, type: 2}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_double_cross
   _endState: Base Layer.OriginalRecover_Highwayman_double_cross

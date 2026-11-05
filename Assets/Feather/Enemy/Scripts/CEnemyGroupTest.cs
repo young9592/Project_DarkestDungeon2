@@ -96,6 +96,32 @@ public class CEnemyGroupTest : MonoBehaviour
         ClearGroup();
     }
 
+    public bool TryLoadEncounter(IReadOnlyList<CEnemyGroupSO> encounters, int seed)
+    {
+        if (!isActiveAndEnabled) return false;
+        if (!CEnemyGroupGenerator.TrySelectEncounter(encounters, seed, out CEnemyGroupSO group))
+        {
+            _message = "No valid formation for this encounter";
+            return false;
+        }
+        return TryLoadGroup(group);
+    }
+
+    public bool TryLoadGeneratedGroup(IReadOnlyList<CEnemy> prefabs, int enemyCount, int seed,
+        bool allowRepeatedEntries = false)
+    {
+        if (!isActiveAndEnabled) return false;
+        if (!CEnemyGroupGenerator.TryGenerate(prefabs, enemyCount, seed, out CEnemyGroupSO group, allowRepeatedEntries))
+        {
+            _message = "No valid formation for these enemies";
+            return false;
+        }
+
+        bool loaded = TryLoadGroup(group);
+        Destroy(group);
+        return loaded;
+    }
+
     public bool TryLoadGroup(CEnemyGroupSO group)
     {
         if (!isActiveAndEnabled)
@@ -141,7 +167,7 @@ public class CEnemyGroupTest : MonoBehaviour
             Vector3 center = (slot.position + _rankSlots[endIndex].position) * 0.5f;
             CEnemy enemy = Instantiate(entry.EnemyPrefab, center, slot.rotation * entry.EnemyPrefab.transform.rotation, _spawnRoot);
             enemy.name = entry.EnemyPrefab.name + "_" + entry.Rank;
-            enemy.TrySetRank(entry.Rank);
+            enemy.SetRankImmediate(entry.Rank);
             if (enemy.GetComponent<CEnemyIntentTest>() == null)
             {
                 enemy.gameObject.AddComponent<CEnemyIntentTest>();
@@ -231,7 +257,7 @@ public class CEnemyGroupTest : MonoBehaviour
             int index = GetRankIndex(enemy.CurrentRank);
             if (index <= removedIndex) continue;
             index -= size;
-            enemy.TrySetRank((ERank)(1 << index));
+            enemy.SetRankImmediate((ERank)(1 << index));
             int endIndex = index + enemy.EnemyData.FormationSize - 1;
             enemy.transform.position = (_rankSlots[index].position + _rankSlots[endIndex].position) * 0.5f;
         }
