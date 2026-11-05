@@ -129,17 +129,39 @@ public class CDamageStrategy : CEffectStrategy
         TryTriggerRiposte(defender, attacker);
     }
 
+    private static bool _isExecutingRiposte = false;
+
     private void TryTriggerRiposte(CEntity defender, CEntity attacker)
     {
+        if (_isExecutingRiposte) return;
         if (defender == null || attacker == null || defender == attacker) return;
         if (defender.IsDead || attacker.IsDead) return;
         if (defender.TokenManager.HasToken(EEffectType.Stun)) return;
 
         if (defender.TokenManager.ConsumeToken(EEffectType.Riposte))
         {
-            int riposteDamage = Random.Range(3, 6);
-            CPrint.Log($"[반격] [{defender.name}]가 공격자인 [{attacker.name}]에게 [{riposteDamage}] 반격 피해를 입힙니다");
-            attacker.TakeDamage(riposteDamage);
+            _isExecutingRiposte = true;
+            if (defender.RiposteSkill != null && defender.RiposteSkill.EffectList != null)
+            {
+                CPrint.Log($"[특수 반격] [{defender.name}] → [{attacker.name}]에게 <{defender.RiposteSkill.SkillName}> 실행");
+                CEffectContext riposteContext = new CEffectContext(defender, attacker);
+
+                foreach (CEffectSO effectData in defender.RiposteSkill.EffectList)
+                {
+                    if (effectData == null || effectData.Strategy == null) continue;
+                    if (attacker.IsDead && effectData.EffectTarget != EEffectTarget.Self) break;
+
+                    effectData.Strategy.Apply(riposteContext, effectData);
+                }
+            }
+            else
+            {
+                int riposteDamage = Random.Range(3, 6);
+                CPrint.Log($"[반격] [{defender.name}]가 공격자인 [{attacker.name}]에게 [{riposteDamage}] 반격 피해를 입힙니다");
+                attacker.TakeDamage(riposteDamage);
+            }
+
+            _isExecutingRiposte = false;
         }
     }
 }
