@@ -240,9 +240,9 @@ public class CPlayer : CEntity
         {
             CEntity target = _actionTargets[i];
             if ((target is CPlayer hero && hero.IsDeathPresented
-                && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+                && (!hero.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !_actionExecution.HasStartedEffects)))
                 || (target is CEnemy enemy && enemy.IsDeathPresented
-                && (!enemy.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying)))
+                && (!enemy.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !_actionExecution.HasStartedEffects))))
             {
                 CancelAction();
                 return;
