@@ -328,6 +328,31 @@ public class CCombatCameraManager : MonoBehaviour
             {
                 entitiesTr[i].position = Vector3.Lerp(camInitPos[i], moveVec[i], t);
                 entitiesTr[i].gameObject.GetComponentInChildren<Animator>().speed = 0;
+                
+                if(combatTarget == CombatTarget.Hero_Attack)
+                {
+                    if (entitiesTr[i].gameObject.GetComponent<CEntity>() is CPlayer)
+                    {
+                        continue;
+                    }
+
+                    Animator animator = entitiesTr[i].gameObject.GetComponentInChildren<Animator>();
+                    int hit = Animator.StringToHash("Hit");
+
+                    animator.Play(hit);
+                }
+                else if(combatTarget == CombatTarget.Enemy_Attack)
+                {
+                    if (entitiesTr[i].gameObject.GetComponent<CEntity>() is CEnemy)
+                    {
+                        continue;
+                    }
+
+                    Animator animator = entitiesTr[i].gameObject.GetComponentInChildren<Animator>();
+                    int hit = Animator.StringToHash("Hit");
+
+                    animator.Play(hit);
+                }
             }
 
             yield return null;
