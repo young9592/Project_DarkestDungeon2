@@ -81,7 +81,7 @@ public class CMoveStrategy : CEffectStrategy
                 }
 
                 TryChangeEntityRank(occupant, currentRankEnum);
-                CPrint.Log($"[진형 연동] [{occupant.name}] 밀려남: Rank {nextStepIndex} → Rank {currentRankEnum}");
+                CPrint.Log($"[진형 연동] [{occupant.name}] 밀려남: Rank {nextStepIndex} → Rank {currentRankIndex}");
             }
 
             if (TryChangeEntityRank(context.Target, nextRankEnum))

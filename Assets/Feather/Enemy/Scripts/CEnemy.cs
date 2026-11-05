@@ -138,6 +138,11 @@ public class CEnemy : CEntity
             || (_formationMovement != null && _formationMovement.IsMoving); }
     }
 
+    public bool HasStartedSkillEffects
+    {
+        get { return _actionExecution != null && _actionExecution.HasStartedEffects; }
+    }
+
     public bool IsAttackPresentationPlaying
     {
         get { return _attackAnimation != null && _attackAnimation.IsAttacking; }
@@ -234,7 +239,7 @@ public class CEnemy : CEntity
     private void LateUpdate()
     {
         if (ActionTarget is CPlayer hero && hero.IsDeathPresented
-            && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+            && (!hero.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !HasStartedSkillEffects)))
         {
             CancelAction();
         }
@@ -539,7 +544,7 @@ public class CEnemy : CEntity
             case EEffectType.DodgePlus:
             case EEffectType.Block:
             case EEffectType.BlockPlus:
-            case EEffectType.Guarded:
+            case EEffectType.Guard:
             case EEffectType.Strength:
             case EEffectType.Speed:
             case EEffectType.Stealth:

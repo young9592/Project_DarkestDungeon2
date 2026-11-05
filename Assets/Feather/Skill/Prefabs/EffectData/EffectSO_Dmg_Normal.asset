@@ -15,8 +15,8 @@ MonoBehaviour:
   _name: "\uAE30\uBCF8 \uBCA0\uAE30"
   _effectType: 1
   _effectTarget: 0
-  _damage: 4
-  _maxDamage: 6
+  _damage: 3
+  _maxDamage: 5
   _duration: 0
   _baseChance: 100
   _tokenType: 0

@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
   m_Name: SkillSO_HoldTheLine
   m_EditorClassIdentifier: 
-  _skillName: "\uBC30\uC218\uC9C4"
+  _skillName: "\uC804\uC120 \uC0AC\uC218"
   _skillIcon: {fileID: 0}
-  _useableRank: -1
+  _useableRank: 14
   _targetableRank: 3
   _isGroupTarget: 0
-  _cooldown: 0
+  _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
-  - {fileID: 11400000, guid: 7ce6f6987fb92c048b48add81dbf0a32, type: 2}
-  - {fileID: 11400000, guid: 63b7b6bb98244954f9ae4be856ac878c, type: 2}
+  - {fileID: 11400000, guid: 00bb991afea4b2147a76da19cba29274, type: 2}
+  - {fileID: 11400000, guid: a83bd9c2a96261e458b4d012f3077996, type: 2}
+  - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}

@@ -240,9 +240,9 @@ public class CPlayer : CEntity
         {
             CEntity target = _actionTargets[i];
             if ((target is CPlayer hero && hero.IsDeathPresented
-                && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+                && (!hero.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !_actionExecution.HasStartedEffects)))
                 || (target is CEnemy enemy && enemy.IsDeathPresented
-                && (!enemy.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying)))
+                && (!enemy.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !_actionExecution.HasStartedEffects))))
             {
                 CancelAction();
                 return;
@@ -792,7 +792,7 @@ public class CPlayer : CEntity
             case EEffectType.DodgePlus:
             case EEffectType.Block:
             case EEffectType.BlockPlus:
-            case EEffectType.Guarded:
+            case EEffectType.Guard:
             case EEffectType.Strength:
             case EEffectType.Speed:
             case EEffectType.Stealth:

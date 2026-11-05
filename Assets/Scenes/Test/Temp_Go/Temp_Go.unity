@@ -305,13 +305,18 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _skillList:
-  - {fileID: 11400000, guid: 553bbecde523bc549ad965e38f2c58bf, type: 2}
-  - {fileID: 11400000, guid: 76da6ed268496db4a8eca06f87e8e677, type: 2}
-  - {fileID: 11400000, guid: 59db653119185074fb320751942642a4, type: 2}
-  - {fileID: 11400000, guid: 754ebba8f671a7f4c88c46772901b662, type: 2}
-  - {fileID: 11400000, guid: 33178cd9352f34a4fbb783938e09a8da, type: 2}
   - {fileID: 11400000, guid: f341b47c1f3003743b1416af6de7ad2c, type: 2}
-  _selectIndex: 0
+  - {fileID: 11400000, guid: 0664db84260787f4b9a9a6a7d3198915, type: 2}
+  - {fileID: 11400000, guid: 58bc3386bacd0c440889033198d6bb21, type: 2}
+  - {fileID: 11400000, guid: d48c17e036803f84997e994f9999b35f, type: 2}
+  - {fileID: 11400000, guid: 0e56bb8132272fb428e6bfa765d6f1a0, type: 2}
+  - {fileID: 11400000, guid: b4060a680547f70428a6b723ea099fe4, type: 2}
+  - {fileID: 11400000, guid: 85bb985f8dbed2c46be17f062cf0c661, type: 2}
+  - {fileID: 11400000, guid: 7997fd86acfdcca4fa19fc7a2c76acf7, type: 2}
+  - {fileID: 11400000, guid: a2c345791e5057f47b16fe6589e4038c, type: 2}
+  - {fileID: 11400000, guid: a1938c0b483c1184581adb487a7edca6, type: 2}
+  - {fileID: 11400000, guid: 89489f2312452224c95d021f355dd8c5, type: 2}
+  _selectIndex: 4
   _dummyAttackSkill: {fileID: 11400000, guid: c0d9286b935a57a4a83fae39b8baafc2, type: 2}
 --- !u!4 &1502528984
 Transform:
