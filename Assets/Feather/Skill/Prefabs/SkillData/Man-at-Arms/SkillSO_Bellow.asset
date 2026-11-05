@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
   m_Name: SkillSO_Bellow
   m_EditorClassIdentifier: 
-  _skillName: "\uD3EC\uD6A8"
+  _skillName: "\uACE0\uD568"
   _skillIcon: {fileID: 0}
   _useableRank: -1
   _targetableRank: -1
@@ -20,4 +20,4 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
-  - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
+  - {fileID: 11400000, guid: 64d034e5018e0cc4396285c475a6e366, type: 2}

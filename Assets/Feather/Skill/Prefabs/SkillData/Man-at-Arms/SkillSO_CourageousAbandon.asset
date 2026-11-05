@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_CourageousAbandon
+  m_EditorClassIdentifier: 
+  _skillName: "\uC6A9\uB9F9\uD55C \uB3CC\uC9C4"
+  _skillIcon: {fileID: 0}
+  _useableRank: 3
+  _targetableRank: 3
+  _isGroupTarget: 0
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: f4480241895173548b9646900d15f1b0, type: 2}
+  - {fileID: 11400000, guid: 0d00428a28e39ab42997fc341d0ccfcd, type: 2}

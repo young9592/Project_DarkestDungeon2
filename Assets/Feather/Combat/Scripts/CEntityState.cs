@@ -265,7 +265,7 @@ public class CEntityState : MonoBehaviour
             case EEffectType.BlockPlus:
                 _blockPlus.SetActive(toggle);
                 break;
-            case EEffectType.Guarded:
+            case EEffectType.Guard:
                 _guard.SetActive(toggle);
                 break;
             case EEffectType.Strength:

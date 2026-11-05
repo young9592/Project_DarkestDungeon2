@@ -792,7 +792,7 @@ public class CPlayer : CEntity
             case EEffectType.DodgePlus:
             case EEffectType.Block:
             case EEffectType.BlockPlus:
-            case EEffectType.Guarded:
+            case EEffectType.Guard:
             case EEffectType.Strength:
             case EEffectType.Speed:
             case EEffectType.Stealth:

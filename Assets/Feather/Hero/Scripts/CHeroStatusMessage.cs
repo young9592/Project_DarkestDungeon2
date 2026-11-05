@@ -96,7 +96,7 @@ public class CHeroStatusMessage : MonoBehaviour
             case EEffectType.DodgePlus: return "회피+";
             case EEffectType.Block: return "방어";
             case EEffectType.BlockPlus: return "방어+";
-            case EEffectType.Guarded: return "보호";
+            case EEffectType.Guard: return "보호";
             case EEffectType.Strength: return "힘";
             case EEffectType.Speed: return "속도";
             case EEffectType.Stealth: return "은신";
