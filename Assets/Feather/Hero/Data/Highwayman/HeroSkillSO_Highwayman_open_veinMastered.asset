@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_Highwayman_open_veinMastered
+  m_EditorClassIdentifier: 
+  _skillName: Open Vein+
+  _skillIcon: {fileID: 21300000, guid: f3f8ead65e17e4e4c97b626ee343a3e3, type: 3}
+  _useableRank: 7
+  _targetableRank: 3
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 51f7fa0b84694a3b9f156574963ae595, type: 2}
+  - {fileID: 11400000, guid: 0af8396b328641709cc81a07fede7da8, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_Highwayman_open_vein
+  _endState: Base Layer.OriginalRecover_Highwayman_open_vein
+  _presentationNote: Shares the Wicked Slice motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_wicked_slice
+  _selectionHoldState: Base Layer.SourceReady_wicked_slice
+  _executionStartState: Base Layer.OriginalAction_Highwayman_open_vein
+  _feedback: {fileID: 11400000, guid: 112e8eddcfc6773409039aba2cf72de7, type: 2}
+  _baseSkill: {fileID: 11400000, guid: 6d45ddd1737e39d4e8a0669d89dc427d, type: 2}

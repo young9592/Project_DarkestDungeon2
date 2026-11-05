@@ -662,6 +662,19 @@ public class CEnemy : CEntity
         return (int)Math.Min(int.MaxValue, total);
     }
 
+    public int ConsumeRemainingDotDamage()
+    {
+        long total = 0;
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null || !IsDotEffect(effect.EffectType)) continue;
+            if (effect.RemainingTurns > 0) total += (long)effect.Damage * effect.RemainingTurns;
+            _activeStatusEffects.RemoveAt(i);
+        }
+        return (int)Math.Min(int.MaxValue, total);
+    }
+
     private bool IsDotEffect(EEffectType type)
     {
         return type == EEffectType.Bleed || type == EEffectType.Blight || type == EEffectType.Burn;

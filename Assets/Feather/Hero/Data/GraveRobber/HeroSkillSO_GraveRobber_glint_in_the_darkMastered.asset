@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_glint_in_the_darkMastered
+  m_EditorClassIdentifier: 
+  _skillName: Glint in the Dark+
+  _skillIcon: {fileID: 21300000, guid: 0bd1198d2ade2374f8da57a6e0a1f1e7, type: 3}
+  _useableRank: 7
+  _targetableRank: 7
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 07c7cb53caf141ec933d47bc99ed0e15, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_GraveRobber_glint_in_the_dark
+  _endState: Base Layer.OriginalRecover_GraveRobber_glint_in_the_dark
+  _presentationNote: Shares the Thrown Dagger motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_thrown_dagger
+  _selectionHoldState: Base Layer.SourceReady_thrown_dagger
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_glint_in_the_dark
+  _feedback: {fileID: 11400000, guid: 7b5618b1ea9ebe646bdd0c91cfe3c963, type: 2}
+  _baseSkill: {fileID: 11400000, guid: fa04fd01907f2934bb5de0f93497b447, type: 2}

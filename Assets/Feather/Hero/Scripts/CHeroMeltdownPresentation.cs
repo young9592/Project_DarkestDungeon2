@@ -45,19 +45,21 @@ public class CHeroMeltdownPresentation : MonoBehaviour
     private void OnEnable()
     {
         if (_hero == null || _animation == null) return;
-        _hero.OnMeltdownTriggered += Queue;
         _animation.OnMeltdownStarted += Started;
         _animation.OnMeltdownCompleted += Completed;
         _animation.OnMeltdownInterrupted += Interrupted;
     }
 
-    private void Queue(CPlayer hero)
+    public bool TryQueue()
     {
+        if (!isActiveAndEnabled || _hero == null || _animation == null) return false;
         if (_hero.ActionState == EEntityActionState.Idle || _hero.ActionState == EEntityActionState.Selecting)
         {
             _hero.CancelSkillSelection();
         }
-        if (_animation.TryQueueMeltdown()) OnQueued?.Invoke(_hero);
+        if (!_animation.TryQueueMeltdown()) return false;
+        OnQueued?.Invoke(_hero);
+        return true;
     }
 
     private void Started()
@@ -155,7 +157,6 @@ public class CHeroMeltdownPresentation : MonoBehaviour
         if (_animation != null) _animation.CancelMeltdown();
         RestoreHeldWeapons();
         if (_hero == null || _animation == null) return;
-        _hero.OnMeltdownTriggered -= Queue;
         _animation.OnMeltdownStarted -= Started;
         _animation.OnMeltdownCompleted -= Completed;
         _animation.OnMeltdownInterrupted -= Interrupted;
