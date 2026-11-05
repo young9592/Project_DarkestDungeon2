@@ -8,7 +8,7 @@ public class CHeroPositiveTokenStrategy : CEffectStrategy
     private static readonly EEffectType[] _positiveTokens =
     {
         EEffectType.Crit, EEffectType.Riposte, EEffectType.Dodge, EEffectType.DodgePlus,
-        EEffectType.Block, EEffectType.BlockPlus, EEffectType.Guarded,
+        EEffectType.Block, EEffectType.BlockPlus, EEffectType.Guard,
         EEffectType.Strength, EEffectType.Speed, EEffectType.Stealth
     };
 
