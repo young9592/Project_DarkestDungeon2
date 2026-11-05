@@ -41,6 +41,7 @@ public abstract class CEntity : MonoBehaviour
     public virtual void ResetEntityState() { }
     public virtual int DetonateAllDots() { return 0; }
     public CEntity GuardProtector { get; private set; }
+    public CSkillDataSO RiposteSkill { get; private set; }
 
     public bool IsDeathsDoor 
     { 
@@ -190,5 +191,10 @@ public abstract class CEntity : MonoBehaviour
     public void SetGuardProtector(CEntity protector)
     {
         GuardProtector = protector;
+    }
+
+    public void SetRiposteSkill(CSkillDataSO riposteSkill)
+    {
+        RiposteSkill = riposteSkill;
     }
 }
