@@ -16,6 +16,44 @@ public class CHeroMasteryService
     public int Points { get { return _pending != null ? _pending.Points : (_data != null ? _data.Points : 0); } }
     public string RunId { get { return _data != null ? _data.RunId : string.Empty; } }
 
+    public CHeroMasterySaveData CaptureCheckpoint()
+    {
+        return _isLoaded && _data != null && !IsTraining ? Copy() : null;
+    }
+
+    public bool CanRestoreCheckpoint(CHeroMasterySaveData data)
+    {
+        return !IsTraining && IsValid(data);
+    }
+
+    public bool TryRestoreCheckpoint(CHeroMasterySaveData data)
+    {
+        if (!CanRestoreCheckpoint(data)) return false;
+        // 전투 저장 파일을 기준으로 복원하고 별도 저장은 하지 않습니다.
+        _data = Copy(data);
+        _isLoaded = true;
+        return true;
+    }
+
+    public bool CanApplyCheckpoint(CPlayer hero, CHeroMasterySaveData data)
+    {
+        if (!CanRestoreCheckpoint(data) || hero == null || hero.HeroData == null
+            || hero.EquippedSkills == null) return false;
+        List<CSkillDataSO> skills = new List<CSkillDataSO>();
+        for (int i = 0; i < hero.EquippedSkills.Count; i++)
+        {
+            CSkillDataSO skill = CHeroSkillSO.GetBaseSkill(hero.EquippedSkills[i]);
+            CHeroMasterySkill entry = _catalog.Find(hero.HeroData.Id, skill);
+            if (entry != null && entry.IsAvailable
+                && System.Array.IndexOf(data.MasteredSkillIds, entry.Id) >= 0) skill = entry.MasteredSkill;
+            skills.Add(skill);
+        }
+        CHeroSkillLoadoutSO loadout = CHeroSkillLoadoutSO.CreateRuntime(hero.HeroData, skills);
+        if (loadout == null) return false;
+        Object.Destroy(loadout);
+        return true;
+    }
+
     public CHeroMasteryService(CHeroMasteryCatalogSO catalog, string savePath)
     {
         _catalog = catalog;
