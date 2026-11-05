@@ -55,7 +55,7 @@ public class CEnemyAI : MonoBehaviour
             else if (!IsPlanValid())
             {
                 bool finishingHit = _enemy.ActionState == EEntityActionState.Executing
-                    && !_enemy.IsAttackPresentationPlaying
+                    && (!_enemy.IsAttackPresentationPlaying || _enemy.HasStartedSkillEffects)
                     && _plannedTarget is CPlayer target && target.IsDeathPresented
                     && target.DeathPresentation.WasHitReacting;
                 if (!finishingHit)

@@ -14,6 +14,7 @@ public class CEntityActionExecution : MonoBehaviour
     private readonly List<CEntity> _targets = new List<CEntity>();
     private bool _isRunning;
     private int _executionId;
+    public bool HasStartedEffects { get; private set; }
 
     public bool IsRunning
     {
@@ -98,17 +99,8 @@ public class CEntityActionExecution : MonoBehaviour
 
     private IEnumerator Execute(CSkillDataSO skill, CEffectManager effects, bool hasEffects, int executionId)
     {
+        // 장면 배치 직후 효과를 적용하고, 남은 동작은 완료 전에 기다립니다.
         yield return null;
-        while (IsPresentationBusy(_actor))
-        {
-            if (!CanContinue(executionId))
-            {
-                Interrupt();
-                yield break;
-            }
-
-            yield return null;
-        }
 
         if (hasEffects)
         {
@@ -121,6 +113,7 @@ public class CEntityActionExecution : MonoBehaviour
             bool effectsCompleted = false;
             float effectStartedAt = Time.realtimeSinceStartup;
             // 광역 효과와 자기 효과를 한 번의 스킬 실행으로 전달
+            HasStartedEffects = true;
             effects.ExecuteSkillEffects(_actor, new List<CEntity>(_targets), skill, () =>
             {
                 if (_isRunning && executionId == _executionId)
@@ -227,6 +220,7 @@ public class CEntityActionExecution : MonoBehaviour
     private void ResetExecution()
     {
         _isRunning = false;
+        HasStartedEffects = false;
         _executionId++;
         for (int i = 0; i < _targets.Count; i++)
         {
