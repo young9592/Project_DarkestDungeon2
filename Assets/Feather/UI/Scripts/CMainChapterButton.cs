@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //버튼 클릭 처리 자신이 선택됐을 때 메뉴에 알림
-public class CChapterButton : MonoBehaviour
+public class CMainChapterButton : MonoBehaviour
 {
     #region Inspector
     //챕터가 열릴때마다 갱신용
@@ -19,16 +19,19 @@ public class CChapterButton : MonoBehaviour
     [SerializeField] private GameObject _mainMenuB;             // 2개 : 고해이어하기,새 고해 버튼들
     [SerializeField] private GameObject _confessionButton;
     [SerializeField] private GameObject _backButton;            // 뒤로가기 버튼
-    // 게임종료도 만들예정
+    // 게임종료 화면
+    [SerializeField] private GameObject _exitButtonY;            // 게임종료 수락버튼
+    [SerializeField] private GameObject _exitButtonN;            // 게임종료 취소버튼
+    [SerializeField] private GameObject _exitTitle;            // 게임종료 팝업창
 
     //투명도
-    [SerializeField, Range(0f, 1f)]
-    private float _alpha = 0.5f;
+    //[SerializeField, Range(0f, 1f)]
+    //private float _alpha = 0.5f;
     #endregion
 
     #region 
     // 초반 튜토리얼을 눌렀는가?
-    private bool _pausdPrologue = false;
+    //private bool _pausdPrologue = false;
     #endregion
 
     void Start()
@@ -76,9 +79,32 @@ public class CChapterButton : MonoBehaviour
         {
             _mainMenuB.SetActive(false);
         }
+        if (_exitTitle != null)
+        {
+            _exitTitle.SetActive(false);
+        }
         Debug.Log("처음 타이틀 화면(고해,왕국,모드)");
     }
-    public void OnClickExit()           // 게임 종료버튼
+
+    public void OnClickExitTitle()
+    {
+        if (_exitTitle != null)
+        {
+            _exitTitle.SetActive(true);
+        }
+        Debug.Log("게임 종료 아이콘 눌림");
+    }
+
+    public void OnClickExitCancel()      // 게임 종료버튼 No 눌렀을때
+    {
+        if (_exitTitle != null)
+        {
+            _exitTitle.SetActive(false);
+        }
+        Debug.Log("게임종료버튼 취소");
+    }
+
+    public void OnClickExit()           // 게임 종료버튼 Yes 눌렀을때
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPaused = false;
