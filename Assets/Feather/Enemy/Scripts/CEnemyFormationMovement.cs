@@ -244,7 +244,8 @@ public class CEnemyFormationMovement : MonoBehaviour
             || _members == null || _slots == null || _slots.Length != 4) return false;
         CEnemySkillRule rule = _enemy.EnemyData.GetSkillRule(skill);
         if (rule == null || rule.RankMovement == 0) return false;
-        return TryMoveOffset(rule.RankMovement, -1);
+        // 스킬은 열만 바꾸고 화면 이동은 전투 연출에서 처리함
+        return TryMoveOffset(rule.RankMovement, -1, false);
     }
 
     private bool TryMoveToRank(ERank rank)
@@ -254,7 +255,7 @@ public class CEnemyFormationMovement : MonoBehaviour
         if (_enemy.CurrentRank == rank) return true;
         int destination = GetIndex(rank);
         if (destination < 0 || destination + _enemy.EnemyData.FormationSize > 4) return false;
-        return TryMoveOffset(destination - GetIndex(_enemy.CurrentRank), destination);
+        return TryMoveOffset(destination - GetIndex(_enemy.CurrentRank), destination, true);
     }
 
     private bool HasValidSlots()
@@ -267,14 +268,34 @@ public class CEnemyFormationMovement : MonoBehaviour
         return true;
     }
 
-    private bool TryMoveOffset(int movement, int requiredDestination)
+    private bool TryMoveOffset(int movement, int requiredDestination, bool animateMovement)
     {
         _movedMembers.Clear();
+        if (!TryPlanMove(movement, out Dictionary<CEnemy, int> positions)
+            || (requiredDestination >= 0 && positions[_enemy] != requiredDestination)) return false;
+        foreach (KeyValuePair<CEnemy, int> pair in positions)
+        {
+            if (GetIndex(pair.Key.CurrentRank) == pair.Value) continue;
+            pair.Key.SetRankImmediate((ERank)(1 << pair.Value));
+            if (animateMovement) pair.Key.FormationMovement.MoveToRank();
+            _movedMembers.Add(pair.Key);
+        }
+        return true;
+    }
+
+    public bool CanMoveOffset(int movement)
+    {
+        return TryPlanMove(movement, out _);
+    }
+
+    private bool TryPlanMove(int movement, out Dictionary<CEnemy, int> positions)
+    {
+        positions = null;
         if (!IsConfigured || movement == 0 || _enemy == null || _enemy.EnemyData == null
             || _enemy.IsDead || !_enemy.isActiveAndEnabled
             || _enemy.TokenManager.HasToken(EEffectType.Immobilize)) return false;
 
-        Dictionary<CEnemy, int> positions = new Dictionary<CEnemy, int>();
+        positions = new Dictionary<CEnemy, int>();
         CEnemy[] occupied = new CEnemy[4];
         for (int i = 0; i < _members.Count; i++)
         {
@@ -334,16 +355,7 @@ public class CEnemyFormationMovement : MonoBehaviour
             }
             remaining -= distance;
         }
-        if (positions[_enemy] == original) return false;
-        if (requiredDestination >= 0 && positions[_enemy] != requiredDestination) return false;
-        foreach (KeyValuePair<CEnemy, int> pair in positions)
-        {
-            if (GetIndex(pair.Key.CurrentRank) == pair.Value) continue;
-            pair.Key.SetRankImmediate((ERank)(1 << pair.Value));
-            pair.Key.FormationMovement.MoveToRank();
-            _movedMembers.Add(pair.Key);
-        }
-        return true;
+        return positions[_enemy] != original;
     }
 
     private int GetIndex(ERank rank)
