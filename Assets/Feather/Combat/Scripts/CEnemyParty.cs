@@ -17,11 +17,13 @@ public class CEnemyParty : MonoBehaviour
     private List<CEnemy> _enemyList = new List<CEnemy>();
 
     private static bool _isReady = false;
+
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
     public List<CEnemy> EnemyList => _enemyList;
+    public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
     #endregion
     void Start()
     {
@@ -46,10 +48,11 @@ public class CEnemyParty : MonoBehaviour
             var enemyPrefab = Instantiate(_enemyPartyPreset.Entries[i].EnemyPrefab, _entityRoot.transform);
 
             // 위치 조정
-            Vector3 vec = Vector3.zero;
+            Vector3 vec = _enemyRankPosition[0].transform.position;
             int size = _enemyPartyPreset.Entries[i].EnemyPrefab.EnemyData.FormationSize;
 
 
+            
             switch (_enemyPartyPreset.Entries[i].Rank)
             {
                 case ERank.None:
@@ -69,6 +72,8 @@ public class CEnemyParty : MonoBehaviour
                 default:
                     break;
             }
+            
+
             enemyPrefab.GetComponent<CEnemy>().TrySetRank(_enemyPartyPreset.Entries[i].Rank);
 
             enemyPrefab.transform.position = vec;
@@ -82,6 +87,12 @@ public class CEnemyParty : MonoBehaviour
             // Rotaion 조정
             enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 180f, 0);
 
+            // 구울같은 개체는 등을 보여줬어..
+            if(enemyPrefab.EntityData.Id == "enemy_ghoul")
+            {
+                enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
+            }
+
             // 스크립트 잠시 중단
             enemyPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
@@ -93,13 +104,20 @@ public class CEnemyParty : MonoBehaviour
         _isReady = true;
     }
 
+    
     private Vector3 SizeOffsetPosition(int rank, int size)
     {
         Vector3 vec = Vector3.zero;
 
         if (rank + size > 4)
         {
-            CPrint.Log("배치 오류 SO 확인필요");
+            CPrint.Warn("배치 오류 SO 확인필요");
+            return Vector3.zero;
+        }
+
+        if (size <= 0)
+        {
+            CPrint.Warn("사이즈 설정 잘못됨");
             return Vector3.zero;
         }
 
@@ -109,7 +127,7 @@ public class CEnemyParty : MonoBehaviour
         }
         else
         {
-            for (int j = rank; j <= size; j++)
+            for (int j = rank; j < rank + size; j++)
             {
                 vec += _enemyRankPosition[j].transform.position;
             }
@@ -117,5 +135,17 @@ public class CEnemyParty : MonoBehaviour
         }
 
         return vec;
+    }
+
+    public void RemoveEnemy(CEnemy enemy)
+    {
+        for (int i = _enemyList.Count - 1; i >= 0; i--)
+        {
+            if (_enemyList[i] == enemy)
+            {
+                _enemyList.RemoveAt(i);
+                break;
+            }
+        }
     }
 }

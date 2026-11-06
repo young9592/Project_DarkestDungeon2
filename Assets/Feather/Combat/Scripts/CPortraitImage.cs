@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class CPortraitImage : MonoBehaviour
 {
     #region Inspector
+    [Header("Turn Entity Id")]
+    [SerializeField] private int _id;
+
     [Header("Turn Portrait Image")]
     [SerializeField] private Image _entityPortrait;
     [SerializeField] private Image _markerImage;
@@ -45,8 +48,10 @@ public class CPortraitImage : MonoBehaviour
         _rectTr = GetComponent<RectTransform>();
     }
     // 초상화 초기화
-    public void Initialize(int index, EEntityType entityType, Sprite sprite)
+    public void Initialize(int id, int index, EEntityType entityType, Sprite sprite)
     {
+        _id = id;
+
         index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
         _currentTurnorder = index;

@@ -169,7 +169,7 @@ public class CSceneFlowManager : MonoBehaviour
     {
         string current = SceneManager.GetActiveScene().name;
 
-        if (_catalog.TryGetSceneId(current, out ESceneId id))
+        if (!_catalog.TryGetSceneId(current, out ESceneId id))
         {
             return;
         }

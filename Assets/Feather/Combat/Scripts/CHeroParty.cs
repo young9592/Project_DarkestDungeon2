@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class CHeroParty : MonoBehaviour
@@ -21,6 +23,7 @@ public class CHeroParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CPlayer> HeroList => _heroList;
+    public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
     #endregion
 
     private void Start()
@@ -46,28 +49,8 @@ public class CHeroParty : MonoBehaviour
         {
             var heroPrefab = Instantiate(_heroPartyPreset.Members[i].Prefab, _entityRoot.transform);
 
-            // 위치 조정
-            Vector3 vec = Vector3.zero;
+            Vector3 vec = _heroRankPosition[0].transform.position;
 
-            switch (_heroPartyPreset.Members[i].Rank)
-            {
-                case ERank.None:
-                    break;
-                case ERank.Rank1:
-                    vec = _heroRankPosition[0].transform.position;
-                    break;
-                case ERank.Rank2:
-                    vec = _heroRankPosition[1].transform.position;
-                    break;
-                case ERank.Rank3:
-                    vec = _heroRankPosition[2].transform.position;
-                    break;
-                case ERank.Rank4:
-                    vec = _heroRankPosition[3].transform.position;
-                    break;
-                default:
-                    break;
-            }
             heroPrefab.GetComponent<CPlayer>().TrySetRank(_heroPartyPreset.Members[i].Rank);
 
             heroPrefab.transform.position = vec;
@@ -88,7 +71,28 @@ public class CHeroParty : MonoBehaviour
             _heroList.Add(heroPrefab.GetComponent<CPlayer>());
         }
 
+        // 위치조정
+        Vector3 rankStep = new Vector3(_heroRankPosition[1].transform.position.x - _heroRankPosition[0].transform.position.x, 0, 0);
+       
+
+        for (int i = 0; i < _heroList.Count; i++)
+        {
+            _heroList[i].RankPresentation.Configure(_heroRankPosition[0].transform.position, rankStep, _heroList);
+        }
+
         // 준비완료
         _isReady = true;
+    }
+
+    public void RemoveHero(CPlayer hero)
+    {
+        for (int i = _heroList.Count - 1; i >= 0; i--)
+        {
+            if (_heroList[i] == hero)
+            {
+                _heroList.RemoveAt(i);
+                break;
+            }
+        }
     }
 }

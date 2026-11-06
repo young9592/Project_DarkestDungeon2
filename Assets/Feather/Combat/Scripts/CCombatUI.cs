@@ -110,6 +110,7 @@ public class CCombatUI : MonoBehaviour
     #region Field
     private int _round = 0;
     private bool _pass = false;
+    private bool _rankChange = false;
     private bool _cursorRank = false;
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -121,6 +122,11 @@ public class CCombatUI : MonoBehaviour
     {
         get { return _pass; }
         set { _pass = value; }
+    }
+    public bool Change
+    {
+        get { return _rankChange; }
+        set { _rankChange = value; }
     }
     public RectTransform HeroTemptationTextTr => _heroTemptation.gameObject.GetComponent<RectTransform>();
     #endregion
@@ -141,7 +147,6 @@ public class CCombatUI : MonoBehaviour
         _checkList.Add(_rightHit);
         _checkList.Add(_heroTemptation);
         _checkList.Add(_heroTemptationResult);
-
 
         _checkList.Add(_heroInfo);
         _checkList.Add(_heroPortrait);
@@ -256,7 +261,7 @@ public class CCombatUI : MonoBehaviour
     /// </summary>
     /// <param name="turnList">현재 턴 순서 목록</param>
     /// <returns></returns>
-    public List<GameObject> CreateTurnOrderPortraitList(List<(CEntity entity, int speed)> turnList)
+    public List<GameObject> CreateTurnOrderPortraitList(List<(int id, CEntity entity, int speed)> turnList)
     {
         List<GameObject> turnPortraitList = new List<GameObject>();
 
@@ -275,12 +280,12 @@ public class CCombatUI : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(4, entityType, portrait);
+                portraitImage.Initialize(turnList[i].id, 4, entityType, portrait);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(i + 1, entityType, portrait);
+                portraitImage.Initialize(turnList[i].id, i + 1, entityType, portrait);
             }
 
             turnPortraitList.Add(portraitPrefab);
