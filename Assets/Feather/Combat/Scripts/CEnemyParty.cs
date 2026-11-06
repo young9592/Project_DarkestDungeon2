@@ -172,6 +172,7 @@ public class CEnemyParty : MonoBehaviour
 
                     if (canRankChange)
                     {
+                        enemy.SetRankImmediate((ERank)(1 << i));
                         _rankList.Add((ERank)(1 << i), enemy);
                         _rankList.Remove((ERank)(1 << j));
                         break;

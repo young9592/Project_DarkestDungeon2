@@ -667,7 +667,7 @@ public class CBasicCombatManager : MonoBehaviour
 
         MyTurn.OnActionRequested -= OnAction;
 
-        SortEntitiesPosition(true);
+        //SortEntitiesPosition(true);
 
         yield return new WaitForSeconds(_actionDelay);
 
@@ -832,6 +832,7 @@ public class CBasicCombatManager : MonoBehaviour
             }
             else
             {
+
                 int size = (entity is CEnemy) ? (entity as CEnemy).EnemyData.FormationSize : (entity as CEnemyCorpse).FormationSize;
 
                 for (int j = rank; j < rank + size; j++)
@@ -841,8 +842,9 @@ public class CBasicCombatManager : MonoBehaviour
 
                 returnVec = new Vector3(returnVec.x / size, returnVec.y / size, returnVec.z / size);
 
-            }
 
+                //(_entityList[i].entity as CEnemy).FormationMovement.TryCompactFormation();
+            }
             entity.gameObject.transform.position = isLerp ? Vector3.Lerp(entity.gameObject.transform.position, returnVec, (1f - Mathf.Exp(-30f * Time.deltaTime))) : returnVec;
         }
     }
