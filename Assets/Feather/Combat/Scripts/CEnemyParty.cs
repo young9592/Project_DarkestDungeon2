@@ -85,6 +85,12 @@ public class CEnemyParty : MonoBehaviour
             // Rotaion 조정
             enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 180f, 0);
 
+            // 구울같은 개체는 등을 보여줬어..
+            if(enemyPrefab.EntityData.Id == "enemy_ghoul")
+            {
+                enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
+            }
+
             // 스크립트 잠시 중단
             enemyPrefab.GetComponent<CEntityHealthView>().enabled = false;
 

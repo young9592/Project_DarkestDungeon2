@@ -3338,7 +3338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: 9fa4a031b91a7c44899010fc6e102b2b, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: 0a3008b566a75ef4d92891a13cad1a7c, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}
@@ -3428,7 +3428,6 @@ MonoBehaviour:
   _combatUI: {fileID: 1696955578}
   _messageManager: {fileID: 2125789383}
   _debugMenu: {fileID: 1963749767}
-  _entityList: []
   _roundState: 0
   _actionDelay: 0.5
   _turnSkipDelay: 1.5
