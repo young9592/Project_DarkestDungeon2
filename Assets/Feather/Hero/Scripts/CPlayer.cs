@@ -852,6 +852,14 @@ public class CPlayer : CEntity
     }
 
 
+    internal void ApplyHorror(CEffectSO effectData)
+    {
+        if (!isActiveAndEnabled || _isDead || IsDeathPresented || effectData == null
+            || effectData.EffectType != EEffectType.Stress || effectData.Damage <= 0 || effectData.Duration <= 0) return;
+
+        _activeStatusEffects.Add(new CEffect(effectData));
+    }
+
     public void OnTurnStart()
     {
         OnTurnStart(false);
@@ -879,6 +887,7 @@ public class CPlayer : CEntity
                 int bleedDamage = 0;
                 int blightDamage = 0;
                 int burnDamage = 0;
+                int horrorStress = 0;
 
                 for (int i = _activeStatusEffects.Count - 1 ; i >= 0 ; i--)
                 {
@@ -889,6 +898,7 @@ public class CPlayer : CEntity
                         case EEffectType.Bleed: bleedDamage += effect.Damage; break;
                         case EEffectType.Blight: blightDamage += effect.Damage; break;
                         case EEffectType.Burn: burnDamage += effect.Damage; break;
+                        case EEffectType.Stress: horrorStress += effect.Damage; break;
                     }
 
                     effect.DecreaseTurn();
@@ -909,6 +919,12 @@ public class CPlayer : CEntity
                     ApplyDamage(totalTickDamage, false);
 
                     if (_isDead) return;
+                }
+
+                // 공포는 일반 턴 시작에 스트레스로 적용함
+                if (horrorStress > 0)
+                {
+                    ModifyStress(horrorStress);
                 }
             }
 
@@ -1057,7 +1073,7 @@ public class CPlayer : CEntity
         {
             EEffectType currentType = _activeStatusEffects[i].EffectType;
 
-            if (targetType == EEffectType.None || currentType == targetType)
+            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Stress))
             {
                 _activeStatusEffects.RemoveAt(i);
                 removedCount++;
@@ -1120,6 +1136,8 @@ public class CPlayer : CEntity
         for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
         {
             CEffect effect = _activeStatusEffects[i];
+            if (!IsDotEffect(effect.EffectType)) continue;
+
             int remainingDamage = effect.Damage * effect.RemainingTurns;
             totalBurstDamage += remainingDamage;
 
