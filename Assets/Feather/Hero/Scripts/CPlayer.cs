@@ -852,6 +852,11 @@ public class CPlayer : CEntity
     }
 
 
+    public bool HasHorror
+    {
+        get { return GetTotalDotDamageByType(EEffectType.Stress) > 0; }
+    }
+
     internal void ApplyHorror(CEffectSO effectData)
     {
         if (!isActiveAndEnabled || _isDead || IsDeathPresented || effectData == null
