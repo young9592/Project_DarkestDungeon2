@@ -76,6 +76,10 @@ MonoBehaviour:
     _attackState: Base Layer.Skill1
     _completionState: Base Layer.Skill1Pose
     _feedback: {fileID: 11400000, guid: 168da7f6a841a9a48afebf46e1e3fecc, type: 2}
+  - _skill: {fileID: 11400000, guid: 1ee58c041f184af198b64af2a6b04f62, type: 2}
+    _attackState: Base Layer.Howl
+    _completionState: Base Layer.HowlPose
+    _feedback: {fileID: 0}
 --- !u!114 &9090354810496263966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1534,7 +1538,7 @@ Animator:
   m_GameObject: {fileID: 3398537757621330908}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3dae398ecbc103846811a78cd9af6755, type: 2}
+  m_Controller: {fileID: 9100000, guid: caaa2630a3e88d44e816227d40141f80, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkillSO_Ghoul_SkullToss
   m_EditorClassIdentifier: 
   _skillName: Ghoul / Skull Toss
-  _skillIcon: {fileID: 0}
+  _skillIcon: {fileID: 21300000, guid: c14c1975d70f43919ea56a1f3cee2c0e, type: 3}
   _useableRank: -1
   _targetableRank: 12
   _isGroupTarget: 0
