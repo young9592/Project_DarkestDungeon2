@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_pirouette
+  m_EditorClassIdentifier: 
+  _skillName: Pirouette
+  _skillIcon: {fileID: 21300000, guid: f578b4fe81c158f488043db9d8319e2e, type: 3}
+  _useableRank: 3
+  _targetableRank: 3
+  _cooldown: 1
+  _rankMovement: 3
+  _effectList:
+  - {fileID: 11400000, guid: 65dbec4f90364766a65b41f2ec6d42af, type: 2}
+  _target: 3
+  _startState: Base Layer.OriginalAntic_GraveRobber_pirouette
+  _endState: Base Layer.OriginalRecover_GraveRobber_pirouette
+  _presentationNote: Shares the Flashing Daggers motion.
+  _requiresCorpse: 0
+  _selectionStartState: Base Layer.SourceSelect_flashing_daggers
+  _selectionHoldState: Base Layer.SourceReady_flashing_daggers
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_pirouette
+  _feedback: {fileID: 11400000, guid: d23a0dbf09253c346ab2a0ea4704df5c, type: 2}

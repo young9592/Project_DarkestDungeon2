@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_DisorientingBlast
+  m_EditorClassIdentifier: 
+  _skillName: "\uD63C\uB780 \uD3ED\uBC1C"
+  _skillIcon: {fileID: 0}
+  _useableRank: 14
+  _targetableRank: 14
+  _isGroupTarget: 0
+  _cooldown: 2
+  _effectList:
+  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
+  - {fileID: 11400000, guid: 7ee8723553ee971418e2f0c04e70b9bc, type: 2}
+  - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
+  - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}

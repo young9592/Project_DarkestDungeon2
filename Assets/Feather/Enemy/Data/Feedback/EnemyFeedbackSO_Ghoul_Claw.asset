@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d38b652dd39844d4b81474bb3cff2ebd, type: 3}
+  m_Name: EnemyFeedbackSO_Ghoul_Claw
+  m_EditorClassIdentifier: 
+  _launch: {fileID: 5874405066338862175, guid: ad04e428379c23b40bd970a20b595392, type: 3}
+  _projectile: {fileID: 0}
+  _impact: {fileID: 8563784344547847452, guid: 1b3dba9e511c5b04c8e594d6c9625f24, type: 3}
+  _origin: 0
+  _releaseTime: 0.08
+  _shotCount: 1
+  _shotSpacing: 0.15
+  _arcHeight: 0
+  _intentColor: {r: 0.94, g: 0.86, b: 0.65, a: 1}

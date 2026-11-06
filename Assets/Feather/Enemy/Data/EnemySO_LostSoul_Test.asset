@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_LostSoul_Test
+  m_EditorClassIdentifier: 
+  _id: enemy_lost_soul_test
+  _name: LostSoul (Test)
+  _maxHealth: 13
+  _speed: 1
+  _resistance:
+    Bleed: 10
+    Blight: 40
+    Burn: 10
+    Stun: 20
+    Move: 10
+    Debuff: 10
+  _deathDoorCount: 0
+  _actions: 1
+  _portraitTurnOrder: {fileID: 21300000, guid: ab15499a371a9a841823d29494e4e2c8, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 5ac18c22c119e1c4db36fa6df5de67eb, type: 3}
+  _skillSlotBackground: {fileID: 0}
+  _formationSize: 1
+  _availableSkills:
+  - {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
+  - {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
+    _rankMovement: 0
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 4
+  - _skill: {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+    _rankMovement: -2
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 10
+    _preferredRanks: 0
+    _condition: 3
+  _targetSelection: 0
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 21300000, guid: 7d58255767df402b9e2d4ca98e7b9509, type: 3}
+  _corpseData: {fileID: 11400000, guid: 002c15588bb24c07b5d0f192aae84264, type: 2}
+  _corpseHealth: 5
+  _corpseWidth: 0.014
+  _startingToken: 0
+  _startingTokenCount: 0
+  _extraStartingTokenChance: 0

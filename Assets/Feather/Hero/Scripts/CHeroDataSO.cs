@@ -7,7 +7,7 @@ public class CHeroDataSO : CEntityDataSO
     #region Inspector
     [Header("Info")]
     [SerializeField] private string _defaultName = "바리스탄";
-    // 영웅한테만 있는 저항력입니다.
+    // 영웅 전용 저항력
     [Header("Hero_Resistance")]
     [SerializeField] private int _diseaseResistance = 30;
     [SerializeField] private int _deathDoorResistance = 60;
@@ -16,7 +16,7 @@ public class CHeroDataSO : CEntityDataSO
     [Header("Hero_Stress")]
     [SerializeField] private int _maxStress = 10;
 
-    // 플레이어가 임의로 전진/후진 할 수 있습니다.
+    // 플레이어가 직접 전진하거나 후퇴할 수 있음
     [Header("Movement")]
     [SerializeField] private int _forwardMovement = 2;
     [SerializeField] private int _backwardMovement = 2;
@@ -30,7 +30,6 @@ public class CHeroDataSO : CEntityDataSO
     public int MaxStress => _maxStress;
     public int ForwardMovement => _forwardMovement;
     public int BackwardMovement => _backwardMovement;
-
     #endregion
 
     protected override void OnValidate()

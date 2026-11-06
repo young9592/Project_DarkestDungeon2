@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 612a553e2c1b4bb28f4421faa201258b, type: 3}
+  m_Name: HeroLoadoutSO_PlagueDoctor_Default
+  m_EditorClassIdentifier: 
+  _heroData: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+  _skills:
+  - {fileID: 11400000, guid: 0a559ca5dc2faa74ea3030581c4e517f, type: 2}
+  - {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}
+  - {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}
+  - {fileID: 11400000, guid: 04bc96820433e2b46993c138de9a0f12, type: 2}
+  - {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}

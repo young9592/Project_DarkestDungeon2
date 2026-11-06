@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_Ghoul_SkullToss
+  m_EditorClassIdentifier: 
+  _skillName: Ghoul / Skull Toss
+  _skillIcon: {fileID: 21300000, guid: c14c1975d70f43919ea56a1f3cee2c0e, type: 3}
+  _useableRank: -1
+  _targetableRank: 12
+  _isGroupTarget: 0
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: f5f9d8ad62d83e744b2aa11b8c797b8e, type: 2}
+  - {fileID: 11400000, guid: 83ee486e82784efa91de8c0a93ca1f02, type: 2}
+  - {fileID: 11400000, guid: 8c79d5da0ae44c218f087972e7019fd5, type: 2}
+  - {fileID: 11400000, guid: ba96f63a41be41788f3d68c022c1e57f, type: 2}

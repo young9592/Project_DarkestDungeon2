@@ -1,0 +1,736 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CEnemy : CEntity
+{
+    [Header("Data")]
+    [SerializeField] private CEnemyDataSO _enemyData;
+    [Header("Animation")]
+    [SerializeField] private CEnemyAttackAnimation _attackAnimation;
+    [Header("Runtime Status")]
+    [SerializeField] private int _currentHp;
+    private int _remainingDeathArmor;
+    [SerializeField] private ERank _currentRank = ERank.Rank1;
+    private bool _isInitialized;
+    private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
+    private bool _isStartingTurn;
+    private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
+    private readonly List<CEntity> _requestedTargets = new List<CEntity>();
+    private CEnemyFormationMovement _formationMovement;
+    private CSkillDataSO _movementSkill;
+    private CSkillDataSO _selfTokenSkill;
+    public CEnemyFormationMovement FormationMovement
+    {
+        get { return _formationMovement; }
+    }
+    private CEntityActionExecution _actionExecution;
+    private CEnemySkillFeedback _skillFeedback;
+    private CEntityDeathPresentation _deathPresentation;
+    private CEnemyCorpse _corpse;
+    public CEnemyCorpse Corpse
+    {
+        get { return _corpse; }
+    }
+    public CEntityDeathPresentation DeathPresentation
+    {
+        get { return _deathPresentation; }
+    }
+    public bool IsDeathPresented
+    {
+        get { return _deathPresentation != null && _deathPresentation.IsConfirmed; }
+    }
+    private bool _isRequestingSkill;
+    public event Action<CEnemy, CEntity, CSkillDataSO> OnSkillActionRequested;
+    public CEnemyDataSO EnemyData
+    {
+        get { return _enemyData; }
+    }
+
+    public CEnemyAttackAnimation AttackAnimation
+    {
+        get { return _attackAnimation; }
+    }
+
+    public int CurrentHp
+    {
+        get { return _currentHp; }
+    }
+    public int RemainingDeathArmor
+    {
+        get { return _remainingDeathArmor; }
+    }
+
+    public override CEntityDataSO EntityData
+    {
+        get { return _enemyData; }
+    }
+
+    public override EEntityType EntityType
+    {
+        get { return EEntityType.Enemy; }
+    }
+
+    public override ERank CurrentRank
+    {
+        get { return _currentRank; }
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _formationMovement = GetComponent<CEnemyFormationMovement>();
+        if (_formationMovement == null) _formationMovement = gameObject.AddComponent<CEnemyFormationMovement>();
+        _deathPresentation = GetComponent<CEntityDeathPresentation>();
+        if (_deathPresentation == null)
+        {
+            _deathPresentation = gameObject.AddComponent<CEntityDeathPresentation>();
+        }
+        _skillFeedback = GetComponent<CEnemySkillFeedback>();
+        _actionExecution = GetComponent<CEntityActionExecution>();
+        if (_actionExecution == null)
+        {
+            _actionExecution = gameObject.AddComponent<CEntityActionExecution>();
+        }
+
+        if (_attackAnimation == null)
+        {
+            _attackAnimation = GetComponent<CEnemyAttackAnimation>();
+        }
+
+        if (CPrint.NullUnityObjectCheck(name, _enemyData) || CPrint.NullUnityObjectCheck(name, _attackAnimation))
+        {
+            enabled = false;
+            return;
+        }
+
+        Initialize();
+        GameObject corpseObject = new GameObject("Enemy Corpse");
+        corpseObject.transform.SetParent(transform, false);
+        _corpse = corpseObject.AddComponent<CEnemyCorpse>();
+        _corpse.Configure(this);
+    }
+
+    private void Initialize()
+    {
+        _currentHp = _enemyData.MaxHealth;
+        _remainingDeathArmor = _enemyData.DeathDoorCount;
+        if (!CSkillRankUtility.IsSingleRank(_currentRank))
+        {
+            _currentRank = ERank.Rank1;
+        }
+
+        _isInitialized = true;
+        ApplyStartingToken();
+    }
+
+    private void ApplyStartingToken()
+    {
+        if (_enemyData.StartingToken == EEffectType.None) return;
+        int count = _enemyData.StartingTokenCount;
+        if (_enemyData.ExtraStartingTokenChance > 0
+            && UnityEngine.Random.Range(0, 100) < _enemyData.ExtraStartingTokenChance) count++;
+        if (count > 0) TokenManager.AddToken(_enemyData.StartingToken, count);
+    }
+
+    private void ApplySkillSelfToken(CSkillDataSO skill)
+    {
+        if (skill == null || _isDead || IsDeathPresented) return;
+        CEnemySkillRule rule = _enemyData.GetSkillRule(skill);
+        if (rule == null || rule.SelfToken == EEffectType.None || rule.SelfTokenCount <= 0) return;
+        TokenManager.AddToken(rule.SelfToken, rule.SelfTokenCount);
+    }
+
+    // 효과 처리와 별도로 연출 상태 제공
+    public bool IsPresentationBusy
+    {
+        get { return IsCharacterPresentationBusy || (_formationMovement != null && _formationMovement.IsMoving); }
+    }
+
+    internal bool IsCharacterPresentationBusy
+    {
+        get { return (_attackAnimation != null && _attackAnimation.IsBusy)
+            || (_skillFeedback != null && _skillFeedback.IsBusy)
+            || (_deathPresentation != null && _deathPresentation.IsBusy); }
+    }
+
+    public bool HasStartedSkillEffects
+    {
+        get { return _actionExecution != null && _actionExecution.HasStartedEffects; }
+    }
+
+    public bool IsAttackPresentationPlaying
+    {
+        get { return _attackAnimation != null && _attackAnimation.IsAttacking; }
+    }
+
+    public bool IsHitPresentationPlaying
+    {
+        get { return _attackAnimation != null && _attackAnimation.IsHitReacting; }
+    }
+
+    public event Action<CEntity> OnAttackPresentationStarted;
+    public event Action<CEntity> OnAttackPresentationCompleted;
+    public event Action<CEntity> OnAttackPresentationInterrupted;
+    public event Action<CEntity> OnHitPresentationStarted;
+    public event Action<CEntity> OnHitPresentationCompleted;
+    public event Action<CEntity> OnHitPresentationInterrupted;
+    public bool CanPlayAttackPresentation(CSkillDataSO skill)
+    {
+        return isActiveAndEnabled && _attackAnimation != null && _attackAnimation.CanPlayAttack(skill);
+    }
+
+    public bool CanPlayHitPresentation()
+    {
+        return isActiveAndEnabled && _attackAnimation != null && _attackAnimation.CanPlayHit();
+    }
+
+    private void HandleAttackStarted()
+    {
+        OnAttackPresentationStarted?.Invoke(this);
+    }
+
+    private void HandleHitStarted()
+    {
+        OnHitPresentationStarted?.Invoke(this);
+    }
+
+    private void HandleHitCompleted()
+    {
+        OnHitPresentationCompleted?.Invoke(this);
+    }
+
+    private void HandleHitInterrupted()
+    {
+        OnHitPresentationInterrupted?.Invoke(this);
+    }
+
+    private void OnEnable()
+    {
+        if (_attackAnimation == null)
+        {
+            return;
+        }
+
+        _attackAnimation.OnAttackStarted += HandleAttackStarted;
+        _attackAnimation.OnHitStarted += HandleHitStarted;
+        _attackAnimation.OnHitCompleted += HandleHitCompleted;
+        _attackAnimation.OnHitInterrupted += HandleHitInterrupted;
+        _attackAnimation.OnAttackCompleted += HandleAttackCompleted;
+        _attackAnimation.OnAttackInterrupted += HandleAttackInterrupted;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_attackAnimation == null)
+        {
+            return;
+        }
+
+        _attackAnimation.CancelPlayback();
+        _attackAnimation.OnAttackStarted -= HandleAttackStarted;
+        _attackAnimation.OnHitStarted -= HandleHitStarted;
+        _attackAnimation.OnHitCompleted -= HandleHitCompleted;
+        _attackAnimation.OnHitInterrupted -= HandleHitInterrupted;
+        _attackAnimation.OnAttackCompleted -= HandleAttackCompleted;
+        _attackAnimation.OnAttackInterrupted -= HandleAttackInterrupted;
+    }
+
+    private void HandleAttackCompleted()
+    {
+        CSkillDataSO movementSkill = _movementSkill;
+        _movementSkill = null;
+        if (ActionState == EEntityActionState.Executing && _formationMovement != null) _formationMovement.TryMove(movementSkill);
+        OnAttackPresentationCompleted?.Invoke(this);
+        TryCompleteAction();
+    }
+
+    private void HandleAttackInterrupted()
+    {
+        OnAttackPresentationInterrupted?.Invoke(this);
+        CancelAction();
+    }
+
+    private void LateUpdate()
+    {
+        if (ActionTarget is CPlayer hero && hero.IsDeathPresented
+            && (!hero.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !HasStartedSkillEffects)))
+        {
+            CancelAction();
+        }
+    }
+
+    protected override bool CanBeginAction()
+    {
+        return !_isDead && !IsDeathPresented && _isInitialized && _attackAnimation != null
+            && _attackAnimation.isActiveAndEnabled && !IsPresentationBusy;
+    }
+
+    protected override bool CanCompleteAction()
+    {
+        return (_actionExecution == null || !_actionExecution.IsRunning)
+            && _attackAnimation != null && !IsPresentationBusy;
+    }
+
+    protected override bool CanExecuteRequestedAction()
+    {
+        if (_isDead || ActionSkill == null
+            || !GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
+            || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0) return false;
+
+        CEnemyAI ai = GetComponent<CEnemyAI>();
+        if (ai != null && ai.PlannedSkill == ActionSkill && !ai.IsPlanValid()) return false;
+
+        for (int i = 0; i < _requestedTargets.Count; i++)
+        {
+            CEntity target = _requestedTargets[i];
+            if (!CEnemyTargetFilter.IsAvailable(target)
+                || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
+        }
+        return true;
+    }
+
+    protected override bool TryStartActionPresentation()
+    {
+        if (_requestedTargets.Count == 0) _requestedTargets.Add(ActionTarget);
+        bool started = _actionExecution != null && _actionExecution.TryExecute(ActionSkill,
+            _requestedTargets, StartAttackPresentation);
+        if (started && !ActionSkill.IsGroupTarget) ActionTarget.TokenManager.ConsumeToken(EEffectType.Taunt);
+        return started;
+    }
+
+    protected override void OnActionEnded()
+    {
+        CSkillDataSO selfTokenSkill = _selfTokenSkill;
+        _selfTokenSkill = null;
+        ApplySkillSelfToken(selfTokenSkill);
+        _requestedTargets.Clear();
+        _movementSkill = null;
+    }
+
+    private bool StartAttackPresentation()
+    {
+        if (!TryPlayAttack(ActionSkill)) return false;
+        _movementSkill = ActionSkill;
+        _selfTokenSkill = ActionSkill;
+        return true;
+    }
+
+    protected override void OnActionCancelled()
+    {
+        _selfTokenSkill = null;
+        _movementSkill = null;
+        if (_formationMovement != null)
+        {
+            _formationMovement.CancelPendingRequests();
+        }
+        if (_formationMovement != null && _formationMovement.IsMoving) _formationMovement.SnapToRank();
+        if (_attackAnimation != null)
+        {
+            _attackAnimation.CancelPlayback();
+        }
+    }
+
+    public bool TrySetRank(ERank rank)
+    {
+        if (_formationMovement != null && _formationMovement.IsConfigured)
+        {
+            return _formationMovement.TryQueueRank(rank);
+        }
+        return SetRankImmediate(rank);
+    }
+
+    internal bool SetRankImmediate(ERank rank)
+    {
+        if (!CSkillRankUtility.IsSingleRank(rank) || _enemyData == null)
+        {
+            return false;
+        }
+
+        int index = rank == ERank.Rank1 ? 0 : rank == ERank.Rank2 ? 1 : rank == ERank.Rank3 ? 2 : 3;
+        if (index + _enemyData.FormationSize > 4) return false;
+        _currentRank = rank;
+        return true;
+    }
+
+    public List<CSkillDataSO> GetSkillCandidates()
+    {
+        return FilterSkillCooldowns(CEnemySkillFilter.GetCandidates(_enemyData, _currentRank));
+    }
+
+    public List<CSkillDataSO> GetSkillCandidates(ERank targetRank)
+    {
+        return FilterSkillCooldowns(CEnemySkillFilter.GetCandidates(_enemyData, _currentRank, targetRank));
+    }
+
+    public int GetRemainingSkillCooldown(CSkillDataSO skill)
+    {
+        return _skillCooldowns.GetRemaining(skill);
+    }
+
+    private List<CSkillDataSO> FilterSkillCooldowns(List<CSkillDataSO> skills)
+    {
+        for (int i = skills.Count - 1; i >= 0; i--)
+        {
+            if (!_skillCooldowns.CanUse(skills[i])) skills.RemoveAt(i);
+        }
+        return skills;
+    }
+
+    public CSkillDataSO SelectSkill()
+    {
+        if (!_isInitialized || !isActiveAndEnabled)
+        {
+            return null;
+        }
+
+        // 현재 열과 체력으로 스킬 선택
+        return CEnemySkillSelector.SelectSkill(_enemyData, GetSkillCandidates(), _currentHp);
+    }
+
+    // 전달받은 대상 열로 행동 요청
+    public override bool TryRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        if (!CanRequestSkillAction(target, targetRank))
+        {
+            return false;
+        }
+
+        CSkillDataSO skill = CEnemySkillSelector.SelectSkill(_enemyData, GetSkillCandidates(targetRank), _currentHp);
+        return TryRequestSkillAction(target, targetRank, skill);
+    }
+
+    public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
+    {
+        if (!CanSendRequest(target))
+        {
+            return false;
+        }
+
+        List<CSkillDataSO> candidates = GetSkillCandidates(targetRank);
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            if (CEnemySkillSelector.GetSelectionWeight(_enemyData, candidates[i], _currentHp) > 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool CanRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
+    {
+        return CanSendRequest(target)
+            && skill != null
+            && GetSkillCandidates(targetRank).Contains(skill)
+            && CEnemySkillSelector.GetSelectionWeight(_enemyData, skill, _currentHp) > 0;
+    }
+
+    private bool CanSendRequest(CEntity target)
+    {
+        return !IsDeathPresented && _isInitialized
+            && isActiveAndEnabled
+            && !_isRequestingSkill
+            && CanIssueActionRequest
+            && target != null
+            && target != this
+            && (!(target is CPlayer player) || !player.IsDeathPresented)
+            && target.isActiveAndEnabled
+            && _attackAnimation != null
+            && _attackAnimation.isActiveAndEnabled
+            && !IsPresentationBusy
+            && (OnSkillActionRequested != null
+            || HasCommonRequestReceiver);
+    }
+
+    // 의도에 표시한 스킬로 요청
+    public bool TryRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
+    {
+        if (!CanRequestSkillAction(target, targetRank, skill)) return false;
+        return TryRequestSkillAction(new CEntity[] { target }, target, skill);
+    }
+
+    public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets, CEntity primaryTarget, CSkillDataSO skill)
+    {
+        if (targets == null || targets.Count == 0 || primaryTarget == null
+            || !CanRequestSkillAction(primaryTarget, primaryTarget.CurrentRank, skill)
+            || (!skill.IsGroupTarget && targets.Count != 1))
+        {
+            return false;
+        }
+
+        bool hasPrimaryTarget = false;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CEntity target = targets[i];
+            if (!CEnemyTargetFilter.IsAvailable(target)
+                || !CSkillRankUtility.CanTargetSkill(skill, target.CurrentRank)) return false;
+            if (target == primaryTarget)
+            {
+                hasPrimaryTarget = true;
+            }
+        }
+        if (!hasPrimaryTarget) return false;
+        _requestedTargets.Clear();
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!_requestedTargets.Contains(targets[i]))
+            {
+                _requestedTargets.Add(targets[i]);
+            }
+        }
+
+        // 같은 요청이 다시 들어오지 않게 막음
+        _isRequestingSkill = true;
+        try
+        {
+            if (!NotifyActionRequest(primaryTarget, skill))
+            {
+                OnSkillActionRequested?.Invoke(this, primaryTarget, skill);
+            }
+        }
+        finally
+        {
+            _isRequestingSkill = false;
+        }
+
+        return true;
+    }
+
+    public bool TryPlayAttack(CSkillDataSO skill)
+    {
+        if (!_isInitialized || !isActiveAndEnabled || _attackAnimation == null)
+        {
+            return false;
+        }
+
+        if (skill == null)
+        {
+            return false;
+        }
+
+        List<CSkillDataSO> candidates = GetSkillCandidates();
+        if (!candidates.Contains(skill))
+        {
+            return false;
+        }
+
+        // 현재 열에 맞는 스킬 연출 요청
+        if (!_attackAnimation.TryPlayAttack(skill)) return false;
+        _skillCooldowns.StartCooldown(skill);
+        return true;
+    }
+
+    public override void TakeDamage(int finalDamage)
+    {
+        ApplyDamage(finalDamage, true);
+    }
+
+    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    {
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
+        {
+            return;
+        }
+
+        // 음수 피해는 회복으로 처리하고 최대 체력 제한
+        long nextHp = (long)_currentHp - finalDamage;
+        _currentHp = (int)Math.Max(0L, Math.Min(_enemyData.MaxHealth, nextHp));
+        // 피격에서 사망으로 이어져도 공격자의 완료 대기 유지
+        if (playHitAnimation && finalDamage > 0 && _attackAnimation != null)
+        {
+            _attackAnimation.TryPlayHit();
+        }
+
+        if (_currentHp == 0)
+        {
+            if (_remainingDeathArmor > 0)
+            {
+                _remainingDeathArmor--;
+                _isDeathsDoor = true;
+                return;
+            }
+            _isDead = true;
+            _isDeathsDoor = false;
+            _deathPresentation.TryPlayConfirmedDeath();
+            return;
+        }
+        _isDeathsDoor = false;
+    }
+
+    public override void ApplyStatusEffect(CEffect statusEffect)
+    {
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented
+            || statusEffect == null || statusEffect.Data == null)
+        {
+            return;
+        }
+
+        if (IsDotEffect(statusEffect.EffectType))
+        {
+            if (statusEffect.RemainingTurns > 0 && statusEffect.Damage > 0
+                && !_activeStatusEffects.Contains(statusEffect))
+            {
+                _activeStatusEffects.Add(statusEffect);
+            }
+            return;
+        }
+
+        EEffectType tokenType = statusEffect.Data.TokenType != EEffectType.None
+            ? statusEffect.Data.TokenType : statusEffect.EffectType;
+        switch (tokenType)
+        {
+            case EEffectType.Crit:
+            case EEffectType.Riposte:
+            case EEffectType.Dodge:
+            case EEffectType.DodgePlus:
+            case EEffectType.Block:
+            case EEffectType.BlockPlus:
+            case EEffectType.Guard:
+            case EEffectType.Strength:
+            case EEffectType.Speed:
+            case EEffectType.Stealth:
+            case EEffectType.Daze:
+            case EEffectType.Stun:
+            case EEffectType.Blind:
+            case EEffectType.Weak:
+            case EEffectType.Vulnerable:
+            case EEffectType.Taunt:
+            case EEffectType.Immobilize:
+            case EEffectType.Combo:
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
+                break;
+        }
+    }
+
+    public override void CureStatusEffect(EEffectType targetType = EEffectType.None)
+    {
+        if (!_isInitialized || _isDead || IsDeathPresented) return;
+
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null
+                || targetType == EEffectType.None || effect.EffectType == targetType)
+            {
+                _activeStatusEffects.RemoveAt(i);
+            }
+        }
+    }
+
+    public override void ResetEntityState()
+    {
+        if (!_isInitialized || _enemyData == null) return;
+        if (_formationMovement != null)
+        {
+            _formationMovement.CancelPendingRequests();
+        }
+
+        if (_corpse != null) _corpse.ResetEntityState();
+
+        CancelAction();
+        if (_attackAnimation != null) _attackAnimation.CancelPlayback();
+        if (_deathPresentation != null) _deathPresentation.ResetPresentation();
+
+        _isDead = false;
+        _isDeathsDoor = false;
+        _currentHp = _enemyData.MaxHealth;
+        _remainingDeathArmor = _enemyData.DeathDoorCount;
+        TokenManager.ClearAllTokens();
+        ApplyStartingToken();
+        CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
+        if (criticalState != null) criticalState.ClearModifiers();
+        _activeStatusEffects.Clear();
+        _skillCooldowns.Clear();
+    }
+
+    // 턴 시작에만 한 번 호출함. 행동 재시도 때는 호출 안 함
+    public bool OnTurnStart()
+    {
+        return OnTurnStart(false);
+    }
+
+    public bool OnTurnStart(bool isExtraAction)
+    {
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented
+            || _isStartingTurn || IsActionActive || IsPresentationBusy)
+        {
+            return false;
+        }
+
+        _isStartingTurn = true;
+        _skillCooldowns.BeginTurn(isExtraAction);
+        CHeroCriticalState critical = GetComponent<CHeroCriticalState>();
+        if (!isExtraAction && critical != null) critical.BeginTurn();
+        try
+        {
+            if (!isExtraAction)
+            {
+                long totalDamage = 0;
+                for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+                {
+                    CEffect effect = _activeStatusEffects[i];
+                    if (effect == null || effect.Data == null || effect.RemainingTurns <= 0)
+                    {
+                        _activeStatusEffects.RemoveAt(i);
+                        continue;
+                    }
+
+                    totalDamage += effect.Damage;
+                    effect.DecreaseTurn();
+                    if (effect.RemainingTurns <= 0)
+                    {
+                        _activeStatusEffects.RemoveAt(i);
+                    }
+                }
+
+                if (totalDamage > 0)
+                {
+                    ApplyDamage((int)Math.Min(int.MaxValue, totalDamage), false);
+                }
+            }
+
+            if (!isActiveAndEnabled || _isDead || IsDeathPresented) return false;
+            return !TokenManager.ConsumeToken(EEffectType.Stun);
+        }
+        finally
+        {
+            _isStartingTurn = false;
+        }
+    }
+
+    public int GetTotalDotDamageByType(EEffectType type)
+    {
+        if (!IsDotEffect(type)) return 0;
+        long total = 0;
+        for (int i = 0; i < _activeStatusEffects.Count; i++)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect != null && effect.Data != null && effect.RemainingTurns > 0 && effect.EffectType == type)
+            {
+                total += effect.Damage;
+            }
+        }
+        return (int)Math.Min(int.MaxValue, total);
+    }
+
+    public int ConsumeRemainingDotDamage()
+    {
+        long total = 0;
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null || !IsDotEffect(effect.EffectType)) continue;
+            if (effect.RemainingTurns > 0) total += (long)effect.Damage * effect.RemainingTurns;
+            _activeStatusEffects.RemoveAt(i);
+        }
+        return (int)Math.Min(int.MaxValue, total);
+    }
+
+    private bool IsDotEffect(EEffectType type)
+    {
+        return type == EEffectType.Bleed || type == EEffectType.Blight || type == EEffectType.Burn;
+    }
+}

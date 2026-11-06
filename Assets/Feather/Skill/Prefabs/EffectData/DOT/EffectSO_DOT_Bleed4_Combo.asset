@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a128b46292044a940a45b78dda64fb48, type: 3}
+  m_Name: EffectSO_DOT_Bleed4_Combo
+  m_EditorClassIdentifier: 
+  _name: "\uB3D9\uB9E5 \uC808\uB2E8"
+  _effectType: 4
+  _effectTarget: 0
+  _damage: 4
+  _maxDamage: 0
+  _duration: 3
+  _baseChance: 130
+  _tokenType: 0
+  _condition: 1
+  _strategy: {fileID: 11400000, guid: 06be15ca55d27ea43ad2e17a0f18d731, type: 2}

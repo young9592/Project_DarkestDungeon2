@@ -49,6 +49,9 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# 임의로 추가된 사항
+External/
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta

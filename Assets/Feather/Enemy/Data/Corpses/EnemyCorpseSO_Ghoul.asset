@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83f32d1cbfe4d16854cb72aa8a0a6e9, type: 3}
+  m_Name: EnemyCorpseSO_Ghoul
+  m_EditorClassIdentifier:
+  _id: corpse_ghoul
+  _name: Ghoul Corpse
+  _maxHealth: 20
+  _speed: 1
+  _resistance:
+    Bleed: 20
+    Blight: 20
+    Burn: 20
+    Stun: 50
+    Move: 50
+    Debuff: 40
+  _actions: 0
+  _availableSkills: []
