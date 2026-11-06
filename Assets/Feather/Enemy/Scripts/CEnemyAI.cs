@@ -1,6 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public enum EEnemyActionRequestResult
+{
+    Rejected,
+    Requested,
+    WaitingForPresentation,
+    NoAvailableAction
+}
+
 public class CEnemyAI : MonoBehaviour
 {
     private CEnemy _enemy;
@@ -63,7 +71,15 @@ public class CEnemyAI : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_plannedSkill == null) return;
+        if (_plannedSkill == null)
+        {
+            // 피격 중 비운 의도는 연출이 끝나면 다시 선택함
+            if (_retrySkill != null && _enemy.AttackAnimation != null && !_enemy.AttackAnimation.IsBusy)
+            {
+                RefreshPlan();
+            }
+            return;
+        }
         if (_hasRequestedAction)
         {
             if (!_enemy.IsActionActive) ClearPlan();
@@ -97,7 +113,7 @@ public class CEnemyAI : MonoBehaviour
     public bool TryPlanAction(IReadOnlyList<CEntity> heroes, IReadOnlyList<CEnemy> allies)
     {
         if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented
-            || _enemy.AttackAnimation == null || _enemy.AttackAnimation.IsBusy || _hasRequestedAction
+            || _enemy.AttackAnimation == null || _hasRequestedAction
             || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
 
         if (_enemy.IsDead)
@@ -124,6 +140,9 @@ public class CEnemyAI : MonoBehaviour
                 if (ally != null && ally != _enemy && !_allies.Contains(ally)) _allies.Add(ally);
             }
         }
+        // 피격 중이어도 연출 후 다시 고를 수 있게 후보는 보관함
+        if (_enemy.AttackAnimation.IsBusy) return false;
+
         // 유효한 의도는 다시 추첨하지 않음
         if (IsPlanValid()) return true;
         CSkillDataSO previousSkill = _plannedSkill != null ? _plannedSkill : _retrySkill;
@@ -208,20 +227,34 @@ public class CEnemyAI : MonoBehaviour
 
     public bool TryRequestPlannedAction()
     {
+        return RequestPlannedAction() == EEnemyActionRequestResult.Requested;
+    }
+
+    public EEnemyActionRequestResult RequestPlannedAction()
+    {
         if (!isActiveAndEnabled || _hasRequestedAction || _enemy == null
-            || _enemy.ActionState != EEntityActionState.Selecting) return false;
-        if (!IsPlanValid())
+            || !_enemy.isActiveAndEnabled || _enemy.IsDead || _enemy.IsDeathPresented
+            || _enemy.AttackAnimation == null || _enemy.ActionState != EEntityActionState.Selecting)
         {
-            if (!RefreshPlan())
-            {
-                ClearPlan();
-                return false;
-            }
+            return EEnemyActionRequestResult.Rejected;
         }
+
+        if (_enemy.IsPresentationBusy) return EEnemyActionRequestResult.WaitingForPresentation;
+
+        if (!IsPlanValid() && !RefreshPlan())
+        {
+            ClearPlan();
+            return EEnemyActionRequestResult.NoAvailableAction;
+        }
+
         _hasRequestedAction = true;
-        bool sent = _enemy.TryRequestSkillAction(_plannedTargets, _plannedTarget, _plannedSkill);
-        if (!sent) _hasRequestedAction = false;
-        return sent;
+        if (_enemy.TryRequestSkillAction(_plannedTargets, _plannedTarget, _plannedSkill))
+        {
+            return EEnemyActionRequestResult.Requested;
+        }
+
+        _hasRequestedAction = false;
+        return EEnemyActionRequestResult.Rejected;
     }
 
     public void CancelPlan()
