@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum EEnemyActionRequestResult
@@ -150,12 +150,16 @@ public class CEnemyAI : MonoBehaviour
 
         List<CSkillDataSO> candidates = _enemy.GetSkillCandidates();
         List<CSkillDataSO> usableSkills = new List<CSkillDataSO>();
+        List<CSkillDataSO> blockedSkills = new List<CSkillDataSO>();
         for (int i = 0; i < candidates.Count; i++)
         {
             CSkillDataSO skill = candidates[i];
-            if (skill == null || usableSkills.Contains(skill)) continue;
-            if (CEnemyTargetFilter.GetTargets(skill, _heroes).Count > 0) usableSkills.Add(skill);
+            if (!CanSelectSkill(skill)) continue;
+            if (IsPreferredMovementBlocked(skill)) blockedSkills.Add(skill);
+            else usableSkills.Add(skill);
         }
+        // 다른 스킬이 없으면 이동이 막힌 공격도 선택할 수 있게 둠
+        if (usableSkills.Count == 0) usableSkills = blockedSkills;
         // 대상 수가 스킬 선택 확률에 영향 주지 않게 스킬을 먼저 고름
         if (previousSkill != null && usableSkills.Contains(previousSkill)
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, previousSkill, _enemy.CurrentHp) > 0)
@@ -203,7 +207,35 @@ public class CEnemyAI : MonoBehaviour
             && (IsExecuting || CEnemySkillFilter.GetCandidates(_enemy.EnemyData, _enemy.CurrentRank).Contains(_plannedSkill))
             && (IsExecuting || _enemy.GetRemainingSkillCooldown(_plannedSkill) == 0)
             && (IsExecuting || ArePlannedTargetsValid())
+            && (_hasRequestedAction || !ShouldReplaceBlockedSkill())
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, _plannedSkill, _enemy.CurrentHp) > 0;
+    }
+
+    private bool CanSelectSkill(CSkillDataSO skill)
+    {
+        return CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, skill, _enemy.CurrentHp) > 0
+            && CEnemyTargetFilter.GetTargets(skill, _heroes).Count > 0;
+    }
+
+    private bool IsPreferredMovementBlocked(CSkillDataSO skill)
+    {
+        CEnemySkillRule rule = _enemy.EnemyData.GetSkillRule(skill);
+        CEnemyFormationMovement movement = _enemy.FormationMovement;
+        return rule != null && rule.PreferAvailableMovement && movement != null && movement.IsConfigured
+            && !movement.CanMoveOffset(rule.RankMovement);
+    }
+
+    private bool ShouldReplaceBlockedSkill()
+    {
+        if (!IsPreferredMovementBlocked(_plannedSkill)) return false;
+
+        List<CSkillDataSO> candidates = _enemy.GetSkillCandidates();
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            CSkillDataSO skill = candidates[i];
+            if (skill != _plannedSkill && CanSelectSkill(skill) && !IsPreferredMovementBlocked(skill)) return true;
+        }
+        return false;
     }
 
     private bool ArePlannedTargetsValid()

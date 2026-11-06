@@ -37,6 +37,7 @@ MonoBehaviour:
     _selfToken: 9
     _selfTokenCount: 1
     _rankMovement: -1
+    _preferAvailableMovement: 1
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100
