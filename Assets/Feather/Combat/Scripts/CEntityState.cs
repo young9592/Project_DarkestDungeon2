@@ -248,6 +248,11 @@ public class CEntityState : MonoBehaviour
             }
             else
             {
+                if (_entityType == EEntityState.Enemy_Corpse)
+                {
+                    SetEffect(effect, false);
+                }
+
                 CEntity entity = _target.GetComponent<CEntity>();
                 SetEffect(effect, entity.TokenManager.HasToken(effect));
             }

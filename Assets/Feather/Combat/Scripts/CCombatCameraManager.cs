@@ -412,7 +412,7 @@ public class CCombatCameraManager : MonoBehaviour
         _combatUI.ToggleEntityStateRoot(true);
         _combatUI.ToggleTurnGuideRoot(true);
 
-        delay = 3f;
+        delay = 2f;
         nextTime = Time.time + delay;
 
         // 돌아갈 위치 계산

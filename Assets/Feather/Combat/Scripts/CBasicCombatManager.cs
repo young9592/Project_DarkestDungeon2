@@ -382,9 +382,10 @@ public class CBasicCombatManager : MonoBehaviour
     private IEnumerator CoDeath()
     {
         yield return new WaitForSeconds(_turnSkipDelay);
+
         for (int i = 0; i < _entityList.Count; i++)
         {
-            if (MyTurn.Equals(_entityList[i]))
+            if (_turnList[0].id == _entityList[i].id)
             {
                 bool isHero = MyTurn is CPlayer;
 
@@ -571,6 +572,9 @@ public class CBasicCombatManager : MonoBehaviour
 
         MyTurn.OnActionRequested += OnAction;
 
+        float enemyWaitTime = 3f;
+        float nextTime = Time.time + enemyWaitTime;
+
         // Could : 턴 시작 시 추가 행동 악세사리 확인
 
         // 액션할때까지 기다리기  
@@ -612,8 +616,16 @@ public class CBasicCombatManager : MonoBehaviour
             }
             else
             {
+                // 적 행동시간 초괴 = 행동할 수 있는 액션이 없다 판단
+                if (nextTime < Time.time)
+                {
+                    doAction = true;
+                    break;
+                }
+
                 CEnemyAI actor = MyTurn.GetComponent<CEnemyAI>();
                 actor.TryRequestPlannedAction();
+
                 doAction = _doingAction;
                 if (_doingAction)
                 {
@@ -621,8 +633,7 @@ public class CBasicCombatManager : MonoBehaviour
 
                     MyTurn.TryStartRequestedAction();
                     _combatUI.UseSkill(_currentActionSkillData);
-                    CEntity target = ((CEnemy)MyTurn).ActionTarget;
-                    List<CEntity> targets = new List<CEntity> { target };
+                    IReadOnlyList<CEntity> targets = actor.PlannedTargets;
                     _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                     yield return _combatCoroutine;
 
@@ -641,6 +652,13 @@ public class CBasicCombatManager : MonoBehaviour
         _combatUI.CloseHeroInfomation();
         _combatUI.CloseEnemyInfomation();
 
+        if (MyTurn is CPlayer)
+        {
+            
+
+        }
+
+
         bool _isAfterDead = MyTurn.IsDead;
 
         if (!_isAfterDead)
@@ -650,6 +668,7 @@ public class CBasicCombatManager : MonoBehaviour
             // 턴 상태 체크
             CheckTurnState();
         }
+
 
         CheckEntitiesDeath();
 
@@ -670,6 +689,8 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         yield return _sortCoroutine;
+
+
 
         _coroutine = null;
     }
