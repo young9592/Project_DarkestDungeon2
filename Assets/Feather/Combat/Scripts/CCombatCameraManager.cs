@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CCombatCameraManager : MonoBehaviour
@@ -280,11 +281,15 @@ public class CCombatCameraManager : MonoBehaviour
 
         }
 
-        return StartCoroutine(CoAction(entitiesInitPos, entitiesTr, moveDir, combatTarget, hasRiposte));
+        return StartCoroutine(CoAction(actor, entitiesInitPos, entitiesTr, moveDir, combatTarget, hasRiposte));
     }
 
-    private IEnumerator CoAction(List<Vector3> entitiesInitPos, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, bool hasRiposeToken)
+    private IEnumerator CoAction(CEntity actor, List<Vector3> entitiesInitPos, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, bool hasRiposeToken)
     {
+        yield return new WaitForSeconds(3.0f);
+
+        yield break;
+
         _onceMessage.Clear();
 
         List<Vector3> camInitPos = new List<Vector3>();
@@ -332,6 +337,7 @@ public class CCombatCameraManager : MonoBehaviour
             HighlightCharacter(entitiesTr[i].gameObject, layer);
         }
 
+        yield return null;
 
         while (nextTime > Time.time)
         {
@@ -440,8 +446,6 @@ public class CCombatCameraManager : MonoBehaviour
         {
             HighlightCharacter(entitiesTr[i].gameObject, layer);
         }
-
-
     }
 
     public IEnumerator CoHeroTemptation(CPlayer hero)

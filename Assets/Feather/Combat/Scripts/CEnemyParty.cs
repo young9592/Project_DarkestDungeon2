@@ -15,16 +15,12 @@ public class CEnemyParty : MonoBehaviour
 
     #region Field
     private List<CEnemy> _enemyList = new List<CEnemy>();
-    private Dictionary<ERank, CEnemy> _rank = new Dictionary<ERank, CEnemy>();
-    private List<ERank> _checkRank = new List<ERank>() { ERank.Rank1, ERank.Rank2, ERank.Rank3, ERank.Rank4 };
 
     private static bool _isReady = false;
-    private static bool _isDirty = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public static bool IsDirty => _isDirty;
     public List<CEnemy> EnemyList => _enemyList;
     #endregion
     void Start()
@@ -50,10 +46,11 @@ public class CEnemyParty : MonoBehaviour
             var enemyPrefab = Instantiate(_enemyPartyPreset.Entries[i].EnemyPrefab, _entityRoot.transform);
 
             // 위치 조정
-            Vector3 vec = Vector3.zero;
+            Vector3 vec = _enemyRankPosition[0].transform.position;
             int size = _enemyPartyPreset.Entries[i].EnemyPrefab.EnemyData.FormationSize;
 
 
+            
             switch (_enemyPartyPreset.Entries[i].Rank)
             {
                 case ERank.None:
@@ -73,6 +70,8 @@ public class CEnemyParty : MonoBehaviour
                 default:
                     break;
             }
+            
+
             enemyPrefab.GetComponent<CEnemy>().TrySetRank(_enemyPartyPreset.Entries[i].Rank);
 
             enemyPrefab.transform.position = vec;
@@ -97,6 +96,7 @@ public class CEnemyParty : MonoBehaviour
         _isReady = true;
     }
 
+    
     private Vector3 SizeOffsetPosition(int rank, int size)
     {
         Vector3 vec = Vector3.zero;
@@ -136,40 +136,8 @@ public class CEnemyParty : MonoBehaviour
             if (_enemyList[i] == enemy)
             {
                 _enemyList.RemoveAt(i);
-                _isDirty = true;
                 break;
             }
         }
-    }
-
-    public void SortRank()
-    {
-        if (!_isDirty)
-        {
-            return;
-        }
-
-        for (int i = 0; i < _checkRank.Count; i++)
-        {
-            if (_rank.ContainsKey(_checkRank[i]))
-            {
-                continue;
-            }
-
-            for (int j = i + 1; j < _checkRank.Count; j++)
-            {
-                if (_rank.TryGetValue(_checkRank[j], out CEnemy enemy))
-                {
-                    bool _canRankChange = enemy.TrySetRank(_checkRank[i]);
-
-                    if (_canRankChange)
-                    {
-                        _rank.Add(_checkRank[i], enemy);
-                        _rank.Remove(_checkRank[j]);
-                    }
-                }
-            }
-        }
-        _isDirty = false;
     }
 }

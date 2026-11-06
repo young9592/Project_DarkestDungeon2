@@ -62,7 +62,7 @@ public class CEntityState : MonoBehaviour
     private RectTransform _canvasRectTr;
     // 초기 연결상태 확인
     private bool _initEntity = false;
-    private bool _doFollow = false;
+    private bool _doFollow = true;
     private EEntityState _entityType = EEntityState.None;
     private bool _rendererCameraMode = false;
     #endregion
@@ -131,6 +131,8 @@ public class CEntityState : MonoBehaviour
     // 시체 상태가 되었을 때 재연결
     public void ReConnect(GameObject target)
     {
+        _initEntity = false;
+
         // 랜더링 모드 체크
         if (_canvas.renderMode == RenderMode.ScreenSpaceCamera)
         {
@@ -142,6 +144,10 @@ public class CEntityState : MonoBehaviour
             _entityType = EEntityState.Enemy_Corpse;
             _target = target;
         }
+
+        SetTotalState();
+
+        _initEntity = true;
     }
     private void Update()
     {
@@ -163,12 +169,22 @@ public class CEntityState : MonoBehaviour
             return;
         }
 
+        if (_target == null)
+        {
+            return;
+        }
+
         MoveState();
     }
 
     // 이동
     private void MoveState()
     {
+        if (_target == null)
+        {
+            return;
+        }
+
         Vector3 targetVec = _target.transform.position;
         Vector3 bottomPos = _target.transform.position + _offset;
         Vector3 screenPos = Camera.main.WorldToScreenPoint(bottomPos);
@@ -224,9 +240,10 @@ public class CEntityState : MonoBehaviour
                     bool remainDot = (haveDamage > 0 ? true : false);
                     SetEffect(effect, remainDot);
                 }
+                // 시체는 현재 효과를 받을 수 없기 때문에 모두 꺼주기
                 else if (_entityType == EEntityState.Enemy_Corpse)
                 {
-                    return;
+                    SetEffect(effect, false);
                 }
             }
             else

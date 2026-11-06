@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: RabidDog / RabidDog_RabidRush
   _effectType: 1
   _effectTarget: 0
-  _damage: 355
+  _damage: 3
   _maxDamage: 6
   _duration: 0
   _baseChance: 5

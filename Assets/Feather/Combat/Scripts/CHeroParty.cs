@@ -17,15 +17,11 @@ public class CHeroParty : MonoBehaviour
 
     #region Field
     private List<CPlayer> _heroList = new List<CPlayer>();
-    private Dictionary<ERank, CPlayer> _rank = new Dictionary<ERank, CPlayer>();
     private static bool _isReady = false;
-    // 랭크 정리가 필요한 상황인가?
-    private static bool _isDirty = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public static bool IsDirty => _isDirty;
     public List<CPlayer> HeroList => _heroList;
     #endregion
 
@@ -52,28 +48,7 @@ public class CHeroParty : MonoBehaviour
         {
             var heroPrefab = Instantiate(_heroPartyPreset.Members[i].Prefab, _entityRoot.transform);
 
-            // 위치 조정
-            Vector3 vec = Vector3.zero;
-
-            switch (_heroPartyPreset.Members[i].Rank)
-            {
-                case ERank.Rank1:
-                    vec = _heroRankPosition[0].transform.position;
-                    _rank.Add(ERank.Rank1, heroPrefab.GetComponent<CPlayer>());
-                    break;
-                case ERank.Rank2:
-                    vec = _heroRankPosition[1].transform.position;
-                    _rank.Add(ERank.Rank2, heroPrefab.GetComponent<CPlayer>());
-                    break;
-                case ERank.Rank3:
-                    vec = _heroRankPosition[2].transform.position;
-                    _rank.Add(ERank.Rank3, heroPrefab.GetComponent<CPlayer>());
-                    break;
-                case ERank.Rank4:
-                    vec = _heroRankPosition[3].transform.position;
-                    _rank.Add(ERank.Rank4, heroPrefab.GetComponent<CPlayer>());
-                    break;
-            }
+            Vector3 vec = _heroRankPosition[0].transform.position;
 
             heroPrefab.GetComponent<CPlayer>().TrySetRank(_heroPartyPreset.Members[i].Rank);
 
@@ -95,6 +70,14 @@ public class CHeroParty : MonoBehaviour
             _heroList.Add(heroPrefab.GetComponent<CPlayer>());
         }
 
+        // 위치조정
+        Vector3 rankStep = _heroRankPosition[1].transform.position - _heroRankPosition[0].transform.position;
+
+        for (int i = 0; i < _heroList.Count; i++)
+        {
+            _heroList[i].RankPresentation.Configure(_heroRankPosition[0].transform.position, new Vector3(-2f, 0, 0), _heroList);
+        }
+
         // 준비완료
         _isReady = true;
     }
@@ -105,44 +88,9 @@ public class CHeroParty : MonoBehaviour
         {
             if (_heroList[i] == hero)
             {
-                _rank.Remove(hero.CurrentRank);
                 _heroList.RemoveAt(i);
-                _isDirty = true;
                 break;
             }
         }
-    }
-
-    public void SortRank()
-    {
-        if (!_isDirty)
-        {
-            return;
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            if (_rank.ContainsKey((ERank)(1 << i)))
-            {
-                continue;
-            }
-
-            for (int j = i + 1; j < 4; j++)
-            {
-                
-                if (_rank.TryGetValue((ERank)(1 << j), out CPlayer hero))
-                {
-                    bool _canRankChange = hero.TrySetRank((ERank)(1 << i));
-
-                    if (_canRankChange)
-                    {
-                        _rank.Add((ERank)(1 << i), hero);
-                        _rank.Remove((ERank)(1 << j));
-                    }
-                    break;
-                }
-            }
-        }
-        _isDirty = false;
     }
 }

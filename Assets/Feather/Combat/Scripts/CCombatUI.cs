@@ -261,7 +261,7 @@ public class CCombatUI : MonoBehaviour
     /// </summary>
     /// <param name="turnList">현재 턴 순서 목록</param>
     /// <returns></returns>
-    public List<GameObject> CreateTurnOrderPortraitList(List<(CEntity entity, int speed)> turnList)
+    public List<GameObject> CreateTurnOrderPortraitList(List<(int id, CEntity entity, int speed)> turnList)
     {
         List<GameObject> turnPortraitList = new List<GameObject>();
 
@@ -280,12 +280,12 @@ public class CCombatUI : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(4, entityType, portrait);
+                portraitImage.Initialize(turnList[i].id, 4, entityType, portrait);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(i + 1, entityType, portrait);
+                portraitImage.Initialize(turnList[i].id, i + 1, entityType, portrait);
             }
 
             turnPortraitList.Add(portraitPrefab);

@@ -103,11 +103,11 @@ public class CCombatDebugMenu : MonoBehaviour
         _selectEntity.ClearOptions();
 
         List<string> options = new List<string>();
-        List<CEntity> entities = _combatManager.EntityList;
+        List<(int id, CEntity entity)> entities = _combatManager.EntityList;
 
         for (int i = 0; i < entities.Count; i++)
         {
-            options.Add(entities[i].name);
+            options.Add(entities[i].entity.name);
         }
         _selectEntity.AddOptions(options);
 
@@ -129,12 +129,12 @@ public class CCombatDebugMenu : MonoBehaviour
     // 디버그용 버튼 리스너
     private void OnEffectApplyButton()
     {
-        List<CEntity> entities = _combatManager.EntityList;
+        List<(int id, CEntity entity)> entities = _combatManager.EntityList;
         Dictionary<CEntity, CEntityState> entityStates = _combatManager.EntityStateList;
 
         string applyOptionText = _selectEffect.options[_selecedtEffectIdx].text;
         EEffectType applyOption = _applyOptionList[applyOptionText];
-        CEntity selectEntity = entities[_selectedEntitytIdx];
+        CEntity selectEntity = entities[_selectedEntitytIdx].entity;
 
         switch (applyOption)
         {
