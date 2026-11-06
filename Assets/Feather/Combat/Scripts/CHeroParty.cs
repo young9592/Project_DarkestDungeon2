@@ -21,6 +21,8 @@ public class CHeroParty : MonoBehaviour
     private static bool _isReady = false;
 
     private CHeroExpeditionState _expeditionState = null;
+    private string _runID;
+    private string _battleID;
     #endregion
 
     #region Property
@@ -28,6 +30,8 @@ public class CHeroParty : MonoBehaviour
     public List<CPlayer> HeroList => _heroList;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
     public CHeroExpeditionState HeroExpeditionState => _expeditionState;
+    public string RunID => _runID;
+    public string BattleID => _battleID;
     #endregion
 
     private void Start()
@@ -43,7 +47,7 @@ public class CHeroParty : MonoBehaviour
             CPrint.Warn($"{gameObject.name} Rank Position is null.");
         }
 
-        if(_expeditionState == null)
+        if (_expeditionState == null)
         {
             _expeditionState = gameObject.AddComponent<CHeroExpeditionState>();
         }
@@ -76,7 +80,7 @@ public class CHeroParty : MonoBehaviour
             heroPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
             CPlayer hero = heroPrefab.GetComponent<CPlayer>();
-            
+
             // 리스트 추가
             _heroList.Add(hero);
 
@@ -84,10 +88,12 @@ public class CHeroParty : MonoBehaviour
         }
 
         _expeditionState.TryPrepareNextBattle(_heroList);
+        _runID = _expeditionState.RunId;
+        _battleID = _expeditionState.BattleId;
 
         // 위치조정
         Vector3 rankStep = new Vector3(_heroRankPosition[1].transform.position.x - _heroRankPosition[0].transform.position.x, 0, 0);
-       
+
 
         for (int i = 0; i < _heroList.Count; i++)
         {

@@ -103,6 +103,7 @@ public class CEnemyParty : MonoBehaviour
             _enemyList.Add(enemy);
 
             _rankList.Add(enemy.CurrentRank, enemy);
+            CPrint.Warn($"{enemy.CurrentRank} : {enemy.EnemyData.Name}" );
         }
 
         // 준비 완료

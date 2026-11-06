@@ -73,7 +73,6 @@ public class CBasicCombatManager : MonoBehaviour
     private List<GameObject> _turnPortraitList = new List<GameObject>();
     private GameObject _myTurnHighlight = null;
     private Coroutine _coroutine = null;
-    private Coroutine _sortCoroutine = null;
     private Coroutine _tryBeginCoroutine = null;
     private Coroutine _combatCoroutine = null;
     private Coroutine _multiStressCoroutine = null;
@@ -83,6 +82,7 @@ public class CBasicCombatManager : MonoBehaviour
     private CPlayer _currentStressHero = null;
     private List<CEntity> _corpseCheck = new List<CEntity>();
     private bool _rankDirty = false;
+    private bool _battleEnd = false;
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -113,11 +113,17 @@ public class CBasicCombatManager : MonoBehaviour
 
     private void Update()
     {
+        if (_battleEnd)
+        {
+            return;
+        }
+
         if (_coroutine != null)
         {
             return;
         }
 
+        CompletedBattle();
         ChangeState();
         ActiveState();
     }
@@ -481,7 +487,8 @@ public class CBasicCombatManager : MonoBehaviour
 
         if (isHero)
         {
-            
+
+            _heroParty.HeroExpeditionState.TryRecordHeroDeath(_heroParty.HeroExpeditionState.RunId, _heroParty.BattleID, entity as CPlayer);
             _heroParty.RemoveHero(entity as CPlayer);
         }
         else
@@ -501,7 +508,7 @@ public class CBasicCombatManager : MonoBehaviour
                 _turnPortraitList.RemoveAt(i);
             }
         }
-       
+
         Destroy(_entityList[index].entity.gameObject, _portraitRemoveDelay);
         _entityStateList.Remove(_entityList[index].entity);
         _entityList.RemoveAt(index);
@@ -642,7 +649,7 @@ public class CBasicCombatManager : MonoBehaviour
                             IReadOnlyList<CEntity> targets = actor.PlannedTargets;
                             _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                             yield return _combatCoroutine;
-                            _combatCoroutine = null;                      
+                            _combatCoroutine = null;
                             _doingAction = false;
                         }
                         break;
@@ -749,7 +756,7 @@ public class CBasicCombatManager : MonoBehaviour
     private IEnumerator CoTryBeginAction(CEnemy enemy)
     {
         bool beginAction = enemy.TryBeginAction();
-        
+
         while (!beginAction)
         {
             beginAction = enemy.TryBeginAction();
@@ -804,7 +811,7 @@ public class CBasicCombatManager : MonoBehaviour
         _enemyParty.SortRank();
 
         SortEntitiesPosition(false);
-        
+
         _rankDirty = false;
     }
     // 엔티티 위치 재조정
@@ -843,7 +850,55 @@ public class CBasicCombatManager : MonoBehaviour
     // 전투가 완료되었는지 확인
     private void CompletedBattle()
     {
+        if (!CHeroParty.IsReady)
+        {
+            return;
+        }
 
+        if (!CEnemyParty.IsReady)
+        {
+            return;
+        }
+
+        if (_battleEnd)
+        {
+            return;
+        }
+
+        bool victory = false;
+
+        if (_enemyParty.EnemyList.Count == 0)
+        {
+            victory = true;
+        }
+        else
+        {
+            bool notAlive = true;
+
+            for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+            {
+                CEnemy enemy = _enemyParty.EnemyList[i];
+
+                if (!enemy.IsDead)
+                {
+                    notAlive = false;
+                }
+            }
+
+            if (notAlive)
+            {
+                victory = true;
+            }
+
+        }
+
+        if (victory)
+        {
+            _heroParty.HeroExpeditionState.TryCompleteBattle(_heroParty.RunID, _heroParty.BattleID, _heroParty.HeroList);
+            CPrint.Warn("전투 승리!");
+            _battleEnd = true;
+            return;
+        }
     }
 }
 
