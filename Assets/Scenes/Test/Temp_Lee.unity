@@ -16499,6 +16499,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 50dd5b8a68d8fa74bbb1752d3c4d147a, type: 2}
   - {fileID: 11400000, guid: da515d154b3e78940bb5db5b019390d4, type: 2}
   - {fileID: 11400000, guid: f64655964565a2647a476971998790af, type: 2}
+  - {fileID: 11400000, guid: f4840f5f84934a32816eeaf9120f8289, type: 2}
   _spawnRoot: {fileID: 703342397}
   _rankSlots:
   - {fileID: 1348785775}

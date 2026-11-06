@@ -63,7 +63,15 @@ public class CEnemyAI : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_plannedSkill == null) return;
+        if (_plannedSkill == null)
+        {
+            // 피격 중 비운 의도는 연출이 끝나면 다시 선택함
+            if (_retrySkill != null && _enemy.AttackAnimation != null && !_enemy.AttackAnimation.IsBusy)
+            {
+                RefreshPlan();
+            }
+            return;
+        }
         if (_hasRequestedAction)
         {
             if (!_enemy.IsActionActive) ClearPlan();
