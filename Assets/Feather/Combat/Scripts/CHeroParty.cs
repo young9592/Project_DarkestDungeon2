@@ -17,6 +17,7 @@ public class CHeroParty : MonoBehaviour
 
     #region Field
     private List<CPlayer> _heroList = new List<CPlayer>();
+    private Dictionary<ERank, CPlayer> _rankList = new Dictionary<ERank, CPlayer>();
     private static bool _isReady = false;
 
     private CHeroExpeditionState _expeditionState = null;
@@ -74,8 +75,12 @@ public class CHeroParty : MonoBehaviour
             // 스크립트 잠시 중단
             heroPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
+            CPlayer hero = heroPrefab.GetComponent<CPlayer>();
+            
             // 리스트 추가
-            _heroList.Add(heroPrefab.GetComponent<CPlayer>());
+            _heroList.Add(hero);
+
+            _rankList.Add(hero.CurrentRank, hero);
         }
 
         _expeditionState.TryPrepareNextBattle(_heroList);
@@ -99,8 +104,34 @@ public class CHeroParty : MonoBehaviour
         {
             if (_heroList[i] == hero)
             {
+                _rankList.Remove(hero.CurrentRank);
                 _heroList.RemoveAt(i);
                 break;
+            }
+        }
+    }
+
+    public void SortRank()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.ContainsKey((ERank)(1 << i)))
+                continue;
+
+            for (int j = i + 1; j < 4; j++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << j), out CPlayer hero))
+                {
+                    bool canRankChange = hero.TrySetRank((ERank)(1 << i));
+                    CPrint.Warn($"Rank Change Try {(ERank)(1 << j)} → {(ERank)(1 << i)} [{canRankChange}] : {hero.CurrentRank}");
+
+                    if (canRankChange)
+                    {
+                        _rankList.Add((ERank)(1 << i), hero);
+                        _rankList.Remove((ERank)(1 << j));
+                        break;
+                    }
+                }
             }
         }
     }

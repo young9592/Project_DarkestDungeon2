@@ -10,6 +10,7 @@ public class CEnemyParty : MonoBehaviour
 
     [Header("Option")]
     [SerializeField] private List<GameObject> _enemyRankPosition;
+    private Dictionary<ERank, CEnemy> _rankList = new Dictionary<ERank, CEnemy>();
     [SerializeField] private float _entityScale = 150f;
     #endregion
 
@@ -96,8 +97,12 @@ public class CEnemyParty : MonoBehaviour
             // 스크립트 잠시 중단
             enemyPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
+            CEnemy enemy = enemyPrefab.GetComponent<CEnemy>();
+
             // 리스트 추가
-            _enemyList.Add(enemyPrefab.GetComponent<CEnemy>());
+            _enemyList.Add(enemy);
+
+            _rankList.Add(enemy.CurrentRank, enemy);
         }
 
         // 준비 완료
@@ -143,8 +148,35 @@ public class CEnemyParty : MonoBehaviour
         {
             if (_enemyList[i] == enemy)
             {
+                _rankList.Remove(enemy.CurrentRank);
                 _enemyList.RemoveAt(i);
                 break;
+            }
+        }
+    }
+
+    public void SortRank()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.ContainsKey((ERank)(1 << i)))
+                continue;
+
+            for (int j = i + 1; j < 4; j++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << j), out CEnemy enemy))
+                {
+                    bool canRankChange = enemy.TrySetRank((ERank)(1 << i));
+                    CPrint.Warn($"Rank Change Try {(ERank)(1 << j)} → {(ERank)(1 << i)} [{canRankChange}] : {enemy.CurrentRank}");
+
+                    if (canRankChange)
+                    {
+                       
+                        _rankList.Add((ERank)(1 << i), enemy);
+                        _rankList.Remove((ERank)(1 << j));
+                        break;
+                    }
+                }
             }
         }
     }

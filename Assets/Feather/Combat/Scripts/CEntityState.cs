@@ -224,7 +224,7 @@ public class CEntityState : MonoBehaviour
     {
         foreach (EEffectType effect in Enum.GetValues(typeof(EEffectType)))
         {
-            if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn)
+            if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn || effect == EEffectType.Stress)
             {
                 if (_entityType == EEntityState.Hero)
                 {

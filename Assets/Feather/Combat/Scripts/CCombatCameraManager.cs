@@ -283,7 +283,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         List<Vector3> camInitPos = new List<Vector3>();
 
-        float space = 2f * Mathf.Clamp01((5f - entitiesTr.Count) / 4f) + 0.5f;
+        float space = 2f * Mathf.Clamp01((5f - entitiesTr.Count) / 4f) + 1f;
 
         for (int i = 0; i < entitiesTr.Count; i++)
         {
@@ -422,26 +422,10 @@ public class CCombatCameraManager : MonoBehaviour
             CEntity entity = entitiesTr[i].gameObject.GetComponent<CEntity>();
             ERank rank = entity.CurrentRank;
             bool isHero = entity is CPlayer;
-
+            int index = (int)System.MathF.Log((float)rank, 2);
             Vector3 returnVec = Vector3.zero;
 
-            if ((rank & ERank.Rank1) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 0);
-            }
-            else if ((rank & ERank.Rank2) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 1);
-            }
-            else if ((rank & ERank.Rank3) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 2);
-            }
-            else if ((rank & ERank.Rank4) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 3);
-            }
-
+            returnVec = ReturnVector(isHero, entity, index);
             returnVectorList.Add(returnVec);
         }
 
