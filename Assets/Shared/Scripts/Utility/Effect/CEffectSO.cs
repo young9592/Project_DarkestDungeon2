@@ -17,7 +17,8 @@ public enum EEffectCondition
     None = 0,
     TargetHasCombo,
     OnCriticalHit,
-    CasterIsDeathsDoor
+    CasterIsDeathsDoor,
+    CasterHasStealth
 }
 
 [CreateAssetMenu(menuName = "Data/Effect/EffectData", fileName = "EffectSO_")]
