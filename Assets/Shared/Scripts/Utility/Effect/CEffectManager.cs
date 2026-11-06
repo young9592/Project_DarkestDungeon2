@@ -167,6 +167,8 @@ public class CEffectManager : MonoBehaviour
                 return context.IsHit && context.IsCrit;
             case EEffectCondition.CasterIsDeathsDoor:
                 return context.Caster != null && context.Caster.IsDeathsDoor;
+            case EEffectCondition.CasterHasStealth:
+                return context.Caster != null && context.Caster.TokenManager.HasToken(EEffectType.Stealth);
             default:
                 return true;
         }

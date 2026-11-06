@@ -69,6 +69,16 @@ public class CHeroExpeditionState : MonoBehaviour
         return true;
     }
 
+    public bool TryRecordHeroDeath(string runId, string battleId, CPlayer hero)
+    {
+        return _service != null && _service.TryRecordHeroDeath(runId, battleId, hero, out _notice);
+    }
+
+    public bool IsSavedMemberAlive(int index)
+    {
+        return _service != null && _service.IsSavedMemberAlive(index);
+    }
+
     public bool TryCompleteBattle(string runId, string battleId, IReadOnlyList<CPlayer> heroes)
     {
         return _service != null && _service.TryCompleteBattle(runId, battleId, heroes, out _notice);
