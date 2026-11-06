@@ -180,6 +180,57 @@ public class CEnemyFormationMovement : MonoBehaviour
         transform.position = (_slots[start].position + _slots[end].position) * 0.5f;
     }
 
+    public bool TryCompactFormation()
+    {
+        if (!IsConfigured) return false;
+
+        CEnemy[] membersByRank = new CEnemy[_slots.Length];
+        int occupied = 0;
+        for (int i = 0; i < _members.Count; i++)
+        {
+            CEnemy member = _members[i];
+            if (member == null || !member.isActiveAndEnabled) continue;
+            if (member.IsDead && (member.Corpse == null || member.Corpse.IsRemoved)) continue;
+            if (member.EnemyData == null || member.IsPresentationBusy
+                || member.FormationMovement == null || member.FormationMovement._slots != _slots) return false;
+
+            int start = GetIndex(member.CurrentRank);
+            int size = member.EnemyData.FormationSize;
+            if (start < 0 || size < 1 || start + size > _slots.Length) return false;
+            int mask = ((1 << size) - 1) << start;
+            if ((occupied & mask) != 0) return false;
+            occupied |= mask;
+            membersByRank[start] = member;
+        }
+
+        int[] destinations = new int[_slots.Length];
+        int nextRank = 0;
+        for (int i = 0; i < membersByRank.Length; i++)
+        {
+            CEnemy member = membersByRank[i];
+            if (member == null) continue;
+
+            // 시체나 이동 불가 적이 차지한 칸은 유지함
+            bool stays = member.IsDead || member.TokenManager.HasToken(EEffectType.Immobilize);
+            destinations[i] = stays ? i : nextRank;
+            nextRank = destinations[i] + member.EnemyData.FormationSize;
+        }
+
+        // 최종 열을 전부 반영한 뒤 모델 위치를 맞춤
+        for (int i = 0; i < membersByRank.Length; i++)
+        {
+            CEnemy member = membersByRank[i];
+            if (member == null || member.IsDead) continue;
+            member.SetRankImmediate((ERank)(1 << destinations[i]));
+        }
+        for (int i = 0; i < membersByRank.Length; i++)
+        {
+            CEnemy member = membersByRank[i];
+            if (member != null && !member.IsDead) member.FormationMovement.SnapToRank();
+        }
+        return true;
+    }
+
     private void OnDisable()
     {
         CancelPendingRequests();
