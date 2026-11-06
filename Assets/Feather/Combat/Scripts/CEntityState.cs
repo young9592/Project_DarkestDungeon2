@@ -368,6 +368,9 @@ public class CEntityState : MonoBehaviour
             case EEffectType.Combo:
                 _combo.SetActive(toggle);
                 break;
+            case EEffectType.Stress:
+                _horror.SetActive(toggle);
+                break;
             default:
                 break;
         }

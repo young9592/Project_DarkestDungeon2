@@ -17,11 +17,13 @@ public class CEnemyParty : MonoBehaviour
     private List<CEnemy> _enemyList = new List<CEnemy>();
 
     private static bool _isReady = false;
+
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
     public List<CEnemy> EnemyList => _enemyList;
+    public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
     #endregion
     void Start()
     {

@@ -23,6 +23,7 @@ public class CHeroParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CPlayer> HeroList => _heroList;
+    public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
     #endregion
 
     private void Start()
@@ -71,11 +72,12 @@ public class CHeroParty : MonoBehaviour
         }
 
         // 위치조정
-        Vector3 rankStep = _heroRankPosition[1].transform.position - _heroRankPosition[0].transform.position;
+        Vector3 rankStep = new Vector3(_heroRankPosition[1].transform.position.x - _heroRankPosition[0].transform.position.x, 0, 0);
+       
 
         for (int i = 0; i < _heroList.Count; i++)
         {
-            _heroList[i].RankPresentation.Configure(_heroRankPosition[0].transform.position, new Vector3(-2f, 0, 0), _heroList);
+            _heroList[i].RankPresentation.Configure(_heroRankPosition[0].transform.position, rankStep, _heroList);
         }
 
         // 준비완료

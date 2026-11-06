@@ -1265,6 +1265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92b1730bc101bc245a6c449ab990d537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _combatManager: {fileID: 540853368}
   _combatUI: {fileID: 1696955578}
   _camera: {fileID: 722894030}
   _messageManager: {fileID: 2125789383}

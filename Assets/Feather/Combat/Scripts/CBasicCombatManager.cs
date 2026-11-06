@@ -88,6 +88,8 @@ public class CBasicCombatManager : MonoBehaviour
     public List<(int, CEntity)> EntityList => _entityList;
     public Dictionary<CEntity, CEntityState> EntityStateList => _entityStateList;
     public CEntity MyTurn => _turnList.Count != 0 ? _turnList[0].entity : null;
+    public IReadOnlyList<GameObject> HeroRankPosition => _heroParty.HeroRankPosition;
+    public IReadOnlyList<GameObject> EnemyRankPosition => _enemyParty.EnemyRankPosition;
     #endregion
 
     private void Awake()

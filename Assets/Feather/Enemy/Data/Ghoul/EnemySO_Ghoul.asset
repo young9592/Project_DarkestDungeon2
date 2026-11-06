@@ -23,14 +23,24 @@ MonoBehaviour:
     Stun: 50
     Move: 50
     Debuff: 20
+  _actions: 3
   _availableSkills:
   - {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
   - {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
   - {fileID: 11400000, guid: 1ee58c041f184af198b64af2a6b04f62, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: ac6b60e7358f0fe4cab4bb32de6ae69b, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 14f3aaad4a306bf4680f7540359c4ea7, type: 3}
+  _skillSlotBackground: {fileID: 21300000, guid: c14c1975d70f43919ea56a1f3cee2c0e, type: 3}
   _formationSize: 2
   _deathDoorCount: 1
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 21300000, guid: 9ae080c25854438ab0cdb1c9d79dca52, type: 3}
+  _corpseData: {fileID: 11400000, guid: 481e3733c6cb4bdda595bbadcddec0f1, type: 2}
+  _corpseHealth: 5
+  _corpseWidth: 0.022
   _skillRules:
   - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
+    _rankMovement: 0
     _selfToken: 11
     _selfTokenCount: 1
     _weight: 3
@@ -40,6 +50,7 @@ MonoBehaviour:
     _preferredRanks: 0
     _condition: 2
   - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
+    _rankMovement: 0
     _selfToken: 11
     _selfTokenCount: 1
     _weight: 2
@@ -49,6 +60,7 @@ MonoBehaviour:
     _preferredRanks: 0
     _condition: 1
   - _skill: {fileID: 11400000, guid: 1ee58c041f184af198b64af2a6b04f62, type: 2}
+    _rankMovement: 0
     _selfToken: 11
     _selfTokenCount: 1
     _weight: 2
@@ -58,11 +70,6 @@ MonoBehaviour:
     _preferredRanks: 0
     _condition: 0
   _targetSelection: 0
-  _leavesCorpse: 1
-  _corpseSprite: {fileID: 21300000, guid: 9ae080c25854438ab0cdb1c9d79dca52, type: 3}
-  _corpseData: {fileID: 11400000, guid: 481e3733c6cb4bdda595bbadcddec0f1, type: 2}
-  _corpseHealth: 5
-  _corpseWidth: 0.022
   _startingToken: 11
   _startingTokenCount: 1
   _extraStartingTokenChance: 0
