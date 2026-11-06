@@ -16,7 +16,7 @@ MonoBehaviour:
   _effectType: 1
   _damage: 1
   _duration: 0
-  _baseChance: 100
+  _baseChance: 0
   _tokenType: 0
   _condition: 0
-  _strategy: {fileID: 11400000, guid: 84075ad42d515fa47a304aa089004efb, type: 2}
+  _strategy: {fileID: 11400000, guid: 7aae06ed4ec44376b25201d191a7b020, type: 2}
