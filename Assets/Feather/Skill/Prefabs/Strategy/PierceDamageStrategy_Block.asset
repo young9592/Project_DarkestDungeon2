@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b51ba0e1fb0d2b64bb2b141a33e563de, type: 3}
+  m_Name: PierceDamageStrategy_Block
+  m_EditorClassIdentifier: 
+  _ignoreBlock: 1
+  _ignoreDodge: 0
+  _ignoreGuard: 0
+  _removeTargetStealth: 0
+  _empowerOnCasterStealth: 0
