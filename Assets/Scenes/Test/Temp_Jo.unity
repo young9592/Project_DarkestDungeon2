@@ -10738,7 +10738,7 @@ MonoBehaviour:
   _combatUI: {fileID: 1696955578}
   _backEffect: {fileID: 454809074}
   _buttonType: 0
-  _delay: 3
+  _delay: 1
 --- !u!1 &1391165760
 GameObject:
   m_ObjectHideFlags: 0
@@ -14450,6 +14450,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0f684b25bffea4d46b4b2d1db1309baf, type: 2}
   - {fileID: 11400000, guid: 54b5bb71647da5244bac35e729323921, type: 2}
   - {fileID: 11400000, guid: 247a7f515201c2248ba1a737b0bd0c84, type: 2}
+  - {fileID: 11400000, guid: 881d0ab0e686ad14bb35a3ac923290db, type: 2}
 --- !u!4 &1963749768
 Transform:
   m_ObjectHideFlags: 0

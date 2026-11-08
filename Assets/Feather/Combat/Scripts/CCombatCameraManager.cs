@@ -270,15 +270,6 @@ public class CCombatCameraManager : MonoBehaviour
 
     private IEnumerator CoAction(CEntity actor, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, bool hasRiposeToken)
     {
-        bool actorIsHero = actor is CPlayer;
-
-        if (actorIsHero)
-        {
-            CPlayer hero = actor as CPlayer;
-
-            hero.RankPresentation.SnapToRank();
-        }
-
         _onceMessage.Clear();
 
         List<Vector3> camInitPos = new List<Vector3>();

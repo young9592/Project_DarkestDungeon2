@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class CCombatDebugMenu : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class CCombatDebugMenu : MonoBehaviour
         _applyOptionList.Add("기절", EEffectType.Stun);
         _applyOptionList.Add("추가행동", EEffectType.None);
         _applyOptionList.Add("속도", EEffectType.Speed);
+        _applyOptionList.Add("고정", EEffectType.Immobilize);
 
         for (int i = 0; i < _effectSOList.Count; i++)
         {
@@ -144,13 +146,68 @@ public class CCombatDebugMenu : MonoBehaviour
 
                 if (rand < 6)
                 {
-                    selectEntity.TakeDamage(damage);
+                    if (!selectEntity.IsDead)
+                    {
+                        selectEntity.TakeDamage(damage);
+
+
+                        if (selectEntity is CEnemy && selectEntity.IsDead)
+                        {
+                            if (_combatManager.EntityStateList.ContainsKey(selectEntity))
+                            {
+                                CEntityState entityState = _combatManager.EntityStateList[selectEntity];
+                                _combatManager.EntityStateList.Remove(selectEntity);
+                                CEnemyCorpse corpse = (selectEntity as CEnemy).Corpse;
+
+                                entityState.ReConnect(corpse.gameObject);
+                                _combatManager.EntityStateList.Add(corpse, entityState);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (selectEntity is CPlayer)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            (selectEntity as CEnemy).Corpse.TakeDamage(damage);
+                        }
+                    }
                     _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage, $"{damage}");
                 }
                 else
                 {
-                    selectEntity.TakeDamage(damage * 2);
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit, $"{damage * 2}");
+                    if (!selectEntity.IsDead)
+                    {
+                        selectEntity.TakeDamage((int)(damage * 1.5f));
+
+                        if (selectEntity is CEnemy && selectEntity.IsDead)
+                        {
+                            if (_combatManager.EntityStateList.ContainsKey(selectEntity))
+                            {
+                                CEntityState entityState = _combatManager.EntityStateList[selectEntity];
+                                _combatManager.EntityStateList.Remove(selectEntity);
+                                CEnemyCorpse corpse = (selectEntity as CEnemy).Corpse;
+
+                                entityState.ReConnect(corpse.gameObject);
+                                _combatManager.EntityStateList.Add(corpse, entityState);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (selectEntity is CPlayer)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            (selectEntity as CEnemy).Corpse.TakeDamage((int)(damage * 1.5f));
+                        }
+                    }
+                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit, $"{(int)(damage * 1.5f)}");
                     _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit_Msg, "치명타!");
                 }
 
@@ -182,6 +239,7 @@ public class CCombatDebugMenu : MonoBehaviour
             case EEffectType.Daze:
             case EEffectType.Stun:
             case EEffectType.Speed:
+            case EEffectType.Immobilize:
                 CEffect effect = new CEffect(_effectList[applyOption]);
                 selectEntity.ApplyStatusEffect(effect);
                 break;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 
 public class CBasicCombatManager : MonoBehaviour
@@ -72,7 +73,8 @@ public class CBasicCombatManager : MonoBehaviour
     // 초상화 리스트
     private List<GameObject> _turnPortraitList = new List<GameObject>();
     private GameObject _myTurnHighlight = null;
-    private Coroutine _coroutine = null;
+    private Coroutine _actionCoroutine = null;
+    private Coroutine _sortCoroutine = null;
     private Coroutine _tryBeginCoroutine = null;
     private Coroutine _combatCoroutine = null;
     private Coroutine _multiStressCoroutine = null;
@@ -81,7 +83,6 @@ public class CBasicCombatManager : MonoBehaviour
     private CSkillDataSO _currentActionSkillData;
     private CPlayer _currentStressHero = null;
     private List<CEntity> _corpseCheck = new List<CEntity>();
-    private bool _rankDirty = false;
     private bool _battleEnd = false;
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
@@ -118,14 +119,14 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        if (_coroutine != null)
+        if (_actionCoroutine != null)
         {
             return;
         }
 
-        CompletedBattle();
         ChangeState();
         ActiveState();
+        CompletedBattle();
     }
     // 라운드 상태 변경
     private void ChangeState()
@@ -194,7 +195,6 @@ public class CBasicCombatManager : MonoBehaviour
                 BuildTurnOrderList();
                 break;
             case RoundState.Start:
-                SortEntitiesPosition(false);
                 ActionEntity();
                 break;
         }
@@ -202,7 +202,7 @@ public class CBasicCombatManager : MonoBehaviour
     private void BuildTurnOrderList()
     {
         // 모션이 끝날때까지 기다리기
-        if (_coroutine != null)
+        if (_actionCoroutine != null)
         {
             return;
         }
@@ -264,7 +264,7 @@ public class CBasicCombatManager : MonoBehaviour
     }
     private void ActionEntity()
     {
-        if (_coroutine != null)
+        if (_actionCoroutine != null)
         {
             return;
         }
@@ -289,19 +289,19 @@ public class CBasicCombatManager : MonoBehaviour
         switch (entityState)
         {
             case EntityState.Success:
-                _coroutine = StartCoroutine(CoAction());
+                _actionCoroutine = StartCoroutine(CoAction());
                 break;
             case EntityState.Dead:
-                _coroutine = StartCoroutine(CoDeath());
+                _actionCoroutine = StartCoroutine(CoDeath());
                 break;
             case EntityState.Stun:
-                _coroutine = StartCoroutine(CoStun());
+                _actionCoroutine = StartCoroutine(CoStun());
                 break;
             case EntityState.Daze:
-                _coroutine = StartCoroutine(CoDaze());
+                _actionCoroutine = StartCoroutine(CoDaze());
                 break;
             case EntityState.Stress:
-                _coroutine = StartCoroutine(CoStress());
+                _actionCoroutine = StartCoroutine(CoStress());
                 break;
         }
     }
@@ -429,7 +429,8 @@ public class CBasicCombatManager : MonoBehaviour
         // 디버그용 드롭박스
         _debugMenu.SetDropboxEntityList();
         _combatUI.MoveTurnOrder(_turnPortraitList, true);
-        _coroutine = null;
+        yield return _sortCoroutine;
+        _actionCoroutine = null;
     }
     // 엔티티끼리 상호작용하고 죽은 엔티티를 확인
     private void CheckEntitiesDeath()
@@ -440,7 +441,15 @@ public class CBasicCombatManager : MonoBehaviour
         {
             if (_entityList[i].entity.IsDead)
             {
-                if (_entityList[i].entity is CEnemy)
+                bool isHero = _entityList[i].entity is CPlayer;
+
+
+                if (isHero)
+                {
+                    RemoveDeathEntity(i);
+                    isDirty = true;
+                }
+                else
                 {
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
@@ -459,15 +468,8 @@ public class CBasicCombatManager : MonoBehaviour
                     else if (enemy.Corpse.IsRemoved)
                     {
                         RemoveDeathEntity(i);
-                        _debugMenu.SetDropboxEntityList();
-                        _rankDirty = true;
+                        isDirty = true;
                     }
-                }
-                else
-                {
-                    RemoveDeathEntity(i);
-                    isDirty = true;
-                    _rankDirty = true;
                 }
             }
         }
@@ -487,8 +489,6 @@ public class CBasicCombatManager : MonoBehaviour
 
         if (isHero)
         {
-
-            _heroParty.HeroExpeditionState.TryRecordHeroDeath(_heroParty.HeroExpeditionState.RunId, _heroParty.BattleID, entity as CPlayer);
             _heroParty.RemoveHero(entity as CPlayer);
         }
         else
@@ -512,6 +512,8 @@ public class CBasicCombatManager : MonoBehaviour
         Destroy(_entityList[index].entity.gameObject, _portraitRemoveDelay);
         _entityStateList.Remove(_entityList[index].entity);
         _entityList.RemoveAt(index);
+
+        SortEntitiesRank();
     }
     // 시체 상태 턴 리스트 제거
     private void RemoveCorpseEntity(int index)
@@ -555,7 +557,7 @@ public class CBasicCombatManager : MonoBehaviour
         _combatUI.MoveTurnOrder(_turnPortraitList);
         Destroy(_turnPortraitList[0], _turnPortraitList[0].GetComponent<CPortraitImage>().MoveTime + 0.5f);
         _turnPortraitList.RemoveAt(0);
-        _coroutine = null;
+        _actionCoroutine = null;
     }
     // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
     private IEnumerator CoDaze()
@@ -568,13 +570,14 @@ public class CBasicCombatManager : MonoBehaviour
         _turnPortraitList.Add(_combatUI.CopyTurnOrderPortrait(_turnPortraitList[0]));
         _combatUI.MoveTurnOrder(_turnPortraitList);
         _turnPortraitList.RemoveAt(0);
-        _coroutine = null;
+        _actionCoroutine = null;
     }
+    // 스트레스
     private IEnumerator CoStress()
     {
-        _coroutine = StartCoroutine(_combatCameraManager.CoHeroTemptation(MyTurn as CPlayer));
-        yield return _coroutine;
-        _coroutine = null;
+        _actionCoroutine = StartCoroutine(_combatCameraManager.CoHeroTemptation(MyTurn as CPlayer));
+        yield return _actionCoroutine;
+        _actionCoroutine = null;
     }
     // 행동
     private IEnumerator CoAction()
@@ -586,7 +589,7 @@ public class CBasicCombatManager : MonoBehaviour
 
         yield return _tryBeginCoroutine;
 
-        MyTurn.OnActionRequested += OnAction;
+        MyTurn.OnActionRequested += OnActionData;
 
         // Could : 턴 시작 시 추가 행동 악세사리 확인
 
@@ -618,6 +621,8 @@ public class CBasicCombatManager : MonoBehaviour
                 {
                     _combatUI.CloseHeroInfomation();
                     MyTurn.TryStartRequestedAction();
+                    SnapMoveSkill();
+
                     _combatUI.UseSkill(_currentActionSkillData);
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
                     _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
@@ -645,10 +650,15 @@ public class CBasicCombatManager : MonoBehaviour
                         {
                             yield return new WaitForSeconds(_actionDelay);
                             MyTurn.TryStartRequestedAction();
+                            SnapMoveSkill();
+
                             _combatUI.UseSkill(_currentActionSkillData);
                             IReadOnlyList<CEntity> targets = actor.PlannedTargets;
                             _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                             yield return _combatCoroutine;
+
+                            yield return new WaitUntil(() => enemy.ActionState == EEntityActionState.Idle);
+
                             _combatCoroutine = null;
                             _doingAction = false;
                         }
@@ -665,9 +675,10 @@ public class CBasicCombatManager : MonoBehaviour
             yield return null;
         }
 
-        MyTurn.OnActionRequested -= OnAction;
+        MyTurn.OnActionRequested -= OnActionData;
 
-        //SortEntitiesPosition(true);
+        SortEntitiesPosition();
+        yield return _sortCoroutine;
 
         yield return new WaitForSeconds(_actionDelay);
 
@@ -686,7 +697,7 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         CheckEntitiesDeath();
-        SortEntitiesRank();
+        yield return _sortCoroutine;
 
         // Check HeroList Stress
         for (int i = 0; i < _heroParty.HeroList.Count; i++)
@@ -703,17 +714,36 @@ public class CBasicCombatManager : MonoBehaviour
                 _multiStressCoroutine = null;
             }
         }
-        _coroutine = null;
+        _actionCoroutine = null;
     }
-
     // 현재 사용할 스킬 데이터
-    private void OnAction(CEntity actor, CEntity target, CSkillDataSO skill)
+    private void OnActionData(CEntity actor, CEntity target, CSkillDataSO skill)
     {
         CPrint.Log(actor.name + " -> " + target.name + " / " + skill.SkillName);
         _currentActionSkillData = skill;
         _doingAction = true;
     }
+    // 이동 스킬 사용 시 캐릭터 이동 적용
+    private void SnapMoveSkill()
+    {
+        for (int i = 0; i < _entityList.Count; i++)
+        {
+            bool isHero = _entityList[i].entity is CPlayer;
+            bool isEnemy = _entityList[i].entity is CEnemy;
+            CEntity entity = _entityList[i].entity;
 
+            if (isHero)
+            {
+                CPlayer hero = entity as CPlayer;
+                hero.RankPresentation.SnapToRank();
+            }
+            if (isEnemy)
+            {
+                CEnemy enemy = entity as CEnemy;
+                enemy.FormationMovement.SnapToRank();
+            }
+        }
+    }
     // 현재 턴 행동시 UI 오픈
     private void OpenTurnSetting()
     {
@@ -753,6 +783,7 @@ public class CBasicCombatManager : MonoBehaviour
             }
         }
     }
+    // 적이 액션할 준비가 되었는지 체크
     private IEnumerator CoTryBeginAction(CEnemy enemy)
     {
         bool beginAction = enemy.TryBeginAction();
@@ -799,54 +830,159 @@ public class CBasicCombatManager : MonoBehaviour
     // 엔티티 랭크 갱신이 필요한 상황
     private void SortEntitiesRank()
     {
-        if (!_rankDirty)
+        CPrint.Warn($"엔티티 리스트 제거로 인한 포지션 정리 Hero : [{_heroParty.HeroList.Count}] / Enemy : [{_enemyParty.EnemyList.Count}] ");
+        // 1. hero
+        _heroParty.SortRank();
+        // 2. enemy
+        _enemyParty.SortRank();
+
+        SortEntitiesPosition(true);
+    }
+    // 변경된 엔티티 위치 재조정
+    private void SortEntitiesPosition(bool forceCleanup = false)
+    {
+        List<Transform> oldTransforms = new List<Transform>();
+        List<Vector3> initPosList = new List<Vector3>();
+        List<Vector3> desirePosList = new List<Vector3>();
+
+
+        // 랭크가 제대로 배치되어 있는지 체크
+        CPrint.Log("Rank 유효성 검사중...");
+        bool isHeroRankValid = _heroParty.CheckRankValid();
+
+        if (!isHeroRankValid)
+        {
+            _heroParty.SortRank();
+        }
+
+        bool isEnemyRankVaild = _enemyParty.CheckRankValid();
+
+        if (!isEnemyRankVaild)
+        {
+            _enemyParty.SortRank();
+        }
+
+        // 이동할 영웅 개체 찾기
+        CPrint.Log("Hero 정리목록 확인중...");
+        for (int i = 0; i < _heroParty.HeroList.Count; i++)
+        {
+            Vector3 desirePos = Vector3.zero;
+
+            CPlayer hero = _heroParty.HeroList[i];
+            ERank rank = hero.CurrentRank;
+
+            bool hasRank = _heroParty.RankList.TryGetValue(rank, out CPlayer prevHero);
+
+            if (!hasRank)
+            {
+                CPrint.Warn($"Dictionary에 [{rank}] 존재하지않음. 정리 필요");
+            }
+            else
+            {
+                ERank prevRank = prevHero.CurrentRank;
+
+                // 랭크가 변화가 없는가?
+                if (!forceCleanup && hero == prevHero)
+                {
+                    continue;
+                }
+            }
+
+            CPrint.Log($"정리대상 : [{hero.HeroData.Name}]");
+            int rankIdx = (int)System.MathF.Log((float)rank, 2);
+
+            Transform oldTr = hero.gameObject.transform;
+            Vector3 initPos = oldTr.position;
+            desirePos = HeroRankPosition[rankIdx].transform.position;
+
+            oldTransforms.Add(oldTr);
+            initPosList.Add(initPos);
+            desirePosList.Add(desirePos);
+        }
+
+        // 이동할 적 개체 찾기
+        CPrint.Log("Enemy 정리목록 확인중...");
+
+        for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+        {
+            Vector3 desirePos = Vector3.zero;
+
+            CEnemy enemy = _enemyParty.EnemyList[i];
+            ERank rank = enemy.CurrentRank;
+
+            bool isValid = _enemyParty.RankList.TryGetValue(rank, out CEnemy prevEnemy);
+
+            if (!isValid)
+            {
+                CPrint.Warn($"Dictionary에 [{rank}] 존재하지않음. 정리 필요.");
+            }
+            else
+            {
+                // 랭크 변화 없음
+                if (!forceCleanup && enemy == prevEnemy)
+                {
+                    continue;
+                }
+            }
+
+            CPrint.Log($"정리대상 : [{enemy.EnemyData.Name}] / Corpse : ({enemy.Corpse.IsAvailable})");
+            int rankIdx = (int)System.MathF.Log((float)rank, 2);
+
+            Transform oldTr = enemy.gameObject.transform;
+            Vector3 initPos = oldTr.position;
+
+            int size = enemy.EnemyData.FormationSize;
+
+            if (size <= 0 || rankIdx < 0 || rankIdx + size > 4)
+            {
+                CPrint.Error($"잘못된 진형 데이터: {enemy.EnemyData.Name}");
+                continue;
+            }
+
+            for (int j = rankIdx; j < rankIdx + size; j++)
+            {
+                desirePos += EnemyRankPosition[j].transform.position;
+            }
+
+            desirePos = new Vector3(desirePos.x / size, desirePos.y / size, desirePos.z / size);
+
+            oldTransforms.Add(oldTr);
+            initPosList.Add(initPos);
+            desirePosList.Add(desirePos);
+
+        }
+
+        CPrint.Log($"Entity 정리대상 {oldTransforms.Count} 개체");
+
+        if (oldTransforms.Count == 0)
         {
             return;
         }
 
-        // 1. hero
-        _heroParty.SortRank();
-
-        // 2. enemy
-        _enemyParty.SortRank();
-
-        SortEntitiesPosition(false);
-
-        _rankDirty = false;
+        _sortCoroutine = StartCoroutine(CoEntitiesPositionMove(oldTransforms, initPosList, desirePosList));
     }
-    // 엔티티 위치 재조정
-    private void SortEntitiesPosition(bool isLerp)
+    private IEnumerator CoEntitiesPositionMove(List<Transform> oldTransforms, List<Vector3> initPosList, List<Vector3> desirePosList)
     {
-        for (int i = 0; i < _entityList.Count; i++)
+        float delay = 1f;
+        float nextTime = Time.time + delay;
+
+        while (nextTime > Time.time)
         {
-            Vector3 returnVec = Vector3.zero;
-
-            CEntity entity = _entityList[i].entity;
-            bool isHero = entity is CPlayer;
-            ERank eRank = entity.CurrentRank;
-            int rank = (int)System.MathF.Log((float)eRank, 2);
-
-            if (isHero)
+            for (int i = 0; i < oldTransforms.Count; i++)
             {
-                returnVec = HeroRankPosition[rank].transform.position;
-            }
-            else
-            {
-
-                int size = (entity is CEnemy) ? (entity as CEnemy).EnemyData.FormationSize : (entity as CEnemyCorpse).FormationSize;
-
-                for (int j = rank; j < rank + size; j++)
+                if (oldTransforms[i] == null)
                 {
-                    returnVec += EnemyRankPosition[j].transform.position;
+                    continue;
                 }
 
-                returnVec = new Vector3(returnVec.x / size, returnVec.y / size, returnVec.z / size);
+                float t = 1f - Mathf.Exp(-5 * Mathf.Clamp01(1f - (nextTime - Time.time) / delay));
 
-
-                //(_entityList[i].entity as CEnemy).FormationMovement.TryCompactFormation();
+                oldTransforms[i].position = Vector3.Lerp(initPosList[i], desirePosList[i], t);
             }
-            entity.gameObject.transform.position = isLerp ? Vector3.Lerp(entity.gameObject.transform.position, returnVec, (1f - Mathf.Exp(-30f * Time.deltaTime))) : returnVec;
+            yield return null;
         }
+
+        _sortCoroutine = null;
     }
 
     // 전투가 완료되었는지 확인

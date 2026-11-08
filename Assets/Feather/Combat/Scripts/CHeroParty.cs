@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class CHeroParty : MonoBehaviour
@@ -28,6 +26,7 @@ public class CHeroParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CPlayer> HeroList => _heroList;
+    public Dictionary<ERank, CPlayer> RankList => _rankList;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
     public CHeroExpeditionState HeroExpeditionState => _expeditionState;
     public string RunID => _runID;
@@ -110,6 +109,8 @@ public class CHeroParty : MonoBehaviour
         {
             if (_heroList[i] == hero)
             {
+
+                _expeditionState.TryRecordHeroDeath(_runID, _battleID, hero);
                 _rankList.Remove(hero.CurrentRank);
                 _heroList.RemoveAt(i);
                 break;
@@ -122,12 +123,19 @@ public class CHeroParty : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             if (_rankList.ContainsKey((ERank)(1 << i)))
+            {
                 continue;
+            }
 
             for (int j = i + 1; j < 4; j++)
             {
                 if (_rankList.TryGetValue((ERank)(1 << j), out CPlayer hero))
                 {
+                    if (hero.TokenManager.HasToken(EEffectType.Immobilize))
+                    {
+                        continue;
+                    }
+
                     bool canRankChange = hero.TrySetRank((ERank)(1 << i));
                     CPrint.Warn($"Rank Change Try {(ERank)(1 << j)} → {(ERank)(1 << i)} [{canRankChange}] : {hero.CurrentRank}");
 
@@ -140,5 +148,61 @@ public class CHeroParty : MonoBehaviour
                 }
             }
         }
+
+        // Debug
+        CPrint.Warn("Hero Rank Sorting Complited.");
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.TryGetValue((ERank)(1 << i), out CPlayer hero))
+            {
+                CPrint.Log($"Rank : [{(ERank)(1 << i)}] / Enemy : [{hero.HeroData.Name}]");
+            }
+        }
+
+        CPrint.Warn("===========================");
+    }
+    // 현재 제대로 정렬되어 있는가?
+    public bool CheckRankValid()
+    {
+        ERank checkRank = ERank.None;
+
+        for (int i = 0; i < 4; i++)
+        {
+            bool hasRank = _rankList.TryGetValue((ERank)(1 << i), out CPlayer hero);
+
+            if (hasRank)
+            {
+                checkRank |= (ERank)(1 << i);
+
+                if (i == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    // 고정토큰은 인정입니다.
+                    bool hasImmobilize = hero.TokenManager.HasToken(EEffectType.Immobilize);
+
+                    if (hasImmobilize)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        // 앞 랭크가 비었는데 왜 뒤에있지?
+                        for (int j = 0; j < i; j++)
+                        {
+                            if ((checkRank & (ERank)(1 << j)) == 0)
+                            {
+                                return false;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
