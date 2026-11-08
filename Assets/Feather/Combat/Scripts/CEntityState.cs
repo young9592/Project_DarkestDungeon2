@@ -27,7 +27,8 @@ public class CEntityState : MonoBehaviour
     [SerializeField] private GameObject _burn;
 
     [Header("Entity Health")]
-    [SerializeField] private Image _HealthFill;
+    [SerializeField] private Image _hpFill;
+    [SerializeField] private RectTransform _hpBarBackgroundTr;
 
     [Header("Entity Stress")]
     [SerializeField] private GameObject _stressRoot;
@@ -61,8 +62,9 @@ public class CEntityState : MonoBehaviour
     private RectTransform _rectTr;
     private RectTransform _canvasRectTr;
     // 초기 연결상태 확인
-    private bool _initEntity = false;
+    private bool _init = false;
     private bool _doFollow = true;
+    private int _formationSize = 1;
     private EEntityState _entityType = EEntityState.None;
     private bool _rendererCameraMode = false;
     #endregion
@@ -76,6 +78,8 @@ public class CEntityState : MonoBehaviour
 
     private void Awake()
     {
+        // Null check
+
         _rectTr = GetComponent<RectTransform>();
     }
 
@@ -112,26 +116,42 @@ public class CEntityState : MonoBehaviour
         {
             SetStress();
             _entityType = EEntityState.Hero;
+            _formationSize = 1;
         }
         else if (isEnemy)
         {
             _stressRoot.SetActive(false);
             _entityType = EEntityState.Enemy;
+
+            _formationSize = (entity as CEnemy).EnemyData.FormationSize;
+
+            if (_formationSize > 1)
+            {
+                _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
+            }
+
         }
         else if (isEnemyCorpse)
         {
             _stressRoot.SetActive(false);
             _entityType = EEntityState.Enemy_Corpse;
+
+            _formationSize = (entity as CEnemy).Corpse.FormationSize;
+
+            if (_formationSize > 1)
+            {
+                _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
+            }
         }
 
         MoveState();
 
-        _initEntity = true;
+        _init = true;
     }
     // 시체 상태가 되었을 때 재연결
     public void ReConnect(GameObject target)
     {
-        _initEntity = false;
+        _init = false;
 
         // 랜더링 모드 체크
         if (_canvas.renderMode == RenderMode.ScreenSpaceCamera)
@@ -147,11 +167,11 @@ public class CEntityState : MonoBehaviour
 
         SetTotalState();
 
-        _initEntity = true;
+        _init = true;
     }
     private void Update()
     {
-        if (!_initEntity)
+        if (!_init)
         {
             return;
         }
@@ -196,7 +216,7 @@ public class CEntityState : MonoBehaviour
 
     private void CheckEntityDead()
     {
-        if (!_initEntity)
+        if (!_init)
         {
             return;
         }
@@ -283,7 +303,7 @@ public class CEntityState : MonoBehaviour
 
 
         float Clamp01 = Mathf.Clamp01((float)curHealth / (float)maxHealth);
-        _HealthFill.fillAmount = Clamp01;
+        _hpFill.fillAmount = Clamp01;
     }
     public void SetStress()
     {

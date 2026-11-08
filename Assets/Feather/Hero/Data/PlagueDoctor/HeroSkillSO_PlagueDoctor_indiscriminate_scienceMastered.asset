@@ -15,17 +15,22 @@ MonoBehaviour:
   _skillName: Indiscriminate Science+
   _skillIcon: {fileID: 21300000, guid: c970e2a56c5cb5c48af01d5b98aae054, type: 3}
   _useableRank: 14
-  _targetableRank: 15
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 2
   _effectList:
   - {fileID: 11400000, guid: e6dc19934b6c43638f324b7a5ad09430, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
   _target: 4
   _startState: Base Layer.OriginalAntic_PlagueDoctor_indiscriminate_science
   _endState: Base Layer.OriginalRecover_PlagueDoctor_indiscriminate_science
   _presentationNote: Shares the support motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_poison
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_indiscriminate_science
   _feedback: {fileID: 11400000, guid: 1907f8dfcf44c4640a7e88ee9c7fee52, type: 2}
-  _baseSkill: {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}

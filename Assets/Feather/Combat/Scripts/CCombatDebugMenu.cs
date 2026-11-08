@@ -46,6 +46,7 @@ public class CCombatDebugMenu : MonoBehaviour
         _applyOptionList.Add("추가행동", EEffectType.None);
         _applyOptionList.Add("속도", EEffectType.Speed);
         _applyOptionList.Add("고정", EEffectType.Immobilize);
+        _applyOptionList.Add("반격", EEffectType.Riposte);
 
         for (int i = 0; i < _effectSOList.Count; i++)
         {
@@ -132,7 +133,7 @@ public class CCombatDebugMenu : MonoBehaviour
     private void OnEffectApplyButton()
     {
         List<(int id, CEntity entity)> entities = _combatManager.EntityList;
-        Dictionary<CEntity, CEntityState> entityStates = _combatManager.EntityStateList;
+        Dictionary<CEntity, CEntityState> entityStates = _combatManager.EntitiesState;
 
         string applyOptionText = _selectEffect.options[_selecedtEffectIdx].text;
         EEffectType applyOption = _applyOptionList[applyOptionText];
@@ -153,14 +154,14 @@ public class CCombatDebugMenu : MonoBehaviour
 
                         if (selectEntity is CEnemy && selectEntity.IsDead)
                         {
-                            if (_combatManager.EntityStateList.ContainsKey(selectEntity))
+                            if (_combatManager.EntitiesState.ContainsKey(selectEntity))
                             {
-                                CEntityState entityState = _combatManager.EntityStateList[selectEntity];
-                                _combatManager.EntityStateList.Remove(selectEntity);
+                                CEntityState entityState = _combatManager.EntitiesState[selectEntity];
+                                _combatManager.EntitiesState.Remove(selectEntity);
                                 CEnemyCorpse corpse = (selectEntity as CEnemy).Corpse;
 
                                 entityState.ReConnect(corpse.gameObject);
-                                _combatManager.EntityStateList.Add(corpse, entityState);
+                                _combatManager.EntitiesState.Add(corpse, entityState);
                             }
                         }
                     }
@@ -185,14 +186,14 @@ public class CCombatDebugMenu : MonoBehaviour
 
                         if (selectEntity is CEnemy && selectEntity.IsDead)
                         {
-                            if (_combatManager.EntityStateList.ContainsKey(selectEntity))
+                            if (_combatManager.EntitiesState.ContainsKey(selectEntity))
                             {
-                                CEntityState entityState = _combatManager.EntityStateList[selectEntity];
-                                _combatManager.EntityStateList.Remove(selectEntity);
+                                CEntityState entityState = _combatManager.EntitiesState[selectEntity];
+                                _combatManager.EntitiesState.Remove(selectEntity);
                                 CEnemyCorpse corpse = (selectEntity as CEnemy).Corpse;
 
                                 entityState.ReConnect(corpse.gameObject);
-                                _combatManager.EntityStateList.Add(corpse, entityState);
+                                _combatManager.EntitiesState.Add(corpse, entityState);
                             }
                         }
                     }
@@ -240,6 +241,7 @@ public class CCombatDebugMenu : MonoBehaviour
             case EEffectType.Stun:
             case EEffectType.Speed:
             case EEffectType.Immobilize:
+            case EEffectType.Riposte:
                 CEffect effect = new CEffect(_effectList[applyOption]);
                 selectEntity.ApplyStatusEffect(effect);
                 break;

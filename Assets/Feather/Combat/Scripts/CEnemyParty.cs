@@ -158,7 +158,6 @@ public class CEnemyParty : MonoBehaviour
 
     public void SortRank()
     {
-        // 이거만 수정하면 됨
         for (int i = 0; i < 4; i++)
         {
             if (_rankList.ContainsKey((ERank)(1 << i)))
@@ -169,7 +168,7 @@ public class CEnemyParty : MonoBehaviour
 
                 if (size > 1)
                 {
-                    i = i + size - 1;
+                    i += size - 1;
                 }
 
                 continue;
@@ -184,6 +183,7 @@ public class CEnemyParty : MonoBehaviour
                         continue;
                     }
 
+                    CPrint.Warn($"{enemy.EnemyData.Name} : [{(ERank)(1 << j)}] >> [{(ERank)(1 << i)}]");
                     enemy.SetRankImmediate((ERank)(1 << i));
                     _rankList.Remove((ERank)(1 << j));
                     _rankList.Add((ERank)(1 << i), enemy);

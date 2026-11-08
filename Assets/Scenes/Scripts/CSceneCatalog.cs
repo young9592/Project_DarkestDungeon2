@@ -8,8 +8,10 @@ public enum ESceneId
     Temp_Bulid = 0,
     Title,
     Temp_Park,
+    Temp_Park_Character_Information_Title,
     Temp_Sin_Chapter,
     Temp_Sin_TheCrossroads,
+    Temp_Sin_TheInn,
     Temp_Go,
     Temp_Lee,
     Temp_Jo

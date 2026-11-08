@@ -173,6 +173,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5507691348317288540}
+  - component: {fileID: 5665871300869594292}
   m_Layer: 5
   m_Name: Indicator
   m_TagString: Untagged
@@ -206,6 +207,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5665871300869594292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433627223928225786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f81109bbdbfce478784a5ba797054f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvas: {fileID: 0}
+  _target: {fileID: 0}
+  _myturnIndicator: {fileID: 6573430455629484914}
+  _buffIndicator: {fileID: 9105631538476779361}
+  _targetIndicator: {fileID: 3891198768984842158}
+  _heroFullLight: {fileID: 598762610849108891}
+  _heroSemiLight: {fileID: 4508699774400856520}
+  _enemyFullLight: {fileID: 5031484767922672577}
+  _offset: {x: 0, y: 0, z: 0}
 --- !u!1 &4508699774400856520
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,7 +484,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1227684117825680652
 RectTransform:
   m_ObjectHideFlags: 0

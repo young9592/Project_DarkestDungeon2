@@ -1,10 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 
 #region Build용 임시 SceneManager
@@ -25,11 +26,14 @@ public class CSceneFlowManager : MonoBehaviour
     [SerializeField] private GameObject _loadPanel;
 
     [Header("Progress Bar")]
+    [SerializeField] private GameObject _progressPanel;
     [SerializeField] private Image _progressBar;
+    [SerializeField] private TextMeshProUGUI _loadingText;
 
     [Header("Option")]
     [SerializeField] private bool _enableKey = true;
     [SerializeField] private bool _dontDestroyOnLoad = true;
+
     #endregion
 
     #region Field
@@ -149,6 +153,26 @@ public class CSceneFlowManager : MonoBehaviour
 
         CPrint.Log($"id = {id} / sceneName = {sceneName}");
 
+
+        Material mat = _loadPanel.GetComponent<Image>().material;
+        int percent = Shader.PropertyToID("_percent");
+        _loadPanel.SetActive(true);
+
+        float delay = 2f;
+        float nextTime = Time.time + delay;
+
+        while (nextTime > Time.time)
+        {
+            float t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
+            mat.SetFloat(percent, t);
+            yield return null;
+        }
+
+        mat.SetFloat(percent, 1f);
+
+        _loadingText.text = "로딩중...";
+        _progressPanel.SetActive(true);
+        
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
 
         while (op.progress < 0.9f)
@@ -158,9 +182,25 @@ public class CSceneFlowManager : MonoBehaviour
         }
 
         _progressBar.fillAmount = op.progress;
+        _progressPanel.SetActive(false);
+        _loadingText.text = "";
+
+        delay = 2f;
+        nextTime = Time.time + delay;
+
+        while (nextTime > Time.time)
+        {
+            float t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
+            mat.SetFloat(percent, 1f - t);
+            yield return null;
+        }
+
+        yield return null;
+
         _loadPanel.SetActive(false);
 
         SyncCursorToCurrentScene();
+
 
         _isLoading = false;
     }
@@ -191,24 +231,35 @@ public class CSceneFlowManager : MonoBehaviour
         }
         if (Keyboard.current.eKey.isPressed)
         {
-            LoadScene(ESceneId.Temp_Sin_Chapter);
+            LoadScene(ESceneId.Temp_Park_Character_Information_Title);
         }
         if (Keyboard.current.rKey.isPressed)
         {
-            LoadScene(ESceneId.Temp_Sin_TheCrossroads);
+            LoadScene(ESceneId.Temp_Sin_Chapter);
         }
         if (Keyboard.current.tKey.isPressed)
         {
-            LoadScene(ESceneId.Temp_Go);
+            LoadScene(ESceneId.Temp_Sin_TheCrossroads);
         }
         if (Keyboard.current.yKey.isPressed)
         {
-            LoadScene(ESceneId.Temp_Lee);
+            LoadScene(ESceneId.Temp_Sin_TheInn);
         }
         if (Keyboard.current.uKey.isPressed)
         {
+            LoadScene(ESceneId.Temp_Go);
+        }
+
+        if (Keyboard.current.iKey.isPressed)
+        {
+            LoadScene(ESceneId.Temp_Lee);
+        }
+
+        if (Keyboard.current.oKey.isPressed)
+        {
             LoadScene(ESceneId.Temp_Jo);
         }
+
         if (Keyboard.current.enterKey.isPressed)
         {
             ReloadScene();

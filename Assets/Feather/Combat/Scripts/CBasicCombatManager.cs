@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
-
 
 public class CBasicCombatManager : MonoBehaviour
 {
@@ -67,12 +65,14 @@ public class CBasicCombatManager : MonoBehaviour
 
     #region Field
     // 상태 리스트
-    private Dictionary<CEntity, CEntityState> _entityStateList = new Dictionary<CEntity, CEntityState>();
+    private Dictionary<CEntity, CEntityState> _entitiesState = new Dictionary<CEntity, CEntityState>();
+    // 지시등 리스트
+    private Dictionary<CEntity, CIndicator> _entitiesIndicator = new Dictionary<CEntity, CIndicator>();
     // 순서 리스트
     private List<(int id, CEntity entity, int turnSpeed)> _turnList = new List<(int, CEntity, int)>();
     // 초상화 리스트
     private List<GameObject> _turnPortraitList = new List<GameObject>();
-    private GameObject _myTurnHighlight = null;
+
     private Coroutine _actionCoroutine = null;
     private Coroutine _sortCoroutine = null;
     private Coroutine _tryBeginCoroutine = null;
@@ -90,8 +90,10 @@ public class CBasicCombatManager : MonoBehaviour
 
     #region Property
     public List<(int, CEntity)> EntityList => _entityList;
-    public Dictionary<CEntity, CEntityState> EntityStateList => _entityStateList;
+    public Dictionary<CEntity, CEntityState> EntitiesState => _entitiesState;
+    public Dictionary<CEntity, CIndicator> EntitiesIndicator => _entitiesIndicator;
     public CEntity MyTurn => _turnList.Count != 0 ? _turnList[0].entity : null;
+    public CIndicator MyTurnIndicator = null;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroParty.HeroRankPosition;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyParty.EnemyRankPosition;
     #endregion
@@ -138,7 +140,7 @@ public class CBasicCombatManager : MonoBehaviour
         // 히어로와 적들의 파티가 생성 완료 되었는가?
         else if (_roundState == RoundState.Wait)
         {
-            if (_entityList.Count == _entityStateList.Count)
+            if (_entityList.Count == _entitiesState.Count)
             {
                 _roundState = RoundState.Ready;
             }
@@ -186,7 +188,8 @@ public class CBasicCombatManager : MonoBehaviour
 
                     for (int i = 0; i < _entityList.Count; i++)
                     {
-                        _entityStateList.Add(_entityList[i].entity, _combatUI.CreateStateUI(_entityList[i].entity));
+                        _entitiesState.Add(_entityList[i].entity, _combatUI.CreateStateUI(_entityList[i].entity));
+                        _entitiesIndicator.Add(_entityList[i].entity, _combatUI.CreateIndicatorUI(_entityList[i].entity));
                     }
                 }
                 _debugMenu.Initialize();
@@ -274,13 +277,16 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        if (_myTurnHighlight != null)
+        // TODO : MY Turn Indicator
+        if(MyTurnIndicator != null)
         {
-            Destroy(_myTurnHighlight);
+            MyTurnIndicator.HideIndicator();
         }
 
-        // TODO : 자신턴에 자신을 치유하는 모션을 적용하니 변경되었습니다. 수정 필요
-        _myTurnHighlight = _messageManager.ShowIcon(MyTurn.gameObject, CCombatFloatingIcon.IconType.Turn);
+        if (_entitiesIndicator.TryGetValue(MyTurn, out MyTurnIndicator))
+        {
+            MyTurnIndicator.ViewMyturnIndicator();
+        }
 
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
@@ -510,7 +516,8 @@ public class CBasicCombatManager : MonoBehaviour
         }
 
         Destroy(_entityList[index].entity.gameObject, _portraitRemoveDelay);
-        _entityStateList.Remove(_entityList[index].entity);
+        _entitiesState.Remove(_entityList[index].entity);
+        _entitiesIndicator.Remove(_entityList[index].entity);
         _entityList.RemoveAt(index);
 
         SortEntitiesRank();
@@ -528,14 +535,14 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
-        if (_entityStateList.ContainsKey(entity))
+        if (_entitiesState.ContainsKey(entity))
         {
-            CEntityState entityState = _entityStateList[entity];
-            _entityStateList.Remove(entity);
+            CEntityState entityState = _entitiesState[entity];
+            _entitiesState.Remove(entity);
             CEnemyCorpse corpse = (entity as CEnemy).Corpse;
 
             entityState.ReConnect(corpse.gameObject);
-            _entityStateList.Add(corpse, entityState);
+            _entitiesState.Add(corpse, entityState);
         }
 
         for (int i = _turnList.Count - 1; i >= 0; i--)
@@ -988,6 +995,11 @@ public class CBasicCombatManager : MonoBehaviour
     // 전투가 완료되었는지 확인
     private void CompletedBattle()
     {
+        if (true)
+        {
+            return;
+        }
+
         if (!CHeroParty.IsReady)
         {
             return;

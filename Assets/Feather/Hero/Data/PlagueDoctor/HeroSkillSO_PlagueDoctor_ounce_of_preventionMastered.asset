@@ -15,16 +15,21 @@ MonoBehaviour:
   _skillName: Ounce of Prevention+
   _skillIcon: {fileID: 21300000, guid: 5a23097b9c9c3e34ea57515b283c10d4, type: 3}
   _useableRank: 12
-  _targetableRank: 15
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 2
   _effectList: []
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
   _target: 5
   _startState: Base Layer.OriginalAntic_PlagueDoctor_ounce_of_prevention
   _endState: Base Layer.OriginalRecover_PlagueDoctor_ounce_of_prevention
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_poison
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_ounce_of_prevention
   _feedback: {fileID: 11400000, guid: 065b65b8c36d80241a41861fa5abfa58, type: 2}
-  _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
