@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 // 배틀코어에서 스킬 정보를 넘겨받아 Effect들을 순차적으로 실행하고 결과를 반환해주는 매니저
 public class CEffectManager : MonoBehaviour

@@ -183,14 +183,35 @@ public class CEnemyParty : MonoBehaviour
                         continue;
                     }
 
-                    CPrint.Warn($"{enemy.EnemyData.Name} : [{(ERank)(1 << j)}] >> [{(ERank)(1 << i)}]");
-                    enemy.SetRankImmediate((ERank)(1 << i));
-                    _rankList.Remove((ERank)(1 << j));
-                    _rankList.Add((ERank)(1 << i), enemy);
-
+                    // 크기를 고려해야합니다. 크기가 2인 친구가 공간1칸에 들어오면 안되기 때문에..
+                    bool isFull = false;
                     int size = enemy.EnemyData.FormationSize;
 
-                    i += size - 1;
+                    
+                    for (int k = i + 1; k < i + size; k++)
+                    {
+                        if(i + size > 4)
+                        {
+                            continue;
+                        }
+
+                        isFull = _rankList.TryGetValue((ERank)(1 << k), out CEnemy checkEnemy);
+
+                        if (isFull)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!isFull)
+                    {
+                        CPrint.Warn($"{enemy.EnemyData.Name} : [{(ERank)(1 << j)}] >> [{(ERank)(1 << i)}]");
+                        enemy.SetRankImmediate((ERank)(1 << i));
+                        _rankList.Remove((ERank)(1 << j));
+                        _rankList.Add((ERank)(1 << i), enemy);
+
+                        i += size - 1;
+                    }
                     break;
                 }
             }
