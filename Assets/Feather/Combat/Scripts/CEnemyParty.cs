@@ -24,7 +24,7 @@ public class CEnemyParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CEnemy> EnemyList => _enemyList;
-    public Dictionary<ERank, CEnemy> RankList => _rankList;
+    public IReadOnlyDictionary<ERank, CEnemy> RankList => _rankList;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
     #endregion
     void Start()

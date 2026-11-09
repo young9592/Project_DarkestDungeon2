@@ -26,7 +26,7 @@ public class CHeroParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CPlayer> HeroList => _heroList;
-    public Dictionary<ERank, CPlayer> RankList => _rankList;
+    public IReadOnlyDictionary<ERank, CPlayer> RankList => _rankList;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
     public CHeroExpeditionState HeroExpeditionState => _expeditionState;
     public string RunID => _runID;

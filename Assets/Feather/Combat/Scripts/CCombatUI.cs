@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -114,12 +115,13 @@ public class CCombatUI : MonoBehaviour
     private bool _pass = false;
     private bool _rankChange = false;
     private bool _cursorRank = false;
+    private Coroutine _indicatorCoroutine = null;
     private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
     public CEntity TurnEntity => _combatManager.MyTurn;
-    
+
     public bool Pass
     {
         get { return _pass; }
@@ -372,6 +374,26 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        _combatManager.MyTurn.CancelAction();
+        _combatManager.MyTurn.TryBeginAction();
+
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            // 본인이면 제외
+            if (entity.Equals(_combatManager.MyTurn))
+            {
+                continue;
+            }
+
+            indicators[entity].HideIndicator();
+        }
+
+
         RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
         cursorTr.anchoredPosition = rectTr.anchoredPosition;
@@ -455,30 +477,39 @@ public class CCombatUI : MonoBehaviour
 
         CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 
+        // 현재 스킬의 랭크 표시
+        bool aliyRank1 = ((usableRank & ERank.Rank1) != 0);
+        bool aliyRank2 = ((usableRank & ERank.Rank2) != 0);
+        bool aliyRank3 = ((usableRank & ERank.Rank3) != 0);
+        bool aliyRank4 = ((usableRank & ERank.Rank4) != 0);
+
+        bool targetRank1 = ((targetRank & ERank.Rank1) != 0);
+        bool targetRank2 = ((targetRank & ERank.Rank2) != 0);
+        bool targetRank3 = ((targetRank & ERank.Rank3) != 0);
+        bool targetRank4 = ((targetRank & ERank.Rank4) != 0);
+
+        List<bool> alliesRankList = new List<bool> { aliyRank1, aliyRank2, aliyRank3, aliyRank4 };
+        List<bool> targetRankList = new List<bool> { targetRank1, targetRank2, targetRank3, targetRank4 };
+
         if (heroSkillSO.Target != EHeroSkillTarget.Self)
         {
-            _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
-            _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
-            _AlliesRank[2].enabled = ((usableRank & ERank.Rank3) != 0 ? true : false);
-            _AlliesRank[3].enabled = ((usableRank & ERank.Rank4) != 0 ? true : false);
-
-            _targetRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-            _targetRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-            _targetRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-            _targetRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            for (int i = 0; i < alliesRankList.Count; i++)
+            {
+                _AlliesRank[i].enabled = alliesRankList[i];
+                _targetRank[i].enabled = targetRankList[i];
+            }
 
             _targetRankPanel.SetActive((targetRank & (ERank.Rank1 | ERank.Rank2 | ERank.Rank3 | ERank.Rank4)) == 0 ? false : true);
         }
         else
         {
-            _AlliesRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-            _AlliesRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-            _AlliesRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-            _AlliesRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            for (int i = 0; i < alliesRankList.Count; i++)
+            {
+                _AlliesRank[i].enabled = targetRankList[i];
+            }
+
             _targetRankPanel.SetActive(false);
         }
-
-
 
         _cursorSkillInfo.SetActive(true);
         _cursorSkill.SetActive(true);
@@ -488,12 +519,51 @@ public class CCombatUI : MonoBehaviour
         // 영웅의 스킬 사전준비 모션
         hero.SelectSkill(idx);
 
-        
-        if(
+        if (_indicatorCoroutine == null)
+        {
+            _indicatorCoroutine = StartCoroutine(CoViewTarget(heroSkillSO));
+        }
+        else
+        {
+            StopCoroutine(_indicatorCoroutine);
+            _indicatorCoroutine = null;
+            _indicatorCoroutine = StartCoroutine(CoViewTarget(heroSkillSO));
+        }
+    }
+
+    private IEnumerator CoViewTarget(CHeroSkillSO heroSkillSO)
+    {
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (indicators.TryGetValue(entity, out CIndicator indicator))
+            {
+                CHeroTargetView view = entity.gameObject.GetComponent<CHeroTargetView>();
+
+                yield return null;
+
+                indicator.SetView(view);
+
+                // 본인이면 제외
+                if (entity.Equals(_combatManager.MyTurn))
+                {
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+        // 자신의 스킬이 어떤 종류인지에 따라 지시등이 변합니다.
+        if (
             heroSkillSO.Target == EHeroSkillTarget.Self ||
             heroSkillSO.Target == EHeroSkillTarget.Ally ||
             heroSkillSO.Target == EHeroSkillTarget.AllyOrSelf ||
-            heroSkillSO.Target == EHeroSkillTarget.AllAllies 
+            heroSkillSO.Target == EHeroSkillTarget.AllAllies
           )
         {
             _combatManager.MyTurnIndicator.ViewBuffIndicator();
@@ -502,7 +572,37 @@ public class CCombatUI : MonoBehaviour
         {
             _combatManager.MyTurnIndicator.ViewMyturnIndicator();
         }
+
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            if (indicators.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
+            {
+                if (_combatManager.EntityList[i].entity == _combatManager.MyTurn)
+                {
+                    continue;
+                }
+
+                if (indicator.isHighlight)
+                {
+                    indicator.ViewTargetIndicator();
+                }
+            }
+        }
     }
+
+    public void HideAllIndicator()
+    {
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            if (indicators.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
+            {
+                indicator.HideIndicator();
+            }
+        }
+    }
+
     /// <summary>
     /// 영웅 정보 및 스킬 인터페이스 활성화
     /// </summary>
@@ -580,15 +680,19 @@ public class CCombatUI : MonoBehaviour
         _enemyResistStatus.SetActive(false);
     }
     // 스킬 사용 시 처리
-    public void UseSkill(CSkillDataSO skillDataSO)
+    public void UseSkill(CSkillDataSO skillDataSO, bool onlyUseSkillName = false)
     {
         CloseHeroInfomation();
 
         _currentSkillName.text = skillDataSO.SkillName;
         OpenCombatPanel();
-        _combatBorder.SetActive(true);
-        _combatTriangle.SetActive(true);
         _currentSkillName.gameObject.SetActive(true);
+
+        if (!onlyUseSkillName)
+        {
+            _combatBorder.SetActive(true);
+            _combatTriangle.SetActive(true);
+        }
     }
     // 전투 패널 활성화
     public void OpenCombatPanel()
@@ -638,7 +742,7 @@ public class CCombatUI : MonoBehaviour
     public void OpenMeltDown()
     {
         ResetCombatPanel();
-        
+
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
         _meltdownPanel.SetActive(true);
@@ -652,7 +756,7 @@ public class CCombatUI : MonoBehaviour
     public void OpenResolute()
     {
         ResetCombatPanel();
-        
+
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
         _resolutePanel.SetActive(true);
