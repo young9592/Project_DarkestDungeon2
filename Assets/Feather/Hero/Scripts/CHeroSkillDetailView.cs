@@ -177,7 +177,7 @@ public class CHeroSkillDetailView : MonoBehaviour
                         {
                             text.Append("Below ").Append(heal.HealthThreshold).Append("% HP only\n");
                         }
-                        if (effect.Condition == EEffectCondition.TargetHasCombo)
+                        if (effect.Condition == EEffectCondition.TargetHasCombo || heal.RequiresTargetCombo)
                         {
                             text.Append("When target has Combo\n");
                         }
