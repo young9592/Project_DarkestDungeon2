@@ -10,6 +10,7 @@ public class CEnemyParty : MonoBehaviour
 
     [Header("Option")]
     [SerializeField] private List<GameObject> _enemyRankPosition;
+    private Dictionary<ERank, CEnemy> _rankList = new Dictionary<ERank, CEnemy>();
     [SerializeField] private float _entityScale = 150f;
     #endregion
 
@@ -23,6 +24,7 @@ public class CEnemyParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CEnemy> EnemyList => _enemyList;
+    public Dictionary<ERank, CEnemy> RankList => _rankList;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
     #endregion
     void Start()
@@ -52,7 +54,7 @@ public class CEnemyParty : MonoBehaviour
             int size = _enemyPartyPreset.Entries[i].EnemyPrefab.EnemyData.FormationSize;
 
 
-            
+
             switch (_enemyPartyPreset.Entries[i].Rank)
             {
                 case ERank.None:
@@ -72,7 +74,7 @@ public class CEnemyParty : MonoBehaviour
                 default:
                     break;
             }
-            
+
 
             enemyPrefab.GetComponent<CEnemy>().TrySetRank(_enemyPartyPreset.Entries[i].Rank);
 
@@ -88,7 +90,7 @@ public class CEnemyParty : MonoBehaviour
             enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 180f, 0);
 
             // 구울같은 개체는 등을 보여줬어..
-            if(enemyPrefab.EntityData.Id == "enemy_ghoul")
+            if (enemyPrefab.EntityData.Id == "enemy_ghoul")
             {
                 enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
             }
@@ -96,15 +98,19 @@ public class CEnemyParty : MonoBehaviour
             // 스크립트 잠시 중단
             enemyPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
+            CEnemy enemy = enemyPrefab.GetComponent<CEnemy>();
+
             // 리스트 추가
-            _enemyList.Add(enemyPrefab.GetComponent<CEnemy>());
+            _enemyList.Add(enemy);
+
+            _rankList.Add(enemy.CurrentRank, enemy);
         }
 
         // 준비 완료
         _isReady = true;
     }
 
-    
+
     private Vector3 SizeOffsetPosition(int rank, int size)
     {
         Vector3 vec = Vector3.zero;
@@ -143,9 +149,121 @@ public class CEnemyParty : MonoBehaviour
         {
             if (_enemyList[i] == enemy)
             {
+                _rankList.Remove(enemy.CurrentRank);
                 _enemyList.RemoveAt(i);
                 break;
             }
         }
+    }
+
+    public void SortRank()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.ContainsKey((ERank)(1 << i)))
+            {
+                _rankList.TryGetValue((ERank)(1 << i), out CEnemy enemy);
+
+                int size = enemy.EnemyData.FormationSize;
+
+                if (size > 1)
+                {
+                    i += size - 1;
+                }
+
+                continue;
+            }
+
+            for (int j = i + 1; j < 4; j++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << j), out CEnemy enemy))
+                {
+                    if (enemy.TokenManager.HasToken(EEffectType.Immobilize))
+                    {
+                        continue;
+                    }
+
+                    CPrint.Warn($"{enemy.EnemyData.Name} : [{(ERank)(1 << j)}] >> [{(ERank)(1 << i)}]");
+                    enemy.SetRankImmediate((ERank)(1 << i));
+                    _rankList.Remove((ERank)(1 << j));
+                    _rankList.Add((ERank)(1 << i), enemy);
+
+                    int size = enemy.EnemyData.FormationSize;
+
+                    i += size - 1;
+                    break;
+                }
+            }
+        }
+
+        // Debug
+        CPrint.Warn("Enemy Rank Sorting Complited.");
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.TryGetValue((ERank)(1 << i), out CEnemy enemy))
+            {
+                CPrint.Log($"Rank : [{(ERank)(1 << i)}] / Enemy : [{enemy.EnemyData.Name}]");
+            }
+        }
+
+        CPrint.Warn("===========================");
+    }
+
+    // 현재 제대로 정렬되어 있는가?
+    public bool CheckRankValid()
+    {
+        ERank checkRank = ERank.None;
+
+        for (int i = 0; i < 4; i++)
+        {
+            bool hasRank = _rankList.TryGetValue((ERank)(1 << i), out CEnemy enemy);
+
+            if (hasRank)
+            {
+                int size = enemy.EnemyData.FormationSize;
+
+                // 몸뚱이가 이렇게 큰데 왜 여기에 있어요?
+                if (i + size > 4)
+                {
+                    return false;
+                }
+
+                for (int j = i; j < i + size; j++)
+                {
+                    checkRank |= (ERank)(1 << j);
+                }
+
+                if (i == 0)
+                {
+                    i += size - 1;
+                    continue;
+                }
+                else
+                {
+                    // 고정토큰은 인정입니다.
+                    bool hasImmobilize = enemy.TokenManager.HasToken(EEffectType.Immobilize);
+
+                    if (hasImmobilize)
+                    {
+                        i += size - 1;
+                        continue;
+                    }
+                    else
+                    {
+                        // 앞 랭크가 비었는데 왜 뒤에있지?
+                        for (int j = 0; j < i; j++)
+                        {
+                            if ((checkRank & (ERank)(1 << j)) == 0)
+                            {
+                                return false;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

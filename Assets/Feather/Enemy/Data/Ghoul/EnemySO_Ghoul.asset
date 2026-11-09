@@ -23,7 +23,7 @@ MonoBehaviour:
     Stun: 50
     Move: 50
     Debuff: 20
-  _actions: 3
+  _actions: 1
   _availableSkills:
   - {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
   - {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
@@ -41,6 +41,7 @@ MonoBehaviour:
   _skillRules:
   - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
     _rankMovement: 0
+    _preferAvailableMovement: 0
     _selfToken: 11
     _selfTokenCount: 1
     _weight: 3
@@ -51,6 +52,7 @@ MonoBehaviour:
     _condition: 2
   - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
     _rankMovement: 0
+    _preferAvailableMovement: 0
     _selfToken: 11
     _selfTokenCount: 1
     _weight: 2
@@ -61,6 +63,7 @@ MonoBehaviour:
     _condition: 1
   - _skill: {fileID: 11400000, guid: 1ee58c041f184af198b64af2a6b04f62, type: 2}
     _rankMovement: 0
+    _preferAvailableMovement: 0
     _selfToken: 11
     _selfTokenCount: 1
     _weight: 2

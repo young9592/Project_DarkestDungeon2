@@ -181,7 +181,7 @@ public class CCombatCameraManager : MonoBehaviour
         // 카메라 이동방향
         CameraMoveDirection moveDir = CameraMoveDirection.None;
         // 반격 토큰을 가지고 있다면 중간에 화면을 다시 꺽어줘야합니다.
-        bool hasRiposte = false;
+        CEntity riposteEntity = null;
 
         switch (combatTarget)
         {
@@ -198,6 +198,29 @@ public class CCombatCameraManager : MonoBehaviour
                 moveDir = CameraMoveDirection.Right;
 
                 // TODO : 상대에게 반격 토큰 있는지 체크 필요
+                ERank minRank = ERank.None;
+
+                for (int i = 0; i < entities.Count; i++)
+                {
+                    bool hasRiposte = entities[i].TokenManager.HasToken(EEffectType.Riposte);
+
+                    if (hasRiposte)
+                    {
+                        if (minRank == ERank.None)
+                        {
+                            minRank = entities[i].CurrentRank;
+                            riposteEntity = entities[i];
+                            continue;
+                        }
+
+                        if (minRank > entities[i].CurrentRank)
+                        {
+                            minRank = entities[i].CurrentRank;
+                            riposteEntity = entities[i];
+                            continue;
+                        }
+                    }
+                }
 
                 break;
             case CombatTarget.Hero_SoloBuff:
@@ -235,6 +258,31 @@ public class CCombatCameraManager : MonoBehaviour
                 moveDir = CameraMoveDirection.Left;
 
                 // TODO : 상대에게 반격 토큰 있는지 체크 필요
+
+                // TODO : 상대에게 반격 토큰 있는지 체크 필요
+                minRank = ERank.None;
+
+                for (int i = 0; i < entities.Count; i++)
+                {
+                    bool hasRiposte = entities[i].TokenManager.HasToken(EEffectType.Riposte);
+
+                    if (hasRiposte)
+                    {
+                        if (minRank == ERank.None)
+                        {
+                            minRank = entities[i].CurrentRank;
+                            riposteEntity = entities[i];
+                            continue;
+                        }
+
+                        if (minRank > entities[i].CurrentRank)
+                        {
+                            minRank = entities[i].CurrentRank;
+                            riposteEntity = entities[i];
+                            continue;
+                        }
+                    }
+                }
                 break;
             case CombatTarget.Enemy_SoloBuff:
                 entitiesTr.Add(actor.gameObject.transform);
@@ -265,25 +313,16 @@ public class CCombatCameraManager : MonoBehaviour
 
         }
 
-        return StartCoroutine(CoAction(actor, entitiesTr, moveDir, combatTarget, hasRiposte));
+        return StartCoroutine(CoAction(actor, entitiesTr, moveDir, combatTarget, riposteEntity));
     }
 
-    private IEnumerator CoAction(CEntity actor, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, bool hasRiposeToken)
+    private IEnumerator CoAction(CEntity actor, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, CEntity riposteEntity)
     {
-        bool actorIsHero = actor is CPlayer;
-
-        if (actorIsHero)
-        {
-            CPlayer hero = actor as CPlayer;
-
-            hero.RankPresentation.SnapToRank();
-        }
-
         _onceMessage.Clear();
 
         List<Vector3> camInitPos = new List<Vector3>();
 
-        float space = 2f * Mathf.Clamp01((5f - entitiesTr.Count) / 4f) + 0.5f;
+        float space = 2f * Mathf.Clamp01((5f - entitiesTr.Count) / 4f) + 1f;
 
         for (int i = 0; i < entitiesTr.Count; i++)
         {
@@ -293,7 +332,8 @@ public class CCombatCameraManager : MonoBehaviour
             camInitPos.Add(entitiesTr[i].position);
         }
 
-        float delay = 2f;
+        // 준비
+        float delay = riposteEntity == null ? 2f : 1f;
         float messageDelay = 0.1f;
         float nextTime = Time.time + delay;
         float nextMsgTime = Time.time + messageDelay;
@@ -306,8 +346,10 @@ public class CCombatCameraManager : MonoBehaviour
             moveVec.Add(camInitPos[i] + new Vector3(move, 0, 0));
         }
 
+        // UI 정리
         _combatUI.ToggleEntityStateRoot(false);
         _combatUI.ToggleTurnGuideRoot(false);
+        _combatManager.MyTurnIndicator.HideIndicator();
 
         // 공격 방향에 따라 이펙트
         if (combatTarget == CombatTarget.Hero_Attack)
@@ -319,6 +361,7 @@ public class CCombatCameraManager : MonoBehaviour
             _combatUI.AttackLeft();
         }
 
+        // 강조대상 설정
         int layer = LayerMask.NameToLayer(_highlightLayerName);
 
         for (int i = 0; i < entitiesTr.Count; i++)
@@ -328,6 +371,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         yield return null;
 
+        // 재생
         while (nextTime > Time.time)
         {
             float t = 1f - (nextTime - Time.time) / delay;
@@ -388,15 +432,133 @@ public class CCombatCameraManager : MonoBehaviour
                     }
                 }
             }
-
             yield return null;
         }
 
-        // TODO
-        if (hasRiposeToken)
-        {
 
+
+
+
+
+        // 반격 액션 재생 [ 임시 ]
+        // 아직 전략 사용법을 몰라서 임시 처리하였습니다.
+        if (riposteEntity != null && !riposteEntity.IsDead && (combatTarget == CombatTarget.Hero_Attack || combatTarget == CombatTarget.Enemy_Attack))
+        {
+            _onceMessage.Clear();
+            moveVec.Clear();
+            camInitPos.Clear();
+
+            delay = 1f;
+            nextTime = Time.time + delay;
+            move *= -1;
+
+            for (int i = 0; i < entitiesTr.Count; i++)
+            {
+                camInitPos.Add(entitiesTr[i].position);
+                moveVec.Add(entitiesTr[i].position + new Vector3(move, 0, 0));
+            }
+
+            // 반대 방향으로 반격
+            if (combatTarget == CombatTarget.Hero_Attack)
+            {
+                _combatUI.AttackLeft();
+            }
+            else if (combatTarget == CombatTarget.Enemy_Attack)
+            {
+                _combatUI.AttackRight();
+            }
+
+            actor.CancelAction();
+            riposteEntity.CancelAction();
+            
+            // 데미지 처리
+            bool isHero = riposteEntity is CPlayer;
+            if (isHero)
+            {
+                riposteEntity.TokenManager.ConsumeToken(EEffectType.Riposte);
+                int rand = Random.Range(1, 5);
+                actor.TakeDamage(rand);
+            }
+            else
+            {
+                riposteEntity.TokenManager.ConsumeToken(EEffectType.Riposte);
+                int rand = Random.Range(1, 5);
+                actor.TakeDamage(rand);
+            }
+
+            yield return null;
+
+            bool _once = false;
+
+            while (nextTime > Time.time)
+            {
+                float t = 1f - (nextTime - Time.time) / delay;
+
+                if (!_once)
+                {
+                    bool actorIsHero = actor is CPlayer;
+                    GameObject actorObject = actor.gameObject;
+
+                    if (actorIsHero && combatTarget == CombatTarget.Enemy_Attack)
+                    {
+                        if (actor.IsDead)
+                        {
+                            _messageManager.ShowIcon(actorObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
+                            _onceMessage.Add(actor);
+                        }
+                        else if (actor.IsDeathsDoor)
+                        {
+                            _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!");
+                            _onceMessage.Add(actor);
+                        }
+                    }
+                    else if (!actorIsHero && combatTarget == CombatTarget.Hero_Attack)
+                    {
+                        if (actor is CEnemyCorpse)
+                        {
+                            continue;
+                        }
+
+                        if (actor.IsDead)
+                        {
+                            _messageManager.ShowIcon(actorObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
+                            _onceMessage.Add(actor);
+                        }
+                    }
+                    _once = true;
+                }
+
+                for (int i = 0; i < camInitPos.Count; i++)
+                {
+                    entitiesTr[i].position = Vector3.Lerp(camInitPos[i], moveVec[i], t);
+
+                    GameObject entityObject = entitiesTr[i].gameObject;
+                    CEntity entity = entityObject.GetComponent<CEntity>();
+                    Animator animator = entityObject.GetComponentInChildren<Animator>();
+                    bool entityIsHero = entity is CPlayer;
+
+                    if (animator != null)
+                    {
+                        animator.speed = 0;
+                    }
+                }
+                yield return null;
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
         for (int i = 0; i < entitiesTr.Count; i++)
         {
@@ -409,10 +571,11 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         _combatUI.CloseCombatPanel();
-        _combatUI.ToggleEntityStateRoot(true);
         _combatUI.ToggleTurnGuideRoot(true);
+        _combatUI.ToggleEntityStateRoot(true);
+        _combatManager.MyTurnIndicator.ViewMyturnIndicator();
 
-        delay = 3f;
+        delay = 2f;
         nextTime = Time.time + delay;
 
         // 돌아갈 위치 계산
@@ -422,26 +585,10 @@ public class CCombatCameraManager : MonoBehaviour
             CEntity entity = entitiesTr[i].gameObject.GetComponent<CEntity>();
             ERank rank = entity.CurrentRank;
             bool isHero = entity is CPlayer;
-
+            int index = (int)System.MathF.Log((float)rank, 2);
             Vector3 returnVec = Vector3.zero;
 
-            if ((rank & ERank.Rank1) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 0);
-            }
-            else if ((rank & ERank.Rank2) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 1);
-            }
-            else if ((rank & ERank.Rank3) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 2);
-            }
-            else if ((rank & ERank.Rank4) != 0)
-            {
-                returnVec = ReturnVector(isHero, entity, 3);
-            }
-
+            returnVec = ReturnVector(isHero, entity, index);
             returnVectorList.Add(returnVec);
         }
 
@@ -465,8 +612,9 @@ public class CCombatCameraManager : MonoBehaviour
         {
             HighlightCharacter(entitiesTr[i].gameObject, layer);
         }
-    }
 
+
+    }
     private Vector3 ReturnVector(bool isHero, CEntity entity, int rank)
     {
         Vector3 returnVec = Vector3.zero;
@@ -602,9 +750,8 @@ public class CCombatCameraManager : MonoBehaviour
             }
         }
 
-        _combatUI.TogglePrefabRoot(true);
         _cameraTr.rotation = _cameraRot;
-
+        _combatUI.TogglePrefabRoot(true);
         _combatUI.ResetCombatPanel();
 
         // 영웅 원래위치로 돌리기
@@ -630,6 +777,7 @@ public class CCombatCameraManager : MonoBehaviour
         layer = LayerMask.NameToLayer(_defaultLayerName);
         HighlightCharacter(hero.gameObject, layer);
         resolution.TryApplyResult(requestId);
+
     }
 
     private void HighlightCharacter(GameObject target, int layer)
