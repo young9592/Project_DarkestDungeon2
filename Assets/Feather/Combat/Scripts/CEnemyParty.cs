@@ -187,15 +187,20 @@ public class CEnemyParty : MonoBehaviour
                     bool isFull = false;
                     int size = enemy.EnemyData.FormationSize;
 
-                    
+                    if (i + size > 4)
+                    {
+                        continue;
+                    }
+
                     for (int k = i + 1; k < i + size; k++)
                     {
-                        if(i + size > 4)
+                        isFull = _rankList.TryGetValue((ERank)(1 << k), out CEnemy checkEnemy);
+
+                        if (checkEnemy == enemy)
                         {
+                            isFull = false;
                             continue;
                         }
-
-                        isFull = _rankList.TryGetValue((ERank)(1 << k), out CEnemy checkEnemy);
 
                         if (isFull)
                         {
@@ -286,5 +291,22 @@ public class CEnemyParty : MonoBehaviour
             }
         }
         return true;
+    }
+
+    // 이동 스킬 사용 후 변경된 랭크를 딕셔너리에도 적용
+    public void UpdateCurrentRank()
+    {
+        _rankList.Clear();
+
+        CPrint.Warn("Current Enemy State");
+
+        for (int i = 0; i < _enemyList.Count; i++)
+        {
+            ERank rank = _enemyList[i].CurrentRank;
+            CEnemy enemy = _enemyList[i];
+
+            _rankList.Add(rank, enemy);
+            CPrint.Log($"[{rank.ToString()}] : {enemy.EnemyData.Name}");
+        }
     }
 }

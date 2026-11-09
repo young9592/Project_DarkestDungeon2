@@ -205,4 +205,19 @@ public class CHeroParty : MonoBehaviour
         }
         return true;
     }
+    public void UpdateCurrentRank()
+    {
+        _rankList.Clear();
+
+        CPrint.Warn("Current Hero State");
+
+        for (int i = 0; i < _heroList.Count; i++)
+        {
+            ERank rank = _heroList[i].CurrentRank;
+            CPlayer hero = _heroList[i];
+
+            _rankList.Add(rank, hero);
+            CPrint.Log($"[{rank.ToString()}] : {hero.HeroData.Name}");
+        }
+    }
 }

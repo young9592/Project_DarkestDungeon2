@@ -520,6 +520,10 @@ public class CBasicCombatManager : MonoBehaviour
         _entitiesIndicator.Remove(_entityList[index].entity);
         _entityList.RemoveAt(index);
 
+        // 딕셔너리 최신화
+        _heroParty.UpdateCurrentRank();
+        _enemyParty.UpdateCurrentRank();
+
         SortEntitiesRank();
     }
     // 시체 상태 턴 리스트 제거
@@ -610,6 +614,7 @@ public class CBasicCombatManager : MonoBehaviour
                 {
                     doAction = true;
                     _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.None, "턴넘김");
+                    MyTurn.CancelAction();
                     _combatUI.Pass = false;
                     break;
                 }
@@ -851,6 +856,7 @@ public class CBasicCombatManager : MonoBehaviour
         List<Transform> oldTransforms = new List<Transform>();
         List<Vector3> initPosList = new List<Vector3>();
         List<Vector3> desirePosList = new List<Vector3>();
+
 
 
         // 랭크가 제대로 배치되어 있는지 체크
