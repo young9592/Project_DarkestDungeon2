@@ -10,23 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
-  m_Name: HeroSkillSO_GraveRobber_artemisia
+  m_Name: HeroSkillSO_GraveRobber_absinthe
   m_EditorClassIdentifier: 
   _skillName: Absinthe
   _skillIcon: {fileID: 21300000, guid: e8a64e43c6a6a814fa0f24f8049e33f4, type: 3}
   _useableRank: -1
   _targetableRank: -1
-  _cooldown: 0
-  _usesPerBattle: 3
+  _isGroupTarget: 0
+  _cooldown: 2
   _effectList:
-  - {fileID: 11400000, guid: 8116de1b7e9645ccb8dfd1f1dffa3f98, type: 2}
-  - {fileID: 11400000, guid: 31016433b7d94c75804eea1983b78d75, type: 2}
-  - {fileID: 11400000, guid: 0bfebc44ad184f4ba4d0a6c9b87ec7f5, type: 2}
+  - {fileID: 11400000, guid: 05fe254eeea6be94783070dda0430ba3, type: 2}
+  - {fileID: 11400000, guid: c36c278865085ed4da2e64f057a0534f, type: 2}
+  - {fileID: 11400000, guid: c9bbff644308d6b40984f698b44b70c0, type: 2}
+  _usesPerBattle: 3
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 2
   _startState: Base Layer.OriginalAntic_GraveRobber_artemisia
   _endState: Base Layer.OriginalRecover_GraveRobber_artemisia
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_potion
   _selectionHoldState: Base Layer.SourceReady_potion
   _executionStartState: Base Layer.OriginalAction_GraveRobber_artemisia

@@ -16,15 +16,22 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: fd2979c17340b1447a7f4c15415d3e89, type: 3}
   _useableRank: 7
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 79d8a10f786d411f9258b21cc60cd9dc, type: 2}
-  - {fileID: 11400000, guid: 9ae8aeb5758645a4ae0f8ef739953ced, type: 2}
+  - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
+  - {fileID: 11400000, guid: ed49da046106fbb458b1d349148d5d92, type: 2}
+  - {fileID: 11400000, guid: 3fa5b1c9a4a12b64592bd36abaa243a0, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_incision
   _endState: Base Layer.OriginalRecover_PlagueDoctor_incision
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_knifeslash
   _selectionHoldState: Base Layer.SourceReady_knifeslash
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_incision
