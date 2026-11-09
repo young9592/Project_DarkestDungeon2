@@ -16,15 +16,22 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 9a2b19cd205bd8244909f6b1f1ebe4b7, type: 3}
   _useableRank: 12
   _targetableRank: 12
-  _cooldown: 1
+  _isGroupTarget: 0
+  _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 0b54211a3883400cb330a5e2b2a91e9f, type: 2}
-  - {fileID: 11400000, guid: 8f95c827ac544bb3baa3d13fe0c7e059, type: 2}
+  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
+  - {fileID: 11400000, guid: 6666c9ff0bb2e024dbfbb0c685f4f0e1, type: 2}
+  - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_PlagueDoctor_plague_grenade
   _endState: Base Layer.OriginalRecover_PlagueDoctor_plague_grenade
   _presentationNote: Shares the throw motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_explosion
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_plague_grenade

@@ -14,17 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Command
   _skillIcon: {fileID: 21300000, guid: 27341111e1ac50e4cb03c434003e6526, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: 01c502c223f548e3baa3ece9f8d58d13, type: 2}
-  - {fileID: 11400000, guid: 6907b6fe90e845a386407295f70ddf4c, type: 2}
+  - {fileID: 11400000, guid: 2ac537b673ac57f40ae1809c11d2daeb, type: 2}
+  - {fileID: 11400000, guid: 86061c650e3caf549a554da46c58c186, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 1
   _startState: Base Layer.OriginalAntic_ManAtArms_Command
   _endState: Base Layer.OriginalRecover_ManAtArms_Command
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_maa_buffA
   _selectionHoldState: Base Layer.SourceReady_maa_buffA
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Command

@@ -14,17 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Tracking Shot
   _skillIcon: {fileID: 21300000, guid: 8b14773f52101d14a94f3ca2e1c2ff5d, type: 3}
-  _useableRank: -1
-  _targetableRank: -1
+  _useableRank: 14
+  _targetableRank: 14
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 54017fe3f0444feca0cfe304d2bae93f, type: 2}
-  - {fileID: 11400000, guid: ee5504bb3fb44c63a3915b5ca75f39eb, type: 2}
-  - {fileID: 11400000, guid: 3b0ee9b5b9704b5882f56f90243eed61, type: 2}
-  - {fileID: 11400000, guid: a6161f33a9af4158ae3063613391ab59, type: 2}
-  - {fileID: 11400000, guid: b4f533b4afdf421bb6bdf0a69962b6f5, type: 2}
+  - {fileID: 11400000, guid: 9e814e2114cc11c4580c41514d107630, type: 2}
+  - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
   _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
   _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_tracking_shot

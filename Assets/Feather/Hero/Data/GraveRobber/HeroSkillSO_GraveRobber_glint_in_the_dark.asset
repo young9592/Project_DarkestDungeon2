@@ -16,14 +16,20 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 0bd1198d2ade2374f8da57a6e0a1f1e7, type: 3}
   _useableRank: 7
   _targetableRank: 7
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 3640325bc5504724afc0c42a62c3ec97, type: 2}
+  - {fileID: 11400000, guid: 893c7c9239f18984ba9f31a2eaf5eef1, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_glint_in_the_dark
   _endState: Base Layer.OriginalRecover_GraveRobber_glint_in_the_dark
   _presentationNote: Shares the Thrown Dagger motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_thrown_dagger
   _selectionHoldState: Base Layer.SourceReady_thrown_dagger
   _executionStartState: Base Layer.OriginalAction_GraveRobber_glint_in_the_dark

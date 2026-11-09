@@ -16,14 +16,20 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: e4fa0f7e1d1606847aaf6cca63642d25, type: 3}
   _useableRank: 6
   _targetableRank: 6
-  _cooldown: 0
+  _isGroupTarget: 0
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: 79e1b388490e4f5b8b5d7753003d2962, type: 2}
+  - {fileID: 11400000, guid: 454f43aef5787764aa65e7d6ebc9a4c6, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_double_tap
   _endState: Base Layer.OriginalRecover_Highwayman_double_tap
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_point_blank_shot
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_double_tap
