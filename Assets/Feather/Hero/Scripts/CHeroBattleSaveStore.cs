@@ -17,6 +17,7 @@ public class CHeroBattleSaveData
 
 public class CHeroBattleSaveStore
 {
+    private const int MaxSaveBytes = 262144;
     private readonly string _path;
 
     public CHeroBattleSaveStore(string path)
@@ -46,23 +47,55 @@ public class CHeroBattleSaveStore
 
     public bool TryRead(out CHeroBattleSaveData data, out string message)
     {
+        return TryRead(out data, out message, out _);
+    }
+
+    private bool TryRead(out CHeroBattleSaveData data, out string message, out bool fromBackup)
+    {
         data = null;
         message = string.Empty;
+        fromBackup = false;
         try
         {
             if (string.IsNullOrWhiteSpace(_path)) throw new ArgumentException();
             if (!File.Exists(_path)) return true;
-            if (new FileInfo(_path).Length > 262144) throw new ArgumentException();
-            CHeroBattleSaveData next = JsonUtility.FromJson<CHeroBattleSaveData>(File.ReadAllText(_path, Encoding.UTF8));
-            if (!IsValid(next)) throw new ArgumentException();
-            data = next;
-            return true;
+
+            data = ReadValidSave(_path);
+            if (data != null) return true;
+
+            string backupPath = _path + ".bak";
+            if (File.Exists(backupPath))
+            {
+                data = ReadValidSave(backupPath);
+                if (data != null)
+                {
+                    fromBackup = true;
+                    message = "Recovered the previous battle save from backup.";
+                    return true;
+                }
+            }
         }
         catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException
             || exception is ArgumentException || exception is NotSupportedException)
         {
-            message = "Could not load battle state. Current state kept.";
-            return false;
+        }
+        message = "Could not load battle state. Current state kept.";
+        return false;
+    }
+
+    private static CHeroBattleSaveData ReadValidSave(string path)
+    {
+        if (new FileInfo(path).Length > MaxSaveBytes) return null;
+
+        string json = File.ReadAllText(path, Encoding.UTF8);
+        try
+        {
+            CHeroBattleSaveData data = JsonUtility.FromJson<CHeroBattleSaveData>(json);
+            return IsValid(data) ? data : null;
+        }
+        catch (ArgumentException)
+        {
+            return null;
         }
     }
 
@@ -76,7 +109,8 @@ public class CHeroBattleSaveStore
     {
         message = "Battle state is invalid.";
         if (!IsValid(data)) return false;
-        if (!IsCurrent(expectedSaveId))
+        if (!TryRead(out CHeroBattleSaveData current, out _, out bool fromBackup)
+            || (current != null ? current.SaveId : string.Empty) != expectedSaveId)
         {
             message = "Battle save changed. Reload before saving.";
             return false;
@@ -87,13 +121,14 @@ public class CHeroBattleSaveStore
             string directory = Path.GetDirectoryName(_path);
             if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
             byte[] bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data, true));
-            if (bytes.Length > 262144) throw new ArgumentException();
+            if (bytes.Length > MaxSaveBytes) throw new ArgumentException();
             using (FileStream stream = new FileStream(_path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 stream.Write(bytes, 0, bytes.Length);
                 stream.Flush(true);
             }
-            if (File.Exists(_path)) File.Replace(_path + ".tmp", _path, _path + ".bak");
+            // 복구 후 첫 저장은 깨진 파일로 백업을 덮지 않음
+            if (File.Exists(_path)) File.Replace(_path + ".tmp", _path, fromBackup ? null : _path + ".bak");
             else File.Move(_path + ".tmp", _path);
             message = string.Empty;
             return true;
