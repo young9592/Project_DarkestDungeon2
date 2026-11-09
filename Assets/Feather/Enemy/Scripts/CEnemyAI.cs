@@ -82,6 +82,7 @@ public class CEnemyAI : MonoBehaviour
         }
         if (_hasRequestedAction)
         {
+            RefreshRequestedGroupTargets();
             if (!_enemy.IsActionActive) ClearPlan();
             else if (!IsPlanValid())
             {
@@ -243,12 +244,30 @@ public class CEnemyAI : MonoBehaviour
         List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
         if (!targets.Contains(_plannedTarget)) return false;
         if (!_plannedSkill.IsGroupTarget) return _plannedTargets.Count == 1;
-        if (targets.Count != _plannedTargets.Count) return false;
-        for (int i = 0; i < targets.Count; i++)
+        if (!_plannedTargets.Contains(_plannedTarget)
+            || (!_hasRequestedAction && targets.Count != _plannedTargets.Count)) return false;
+        for (int i = 0; i < _plannedTargets.Count; i++)
         {
-            if (!_plannedTargets.Contains(targets[i])) return false;
+            if (!targets.Contains(_plannedTargets[i])) return false;
         }
         return true;
+    }
+
+    internal void RefreshRequestedGroupTargets()
+    {
+        if (!_hasRequestedAction || _enemy.ActionState != EEntityActionState.Requested
+            || _plannedSkill == null || !_plannedSkill.IsGroupTarget) return;
+
+        List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
+        if (!targets.Contains(_plannedTarget)) return;
+
+        // 예약 이후 빠진 대상만 제외함
+        int previousCount = _plannedTargets.Count;
+        for (int i = _plannedTargets.Count - 1; i >= 0; i--)
+        {
+            if (!targets.Contains(_plannedTargets[i])) _plannedTargets.RemoveAt(i);
+        }
+        if (_plannedTargets.Count != previousCount) _enemy.UpdateRequestedGroupTargets(_plannedTargets);
     }
 
     private bool RefreshPlan()
@@ -264,9 +283,20 @@ public class CEnemyAI : MonoBehaviour
 
     public EEnemyActionRequestResult RequestPlannedAction()
     {
-        if (!isActiveAndEnabled || _hasRequestedAction || _enemy == null
+        if (!isActiveAndEnabled || _enemy == null
             || !_enemy.isActiveAndEnabled || _enemy.IsDead || _enemy.IsDeathPresented
-            || _enemy.AttackAnimation == null || _enemy.ActionState != EEntityActionState.Selecting)
+            || _enemy.AttackAnimation == null)
+        {
+            return EEnemyActionRequestResult.Rejected;
+        }
+
+        // 이전 행동이 끝날 때까지 새 요청은 대기함
+        if (_enemy.ActionState == EEntityActionState.Executing)
+        {
+            return EEnemyActionRequestResult.WaitingForPresentation;
+        }
+
+        if (_hasRequestedAction || _enemy.ActionState != EEntityActionState.Selecting)
         {
             return EEnemyActionRequestResult.Rejected;
         }

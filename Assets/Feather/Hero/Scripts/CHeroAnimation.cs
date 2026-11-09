@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CHeroAnimation : MonoBehaviour
 {
-    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown }
+    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown, Resolute }
 
     [Header("Animation")]
     [SerializeField] private Animator _animator;
@@ -19,6 +19,7 @@ public class CHeroAnimation : MonoBehaviour
     private CPlayer _hero;
     private CHeroSkillFeedback _feedback;
     private static readonly int _meltdownHash = Animator.StringToHash("Base Layer.Meltdown");
+    private static readonly int _resoluteHash = Animator.StringToHash("Base Layer.Resolute");
     private bool _returningToIdle;
     private EAnimationState _state;
     private bool _needsIdle;
@@ -47,7 +48,8 @@ public class CHeroAnimation : MonoBehaviour
 
     public bool IsBusy
     {
-        get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued; }
+        get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued
+            || _state == EAnimationState.Resolute; }
     }
     public bool IsMeltingDown
     {
@@ -105,6 +107,20 @@ public class CHeroAnimation : MonoBehaviour
         _meltdownQueued = false;
         if (IsMeltingDown) PlayIdle();
         if (interrupted) OnMeltdownInterrupted?.Invoke();
+    }
+
+    internal void PlayResolute()
+    {
+        if (!IsReady || IsBusy || !_animator.HasState(0, _resoluteHash)) return;
+        if (IsSelecting) CancelSelection();
+        _needsIdle = false;
+        _state = EAnimationState.Resolute;
+        _animator.Play(_resoluteHash, 0, 0.0f);
+    }
+
+    internal void EndResolute()
+    {
+        if (_state == EAnimationState.Resolute) PlayIdle();
     }
 
     public bool TryPlaySelection(CSkillDataSO skill)
@@ -255,6 +271,14 @@ public class CHeroAnimation : MonoBehaviour
                 _state = EAnimationState.Idle;
                 _needsIdle = false;
                 OnMeltdownCompleted?.Invoke();
+            }
+            return;
+        }
+        if (_state == EAnimationState.Resolute)
+        {
+            if (info.fullPathHash == _idleHash && !_animator.IsInTransition(0))
+            {
+                _state = EAnimationState.Idle;
             }
             return;
         }
