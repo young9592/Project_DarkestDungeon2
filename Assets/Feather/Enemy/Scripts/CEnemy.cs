@@ -280,7 +280,11 @@ public class CEnemy : CEntity
             || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0) return false;
 
         CEnemyAI ai = GetComponent<CEnemyAI>();
-        if (ai != null && ai.PlannedSkill == ActionSkill && !ai.IsPlanValid()) return false;
+        if (ai != null && ai.PlannedSkill == ActionSkill)
+        {
+            ai.RefreshRequestedGroupTargets();
+            if (!ai.IsPlanValid()) return false;
+        }
 
         for (int i = 0; i < _requestedTargets.Count; i++)
         {
@@ -289,6 +293,12 @@ public class CEnemy : CEntity
                 || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
         }
         return true;
+    }
+
+    internal void UpdateRequestedGroupTargets(IReadOnlyList<CEntity> targets)
+    {
+        _requestedTargets.Clear();
+        _requestedTargets.AddRange(targets);
     }
 
     protected override bool TryStartActionPresentation()
