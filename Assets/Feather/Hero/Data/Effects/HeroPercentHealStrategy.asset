@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa2e532f88004993bf5979e120833ecb, type: 3}
   m_Name: HeroPercentHealStrategy
   m_EditorClassIdentifier: 
+  _requiresTargetCombo: 1
