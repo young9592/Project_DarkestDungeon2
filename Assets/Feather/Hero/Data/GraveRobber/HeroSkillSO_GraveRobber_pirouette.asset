@@ -16,15 +16,23 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: f578b4fe81c158f488043db9d8319e2e, type: 3}
   _useableRank: 3
   _targetableRank: 3
-  _cooldown: 1
-  _rankMovement: 3
+  _isGroupTarget: 1
+  _cooldown: 2
   _effectList:
-  - {fileID: 11400000, guid: 65dbec4f90364766a65b41f2ec6d42af, type: 2}
+  - {fileID: 11400000, guid: 5a3fbcc8a96fd134eaa8e06bd5716194, type: 2}
+  - {fileID: 11400000, guid: 3af932bd0fac2af4ebec66ff174f82c6, type: 2}
+  - {fileID: 11400000, guid: a9b71de3d11672f45bc46f90079eeef3, type: 2}
+  - {fileID: 11400000, guid: ad49fe8d3a9f1ec499baa22ca6744503, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_GraveRobber_pirouette
   _endState: Base Layer.OriginalRecover_GraveRobber_pirouette
   _presentationNote: Shares the Flashing Daggers motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_flashing_daggers
   _selectionHoldState: Base Layer.SourceReady_flashing_daggers
   _executionStartState: Base Layer.OriginalAction_GraveRobber_pirouette

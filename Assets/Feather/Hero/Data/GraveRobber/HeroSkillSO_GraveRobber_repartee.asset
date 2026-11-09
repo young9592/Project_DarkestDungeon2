@@ -14,17 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Repartee
   _skillIcon: {fileID: 21300000, guid: db334a29d859afb4ca0b6acba2fac79c, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
-  _cooldown: 2
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: a2746fb7641e44019de6e3ed738ce4fb, type: 2}
-  - {fileID: 11400000, guid: 8ead7ae85c274fb58a351370d744ba5f, type: 2}
+  - {fileID: 11400000, guid: 11c78c00932b3864697583cfa87e3447, type: 2}
+  - {fileID: 11400000, guid: 6038d85edf3f5f24ab3308d459e00f61, type: 2}
+  - {fileID: 11400000, guid: c36c278865085ed4da2e64f057a0534f, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 2
   _startState: Base Layer.Skill9Start
   _endState: Base Layer.Skill9End
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_potion
   _selectionHoldState: Base Layer.SourceReady_potion
   _executionStartState: Base Layer.Skill9Start

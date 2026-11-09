@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_reparteeMastered
+  m_EditorClassIdentifier: 
+  _skillName: Repartee+
+  _skillIcon: {fileID: 21300000, guid: db334a29d859afb4ca0b6acba2fac79c, type: 3}
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
+  _cooldown: 2
+  _effectList:
+  - {fileID: 11400000, guid: 2f65c481ce0343e2bf8fe371267928e5, type: 2}
+  - {fileID: 11400000, guid: eddbea2fdc61491d929b29325204dcc2, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 9f4e744f78fd0a84e81b4d9baa8ea205, type: 2}
+  _target: 2
+  _startState: Base Layer.Skill9Start
+  _endState: Base Layer.Skill9End
+  _presentationNote: 
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_potion
+  _selectionHoldState: Base Layer.SourceReady_potion
+  _executionStartState: Base Layer.Skill9Start
+  _feedback: {fileID: 11400000, guid: 731ac1b0ff84d4b49af21ec6f1ec57c8, type: 2}

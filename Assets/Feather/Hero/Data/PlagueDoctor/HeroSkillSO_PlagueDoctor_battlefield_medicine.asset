@@ -16,18 +16,22 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 8d5718349f67fe140aed254cc6ad561e, type: 3}
   _useableRank: 12
   _targetableRank: -1
-  _cooldown: 0
-  _usesPerBattle: 3
+  _isGroupTarget: 0
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: 1cecfa41483e4b9abb264c172e7e6e76, type: 2}
-  - {fileID: 11400000, guid: e531d1c958d44465a032aa0d0fa9eb08, type: 2}
-  - {fileID: 11400000, guid: 107d02f63fcb4fdfbff367e295373a9a, type: 2}
-  - {fileID: 11400000, guid: 21df1840b0234b31b361fe60ede119e2, type: 2}
+  - {fileID: 11400000, guid: 05fe254eeea6be94783070dda0430ba3, type: 2}
+  - {fileID: 11400000, guid: 9522c7758b2fdf34c9932f404dc4c0c6, type: 2}
+  - {fileID: 11400000, guid: 717100b60b793d1478317fa7598891bc, type: 2}
+  _usesPerBattle: 3
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 4
   _startState: Base Layer.OriginalAntic_PlagueDoctor_battlefield_medicine
   _endState: Base Layer.OriginalRecover_PlagueDoctor_battlefield_medicine
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_plague_buff
   _selectionHoldState: Base Layer.SourceReady_plague_buff
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_battlefield_medicine

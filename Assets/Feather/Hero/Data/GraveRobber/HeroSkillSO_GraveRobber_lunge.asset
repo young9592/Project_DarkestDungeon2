@@ -16,15 +16,21 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 833178409989f4f4ea20f36f834342bf, type: 3}
   _useableRank: 12
   _targetableRank: 7
-  _cooldown: 0
-  _rankMovement: -2
+  _isGroupTarget: 0
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: cdd1ceaeda1f4e888cbf11b3be9f8bec, type: 2}
+  - {fileID: 11400000, guid: e309c7d6f1c7c0c42beb2e8c0c80c16b, type: 2}
+  - {fileID: 11400000, guid: a94f7b65bcaee63418c4a77c0fd5fd6c, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_lunge
   _endState: Base Layer.OriginalRecover_GraveRobber_lunge
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_lunge
   _selectionHoldState: Base Layer.SourceReady_lunge
   _executionStartState: Base Layer.OriginalAction_GraveRobber_lunge

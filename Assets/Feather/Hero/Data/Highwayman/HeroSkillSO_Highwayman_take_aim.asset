@@ -17,11 +17,14 @@ MonoBehaviour:
   _useableRank: -1
   _targetableRank: -1
   _isGroupTarget: 0
-  _cooldown: 2
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: d30bf9bc51d5448c9b396145fc908b63, type: 2}
-  - {fileID: 11400000, guid: abf032d6af1c48ba99510574d905e173, type: 2}
+  - {fileID: 11400000, guid: c9426cfa62eb98248afb29d72d18eab9, type: 2}
+  - {fileID: 11400000, guid: 74f2e70aeb8fc814dafb4d7a2df62113, type: 2}
+  - {fileID: 11400000, guid: c9bbff644308d6b40984f698b44b70c0, type: 2}
   _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
   _baseSkill: {fileID: 0}
   _target: 2
   _startState: Base Layer.OriginalAntic_Highwayman_take_aim

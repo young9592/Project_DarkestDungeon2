@@ -16,16 +16,22 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 4a12e353b66c8b14e88eb8fd2e473a29, type: 3}
   _useableRank: 14
   _targetableRank: 7
-  _cooldown: 0
-  _moveForwardOneRank: 1
+  _isGroupTarget: 0
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: c096a782e8aa4b41838971c00046033d, type: 2}
-  - {fileID: 11400000, guid: b2ba5d2b83c44b1fb5a2c723e7c706d5, type: 2}
+  - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
+  - {fileID: 11400000, guid: be719d7def38b5d4d985edd1b9c05261, type: 2}
+  - {fileID: 11400000, guid: f2d658978ff1e3b418cb5c23416296e2, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_duelists_advance
   _endState: Base Layer.OriginalRecover_Highwayman_duelists_advance
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_advance
   _selectionHoldState: Base Layer.SourceReady_advance
   _executionStartState: Base Layer.OriginalAction_Highwayman_duelists_advance
