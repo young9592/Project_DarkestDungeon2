@@ -58,7 +58,8 @@ MonoBehaviour:
   _bleed: {fileID: 1263649268166187397}
   _blight: {fileID: 5577332608555275679}
   _burn: {fileID: 9190719446105599914}
-  _HealthFill: {fileID: 7737309097136344111}
+  _hpFill: {fileID: 7737309097136344111}
+  _hpBarBackgroundTr: {fileID: 6726667264730436271}
   _stressRoot: {fileID: 5610485012366658967}
   _stressFill: {fileID: 4121176557023762545}
   _daze: {fileID: 576408663228147816}

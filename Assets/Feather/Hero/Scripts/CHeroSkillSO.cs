@@ -139,7 +139,7 @@ public class CHeroSkillSO : CSkillDataSO
 
         if ((actor is CPlayer heroActor && heroActor.IsDeathPresented)
             || (target is CPlayer heroTarget && heroTarget.IsDeathPresented)
-            || (target is CEnemy enemyTarget && enemyTarget.IsDeathPresented))
+            || (target is CEnemy enemyTarget && (enemyTarget.IsDead || enemyTarget.IsDeathPresented)))
         {
             return false;
         }
@@ -153,12 +153,6 @@ public class CHeroSkillSO : CSkillDataSO
                 if (!(target is CPlayer scienceTarget) || scienceTarget.HeroData == null
                     || (long)scienceTarget.CurrentHp * 2 >= scienceTarget.HeroData.MaxHealth) return false;
             }
-        }
-
-        CEnemy enemy = target as CEnemy;
-        if (enemy != null && enemy.CurrentHp <= 0)
-        {
-            return false;
         }
 
         // 사망 시스템 연결 전까지 시체 대상 스킬 사용 막기

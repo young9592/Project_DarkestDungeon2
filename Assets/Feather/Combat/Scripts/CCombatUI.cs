@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks.Triggers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,8 +85,12 @@ public class CCombatUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _roundText;
 
     [Header("Entity State Prefab")]
-    [SerializeField] private GameObject _entityStateRoot;
-    [SerializeField] private GameObject _entityStatePrefab;
+    [SerializeField] private GameObject _entitiesStateRoot;
+    [SerializeField] private GameObject _entitiesStatePrefab;
+
+    [Header("Entity Indicator")]
+    [SerializeField] private GameObject _entitiesIndicatorRoot;
+    [SerializeField] private GameObject _indicatorPrefab;
 
     // 턴 초상화 이미지 프리팹과 보관 위치
     [Header("Turnorder Prefab")]
@@ -212,8 +214,11 @@ public class CCombatUI : MonoBehaviour
 
         _checkList.Add(_roundText);
 
-        _checkList.Add(_entityStateRoot);
-        _checkList.Add(_entityStatePrefab);
+        _checkList.Add(_entitiesStateRoot);
+        _checkList.Add(_entitiesStatePrefab);
+
+        _checkList.Add(_entitiesIndicatorRoot);
+        _checkList.Add(_indicatorPrefab);
 
         _checkList.Add(_turnOrderRoot);
         _checkList.Add(_turnOrderPrefab);
@@ -243,24 +248,24 @@ public class CCombatUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 엔티티 현재 상태를 확인할 수 있는 UI 추가
-    /// </summary>
-    /// <param name="entity">적용할 대상</param>
-    /// <returns></returns>
+    // 엔티티 현재 상태를 확인할 수 있는 UI 추가
     public CEntityState CreateStateUI(CEntity entity)
     {
         // 엔티티 상태창 추가
-        CEntityState entityState = Instantiate(_entityStatePrefab, _entityStateRoot.transform).GetComponent<CEntityState>();
-        entityState.Initialize(_canvas, entity.gameObject);
+        CEntityState state = Instantiate(_entitiesStatePrefab, _entitiesStateRoot.transform).GetComponent<CEntityState>();
+        state.Initialize(_canvas, entity.gameObject);
 
-        return entityState;
+        return state;
     }
-    /// <summary>
-    /// 턴순서 초상화 리스트 생성
-    /// </summary>
-    /// <param name="turnList">현재 턴 순서 목록</param>
-    /// <returns></returns>
+    // 현재 턴 및 어디를 가리키고 있는지 확인할 수 있는 지시등 UI 추가
+    public CIndicator CreateIndicatorUI(CEntity entity)
+    {
+        CIndicator indicator = Instantiate(_indicatorPrefab, _entitiesIndicatorRoot.transform).GetComponent<CIndicator>();
+        indicator.Initialize(_canvas, entity.gameObject);
+
+        return indicator;
+    }
+    // 턴순서 초상화 리스트 생성
     public List<GameObject> CreateTurnOrderPortraitList(List<(int id, CEntity entity, int speed)> turnList)
     {
         List<GameObject> turnPortraitList = new List<GameObject>();
@@ -482,6 +487,21 @@ public class CCombatUI : MonoBehaviour
 
         // 영웅의 스킬 사전준비 모션
         hero.SelectSkill(idx);
+
+        
+        if(
+            heroSkillSO.Target == EHeroSkillTarget.Self ||
+            heroSkillSO.Target == EHeroSkillTarget.Ally ||
+            heroSkillSO.Target == EHeroSkillTarget.AllyOrSelf ||
+            heroSkillSO.Target == EHeroSkillTarget.AllAllies 
+          )
+        {
+            _combatManager.MyTurnIndicator.ViewBuffIndicator();
+        }
+        else
+        {
+            _combatManager.MyTurnIndicator.ViewMyturnIndicator();
+        }
     }
     /// <summary>
     /// 영웅 정보 및 스킬 인터페이스 활성화
@@ -646,10 +666,11 @@ public class CCombatUI : MonoBehaviour
     public void TogglePrefabRoot(bool toggle)
     {
         _turnOrderRoot.SetActive(toggle);
-        _entityStateRoot.SetActive(toggle);
+        _entitiesStateRoot.SetActive(toggle);
         _iconRoot.SetActive(toggle);
         _textRoot.SetActive(toggle);
         _turnGuideRoot.SetActive(toggle);
+        _entitiesIndicatorRoot.SetActive(toggle);
     }
     public void ToggleTurnGuideRoot(bool toggle)
     {
@@ -657,6 +678,11 @@ public class CCombatUI : MonoBehaviour
     }
     public void ToggleEntityStateRoot(bool toggle)
     {
-        _entityStateRoot.SetActive(toggle);
+        _entitiesStateRoot.SetActive(toggle);
+    }
+
+    public void ToggleIndicatorRoot(bool toggle)
+    {
+        _entitiesIndicatorRoot.SetActive(toggle);
     }
 }
