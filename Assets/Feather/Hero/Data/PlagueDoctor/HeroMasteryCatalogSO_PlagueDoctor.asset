@@ -16,110 +16,112 @@ MonoBehaviour:
   - _id: pd.noxious_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0a559ca5dc2faa74ea3030581c4e517f, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 73b5722e43a945db9fbcf3ca66a55962, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 02a5a8ed1f1186948a285eb08591108c, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DMG 2-3; CRIT 5%"
-    _masteredReference: "DMG 3-4; CRIT 10%"
-    _remainingEffects: "Combo resistance piercing/duration"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: DMG 2-3; CRIT 5%
+    _masteredReference: DMG 3-4; CRIT 10%
+    _remainingEffects: Combo resistance piercing/duration
   - _id: pd.blinding_gas
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: a44125ca8f914f11bbcdbd66ec6c52eb, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3672071c309dfdf43a4786e990dbd387, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Blind; Combo 25%"
-    _masteredReference: "Blind, Daze; Combo 33%"
-    _remainingEffects: "critical chance and non-damage hit checks; cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: Blind; Combo 25%
+    _masteredReference: Blind, Daze; Combo 33%
+    _remainingEffects: critical chance and non-damage hit checks; cooldown
   - _id: pd.incision
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 59d5474bfe82484b849a28a13793651c, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 54f258c9400a02c4b85f30802a36a231, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DMG 3-6; CRIT 10%"
-    _masteredReference: "DMG 4-7; CRIT 15%"
-    _remainingEffects: "Combo resistance piercing/duration"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: DMG 3-6; CRIT 10%
+    _masteredReference: DMG 4-7; CRIT 15%
+    _remainingEffects: Combo resistance piercing/duration
   - _id: pd.battlefield_medicine
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 04bc96820433e2b46993c138de9a0f12, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: f1ffe72e5ec940d8b9512af12967c565, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 11bb9d51b686dfa4aa8cfca7cfca71a2, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Below 50%: heal 20%; cleanse"
-    _masteredReference: "Below 50%: heal 25%; cleanse"
-    _remainingEffects: "use limit"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: 'Below 50%: heal 20%; cleanse'
+    _masteredReference: 'Below 50%: heal 25%; cleanse'
+    _remainingEffects: use limit
   - _id: pd.ounce_of_prevention
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3bf921940a374164a3a077ccb349e4c4, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 5bc1dc0a553ec1240b4fabb35a57e21a, type: 2}
     _cost: 1
     _isAvailable: 0
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DOT resistance 20%; disease resistance 15%"
-    _masteredReference: "DOT/disease resistance 30%; additional resistance 10% (type unverified)"
-    _remainingEffects: "resistance buffs, cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: DOT resistance 20%; disease resistance 15%
+    _masteredReference: DOT/disease resistance 30%; additional resistance 10% (type
+      unverified)
+    _remainingEffects: resistance buffs, cooldown
   - _id: pd.plague_grenade
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: ea4adf269c67c5549adad2a559a8cda7, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3e823df8fbe84d46959001a60d05db32, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 762b31a86cbd3e348a5bd46ab021f998, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DMG 1-2; CRIT 5%"
-    _masteredReference: "DMG 2-3; CRIT 10%"
-    _remainingEffects: "cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: DMG 1-2; CRIT 5%
+    _masteredReference: DMG 2-3; CRIT 10%
+    _remainingEffects: cooldown
   - _id: pd.emboldening_vapours
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 31a2ca9b6b988da4a8c0cb99b1478647, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: fe3dd76d92ae4d30a2f7183e036ce5e9, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f9d0592b815650b4088afb4a80a9f165, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Remove Daze; Strength 2"
-    _masteredReference: "Remove Daze/Stun; Strength 2, Speed"
-    _remainingEffects: "cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: Remove Daze; Strength 2
+    _masteredReference: Remove Daze/Stun; Strength 2, Speed
+    _remainingEffects: cooldown
   - _id: pd.disorienting_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: fc255f61bf463f7428a5cbfb08cb82bf, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 74e620b933f640f5b5e3f3f0c9800cdd, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 643cfe4caa498374db6e4df6139d7ab5, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Shuffle, Daze; remove Guard"
-    _masteredReference: "Shuffle, Daze, Weak; Combo Stun; remove Guard"
-    _remainingEffects: "critical chance; shuffle, Guard piercing/removal, cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: Shuffle, Daze; remove Guard
+    _masteredReference: Shuffle, Daze, Weak; Combo Stun; remove Guard
+    _remainingEffects: critical chance; shuffle, Guard piercing/removal, cooldown
   - _id: pd.indiscriminate_science
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 26d1421c6a134fb7ab68d5ad2efd559b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e1d6ed33b5695ab4a8bfdce7d414a55b, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Below 50%: heal 10% +10% per positive token"
-    _masteredReference: "Below 50%: heal 10% +10% per positive, +5% per negative token"
-    _remainingEffects: "cooldown; heal rounding unverified"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: 'Below 50%: heal 10% +10% per positive token'
+    _masteredReference: 'Below 50%: heal 10% +10% per positive, +5% per negative
+      token'
+    _remainingEffects: cooldown; heal rounding unverified
   - _id: pd.cause_of_death
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: ee8e939fb2e07bf40a8d10280fac0047, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 36c1608e5d434ebcb0d329c55d7614b5, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 021bba2b84c2bc54ea14226a743a9e88, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Remaining DOT damage 100%"
-    _masteredReference: "Remaining DOT damage 125%; Execution 1"
-    _remainingEffects: "Execution 1, cooldown; conversion rounding unverified"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: Remaining DOT damage 100%
+    _masteredReference: Remaining DOT damage 125%; Execution 1
+    _remainingEffects: Execution 1, cooldown; conversion rounding unverified
   - _id: pd.magnesium_rain
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 0c9f56b5db4342dda525d85154e07fdd, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 137dedac67fabfe4f91610835d3783db, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Burn 3; clear corpses"
-    _masteredReference: "Burn 3; clear corpses; reset cooldowns after clear"
-    _remainingEffects: ""
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
+    _baseReference: Burn 3; clear corpses
+    _masteredReference: Burn 3; clear corpses; reset cooldowns after clear
+    _remainingEffects: 

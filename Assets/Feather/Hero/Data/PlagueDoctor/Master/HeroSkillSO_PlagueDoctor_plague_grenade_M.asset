@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_PlagueDoctor_plague_grenade_M
+  m_EditorClassIdentifier: 
+  _skillName: Plague Grenade
+  _skillIcon: {fileID: 21300000, guid: 9a2b19cd205bd8244909f6b1f1ebe4b7, type: 3}
+  _useableRank: 12
+  _targetableRank: 12
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: c81b074ba52d02b43b2d64331caa7182, type: 2}
+  - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
+  - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: ea4adf269c67c5549adad2a559a8cda7, type: 2}
+  _target: 3
+  _startState: Base Layer.OriginalAntic_PlagueDoctor_plague_grenade
+  _endState: Base Layer.OriginalRecover_PlagueDoctor_plague_grenade
+  _presentationNote: Shares the throw motion.
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_explosion
+  _selectionHoldState: Base Layer.SourceReady_explosion
+  _executionStartState: Base Layer.OriginalAction_PlagueDoctor_plague_grenade
+  _feedback: {fileID: 11400000, guid: 2f66297d3896ddf41927f723b2065a44, type: 2}
