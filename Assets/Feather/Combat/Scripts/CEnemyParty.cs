@@ -306,7 +306,16 @@ public class CEnemyParty : MonoBehaviour
             CEnemy enemy = _enemyList[i];
 
             _rankList.Add(rank, enemy);
-            CPrint.Log($"[{rank.ToString()}] : {enemy.EnemyData.Name}");
+
+        }
+
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.TryGetValue((ERank)(1 << i), out CEnemy enemy))
+            {
+                CPrint.Log($"Rank[{i}] : {enemy.EnemyData.Name}");
+            }
         }
     }
 }

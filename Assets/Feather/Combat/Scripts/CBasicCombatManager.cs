@@ -59,7 +59,7 @@ public class CBasicCombatManager : MonoBehaviour
 
     [Header("Option")]
     [SerializeField] private float _actionDelay = 3.5f;
-    [SerializeField] private float _turnSkipDelay = 1.5f;
+    [SerializeField] private float _turnSkipDelay = 2f;
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
     #endregion
 
@@ -84,6 +84,7 @@ public class CBasicCombatManager : MonoBehaviour
     private CPlayer _currentStressHero = null;
     private List<CEntity> _corpseCheck = new List<CEntity>();
     private bool _battleEnd = false;
+    private CIndicator _myTurnIndicator = null;  
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -93,7 +94,7 @@ public class CBasicCombatManager : MonoBehaviour
     public Dictionary<CEntity, CEntityState> EntitiesState => _entitiesState;
     public Dictionary<CEntity, CIndicator> EntitiesIndicator => _entitiesIndicator;
     public CEntity MyTurn => _turnList.Count != 0 ? _turnList[0].entity : null;
-    public CIndicator MyTurnIndicator = null;
+    public CIndicator MyTurnIndicator => _myTurnIndicator; 
     public IReadOnlyList<GameObject> HeroRankPosition => _heroParty.HeroRankPosition;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyParty.EnemyRankPosition;
 
@@ -117,6 +118,13 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
         #endregion
+
+        CIndicatorMouseEvent.OnClickRankEvent += OnRankChangeClickData;
+    }
+
+    private void OnDisable()
+    {
+        CIndicatorMouseEvent.OnClickRankEvent -= OnRankChangeClickData;
     }
 
     private void Update()
@@ -289,12 +297,12 @@ public class CBasicCombatManager : MonoBehaviour
         // TODO : MY Turn Indicator
         if (MyTurnIndicator != null)
         {
-            MyTurnIndicator.HideIndicator();
+            _myTurnIndicator.HideIndicator();
         }
 
-        if (_entitiesIndicator.TryGetValue(MyTurn, out MyTurnIndicator))
+        if (_entitiesIndicator.TryGetValue(MyTurn, out _myTurnIndicator))
         {
-            MyTurnIndicator.ViewMyturnIndicator();
+            _myTurnIndicator.ViewMyturnIndicator();
         }
 
 
@@ -625,10 +633,11 @@ public class CBasicCombatManager : MonoBehaviour
                     break;
                 }
 
-                // TODO : 자리 변경 구현필요
                 if (_combatUI.Change)
                 {
                     doAction = true;
+                    MyTurn.CancelAction();
+                    _combatUI.Change = false;
                     break;
                 }
 
@@ -756,6 +765,23 @@ public class CBasicCombatManager : MonoBehaviour
         _currentActionSkillData = skill;
         _doingAction = true;
     }
+    // 랭크 변경 데이터
+    private void OnRankChangeClickData(ERank rank)
+    {
+        if (MyTurn is not CPlayer)
+        {
+            return;
+        }
+
+        if (rank == ERank.None)
+        {
+            CPrint.Error("None 반환됨. 오류 체크 필요");
+            return;
+        }
+
+        _combatUI.Change = true;
+        _heroParty.RankChange(MyTurn as CPlayer, rank);
+    }
     // 이동 스킬 사용 시 캐릭터 이동 적용
     private void SnapMoveSkill()
     {
@@ -877,8 +903,6 @@ public class CBasicCombatManager : MonoBehaviour
         List<Transform> oldTransforms = new List<Transform>();
         List<Vector3> initPosList = new List<Vector3>();
         List<Vector3> desirePosList = new List<Vector3>();
-
-
 
         // 랭크가 제대로 배치되어 있는지 체크
         CPrint.Log("Rank 유효성 검사중...");

@@ -217,7 +217,46 @@ public class CHeroParty : MonoBehaviour
             CPlayer hero = _heroList[i];
 
             _rankList.Add(rank, hero);
-            CPrint.Log($"[{rank.ToString()}] : {hero.HeroData.Name}");
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            if(_rankList.TryGetValue((ERank)(1 << i), out CPlayer hero))
+            {
+                CPrint.Log($"Rank[{i}] : {hero.HeroData.Name}");
+            }
+        }
+    }
+    public void RankChange(CPlayer hero, ERank rank)
+    {
+        // 영웅의 현재 위치
+        int rankIdx = (int)System.MathF.Log((float)hero.CurrentRank, 2);
+        // 이동시킬 위치
+        int moveIdx = (int)System.MathF.Log((float)rank, 2);
+
+        hero.TrySetRank(rank);
+
+        // 앞으로 가기
+        if (rankIdx > moveIdx)
+        {
+            for (int i = moveIdx; i < rankIdx; i++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << i), out CPlayer moveHero))
+                {
+                    moveHero.TrySetRank((ERank)(1 << (i + 1)));
+                }
+            }
+        }
+        // 뒤로가기
+        else if (rankIdx < moveIdx)
+        {
+            for (int i = rankIdx + 1; i <= moveIdx; i++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << i), out CPlayer moveHero))
+                {
+                    moveHero.TrySetRank((ERank)(1 << (i - 1)));
+                }
+            }
         }
     }
 }

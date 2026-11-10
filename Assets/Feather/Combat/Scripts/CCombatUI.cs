@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class CCombatUI : MonoBehaviour
 {
@@ -287,12 +288,12 @@ public class CCombatUI : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(turnList[i].id, 4, entityType, portrait);
+                portraitImage.Initialize(_combatManager, turnList[i].id, 4, entityType, portrait);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(turnList[i].id, i + 1, entityType, portrait);
+                portraitImage.Initialize(_combatManager, turnList[i].id, i + 1, entityType, portrait);
             }
 
             turnPortraitList.Add(portraitPrefab);
@@ -300,20 +301,13 @@ public class CCombatUI : MonoBehaviour
 
         return turnPortraitList;
     }
-    /// <summary>
-    /// 현기증으로 인한 턴 밀림 시 초상화 추가 생성
-    /// </summary>
-    /// <param name="portrait">복사할 대상</param>
-    /// <returns></returns>
+    // 현기증으로 인한 턴 밀림 시 초상화 추가 생성
     public GameObject CopyTurnOrderPortrait(GameObject portrait)
     {
         GameObject copyObj = Instantiate(portrait, _turnOrderRoot.transform);
         return copyObj;
     }
-    /// <summary>
-    /// 초상화 이동
-    /// </summary>
-    /// <param name="isDirty">죽은 엔티티가 있는지 체크</param>
+    // 초상화 이동
     public void MoveTurnOrder(List<GameObject> turnPortraitList, bool isDirty = false)
     {
         // 죽는 상태에선 단순 하나의 요소만 변경되는 것이 아니기 때문에 리스트와 싱크를 맞춰야한다.
@@ -347,7 +341,6 @@ public class CCombatUI : MonoBehaviour
         }
         CPortraitImage.IsDirty = false;
     }
-
     // 다음 라운드로 변경
     public void NextRound(int turnListCount)
     {
@@ -359,8 +352,6 @@ public class CCombatUI : MonoBehaviour
         _round++;
         _roundText.text = _round.ToString();
     }
-
-
     // 버튼을 누른채로 몇초 지나면 패스 적용
     public void OnPressActionPass()
     {
@@ -384,26 +375,31 @@ public class CCombatUI : MonoBehaviour
         {
             CEntity entity = _combatManager.EntityList[i].entity;
 
-            // 본인이면 제외
-            if (entity.Equals(_combatManager.MyTurn))
+            if (indicators.TryGetValue(entity, out CIndicator indicator))
             {
-                continue;
-            }
+                indicator.ToggleMouseEvent(false);
 
-            indicators[entity].HideIndicator();
+                // 본인이면 제외
+                if (entity.Equals(_combatManager.MyTurn))
+                {
+                    indicator.ViewMyturnIndicator();
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
         }
 
 
+        // 커서 이동
         RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
         cursorTr.anchoredPosition = rectTr.anchoredPosition;
 
-        // 커서 이동
         _cursorRank = false;
         _cursorDiamond.SetActive(true);
         _cursorSkill.SetActive(false);
     }
-
     // 턴넘김
     public void ActionPass()
     {
@@ -424,6 +420,62 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        _combatManager.MyTurn.CancelAction();
+        _combatManager.MyTurn.TryBeginAction();
+
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+        CPlayer myturnHero = _combatManager.MyTurn as CPlayer;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (indicators.TryGetValue(entity, out CIndicator indicator))
+            {
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(myturnHero))
+                {
+                    indicator.ViewMyturnIndicator();
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+        // 현재 위치에서 이동할 수 있는 지시등만 켜기
+        int rankIdx = (int)System.MathF.Log((float)myturnHero.CurrentRank, 2);
+        int forward = myturnHero.HeroData.ForwardMovement;
+        int backward = myturnHero.HeroData.BackwardMovement;
+
+        int start = Mathf.Max(rankIdx - forward, 0);
+        int end = Mathf.Min(rankIdx + backward, 3);
+
+        for (int i = start; i <= end; i++)
+        {
+            IReadOnlyDictionary<ERank, CPlayer> heroRank = _combatManager.HeroRank;
+
+            if (heroRank.TryGetValue((ERank)(1 << i), out CPlayer hero))
+            {
+                if (indicators.TryGetValue(hero, out CIndicator indicator))
+                {
+                    
+                    // 본인이면 제외
+                    if (hero.Equals(myturnHero))
+                    {
+                        indicator.ViewMyturnIndicator();
+                        continue;
+                    }
+                    
+                    indicator.ToggleMouseEvent(true);
+                }
+            }
+        }
+
+        // 커서 이동
         RectTransform rectTr = _rankChangeBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
         cursorTr.anchoredPosition = rectTr.anchoredPosition;
@@ -431,18 +483,6 @@ public class CCombatUI : MonoBehaviour
         _cursorRank = true;
         _cursorDiamond.SetActive(true);
         _cursorSkill.SetActive(false);
-    }
-
-    // 랭크 변경 시도
-    public void RankChange()
-    {
-        if (!_cursorRank)
-        {
-            return;
-        }
-
-        // TODO 자리변경 시도
-
     }
 
     // 스킬 선택
@@ -547,6 +587,7 @@ public class CCombatUI : MonoBehaviour
                 yield return null;
 
                 indicator.SetView(view);
+                indicator.ToggleMouseEvent(false);
 
                 // 본인이면 제외
                 if (entity.Equals(_combatManager.MyTurn))
@@ -599,6 +640,7 @@ public class CCombatUI : MonoBehaviour
             if (indicators.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
             {
                 indicator.HideIndicator();
+                indicator.ToggleMouseEvent(false);
             }
         }
     }
