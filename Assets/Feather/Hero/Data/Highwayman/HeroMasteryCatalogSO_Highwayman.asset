@@ -16,110 +16,112 @@ MonoBehaviour:
   - _id: hwm.wicked_slice
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 42297f9ce4e12b04ea3aba5e192a2fcd, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 6055691643f0414fbd3e792b54f1ce68, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 68fae4f61adffc84aab1f9234b060d62, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 4-8; CRIT 15%"
-    _masteredReference: "DMG 6-9; CRIT 20%"
-    _remainingEffects: "Execution"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 4-8; CRIT 15%
+    _masteredReference: DMG 6-9; CRIT 20%
+    _remainingEffects: Execution
   - _id: hwm.pistol_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5014933490c21d14e8e06d3df48d5448, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: cacf58696a04433aa180397911efae1a, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e51e7dc7aedf9654fb0e5b2abbd71db7, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-6; CRIT 10%"
-    _masteredReference: "DMG 5-8; CRIT 15%"
-    _remainingEffects: "Combo Daze/Stun"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 3-6; CRIT 10%
+    _masteredReference: DMG 5-8; CRIT 15%
+    _remainingEffects: Combo Daze/Stun
   - _id: hwm.duelists_advance
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 55e552ab72f9039429cf816d2c5e838b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: cb58d2c2e6a34be6ba2882cfb4843559, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: a1110e04730b0d341961550749be1ede, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 10%"
-    _remainingEffects: "movement, Riposte execution, three-token cap"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 3-5; CRIT 5%
+    _masteredReference: DMG 4-6; CRIT 10%
+    _remainingEffects: movement, Riposte execution, three-token cap
   - _id: hwm.tracking_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 654f47d4128f4dc8ae7a1498fbd01b8b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: c697ef4ca0cbe22458bb9869d00f823c, type: 2}
     _cost: 1
     _isAvailable: 0
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge"
-    _masteredReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus for 2 rounds; ignores Dodge"
-    _remainingEffects: "Dodge/DodgePlus gain prevention for 2 rounds"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge
+    _masteredReference: Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus
+      for 2 rounds; ignores Dodge
+    _remainingEffects: Dodge/DodgePlus gain prevention for 2 rounds
   - _id: hwm.take_aim
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 4aa2c7c4a443f234795f0b0fab7ec27b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3cfaedc40fa041628b700424656a18e5, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 8b7bdc911933e264280ccefa1dca8034, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "Remove Blind; Crit 1"
-    _masteredReference: "Remove Blind; Crit 2"
-    _remainingEffects: "cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: Remove Blind; Crit 1
+    _masteredReference: Remove Blind; Crit 2
+    _remainingEffects: cooldown
   - _id: hwm.point_blank_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0ddba46bdfb0e0448892f6dae642d4a7, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 7f3b46406c274489836b8a27075ef6ec, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: b0c785c0e7ee90f47b1f46db00b78275, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 6-10; CRIT 10%"
-    _masteredReference: "DMG 10-13; CRIT 15%"
-    _remainingEffects: "movement, knockback, Combo"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 6-10; CRIT 10%
+    _masteredReference: DMG 10-13; CRIT 15%
+    _remainingEffects: movement, knockback, Combo
   - _id: hwm.grapeshot_blast
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: fb09b267957424f498adae37a6db9da9, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 484e9eb9338c475eb3006beb2bf7d77b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 0fe502ae3ba3da043a3a82c4e9763066, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 10%"
-    _remainingEffects: "speed debuff, one Strength per critical target"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 3-5; CRIT 5%
+    _masteredReference: DMG 4-6; CRIT 10%
+    _remainingEffects: speed debuff, one Strength per critical target
   - _id: hwm.open_vein
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 6d45ddd1737e39d4e8a0669d89dc427d, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: e3494374faf84dd2a4ddcd9a4816958e, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: b3544436108da5a44b4b0525674a921b, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 10%"
-    _remainingEffects: "Combo Bleed multiplier"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 3-5; CRIT 5%
+    _masteredReference: DMG 4-6; CRIT 10%
+    _remainingEffects: Combo Bleed multiplier
   - _id: hwm.double_tap
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 3f960cf2b2d5ff640b28298db76dfda0, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: db27055b291b478c9ca3713d417c4e03, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 11511d6bbf1b79144adc57b03e285073, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 4-8; CRIT 5%"
-    _masteredReference: "DMG 6-9; CRIT 10%"
-    _remainingEffects: "low-HP damage multiplier, Execution"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 4-8; CRIT 5%
+    _masteredReference: DMG 6-9; CRIT 10%
+    _remainingEffects: low-HP damage multiplier, Execution
   - _id: hwm.highway_robbery
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: af5e52047c5321d4092f18e10a909225, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 74431e70b6fc482e87d07266c9930ff3, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: d948a46cac8807141aed2dd75992cdf8, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "Remove 2 positive tokens; target crit -5%"
-    _masteredReference: "Steal 2 positive tokens; target crit -5%, self +5%"
-    _remainingEffects: "cooldown; original token selection order and critical duration extension unverified; shared token cap"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: Remove 2 positive tokens; target crit -5%
+    _masteredReference: Steal 2 positive tokens; target crit -5%, self +5%
+    _remainingEffects: cooldown; original token selection order and critical duration
+      extension unverified; shared token cap
   - _id: hwm.double_cross
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: dd6390ecccfd675489699d68ec7ac740, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: ece359c7aa6c4f65b5a2574da9a8ea71, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: d354d33ca83a4e541a1652ada59b3b19, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 2-4; CRIT 5%"
-    _masteredReference: "DMG 3-5; CRIT 10%"
-    _remainingEffects: "piercing, target Block removal"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
+    _baseReference: DMG 2-4; CRIT 5%
+    _masteredReference: DMG 3-5; CRIT 10%
+    _remainingEffects: piercing, target Block removal

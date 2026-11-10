@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_Highwayman_duelists_advance_M
+  m_EditorClassIdentifier: 
+  _skillName: Duelist's Advance
+  _skillIcon: {fileID: 21300000, guid: 4a12e353b66c8b14e88eb8fd2e473a29, type: 3}
+  _useableRank: 14
+  _targetableRank: 7
+  _isGroupTarget: 0
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: f6826b8d6309d1040aee3f7700302be7, type: 2}
+  - {fileID: 11400000, guid: be719d7def38b5d4d985edd1b9c05261, type: 2}
+  - {fileID: 11400000, guid: 0ee0b193d4a70f248a4aaac6ec7ff55e, type: 2}
+  - {fileID: 11400000, guid: a9b71de3d11672f45bc46f90079eeef3, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 55e552ab72f9039429cf816d2c5e838b, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_Highwayman_duelists_advance
+  _endState: Base Layer.OriginalRecover_Highwayman_duelists_advance
+  _presentationNote: 
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_advance
+  _selectionHoldState: Base Layer.SourceReady_advance
+  _executionStartState: Base Layer.OriginalAction_Highwayman_duelists_advance
+  _feedback: {fileID: 11400000, guid: 4f0b3a3a7513d78488e38d9a4c146245, type: 2}
