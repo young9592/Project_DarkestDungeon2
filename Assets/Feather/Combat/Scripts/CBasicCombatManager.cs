@@ -59,7 +59,7 @@ public class CBasicCombatManager : MonoBehaviour
 
     [Header("Option")]
     [SerializeField] private float _actionDelay = 3.5f;
-    [SerializeField] private float _turnSkipDelay = 1.5f;
+    [SerializeField] private float _turnSkipDelay = 2f;
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
     #endregion
 
@@ -84,18 +84,24 @@ public class CBasicCombatManager : MonoBehaviour
     private CPlayer _currentStressHero = null;
     private List<CEntity> _corpseCheck = new List<CEntity>();
     private bool _battleEnd = false;
+    private CIndicator _myTurnIndicator = null;  
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
-    public List<(int, CEntity)> EntityList => _entityList;
+    public List<(int id, CEntity entity)> EntityList => _entityList;
     public Dictionary<CEntity, CEntityState> EntitiesState => _entitiesState;
     public Dictionary<CEntity, CIndicator> EntitiesIndicator => _entitiesIndicator;
     public CEntity MyTurn => _turnList.Count != 0 ? _turnList[0].entity : null;
-    public CIndicator MyTurnIndicator = null;
+    public CIndicator MyTurnIndicator => _myTurnIndicator; 
     public IReadOnlyList<GameObject> HeroRankPosition => _heroParty.HeroRankPosition;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyParty.EnemyRankPosition;
+
+    public IReadOnlyDictionary<ERank, CPlayer> HeroRank => _heroParty.RankList;
+    public IReadOnlyDictionary<ERank, CEnemy> EnemyRank => _enemyParty.RankList;
+
+    public CHeroBattleInput BattleInput => _heroBattleInput;
     #endregion
 
     private void Awake()
@@ -112,6 +118,13 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
         #endregion
+
+        CIndicatorMouseEvent.OnClickRankEvent += OnRankChangeClickData;
+    }
+
+    private void OnDisable()
+    {
+        CIndicatorMouseEvent.OnClickRankEvent -= OnRankChangeClickData;
     }
 
     private void Update()
@@ -277,16 +290,21 @@ public class CBasicCombatManager : MonoBehaviour
             return;
         }
 
+        // 딕셔너리 최신화
+        _heroParty.UpdateCurrentRank();
+        _enemyParty.UpdateCurrentRank();
+
         // TODO : MY Turn Indicator
-        if(MyTurnIndicator != null)
+        if (MyTurnIndicator != null)
         {
-            MyTurnIndicator.HideIndicator();
+            _myTurnIndicator.HideIndicator();
         }
 
-        if (_entitiesIndicator.TryGetValue(MyTurn, out MyTurnIndicator))
+        if (_entitiesIndicator.TryGetValue(MyTurn, out _myTurnIndicator))
         {
-            MyTurnIndicator.ViewMyturnIndicator();
+            _myTurnIndicator.ViewMyturnIndicator();
         }
+
 
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
@@ -603,27 +621,29 @@ public class CBasicCombatManager : MonoBehaviour
         // 액션할때까지 기다리기  
         while (!doAction)
         {
+
             if (isHero)
             {
-
                 if (_combatUI.Pass)
                 {
                     doAction = true;
                     _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.None, "턴넘김");
+                    MyTurn.CancelAction();
                     _combatUI.Pass = false;
                     break;
                 }
 
-                // TODO : 자리 변경 구현필요
                 if (_combatUI.Change)
                 {
                     doAction = true;
+                    MyTurn.CancelAction();
+                    _combatUI.Change = false;
                     break;
                 }
 
-                // 전투 화면연출
                 doAction = _doingAction;
 
+                // 전투 화면연출
                 if (_doingAction)
                 {
                     _combatUI.CloseHeroInfomation();
@@ -655,12 +675,26 @@ public class CBasicCombatManager : MonoBehaviour
 
                         if (_doingAction)
                         {
-                            yield return new WaitForSeconds(_actionDelay);
+                            // 적 스킬 시전시 잠시 대기
+                            _combatUI.UseSkill(_currentActionSkillData, true);
+
+                            // 적이 노리는 타겟 지시등 켜기
+                            IReadOnlyList<CEntity> targets = actor.PlannedTargets;
+                            
+                            for (int i = 0; i < targets.Count; i++)
+                            {
+                                if(_entitiesIndicator.TryGetValue(targets[i], out CIndicator indicator))
+                                {
+                                    indicator.ViewTargetIndicator();
+                                }
+                            }
+
+                            yield return new WaitForSeconds(2f);
+
                             MyTurn.TryStartRequestedAction();
                             SnapMoveSkill();
 
                             _combatUI.UseSkill(_currentActionSkillData);
-                            IReadOnlyList<CEntity> targets = actor.PlannedTargets;
                             _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                             yield return _combatCoroutine;
 
@@ -684,6 +718,7 @@ public class CBasicCombatManager : MonoBehaviour
 
         MyTurn.OnActionRequested -= OnActionData;
 
+        // 이동스킬 사용한 개체 정리
         SortEntitiesPosition();
         yield return _sortCoroutine;
 
@@ -729,6 +764,23 @@ public class CBasicCombatManager : MonoBehaviour
         CPrint.Log(actor.name + " -> " + target.name + " / " + skill.SkillName);
         _currentActionSkillData = skill;
         _doingAction = true;
+    }
+    // 랭크 변경 데이터
+    private void OnRankChangeClickData(ERank rank)
+    {
+        if (MyTurn is not CPlayer)
+        {
+            return;
+        }
+
+        if (rank == ERank.None)
+        {
+            CPrint.Error("None 반환됨. 오류 체크 필요");
+            return;
+        }
+
+        _combatUI.Change = true;
+        _heroParty.RankChange(MyTurn as CPlayer, rank);
     }
     // 이동 스킬 사용 시 캐릭터 이동 적용
     private void SnapMoveSkill()
@@ -851,7 +903,6 @@ public class CBasicCombatManager : MonoBehaviour
         List<Transform> oldTransforms = new List<Transform>();
         List<Vector3> initPosList = new List<Vector3>();
         List<Vector3> desirePosList = new List<Vector3>();
-
 
         // 랭크가 제대로 배치되어 있는지 체크
         CPrint.Log("Rank 유효성 검사중...");

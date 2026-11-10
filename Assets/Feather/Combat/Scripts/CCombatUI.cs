@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class CCombatUI : MonoBehaviour
 {
@@ -114,12 +116,13 @@ public class CCombatUI : MonoBehaviour
     private bool _pass = false;
     private bool _rankChange = false;
     private bool _cursorRank = false;
+    private Coroutine _indicatorCoroutine = null;
     private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
     public CEntity TurnEntity => _combatManager.MyTurn;
-    
+
     public bool Pass
     {
         get { return _pass; }
@@ -285,12 +288,12 @@ public class CCombatUI : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(turnList[i].id, 4, entityType, portrait);
+                portraitImage.Initialize(_combatManager, turnList[i].id, 4, entityType, portrait);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(turnList[i].id, i + 1, entityType, portrait);
+                portraitImage.Initialize(_combatManager, turnList[i].id, i + 1, entityType, portrait);
             }
 
             turnPortraitList.Add(portraitPrefab);
@@ -298,20 +301,13 @@ public class CCombatUI : MonoBehaviour
 
         return turnPortraitList;
     }
-    /// <summary>
-    /// 현기증으로 인한 턴 밀림 시 초상화 추가 생성
-    /// </summary>
-    /// <param name="portrait">복사할 대상</param>
-    /// <returns></returns>
+    // 현기증으로 인한 턴 밀림 시 초상화 추가 생성
     public GameObject CopyTurnOrderPortrait(GameObject portrait)
     {
         GameObject copyObj = Instantiate(portrait, _turnOrderRoot.transform);
         return copyObj;
     }
-    /// <summary>
-    /// 초상화 이동
-    /// </summary>
-    /// <param name="isDirty">죽은 엔티티가 있는지 체크</param>
+    // 초상화 이동
     public void MoveTurnOrder(List<GameObject> turnPortraitList, bool isDirty = false)
     {
         // 죽는 상태에선 단순 하나의 요소만 변경되는 것이 아니기 때문에 리스트와 싱크를 맞춰야한다.
@@ -345,7 +341,6 @@ public class CCombatUI : MonoBehaviour
         }
         CPortraitImage.IsDirty = false;
     }
-
     // 다음 라운드로 변경
     public void NextRound(int turnListCount)
     {
@@ -357,8 +352,6 @@ public class CCombatUI : MonoBehaviour
         _round++;
         _roundText.text = _round.ToString();
     }
-
-
     // 버튼을 누른채로 몇초 지나면 패스 적용
     public void OnPressActionPass()
     {
@@ -372,16 +365,41 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        _combatManager.MyTurn.CancelAction();
+        _combatManager.MyTurn.TryBeginAction();
+
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (indicators.TryGetValue(entity, out CIndicator indicator))
+            {
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(_combatManager.MyTurn))
+                {
+                    indicator.ViewMyturnIndicator();
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+
+        // 커서 이동
         RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
         cursorTr.anchoredPosition = rectTr.anchoredPosition;
 
-        // 커서 이동
         _cursorRank = false;
         _cursorDiamond.SetActive(true);
         _cursorSkill.SetActive(false);
     }
-
     // 턴넘김
     public void ActionPass()
     {
@@ -402,6 +420,62 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        _combatManager.MyTurn.CancelAction();
+        _combatManager.MyTurn.TryBeginAction();
+
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+        CPlayer myturnHero = _combatManager.MyTurn as CPlayer;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (indicators.TryGetValue(entity, out CIndicator indicator))
+            {
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(myturnHero))
+                {
+                    indicator.ViewMyturnIndicator();
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+        // 현재 위치에서 이동할 수 있는 지시등만 켜기
+        int rankIdx = (int)System.MathF.Log((float)myturnHero.CurrentRank, 2);
+        int forward = myturnHero.HeroData.ForwardMovement;
+        int backward = myturnHero.HeroData.BackwardMovement;
+
+        int start = Mathf.Max(rankIdx - forward, 0);
+        int end = Mathf.Min(rankIdx + backward, 3);
+
+        for (int i = start; i <= end; i++)
+        {
+            IReadOnlyDictionary<ERank, CPlayer> heroRank = _combatManager.HeroRank;
+
+            if (heroRank.TryGetValue((ERank)(1 << i), out CPlayer hero))
+            {
+                if (indicators.TryGetValue(hero, out CIndicator indicator))
+                {
+                    
+                    // 본인이면 제외
+                    if (hero.Equals(myturnHero))
+                    {
+                        indicator.ViewMyturnIndicator();
+                        continue;
+                    }
+                    
+                    indicator.ToggleMouseEvent(true);
+                }
+            }
+        }
+
+        // 커서 이동
         RectTransform rectTr = _rankChangeBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
         cursorTr.anchoredPosition = rectTr.anchoredPosition;
@@ -409,18 +483,6 @@ public class CCombatUI : MonoBehaviour
         _cursorRank = true;
         _cursorDiamond.SetActive(true);
         _cursorSkill.SetActive(false);
-    }
-
-    // 랭크 변경 시도
-    public void RankChange()
-    {
-        if (!_cursorRank)
-        {
-            return;
-        }
-
-        // TODO 자리변경 시도
-
     }
 
     // 스킬 선택
@@ -455,30 +517,39 @@ public class CCombatUI : MonoBehaviour
 
         CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 
+        // 현재 스킬의 랭크 표시
+        bool aliyRank1 = ((usableRank & ERank.Rank1) != 0);
+        bool aliyRank2 = ((usableRank & ERank.Rank2) != 0);
+        bool aliyRank3 = ((usableRank & ERank.Rank3) != 0);
+        bool aliyRank4 = ((usableRank & ERank.Rank4) != 0);
+
+        bool targetRank1 = ((targetRank & ERank.Rank1) != 0);
+        bool targetRank2 = ((targetRank & ERank.Rank2) != 0);
+        bool targetRank3 = ((targetRank & ERank.Rank3) != 0);
+        bool targetRank4 = ((targetRank & ERank.Rank4) != 0);
+
+        List<bool> alliesRankList = new List<bool> { aliyRank1, aliyRank2, aliyRank3, aliyRank4 };
+        List<bool> targetRankList = new List<bool> { targetRank1, targetRank2, targetRank3, targetRank4 };
+
         if (heroSkillSO.Target != EHeroSkillTarget.Self)
         {
-            _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
-            _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
-            _AlliesRank[2].enabled = ((usableRank & ERank.Rank3) != 0 ? true : false);
-            _AlliesRank[3].enabled = ((usableRank & ERank.Rank4) != 0 ? true : false);
-
-            _targetRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-            _targetRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-            _targetRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-            _targetRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            for (int i = 0; i < alliesRankList.Count; i++)
+            {
+                _AlliesRank[i].enabled = alliesRankList[i];
+                _targetRank[i].enabled = targetRankList[i];
+            }
 
             _targetRankPanel.SetActive((targetRank & (ERank.Rank1 | ERank.Rank2 | ERank.Rank3 | ERank.Rank4)) == 0 ? false : true);
         }
         else
         {
-            _AlliesRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-            _AlliesRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-            _AlliesRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-            _AlliesRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            for (int i = 0; i < alliesRankList.Count; i++)
+            {
+                _AlliesRank[i].enabled = targetRankList[i];
+            }
+
             _targetRankPanel.SetActive(false);
         }
-
-
 
         _cursorSkillInfo.SetActive(true);
         _cursorSkill.SetActive(true);
@@ -488,12 +559,52 @@ public class CCombatUI : MonoBehaviour
         // 영웅의 스킬 사전준비 모션
         hero.SelectSkill(idx);
 
-        
-        if(
+        if (_indicatorCoroutine == null)
+        {
+            _indicatorCoroutine = StartCoroutine(CoViewTarget(heroSkillSO));
+        }
+        else
+        {
+            StopCoroutine(_indicatorCoroutine);
+            _indicatorCoroutine = null;
+            _indicatorCoroutine = StartCoroutine(CoViewTarget(heroSkillSO));
+        }
+    }
+
+    private IEnumerator CoViewTarget(CHeroSkillSO heroSkillSO)
+    {
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (indicators.TryGetValue(entity, out CIndicator indicator))
+            {
+                CHeroTargetView view = entity.gameObject.GetComponent<CHeroTargetView>();
+
+                yield return null;
+
+                indicator.SetView(view);
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(_combatManager.MyTurn))
+                {
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+        // 자신의 스킬이 어떤 종류인지에 따라 지시등이 변합니다.
+        if (
             heroSkillSO.Target == EHeroSkillTarget.Self ||
             heroSkillSO.Target == EHeroSkillTarget.Ally ||
             heroSkillSO.Target == EHeroSkillTarget.AllyOrSelf ||
-            heroSkillSO.Target == EHeroSkillTarget.AllAllies 
+            heroSkillSO.Target == EHeroSkillTarget.AllAllies
           )
         {
             _combatManager.MyTurnIndicator.ViewBuffIndicator();
@@ -502,7 +613,38 @@ public class CCombatUI : MonoBehaviour
         {
             _combatManager.MyTurnIndicator.ViewMyturnIndicator();
         }
+
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            if (indicators.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
+            {
+                if (_combatManager.EntityList[i].entity == _combatManager.MyTurn)
+                {
+                    continue;
+                }
+
+                if (indicator.isHighlight)
+                {
+                    indicator.ViewTargetIndicator();
+                }
+            }
+        }
     }
+
+    public void HideAllIndicator()
+    {
+        Dictionary<CEntity, CIndicator> indicators = _combatManager.EntitiesIndicator;
+
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            if (indicators.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
+            {
+                indicator.HideIndicator();
+                indicator.ToggleMouseEvent(false);
+            }
+        }
+    }
+
     /// <summary>
     /// 영웅 정보 및 스킬 인터페이스 활성화
     /// </summary>
@@ -580,15 +722,19 @@ public class CCombatUI : MonoBehaviour
         _enemyResistStatus.SetActive(false);
     }
     // 스킬 사용 시 처리
-    public void UseSkill(CSkillDataSO skillDataSO)
+    public void UseSkill(CSkillDataSO skillDataSO, bool onlyUseSkillName = false)
     {
         CloseHeroInfomation();
 
         _currentSkillName.text = skillDataSO.SkillName;
         OpenCombatPanel();
-        _combatBorder.SetActive(true);
-        _combatTriangle.SetActive(true);
         _currentSkillName.gameObject.SetActive(true);
+
+        if (!onlyUseSkillName)
+        {
+            _combatBorder.SetActive(true);
+            _combatTriangle.SetActive(true);
+        }
     }
     // 전투 패널 활성화
     public void OpenCombatPanel()
@@ -638,7 +784,7 @@ public class CCombatUI : MonoBehaviour
     public void OpenMeltDown()
     {
         ResetCombatPanel();
-        
+
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
         _meltdownPanel.SetActive(true);
@@ -652,7 +798,7 @@ public class CCombatUI : MonoBehaviour
     public void OpenResolute()
     {
         ResetCombatPanel();
-        
+
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
         _resolutePanel.SetActive(true);

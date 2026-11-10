@@ -26,7 +26,7 @@ public class CHeroParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CPlayer> HeroList => _heroList;
-    public Dictionary<ERank, CPlayer> RankList => _rankList;
+    public IReadOnlyDictionary<ERank, CPlayer> RankList => _rankList;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
     public CHeroExpeditionState HeroExpeditionState => _expeditionState;
     public string RunID => _runID;
@@ -204,5 +204,59 @@ public class CHeroParty : MonoBehaviour
             }
         }
         return true;
+    }
+    public void UpdateCurrentRank()
+    {
+        _rankList.Clear();
+
+        CPrint.Warn("Current Hero State");
+
+        for (int i = 0; i < _heroList.Count; i++)
+        {
+            ERank rank = _heroList[i].CurrentRank;
+            CPlayer hero = _heroList[i];
+
+            _rankList.Add(rank, hero);
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            if(_rankList.TryGetValue((ERank)(1 << i), out CPlayer hero))
+            {
+                CPrint.Log($"Rank[{i}] : {hero.HeroData.Name}");
+            }
+        }
+    }
+    public void RankChange(CPlayer hero, ERank rank)
+    {
+        // 영웅의 현재 위치
+        int rankIdx = (int)System.MathF.Log((float)hero.CurrentRank, 2);
+        // 이동시킬 위치
+        int moveIdx = (int)System.MathF.Log((float)rank, 2);
+
+        hero.TrySetRank(rank);
+
+        // 앞으로 가기
+        if (rankIdx > moveIdx)
+        {
+            for (int i = moveIdx; i < rankIdx; i++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << i), out CPlayer moveHero))
+                {
+                    moveHero.TrySetRank((ERank)(1 << (i + 1)));
+                }
+            }
+        }
+        // 뒤로가기
+        else if (rankIdx < moveIdx)
+        {
+            for (int i = rankIdx + 1; i <= moveIdx; i++)
+            {
+                if (_rankList.TryGetValue((ERank)(1 << i), out CPlayer moveHero))
+                {
+                    moveHero.TrySetRank((ERank)(1 << (i - 1)));
+                }
+            }
+        }
     }
 }

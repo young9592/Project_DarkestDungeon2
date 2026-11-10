@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CIndicator : MonoBehaviour
 {
@@ -18,11 +19,20 @@ public class CIndicator : MonoBehaviour
     [SerializeField] private GameObject _heroSemiLight;
     [SerializeField] private GameObject _enemyFullLight;
 
+    [Header("Mouse DetectArea")]
+    [SerializeField] private CIndicatorMouseEvent _mouseDetectArea;
+    [SerializeField] private bool _enableMouseDetect = false;
+
     [Header("Option")]
     [SerializeField] private Vector3 _offset = new Vector3(0, -1, 0);
     #endregion
 
     #region Field
+    private EEntityType _entityType = EEntityType.None;
+    private bool _portraitFlag = false;
+    private bool _playerTurnHoverFlag = false;
+
+    private CHeroTargetView _view;
     private RectTransform _rectTr;
     private RectTransform _canvasRectTr;
     private bool _doFollow = true;
@@ -32,14 +42,32 @@ public class CIndicator : MonoBehaviour
     private List<Object> _checkList = new List<Object>();
     #endregion
 
+    #region Property
+    public bool isHighlight
+    {
+        get
+        {
+            if (_view != null)
+            {
+                return _view.IsHighlighted;
+            }
+
+            return false;
+        }
+    }
+    private bool TotalFlag => _playerTurnHoverFlag || _portraitFlag || _mouseDetectArea.IsHover;
+
+    #endregion
+
     private void Awake()
     {
-        _checkList.Add(_myturnIndicator);        
-        _checkList.Add(_buffIndicator);        
-        _checkList.Add(_targetIndicator);        
-        _checkList.Add(_heroFullLight);        
-        _checkList.Add(_heroSemiLight);        
+        _checkList.Add(_myturnIndicator);
+        _checkList.Add(_buffIndicator);
+        _checkList.Add(_targetIndicator);
+        _checkList.Add(_heroFullLight);
+        _checkList.Add(_heroSemiLight);
         _checkList.Add(_enemyFullLight);
+        _checkList.Add(_mouseDetectArea);
 
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
         {
@@ -48,13 +76,14 @@ public class CIndicator : MonoBehaviour
         }
 
         _rectTr = GetComponent<RectTransform>();
+        CIndicatorMouseEvent.OnClickRankEvent += OnRankChangeClickData;
     }
 
     public void Initialize(Canvas canvas, GameObject target)
     {
         _canvas = canvas;
         _target = target;
-        
+
         if (_canvas == null || _target == null)
         {
             CPrint.Warn($"{gameObject.name} : Initialize 값 전달 오류");
@@ -67,31 +96,39 @@ public class CIndicator : MonoBehaviour
             _rendererCameraMode = true;
         }
 
-      
+
         CEntity entity = _target.GetComponent<CEntity>();
 
-
         _canvasRectTr = _canvas.GetComponent<RectTransform>();
+
+        _mouseDetectArea.Initialize(entity);
 
         bool isHero = entity is CPlayer;
 
         if (isHero)
         {
+            _entityType = EEntityType.Hero;
             _formationSize = 1;
         }
         else
         {
+            _entityType = EEntityType.Enemy;
             _formationSize = (entity as CEnemy).EnemyData.FormationSize;
 
-            if(_formationSize > 1)
+            if (_formationSize > 1)
             {
                 _rectTr.localScale = new Vector3(_rectTr.localScale.x * _formationSize, _rectTr.localScale.y, _rectTr.localScale.z);
             }
         }
 
+
         _init = true;
     }
 
+    private void OnDestroy()
+    {
+        CIndicatorMouseEvent.OnClickRankEvent -= OnRankChangeClickData;
+    }
     private void Update()
     {
         if (!_init)
@@ -101,6 +138,8 @@ public class CIndicator : MonoBehaviour
 
         CheckEntityDead();
         FollowEntity();
+        OnPlayerTurnHover();
+        RankChangeHover();
     }
 
     // 추적이동
@@ -154,7 +193,8 @@ public class CIndicator : MonoBehaviour
     {
         _myturnIndicator.SetActive(true);
         _heroSemiLight.SetActive(true);
-        
+
+        _targetIndicator.SetActive(false);
         _buffIndicator.SetActive(false);
     }
 
@@ -162,7 +202,11 @@ public class CIndicator : MonoBehaviour
     {
         _myturnIndicator.SetActive(false);
         _buffIndicator.SetActive(false);
+        _targetIndicator.SetActive(false);
+
+        _heroFullLight.SetActive(false);
         _heroSemiLight.SetActive(false);
+        _enemyFullLight.SetActive(false);
     }
 
     public void ViewBuffIndicator()
@@ -171,5 +215,129 @@ public class CIndicator : MonoBehaviour
         _heroSemiLight.SetActive(true);
 
         _myturnIndicator.SetActive(false);
+        _targetIndicator.SetActive(false);
+    }
+
+    public void ViewTargetIndicator()
+    {
+        _targetIndicator.SetActive(true);
+
+        _buffIndicator.SetActive(false);
+        _myturnIndicator.SetActive(false);
+
+        _heroFullLight.SetActive(false);
+        _heroSemiLight.SetActive(false);
+    }
+    // 영웅 스킬 선택 시 상호작용 함수들
+    public void SetView(CHeroTargetView view)
+    {
+        _view = view;
+    }
+    private void OnPlayerTurnHover()
+    {
+        if (_view == null)
+        {
+            return;
+        }
+
+        bool myTurnIndicator = _myturnIndicator.activeSelf;
+        bool targetIndicator = _targetIndicator.activeSelf;
+        bool buffIndicator = _buffIndicator.activeSelf;
+
+
+        if (myTurnIndicator || buffIndicator)
+        {
+            if (_view.IsHovered)
+            {
+                _playerTurnHoverFlag = true;
+
+                _heroFullLight.SetActive(TotalFlag);
+                _heroSemiLight.SetActive(false);
+            }
+            else
+            {
+                _playerTurnHoverFlag = false;
+
+                _heroFullLight.SetActive(TotalFlag);
+                _heroSemiLight.SetActive(true);
+            }
+        }
+        else if (targetIndicator)
+        {
+            if (_view.IsHovered)
+            {
+                _enemyFullLight.SetActive(true);
+                _heroSemiLight.SetActive(false);
+            }
+            else
+            {
+                _enemyFullLight.SetActive(false);
+                _heroSemiLight.SetActive(false);
+            }
+        }
+    }
+    // 초상화 상호작용 함수들
+    public void EnterPortrait()
+    {
+        _portraitFlag = true;
+
+        switch (_entityType)
+        {
+            case EEntityType.Hero:
+                _heroFullLight.SetActive(TotalFlag);
+                break;
+            case EEntityType.Enemy:
+                _enemyFullLight.SetActive(true);
+                break;
+            default:
+                break;
+        }
+    }
+    public void ExitPortrait()
+    {
+        _portraitFlag = false;
+
+        switch (_entityType)
+        {
+            case EEntityType.Hero:
+                _heroFullLight.SetActive(TotalFlag);
+                break;
+            case EEntityType.Enemy:
+                _enemyFullLight.SetActive(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void ToggleMouseEvent(bool toggle)
+    {
+        _mouseDetectArea.GetComponent<Image>().raycastTarget = toggle;
+        _enableMouseDetect = toggle;
+
+        if (!_myturnIndicator.activeSelf)
+        {
+            _buffIndicator.SetActive(toggle);
+            _heroSemiLight.SetActive(toggle);
+            _targetIndicator.SetActive(false);
+        }
+    }
+
+    private void RankChangeHover()
+    {
+        if (_enableMouseDetect)
+        {
+            _heroFullLight.SetActive(TotalFlag);
+        }
+    }
+    // 랭크 변경 클릭시 종료
+    private void OnRankChangeClickData(ERank rank)
+    {
+        if (_enableMouseDetect)
+        {
+            ToggleMouseEvent(false);
+            _heroFullLight.SetActive(false);
+            _heroSemiLight.SetActive(false);
+        }
     }
 }

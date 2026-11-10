@@ -349,8 +349,8 @@ public class CCombatCameraManager : MonoBehaviour
         // UI 정리
         _combatUI.ToggleEntityStateRoot(false);
         _combatUI.ToggleTurnGuideRoot(false);
-        _combatManager.MyTurnIndicator.HideIndicator();
-
+        _combatUI.HideAllIndicator();
+        
         // 공격 방향에 따라 이펙트
         if (combatTarget == CombatTarget.Hero_Attack)
         {

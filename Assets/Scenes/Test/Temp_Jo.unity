@@ -3433,7 +3433,6 @@ MonoBehaviour:
   _actionDelay: 0.5
   _turnSkipDelay: 1.5
   _portraitRemoveDelay: 0.05
-  MyTurnIndicator: {fileID: 0}
 --- !u!4 &540853369
 Transform:
   m_ObjectHideFlags: 0
@@ -10143,7 +10142,6 @@ RectTransform:
   - {fileID: 1749401297}
   - {fileID: 1562195956}
   - {fileID: 746078179}
-  - {fileID: 1611134591}
   - {fileID: 252759438}
   m_Father: {fileID: 2035227789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12651,7 +12649,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1330263338}
+  m_Father: {fileID: 2035227789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -15089,6 +15087,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1330263338}
+  - {fileID: 1611134591}
   - {fileID: 964000907}
   - {fileID: 1468974592}
   - {fileID: 1794853712}
@@ -15793,8 +15792,6 @@ MonoBehaviour:
   _deathStampPrefab: {fileID: 8428275685590659208, guid: 60bed3f9ea804b449b83272e338a9159, type: 3}
   _stressPrefab: {fileID: 6143967996554263153, guid: e6246af449503d0479a33dd6dce0d246, type: 3}
   _stressHealPrefab: {fileID: 7234313650641800257, guid: be01fbc9a1f43b24f8bc1de0b5077d69, type: 3}
-  _turnGuideRoot: {fileID: 242576561}
-  _targetPrefab: {fileID: 5629277834582724754, guid: d5018ffea83ac1346850b642f080dffb, type: 3}
 --- !u!4 &2125789384
 Transform:
   m_ObjectHideFlags: 0

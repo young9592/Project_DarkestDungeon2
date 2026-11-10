@@ -24,7 +24,7 @@ public class CEnemyParty : MonoBehaviour
     #region Property
     public static bool IsReady => _isReady;
     public List<CEnemy> EnemyList => _enemyList;
-    public Dictionary<ERank, CEnemy> RankList => _rankList;
+    public IReadOnlyDictionary<ERank, CEnemy> RankList => _rankList;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
     #endregion
     void Start()
@@ -183,14 +183,40 @@ public class CEnemyParty : MonoBehaviour
                         continue;
                     }
 
-                    CPrint.Warn($"{enemy.EnemyData.Name} : [{(ERank)(1 << j)}] >> [{(ERank)(1 << i)}]");
-                    enemy.SetRankImmediate((ERank)(1 << i));
-                    _rankList.Remove((ERank)(1 << j));
-                    _rankList.Add((ERank)(1 << i), enemy);
-
+                    // 크기를 고려해야합니다. 크기가 2인 친구가 공간1칸에 들어오면 안되기 때문에..
+                    bool isFull = false;
                     int size = enemy.EnemyData.FormationSize;
 
-                    i += size - 1;
+                    if (i + size > 4)
+                    {
+                        continue;
+                    }
+
+                    for (int k = i + 1; k < i + size; k++)
+                    {
+                        isFull = _rankList.TryGetValue((ERank)(1 << k), out CEnemy checkEnemy);
+
+                        if (checkEnemy == enemy)
+                        {
+                            isFull = false;
+                            continue;
+                        }
+
+                        if (isFull)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!isFull)
+                    {
+                        CPrint.Warn($"{enemy.EnemyData.Name} : [{(ERank)(1 << j)}] >> [{(ERank)(1 << i)}]");
+                        enemy.SetRankImmediate((ERank)(1 << i));
+                        _rankList.Remove((ERank)(1 << j));
+                        _rankList.Add((ERank)(1 << i), enemy);
+
+                        i += size - 1;
+                    }
                     break;
                 }
             }
@@ -265,5 +291,31 @@ public class CEnemyParty : MonoBehaviour
             }
         }
         return true;
+    }
+
+    // 이동 스킬 사용 후 변경된 랭크를 딕셔너리에도 적용
+    public void UpdateCurrentRank()
+    {
+        _rankList.Clear();
+
+        CPrint.Warn("Current Enemy State");
+
+        for (int i = 0; i < _enemyList.Count; i++)
+        {
+            ERank rank = _enemyList[i].CurrentRank;
+            CEnemy enemy = _enemyList[i];
+
+            _rankList.Add(rank, enemy);
+
+        }
+
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (_rankList.TryGetValue((ERank)(1 << i), out CEnemy enemy))
+            {
+                CPrint.Log($"Rank[{i}] : {enemy.EnemyData.Name}");
+            }
+        }
     }
 }
