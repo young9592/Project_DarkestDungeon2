@@ -12196,6 +12196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _partyTest: {fileID: 2119557192}
   _preparation: {fileID: 2119557194}
+  _randomGroupSource: {fileID: 1497308003}
   _selectionRoot: {fileID: 1368610713}
   _groupButtons:
   - {fileID: 198002881}
@@ -17165,6 +17166,12 @@ MonoBehaviour:
   - {fileID: 331185383}
   - {fileID: 1301238025}
   _heroTest: {fileID: 745037724}
+  _randomEnemyPrefabs:
+  - {fileID: 1462110948690307370, guid: 7fb7f42e50543d74caf9f009b7997154, type: 3}
+  - {fileID: 2481291059542486020, guid: 7070c8cad223112408e443156453e4c0, type: 3}
+  - {fileID: 2052442247830175294, guid: d01a15099c0607f4f955eafa6e128fae, type: 3}
+  - {fileID: 4091325714474303996, guid: 53cfd4189e65b254faea99e5f7b07ddb, type: 3}
+  - {fileID: 7106212797590461559, guid: cd44d6c5c3510e243b4f94b75380d289, type: 3}
 --- !u!4 &1497308004
 Transform:
   m_ObjectHideFlags: 0

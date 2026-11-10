@@ -14,9 +14,12 @@ public class CEncounterPreviewFlow : MonoBehaviour
         Preview
     }
 
+    private const int GENERATED_GROUP_INDEX = -1;
+
     [Header("Preview")]
     [SerializeField] private CHeroPartyTest _partyTest;
     [SerializeField] private CHeroPreparationPanel _preparation;
+    [SerializeField] private CEnemyAutoActionTest _randomGroupSource;
     [Header("Preparation Screen")]
     [SerializeField] private GameObject _selectionRoot;
     [SerializeField] private Button[] _groupButtons;
@@ -37,6 +40,12 @@ public class CEncounterPreviewFlow : MonoBehaviour
     [SerializeField] private Text _intentSummary;
     private EScreen _screen;
     private int _groupIndex;
+    private CEnemyGroupSO _generatedGroup;
+    private int _generatedSeed;
+    private int _requiredEnemyOption;
+    private string[] _requiredEnemyLabels;
+    private string _enemyCountInput = "3";
+    private string _seedInput = "0";
     private int _partyClosedFrame = -1;
     private bool _previousControls;
     private string _enemyMessage;
@@ -57,14 +66,28 @@ public class CEncounterPreviewFlow : MonoBehaviour
 
     public CEnemyGroupSO SelectedGroup
     {
-        get { return _partyTest != null
-            && _partyTest.Groups != null
-            && _groupIndex >= 0
-            && _groupIndex < _partyTest.Groups.Count ? _partyTest.Groups[_groupIndex] : null; }
+        get
+        {
+            if (_groupIndex == GENERATED_GROUP_INDEX) return _generatedGroup;
+            return _partyTest != null && _partyTest.Groups != null
+                && _groupIndex >= 0 && _groupIndex < _partyTest.Groups.Count ? _partyTest.Groups[_groupIndex] : null;
+        }
     }
 
     private void Awake()
     {
+        if (_randomGroupSource != null && _randomGroupSource.RandomEnemyPrefabs != null)
+        {
+            var prefabs = _randomGroupSource.RandomEnemyPrefabs;
+            _requiredEnemyLabels = new string[prefabs.Count + 1];
+            _requiredEnemyLabels[0] = "Any";
+            for (int i = 0; i < prefabs.Count; i++)
+            {
+                CEnemy enemy = prefabs[i];
+                _requiredEnemyLabels[i + 1] = enemy != null && enemy.EnemyData != null ? enemy.EnemyData.Name : "Missing enemy";
+            }
+        }
+
         if (_groupButtons != null)
         {
             for (int i = 0; i < _groupButtons.Length; i++)
@@ -195,6 +218,24 @@ public class CEncounterPreviewFlow : MonoBehaviour
         return true;
     }
 
+    public bool TryGenerateGroup(int enemyCount, int seed, CEnemy requiredEnemy = null)
+    {
+        if (_screen != EScreen.Preparing || _randomGroupSource == null) return false;
+        if (!_randomGroupSource.TryGenerateGroup(enemyCount, seed, out CEnemyGroupSO group, requiredEnemy))
+        {
+            if (_status != null) _status.text = "No valid formation for these choices. Previous group kept.";
+            return false;
+        }
+
+        // 파티 편집을 마치고 돌아와도 생성한 조합을 유지함
+        if (_generatedGroup != null) Destroy(_generatedGroup);
+        _generatedGroup = group;
+        _generatedSeed = seed;
+        _groupIndex = GENERATED_GROUP_INDEX;
+        Refresh();
+        return true;
+    }
+
     public bool TryEditParty()
     {
         if (_screen != EScreen.Preparing)
@@ -202,20 +243,21 @@ public class CEncounterPreviewFlow : MonoBehaviour
             return false;
         }
 
-        int validGroup = SelectedGroup != null && SelectedGroup.TryValidate(out _) ? _groupIndex : -1;
-        if (validGroup < 0 && _partyTest.Groups != null)
+        CEnemyGroupSO validGroup = SelectedGroup;
+        if (validGroup != null && !validGroup.TryValidate(out _)) validGroup = null;
+        if (validGroup == null && _partyTest.Groups != null)
         {
             for (int i = 0; i < _partyTest.Groups.Count; i++)
             {
                 if (_partyTest.Groups[i] != null && _partyTest.Groups[i].TryValidate(out _))
                 {
-                    validGroup = i;
+                    validGroup = _partyTest.Groups[i];
                     break;
                 }
             }
         }
 
-        if (validGroup < 0 || !_partyTest.ResumePreview(validGroup))
+        if (validGroup == null || !_partyTest.ResumePreview(validGroup))
         {
             return false;
         }
@@ -261,7 +303,7 @@ public class CEncounterPreviewFlow : MonoBehaviour
         if (_screen != EScreen.Preparing
             || SelectedGroup == null
             || !TryValidateEncounter(out _)
-            || !_partyTest.ResumePreview(_groupIndex))
+            || !_partyTest.ResumePreview(SelectedGroup))
         {
             return false;
         }
@@ -311,13 +353,17 @@ public class CEncounterPreviewFlow : MonoBehaviour
             _preparation.Cancel();
         }
 
-        if (_partyTest == null)
+        if (_partyTest != null)
         {
-            return;
+            _partyTest.CloseTest();
+            _partyTest.ShowControls = _previousControls;
         }
 
-        _partyTest.CloseTest();
-        _partyTest.ShowControls = _previousControls;
+        if (_generatedGroup != null)
+        {
+            Destroy(_generatedGroup);
+            _generatedGroup = null;
+        }
     }
 
     private void SetScreens(bool preparing, bool preview)
@@ -459,6 +505,11 @@ public class CEncounterPreviewFlow : MonoBehaviour
 
     private string GroupTitle(int index)
     {
+        if (index == GENERATED_GROUP_INDEX && _generatedGroup != null)
+        {
+            return "Seed " + _generatedSeed + " / " + _generatedGroup.Entries.Count + " enemies";
+        }
+
         if (_partyTest.Groups == null || index < 0 || index >= _partyTest.Groups.Count || _partyTest.Groups[index] == null)
         {
             return "Missing group";
@@ -482,7 +533,9 @@ public class CEncounterPreviewFlow : MonoBehaviour
             return "Invalid formation: missing enemy, overlapping ranks or beyond rank 4.";
         }
 
-        StringBuilder text = new StringBuilder("FRONT  >  BACK\n");
+        StringBuilder text = new StringBuilder();
+        if (_groupIndex == GENERATED_GROUP_INDEX) text.AppendLine(GroupTitle(_groupIndex));
+        text.AppendLine("FRONT  >  BACK");
         for (int rank = 1; rank <= 4; rank++)
         {
             string occupant = "Empty";
@@ -686,6 +739,8 @@ public class CEncounterPreviewFlow : MonoBehaviour
     {
         if (!CTempLeeTestUI.CanShow(this)) return;
 
+        if (_screen == EScreen.Preparing && _randomGroupSource != null) DrawRandomGroupControls();
+
         if (!IsOpen
             && _partyTest != null
             && !_partyTest.IsOpen
@@ -693,5 +748,48 @@ public class CEncounterPreviewFlow : MonoBehaviour
         {
             TryOpen();
         }
+    }
+
+    private void DrawRandomGroupControls()
+    {
+        GUILayout.BeginArea(new Rect(Mathf.Max(5, Screen.width - 390), Screen.height - 306, 380, 116), GUI.skin.box);
+        if (_requiredEnemyLabels != null && _requiredEnemyLabels.Length > 1)
+        {
+            GUILayout.Label("Required enemy");
+            _requiredEnemyOption = GUILayout.SelectionGrid(_requiredEnemyOption, _requiredEnemyLabels, 3);
+        }
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Enemies", GUILayout.ExpandWidth(false));
+        _enemyCountInput = GUILayout.TextField(_enemyCountInput, 1, GUILayout.Width(30));
+        GUILayout.Label("Seed", GUILayout.ExpandWidth(false));
+        _seedInput = GUILayout.TextField(_seedInput, 11, GUILayout.Width(95));
+        if (GUILayout.Button("Generate Group"))
+        {
+            if (int.TryParse(_enemyCountInput, out int count) && int.TryParse(_seedInput, out int seed))
+            {
+                CEnemy requiredEnemy = _requiredEnemyOption == 0 ? null : _randomGroupSource.RandomEnemyPrefabs[_requiredEnemyOption - 1];
+                if (_requiredEnemyOption == 0 || (requiredEnemy != null && requiredEnemy.EnemyData != null))
+                {
+                    TryGenerateGroup(count, seed, requiredEnemy);
+                }
+                else if (_status != null)
+                {
+                    _status.text = "Required enemy is missing. Previous group kept.";
+                }
+            }
+            else if (_status != null)
+            {
+                _status.text = "Enter an enemy count and an integer seed.";
+            }
+        }
+        GUILayout.EndHorizontal();
+
+        if (_generatedGroup != null && _groupIndex != GENERATED_GROUP_INDEX
+            && GUILayout.Button("Use Generated Group"))
+        {
+            _groupIndex = GENERATED_GROUP_INDEX;
+            Refresh();
+        }
+        GUILayout.EndArea();
     }
 }
