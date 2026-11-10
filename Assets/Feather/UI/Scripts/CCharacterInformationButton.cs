@@ -5,17 +5,12 @@ using UnityEngine;
 public class CCharacterInformationButton : MonoBehaviour
 {
     #region Inspector
-    [Header("캐릭터 정보 아이콘 버튼")]
-    [SerializeField] private GameObject _relationshipsInforma;
-    [SerializeField] private GameObject _combatSkillsButton;
-    [SerializeField] private GameObject _conditionsButton;
-    [SerializeField] private GameObject _storyButton;
+    [Header("캐릭터 정보창")]
+    [SerializeField] private GameObject _characterInfoTilte;
+    
 
-    [Header("캐릭터 정보 창")]
-    [SerializeField] private GameObject _relsInformations;              // Rels : Relationships
-    [SerializeField] private GameObject _cmbSklInformations;            // CmbSkl : Combat Skills
-    [SerializeField] private GameObject _cndInformations;               // CND : Conditions 
-    [SerializeField] private GameObject _styInformations;               // STY : Story
+
+
     #endregion
     void Start()
     {
@@ -24,25 +19,16 @@ public class CCharacterInformationButton : MonoBehaviour
 
     void Update()
     {
-        
+        InputQ();
     }
 
-    #region Icon Button
-    public void OnClickRelationshipsBtn()    // 관계 아이콘버튼
+    #region Q Input
+    public void InputQ()
     {
-        Debug.Log("Rel Icon Button눌림");
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("Q 눌림");
+        }
     }
-    public void OnClickCombatSkillsBtn()    // 전투기술 아이콘버튼
-    {
-        Debug.Log("CbS Icon Button눌림");
-    }
-    public void OnClickConditionsBtn()    // 상태 아이콘버튼
-    {
-        Debug.Log("Cdt Icon Button눌림");
-    }
-    public void OnClickStoryBtn()    // 이야기 아이콘버튼
-    {
-        Debug.Log("Sty Icon Button눌림");
-    } 
     #endregion
 }
