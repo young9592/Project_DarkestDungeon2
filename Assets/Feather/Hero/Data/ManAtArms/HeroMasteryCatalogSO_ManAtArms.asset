@@ -16,110 +16,111 @@ MonoBehaviour:
   - _id: maa.crush
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 8146b6833e2446840957d746a4d6e4f8, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3c532f4079c445d5a3f7e2971f28a3a2, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 40e2de71e948f58468ca86e815138077, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 4-6; CRIT 5%"
-    _masteredReference: "DMG 5-7; CRIT 5%"
-    _remainingEffects: "none in configured basic effects"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: DMG 4-6; CRIT 5%
+    _masteredReference: DMG 5-7; CRIT 5%
+    _remainingEffects: none in configured basic effects
   - _id: maa.rampart
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 59dc5dcfae1a0684cb60502b2f8c65bd, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 7e20f4af98054d07939050aaf0072ed7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 8f9eed7849f5e854b8ece4d49c35a790, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 5%"
-    _remainingEffects: "movement, Daze, Combo Stun"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: DMG 3-5; CRIT 5%
+    _masteredReference: DMG 4-6; CRIT 5%
+    _remainingEffects: movement, Daze, Combo Stun
   - _id: maa.defender
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5aa77621179604c41bdd91c3fa4a008b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 9db459c9d8a5417ba3e31da47a85ed5b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 39fdb00cec5d384478ca727acf39a11a, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Guarded 2; self Block 2"
-    _masteredReference: "Guarded 3; self Block+ 2"
-    _remainingEffects: "guard redirection, cooldown, three-token cap"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: Guarded 2; self Block 2
+    _masteredReference: Guarded 3; self Block+ 2
+    _remainingEffects: guard redirection, cooldown, three-token cap
   - _id: maa.bolster
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 9a3b4507d7cf16e4b9084b45a2e58ee4, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 74b21d047cb949a69ad223c831ca8f8e, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 5e6316214a05d3d4bb37f64c21e46f50, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Stress 5+: recover 1, caster and ally"
-    _masteredReference: "Stress 5+: recover 2, caster and ally"
-    _remainingEffects: "cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: 'Stress 5+: recover 1, caster and ally'
+    _masteredReference: 'Stress 5+: recover 2, caster and ally'
+    _remainingEffects: cooldown
   - _id: maa.holdtheline
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 6a9d61d2019098e4f89485594724e3e0, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 4aeee3d15020423f9c8fde6fc99f2e6b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 45c332a42878f5f4d9520270bb579fb0, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 3-6; CRIT 10%"
-    _masteredReference: "DMG 4-7; CRIT 10%"
-    _remainingEffects: "movement, Combo Stun"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: DMG 3-6; CRIT 10%
+    _masteredReference: DMG 4-7; CRIT 10%
+    _remainingEffects: movement, Combo Stun
   - _id: maa.bellow
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: a7ded087f0764e44f8a5db11e69b1e9b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 95c2a8e0ba064a49a537db9430d0ccd6, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3b9d78c3c063e6c46a3a3b87db9a840a, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Remove Riposte; speed -2"
-    _masteredReference: "Remove Riposte/Crit; speed -3"
-    _remainingEffects: "critical chance; speed debuff, cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: Remove Riposte; speed -2
+    _masteredReference: Remove Riposte/Crit; speed -3
+    _remainingEffects: critical chance; speed debuff, cooldown
   - _id: maa.retribution
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: a9624f22000e32f45bdae798895dcd72, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: fa333717200c4c9990660712f8272354, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 1806306c2be0f774eae6db502dec4b76, type: 2}
     _cost: 1
     _isAvailable: 0
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Riposte 2, Taunt 2; cooldown 2"
-    _masteredReference: "Riposte 2, Taunt 2; cooldown 1"
-    _remainingEffects: "automatic Riposte, cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: Riposte 2, Taunt 2; cooldown 2
+    _masteredReference: Riposte 2, Taunt 2; cooldown 1
+    _remainingEffects: automatic Riposte, cooldown
   - _id: maa.command
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: fa5c3667fd9ed3248ae639f6543ba978, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 674691a96d644e328886e40a6c6f0dd7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f6133fc02dbad8147aed7c269721a261, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Remove Blind; Strength 1"
-    _masteredReference: "Remove Blind; Strength 2"
-    _remainingEffects: "cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: Remove Blind; Strength 1
+    _masteredReference: Remove Blind; Strength 2
+    _remainingEffects: cooldown
   - _id: maa.standfast
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: b8ca58b9258e74942931991c1f1e4764, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 5892ce6c28d84512ada5a8bd5741fbe4, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cca22f81bd5328a49bba5932baa7e4fc, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Block 2, Taunt 2; turn-start Block"
-    _masteredReference: "Block+ 2, Taunt 2; turn-start Block"
-    _remainingEffects: "turn-start Block renewal, cooldown"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: Block 2, Taunt 2; turn-start Block
+    _masteredReference: Block+ 2, Taunt 2; turn-start Block
+    _remainingEffects: turn-start Block renewal, cooldown
   - _id: maa.courageousabandon
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 921ac2e2eb4dc1349afc9b76785b9019, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 092d77050da74f87981d67920dce0b97, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 542b462ce60a79349b711d9ed4ff4a68, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 6-8; CRIT 10%"
-    _masteredReference: "DMG 8-10; CRIT 20%"
-    _remainingEffects: "Block requirement, Block multiplier, piercing, Execution, Block lockout"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: DMG 6-8; CRIT 10%
+    _masteredReference: DMG 8-10; CRIT 20%
+    _remainingEffects: Block requirement, Block multiplier, piercing, Execution,
+      Block lockout
   - _id: maa.strategicwithdrawal
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 380be3d38ce60f140b45327e8cdb6c91, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: ea13016a8d1e4dde97bc1bae62dadb43, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 938c885f227d5e24b9f998628abfb285, type: 2}
     _cost: 1
     _isAvailable: 1
-    _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 3-6; CRIT 5%"
-    _masteredReference: "DMG 4-7; CRIT 10%"
-    _remainingEffects: "movement, Combo, cooldown, Death Door token"
+    _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
+    _baseReference: DMG 3-6; CRIT 5%
+    _masteredReference: DMG 4-7; CRIT 10%
+    _remainingEffects: movement, Combo, cooldown, Death Door token
