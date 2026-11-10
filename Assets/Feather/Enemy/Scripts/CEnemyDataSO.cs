@@ -31,6 +31,7 @@ public class CEnemyDataSO : CEntityDataSO
     [Tooltip("공통 스킬 목록에 있는 스킬의 선택 규칙입니다. 설정하지 않은 스킬은 체력 제한 없이 비중 1로 선택합니다.")]
     [SerializeField] private List<CEnemySkillRule> _skillRules = new List<CEnemySkillRule>();
     [SerializeField] private EEnemyTargetSelection _targetSelection;
+    [SerializeField] private CSkillDataSO _comboPrioritySkill;
 
     [Header("Starting Token")]
     [SerializeField] private EEffectType _startingToken;
@@ -75,6 +76,10 @@ public class CEnemyDataSO : CEntityDataSO
     public EEnemyTargetSelection TargetSelection
     {
         get { return _targetSelection; }
+    }
+    public CSkillDataSO ComboPrioritySkill
+    {
+        get { return _comboPrioritySkill; }
     }
     public int FormationSize
     {
