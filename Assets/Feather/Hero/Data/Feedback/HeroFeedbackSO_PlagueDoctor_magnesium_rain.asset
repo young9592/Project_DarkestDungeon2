@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf66d92403c42d4a8e67325c5dae37d, type: 3}
   m_Name: HeroFeedbackSO_PlagueDoctor_magnesium_rain
   m_EditorClassIdentifier: 
-  _launch: {fileID: 7547255364365835765, guid: e271e8b466ebb0542aba4b0e5319e44c, type: 3}
-  _projectile: {fileID: 6673185229491056850, guid: 8e0ee19199f4a32429a036a3595c5dfc, type: 3}
-  _impact: {fileID: 8374093124602036726, guid: 828f22f802f33fd45bdf7a57649b7a75, type: 3}
-  _releaseTime: 0.1
+  _launch: {fileID: 0}
+  _projectile: {fileID: 0}
+  _impact: {fileID: 5954133522041461428, guid: b011241c1adfb0347a12ec00af91c461, type: 3}
+  _playGroupImpactOnRelease: 1
+  _releaseTime: 0
   _shotCount: 1
   _shotSpacing: 0.15
   _arcHeight: 0.004
