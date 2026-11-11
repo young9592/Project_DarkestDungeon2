@@ -214,6 +214,12 @@ public class CPlayer : CEntity
         return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayAttack(skill);
     }
 
+    public bool TryQueueRipostePresentation()
+    {
+        return isActiveAndEnabled && !IsDead && !IsDeathPresented
+            && _actionAnimation != null && _actionAnimation.TryQueueRiposte();
+    }
+
     public bool CanPlayHitPresentation()
     {
         return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayHit();
