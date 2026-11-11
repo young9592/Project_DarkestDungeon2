@@ -162,7 +162,13 @@ public class CEnemyAI : MonoBehaviour
         // 다른 스킬이 없으면 이동이 막힌 공격도 선택할 수 있게 둠
         if (usableSkills.Count == 0) usableSkills = blockedSkills;
         // 대상 수가 스킬 선택 확률에 영향 주지 않게 스킬을 먼저 고름
-        if (previousSkill != null && usableSkills.Contains(previousSkill)
+        CSkillDataSO comboSkill = _enemy.EnemyData.ComboPrioritySkill;
+        List<CEntity> comboTargets = usableSkills.Contains(comboSkill) ? GetComboTargets(comboSkill) : null;
+        if (comboTargets != null && comboTargets.Count > 0)
+        {
+            _plannedSkill = comboSkill;
+        }
+        else if (previousSkill != null && usableSkills.Contains(previousSkill)
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, previousSkill, _enemy.CurrentHp) > 0)
         {
             _plannedSkill = previousSkill;
@@ -182,7 +188,8 @@ public class CEnemyAI : MonoBehaviour
                 _enemy.CurrentHp, _enemy.CurrentRank, hasAlly, allyInFront);
         }
         if (_plannedSkill == null) return false;
-        List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
+        List<CEntity> targets = comboTargets != null && comboTargets.Count > 0
+            ? comboTargets : CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
         if (targets.Count == 0) return false;
         _plannedTarget = targets[Random.Range(0, targets.Count)];
         EEnemyTargetSelection selection = _enemy.EnemyData.TargetSelection;
@@ -209,7 +216,27 @@ public class CEnemyAI : MonoBehaviour
             && (IsExecuting || _enemy.GetRemainingSkillCooldown(_plannedSkill) == 0)
             && (IsExecuting || ArePlannedTargetsValid())
             && (_hasRequestedAction || !ShouldReplaceBlockedSkill())
+            && (_hasRequestedAction || IsExecuting || !ShouldPreferComboTarget())
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, _plannedSkill, _enemy.CurrentHp) > 0;
+    }
+
+    private bool ShouldPreferComboTarget()
+    {
+        CSkillDataSO skill = _enemy.EnemyData.ComboPrioritySkill;
+        if (skill == null || !_enemy.GetSkillCandidates().Contains(skill)
+            || CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, skill, _enemy.CurrentHp) <= 0
+            || IsPreferredMovementBlocked(skill)) return false;
+        if (_plannedSkill == skill && _plannedTarget.TokenManager.HasToken(EEffectType.Combo)) return false;
+
+        return GetComboTargets(skill).Count > 0;
+    }
+
+    private List<CEntity> GetComboTargets(CSkillDataSO skill)
+    {
+        // 도발과 은신을 적용한 대상 중에서만 콤보를 확인함
+        List<CEntity> targets = CEnemyTargetFilter.GetTargets(skill, _heroes);
+        targets.RemoveAll(target => !target.TokenManager.HasToken(EEffectType.Combo));
+        return targets;
     }
 
     private bool CanSelectSkill(CSkillDataSO skill)

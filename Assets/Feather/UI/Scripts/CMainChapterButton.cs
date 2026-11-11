@@ -86,7 +86,7 @@ public class CMainChapterButton : MonoBehaviour
         Debug.Log("처음 타이틀 화면(고해,왕국,모드)");
     }
 
-    public void OnClickExitTitle()
+    public void OnClickExitTitle()          // 게임 종료 아이콘 버튼 눌림
     {
         if (_exitTitle != null)
         {

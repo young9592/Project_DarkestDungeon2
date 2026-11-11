@@ -395,15 +395,18 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool ResumePreview(int groupIndex)
     {
+        if (_groups == null || groupIndex < 0 || groupIndex >= _groups.Length) return false;
+        return ResumePreview(_groups[groupIndex]);
+    }
+
+    public bool ResumePreview(CEnemyGroupSO group)
+    {
         if (!_isOpen
             || !_isPreviewSuspended
             || _activeParty == null
             || !_activeParty.TryValidate(out _)
-            || _groups == null
-            || groupIndex < 0
-            || groupIndex >= _groups.Length
-            || _groups[groupIndex] == null
-            || !_groups[groupIndex].TryValidate(out _))
+            || group == null
+            || !group.TryValidate(out _))
         {
             return false;
         }
@@ -420,7 +423,7 @@ public class CHeroPartyTest : MonoBehaviour
             _presentationRaycaster.enabled = true;
         }
 
-        if (!TryLoadParty(_activeParty) || !SwitchGroup(groupIndex))
+        if (!TryLoadParty(_activeParty) || !SwitchGroup(group))
         {
             SuspendPreview();
             return false;
@@ -537,18 +540,15 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool SwitchGroup(int index)
     {
-        if (!_isOpen
-            || IsPreparing
-            || IsBusy
-            || _groups == null
-            || index < 0
-            || index >= _groups.Length
-            || !_groupTest.TryLoadGroup(_groups[index]))
-        {
-            return false;
-        }
+        if (_groups == null || index < 0 || index >= _groups.Length) return false;
+        return SwitchGroup(_groups[index]);
+    }
 
-        _activeGroup = _groups[index];
+    private bool SwitchGroup(CEnemyGroupSO group)
+    {
+        if (!_isOpen || IsPreparing || IsBusy || !_groupTest.TryLoadGroup(group)) return false;
+
+        _activeGroup = group;
         return RefreshHeroSelection();
     }
 

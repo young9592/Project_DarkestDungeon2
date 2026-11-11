@@ -72,6 +72,10 @@ MonoBehaviour:
     _attackState: Base Layer.Attack
     _completionState: Base Layer.AttackPose
     _feedback: {fileID: 11400000, guid: c5e9a2434af52fd4da6cea18dc67ae27, type: 2}
+  - _skill: {fileID: 11400000, guid: df3bfebaf4ce4ffab46ec48a620fa6d5, type: 2}
+    _attackState: Base Layer.Attack
+    _completionState: Base Layer.AttackPose
+    _feedback: {fileID: 0}
 --- !u!114 &2773864869183926169
 MonoBehaviour:
   m_ObjectHideFlags: 0

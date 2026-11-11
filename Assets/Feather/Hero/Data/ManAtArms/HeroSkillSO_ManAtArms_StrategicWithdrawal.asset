@@ -20,9 +20,9 @@ MonoBehaviour:
   _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
-  - {fileID: 11400000, guid: c01bfa8131a22cf4899c3528a8061006, type: 2}
-  - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
   - {fileID: 11400000, guid: 0a27bd191d020af4e8180f00aec446ad, type: 2}
+  - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
+  - {fileID: 11400000, guid: c01bfa8131a22cf4899c3528a8061006, type: 2}
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
