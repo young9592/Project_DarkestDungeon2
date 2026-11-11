@@ -117,7 +117,7 @@ public class CHeroParty : MonoBehaviour
             }
         }
     }
-
+    // 엔티티의 랭크 정렬
     public void SortRank()
     {
         for (int i = 0; i < 4; i++)
@@ -205,6 +205,7 @@ public class CHeroParty : MonoBehaviour
         }
         return true;
     }
+    // 변경된 랭크에 맞게 랭크 리스트 딕셔너리 업데이트
     public void UpdateCurrentRank()
     {
         _rankList.Clear();
@@ -227,6 +228,7 @@ public class CHeroParty : MonoBehaviour
             }
         }
     }
+    // 자리 이동 시 정렬
     public void RankChange(CPlayer hero, ERank rank)
     {
         // 영웅의 현재 위치

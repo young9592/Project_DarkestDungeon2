@@ -32,7 +32,7 @@ public class CCombatCameraManager : MonoBehaviour
     #region Inspector
 
     [Header("Connect")]
-    [SerializeField] private CBasicCombatManager _combatManager;
+    [SerializeField] private CCombatManager _combatManager;
     [SerializeField] private CCombatUI _combatUI;
     [SerializeField] private Camera _camera;
     [SerializeField] private CCombatFloatingMessageManager _messageManager;

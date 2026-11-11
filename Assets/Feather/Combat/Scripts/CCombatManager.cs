@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CBasicCombatManager : MonoBehaviour
+public class CCombatManager : MonoBehaviour
 {
     #region Enum
     // 라운드 상태

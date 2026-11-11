@@ -11,7 +11,7 @@ public class CCombatDebugMenu : MonoBehaviour
     [SerializeField] private CCombatFloatingMessageManager _messageManager;
 
     [Header("Debug Menu")]
-    [SerializeField] private CBasicCombatManager _combatManager;
+    [SerializeField] private CCombatManager _combatManager;
 
     [SerializeField] private GameObject _debugRoot;
     [SerializeField] private TMP_Dropdown _selectEntity;

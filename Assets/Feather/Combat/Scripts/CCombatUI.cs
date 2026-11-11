@@ -12,7 +12,7 @@ public class CCombatUI : MonoBehaviour
     [SerializeField] private Canvas _canvas;
 
     [Header("CombatMaanger")]
-    [SerializeField] private CBasicCombatManager _combatManager;
+    [SerializeField] private CCombatManager _combatManager;
 
     [Header("Combat Panel")]
     [SerializeField] private GameObject _combatFrontPanel;

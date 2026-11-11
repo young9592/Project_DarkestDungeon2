@@ -32,9 +32,9 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_target == null)
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _target))
         {
-            CPrint.Warn("Target과의 연결이 끊겼습니다.");
+            enabled = false;
             return;
         }
 
@@ -43,9 +43,9 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_target == null)
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _target))
         {
-            CPrint.Warn("Target과의 연결이 끊겼습니다.");
+            enabled = false;
             return;
         }
 
@@ -54,9 +54,9 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (_target == null)
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _target))
         {
-            CPrint.Warn("Target과의 연결이 끊겼습니다.");
+            enabled = false;
             return;
         }
 
