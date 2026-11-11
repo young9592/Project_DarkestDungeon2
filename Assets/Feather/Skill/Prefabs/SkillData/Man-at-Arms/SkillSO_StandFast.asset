@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
   m_Name: SkillSO_StandFast
   m_EditorClassIdentifier: 
-  _skillName: "\uBC29\uBCBD \uACE0\uC218"
+  _skillName: "\uAD73\uAC74\uD788 \uBC84\uD2F0\uAE30"
   _skillIcon: {fileID: 0}
   _useableRank: 7
-  _targetableRank: -1
+  _targetableRank: 7
   _isGroupTarget: 0
-  _cooldown: 0
+  _cooldown: 2
   _effectList:
+  - {fileID: 11400000, guid: 7ce6f6987fb92c048b48add81dbf0a32, type: 2}
   - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
-  - {fileID: 11400000, guid: 6038d85edf3f5f24ab3308d459e00f61, type: 2}

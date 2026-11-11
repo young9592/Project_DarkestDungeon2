@@ -10,21 +10,28 @@ public class CEnemy : CEntity
     [SerializeField] private CEnemyAttackAnimation _attackAnimation;
     [Header("Runtime Status")]
     [SerializeField] private int _currentHp;
+    private int _remainingDeathArmor;
     [SerializeField] private ERank _currentRank = ERank.Rank1;
     private bool _isInitialized;
     private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
     private bool _isStartingTurn;
-    private readonly List<CEntity> _requestedTargets = new List<CEntity>();
     private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
+    private readonly List<CEntity> _requestedTargets = new List<CEntity>();
     private CEnemyFormationMovement _formationMovement;
     private CSkillDataSO _movementSkill;
     private CSkillDataSO _selfTokenSkill;
-    public CEnemyFormationMovement FormationMovement { get { return _formationMovement; } }
+    public CEnemyFormationMovement FormationMovement
+    {
+        get { return _formationMovement; }
+    }
     private CEntityActionExecution _actionExecution;
     private CEnemySkillFeedback _skillFeedback;
     private CEntityDeathPresentation _deathPresentation;
     private CEnemyCorpse _corpse;
-    public CEnemyCorpse Corpse { get { return _corpse; } }
+    public CEnemyCorpse Corpse
+    {
+        get { return _corpse; }
+    }
     public CEntityDeathPresentation DeathPresentation
     {
         get { return _deathPresentation; }
@@ -48,6 +55,10 @@ public class CEnemy : CEntity
     public int CurrentHp
     {
         get { return _currentHp; }
+    }
+    public int RemainingDeathArmor
+    {
+        get { return _remainingDeathArmor; }
     }
 
     public override CEntityDataSO EntityData
@@ -103,6 +114,7 @@ public class CEnemy : CEntity
     private void Initialize()
     {
         _currentHp = _enemyData.MaxHealth;
+        _remainingDeathArmor = _enemyData.DeathDoorCount;
         if (!CSkillRankUtility.IsSingleRank(_currentRank))
         {
             _currentRank = ERank.Rank1;
@@ -123,7 +135,7 @@ public class CEnemy : CEntity
 
     private void ApplySkillSelfToken(CSkillDataSO skill)
     {
-        if (skill == null || _isDead || _currentHp <= 0 || IsDeathPresented) return;
+        if (skill == null || _isDead || IsDeathPresented) return;
         CEnemySkillRule rule = _enemyData.GetSkillRule(skill);
         if (rule == null || rule.SelfToken == EEffectType.None || rule.SelfTokenCount <= 0) return;
         TokenManager.AddToken(rule.SelfToken, rule.SelfTokenCount);
@@ -132,10 +144,19 @@ public class CEnemy : CEntity
     // 효과 처리와 별도로 연출 상태 제공
     public bool IsPresentationBusy
     {
+        get { return IsCharacterPresentationBusy || (_formationMovement != null && _formationMovement.IsMoving); }
+    }
+
+    internal bool IsCharacterPresentationBusy
+    {
         get { return (_attackAnimation != null && _attackAnimation.IsBusy)
             || (_skillFeedback != null && _skillFeedback.IsBusy)
-            || (_deathPresentation != null && _deathPresentation.IsBusy)
-            || (_formationMovement != null && _formationMovement.IsMoving); }
+            || (_deathPresentation != null && _deathPresentation.IsBusy); }
+    }
+
+    public bool HasStartedSkillEffects
+    {
+        get { return _actionExecution != null && _actionExecution.HasStartedEffects; }
     }
 
     public bool IsAttackPresentationPlaying
@@ -234,7 +255,7 @@ public class CEnemy : CEntity
     private void LateUpdate()
     {
         if (ActionTarget is CPlayer hero && hero.IsDeathPresented
-            && (!hero.DeathPresentation.WasHitReacting || IsAttackPresentationPlaying))
+            && (!hero.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !HasStartedSkillEffects)))
         {
             CancelAction();
         }
@@ -242,7 +263,8 @@ public class CEnemy : CEntity
 
     protected override bool CanBeginAction()
     {
-        return !IsDeathPresented && _isInitialized && _currentHp > 0 && _attackAnimation != null && _attackAnimation.isActiveAndEnabled && !IsPresentationBusy;
+        return !_isDead && !IsDeathPresented && _isInitialized && _attackAnimation != null
+            && _attackAnimation.isActiveAndEnabled && !IsPresentationBusy;
     }
 
     protected override bool CanCompleteAction()
@@ -253,12 +275,16 @@ public class CEnemy : CEntity
 
     protected override bool CanExecuteRequestedAction()
     {
-        if (!(_currentHp > 0 && ActionSkill != null
-            && GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
-            && CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) > 0)) return false;
+        if (_isDead || ActionSkill == null
+            || !GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
+            || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0) return false;
 
         CEnemyAI ai = GetComponent<CEnemyAI>();
-        if (ai != null && ai.PlannedSkill == ActionSkill && !ai.IsPlanValid()) return false;
+        if (ai != null && ai.PlannedSkill == ActionSkill)
+        {
+            ai.RefreshRequestedGroupTargets();
+            if (!ai.IsPlanValid()) return false;
+        }
 
         for (int i = 0; i < _requestedTargets.Count; i++)
         {
@@ -267,6 +293,12 @@ public class CEnemy : CEntity
                 || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
         }
         return true;
+    }
+
+    internal void UpdateRequestedGroupTargets(IReadOnlyList<CEntity> targets)
+    {
+        _requestedTargets.Clear();
+        _requestedTargets.AddRange(targets);
     }
 
     protected override bool TryStartActionPresentation()
@@ -287,47 +319,6 @@ public class CEnemy : CEntity
         _movementSkill = null;
     }
 
-    public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets, CEntity primaryTarget, CSkillDataSO skill)
-    {
-        if (targets == null || targets.Count == 0 || primaryTarget == null
-            || !CanRequestSkillAction(primaryTarget, primaryTarget.CurrentRank, skill)
-            || (!skill.IsGroupTarget && targets.Count != 1))
-        {
-            return false;
-        }
-
-        bool hasPrimaryTarget = false;
-        for (int i = 0; i < targets.Count; i++)
-        {
-            CEntity target = targets[i];
-            if (!CEnemyTargetFilter.IsAvailable(target)
-                || !CSkillRankUtility.CanTargetSkill(skill, target.CurrentRank)) return false;
-            if (target == primaryTarget) hasPrimaryTarget = true;
-        }
-        if (!hasPrimaryTarget) return false;
-        _requestedTargets.Clear();
-        for (int i = 0; i < targets.Count; i++)
-        {
-            if (!_requestedTargets.Contains(targets[i])) _requestedTargets.Add(targets[i]);
-        }
-
-        // 같은 요청이 다시 들어오지 않게 막기
-        _isRequestingSkill = true;
-        try
-        {
-            if (!NotifyActionRequest(primaryTarget, skill))
-            {
-                OnSkillActionRequested?.Invoke(this, primaryTarget, skill);
-            }
-        }
-        finally
-        {
-            _isRequestingSkill = false;
-        }
-
-        return true;
-    }
-
     private bool StartAttackPresentation()
     {
         if (!TryPlayAttack(ActionSkill)) return false;
@@ -340,6 +331,10 @@ public class CEnemy : CEntity
     {
         _selfTokenSkill = null;
         _movementSkill = null;
+        if (_formationMovement != null)
+        {
+            _formationMovement.CancelPendingRequests();
+        }
         if (_formationMovement != null && _formationMovement.IsMoving) _formationMovement.SnapToRank();
         if (_attackAnimation != null)
         {
@@ -349,11 +344,22 @@ public class CEnemy : CEntity
 
     public bool TrySetRank(ERank rank)
     {
-        if (!CSkillRankUtility.IsSingleRank(rank))
+        if (_formationMovement != null && _formationMovement.IsConfigured)
+        {
+            return _formationMovement.TryQueueRank(rank);
+        }
+        return SetRankImmediate(rank);
+    }
+
+    internal bool SetRankImmediate(ERank rank)
+    {
+        if (!CSkillRankUtility.IsSingleRank(rank) || _enemyData == null)
         {
             return false;
         }
 
+        int index = rank == ERank.Rank1 ? 0 : rank == ERank.Rank2 ? 1 : rank == ERank.Rank3 ? 2 : 3;
+        if (index + _enemyData.FormationSize > 4) return false;
         _currentRank = rank;
         return true;
     }
@@ -456,6 +462,53 @@ public class CEnemy : CEntity
         return TryRequestSkillAction(new CEntity[] { target }, target, skill);
     }
 
+    public bool TryRequestSkillAction(IReadOnlyList<CEntity> targets, CEntity primaryTarget, CSkillDataSO skill)
+    {
+        if (targets == null || targets.Count == 0 || primaryTarget == null
+            || !CanRequestSkillAction(primaryTarget, primaryTarget.CurrentRank, skill)
+            || (!skill.IsGroupTarget && targets.Count != 1))
+        {
+            return false;
+        }
+
+        bool hasPrimaryTarget = false;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CEntity target = targets[i];
+            if (!CEnemyTargetFilter.IsAvailable(target)
+                || !CSkillRankUtility.CanTargetSkill(skill, target.CurrentRank)) return false;
+            if (target == primaryTarget)
+            {
+                hasPrimaryTarget = true;
+            }
+        }
+        if (!hasPrimaryTarget) return false;
+        _requestedTargets.Clear();
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!_requestedTargets.Contains(targets[i]))
+            {
+                _requestedTargets.Add(targets[i]);
+            }
+        }
+
+        // 같은 요청이 다시 들어오지 않게 막음
+        _isRequestingSkill = true;
+        try
+        {
+            if (!NotifyActionRequest(primaryTarget, skill))
+            {
+                OnSkillActionRequested?.Invoke(this, primaryTarget, skill);
+            }
+        }
+        finally
+        {
+            _isRequestingSkill = false;
+        }
+
+        return true;
+    }
+
     public bool TryPlayAttack(CSkillDataSO skill)
     {
         if (!_isInitialized || !isActiveAndEnabled || _attackAnimation == null)
@@ -503,17 +556,23 @@ public class CEnemy : CEntity
 
         if (_currentHp == 0)
         {
+            if (_remainingDeathArmor > 0)
+            {
+                _remainingDeathArmor--;
+                _isDeathsDoor = true;
+                return;
+            }
             _isDead = true;
             _isDeathsDoor = false;
             _deathPresentation.TryPlayConfirmedDeath();
             return;
         }
-
+        _isDeathsDoor = false;
     }
 
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented
             || statusEffect == null || statusEffect.Data == null)
         {
             return;
@@ -539,7 +598,7 @@ public class CEnemy : CEntity
             case EEffectType.DodgePlus:
             case EEffectType.Block:
             case EEffectType.BlockPlus:
-            case EEffectType.Guarded:
+            case EEffectType.Guard:
             case EEffectType.Strength:
             case EEffectType.Speed:
             case EEffectType.Stealth:
@@ -574,6 +633,10 @@ public class CEnemy : CEntity
     public override void ResetEntityState()
     {
         if (!_isInitialized || _enemyData == null) return;
+        if (_formationMovement != null)
+        {
+            _formationMovement.CancelPendingRequests();
+        }
 
         if (_corpse != null) _corpse.ResetEntityState();
 
@@ -584,15 +647,16 @@ public class CEnemy : CEntity
         _isDead = false;
         _isDeathsDoor = false;
         _currentHp = _enemyData.MaxHealth;
+        _remainingDeathArmor = _enemyData.DeathDoorCount;
         TokenManager.ClearAllTokens();
+        ApplyStartingToken();
         CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
         if (criticalState != null) criticalState.ClearModifiers();
-        ApplyStartingToken();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
     }
 
-    // 턴 진행 주체가 턴 시작마다 한 번 호출합니다. 행동 재시도에는 호출하지 않습니다.
+    // 턴 시작에만 한 번 호출함. 행동 재시도 때는 호출 안 함
     public bool OnTurnStart()
     {
         return OnTurnStart(false);
@@ -600,7 +664,7 @@ public class CEnemy : CEntity
 
     public bool OnTurnStart(bool isExtraAction)
     {
-        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0
+        if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented
             || _isStartingTurn || IsActionActive || IsPresentationBusy)
         {
             return false;
@@ -638,7 +702,7 @@ public class CEnemy : CEntity
                 }
             }
 
-            if (!isActiveAndEnabled || _isDead || IsDeathPresented || _currentHp <= 0) return false;
+            if (!isActiveAndEnabled || _isDead || IsDeathPresented) return false;
             return !TokenManager.ConsumeToken(EEffectType.Stun);
         }
         finally
@@ -658,6 +722,19 @@ public class CEnemy : CEntity
             {
                 total += effect.Damage;
             }
+        }
+        return (int)Math.Min(int.MaxValue, total);
+    }
+
+    public int ConsumeRemainingDotDamage()
+    {
+        long total = 0;
+        for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null || !IsDotEffect(effect.EffectType)) continue;
+            if (effect.RemainingTurns > 0) total += (long)effect.Damage * effect.RemainingTurns;
+            _activeStatusEffects.RemoveAt(i);
         }
         return (int)Math.Min(int.MaxValue, total);
     }

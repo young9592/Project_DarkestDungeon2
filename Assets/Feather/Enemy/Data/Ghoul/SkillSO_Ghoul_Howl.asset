@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_Ghoul_Howl
+  m_EditorClassIdentifier: 
+  _skillName: Ghoul / Howl
+  _skillIcon: {fileID: 21300000, guid: c14c1975d70f43919ea56a1f3cee2c0e, type: 3}
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 1
+  _cooldown: 2
+  _effectList:
+  - {fileID: 11400000, guid: 2d4f829e221640eb8359b040e6f09dfe, type: 2}

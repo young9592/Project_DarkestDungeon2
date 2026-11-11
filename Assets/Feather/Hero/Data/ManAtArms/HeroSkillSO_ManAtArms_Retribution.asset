@@ -14,16 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Retribution
   _skillIcon: {fileID: 21300000, guid: 667e0fbea84d56f4eb36f11d5554f7c0, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: 7
+  _targetableRank: 7
+  _isGroupTarget: 0
   _cooldown: 2
   _effectList:
-  - {fileID: 11400000, guid: 2682e8e19961aaa40a240910a09f4fe1, type: 2}
+  - {fileID: 11400000, guid: 6038d85edf3f5f24ab3308d459e00f61, type: 2}
+  - {fileID: 11400000, guid: 281311f591233c84e89a6b0c16105aa3, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 2
   _startState: Base Layer.OriginalAntic_ManAtArms_Retribution
   _endState: Base Layer.OriginalRecover_ManAtArms_Retribution
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_yell
   _selectionHoldState: Base Layer.SourceReady_yell
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Retribution

@@ -28,7 +28,7 @@ public enum EEffectType
     DodgePlus,          // 회피+      [ 다음 공격 75% 회피 ]
     Block,              // 방어       [ 다음 공격피해 50% 감소 ]
     BlockPlus,          // 방어+      [ 다음 공격피해 75% 감소 ]
-    Guarded,            // 보호       [ 아군 대신 피격 ]
+    Guard,            // 보호       [ 아군 대신 피격 ]
     Strength,           // 힘         [ 공격 피해 50% 증가 ]
     Speed,              // 속도       [ 행동 속도 증가 ]
     Stealth,            // 은신       [ 대상 지정 공격에 영향을 줌 ]

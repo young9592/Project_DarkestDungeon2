@@ -14,15 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Cause of Death
   _skillIcon: {fileID: 21300000, guid: c47030b82c730624c8ad1b18d52e860d, type: 3}
-  _useableRank: 7
+  _useableRank: 14
   _targetableRank: 7
+  _isGroupTarget: 0
   _cooldown: 2
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: cd9de734b6f65ed4fba86ca58fe4aee0, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_cause_of_death
   _endState: Base Layer.OriginalRecover_PlagueDoctor_cause_of_death
   _presentationNote: Shares the knife motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_knifeslash
   _selectionHoldState: Base Layer.SourceReady_knifeslash
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_cause_of_death

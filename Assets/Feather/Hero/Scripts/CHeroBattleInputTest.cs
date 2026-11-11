@@ -20,7 +20,10 @@ public class CHeroBattleInputTest : MonoBehaviour
     private int _receivedCount;
     private string _lastRequest = "No request yet";
 
-    public int ReceivedCount { get { return _receivedCount; } }
+    public int ReceivedCount
+    {
+        get { return _receivedCount; }
+    }
 
     private void OnEnable()
     {
@@ -86,7 +89,7 @@ public class CHeroBattleInputTest : MonoBehaviour
         if (!_isOpen) return;
         _receivedCount++;
         _lastRequest = skill.SkillName + " -> " + target.name + (_hero.ActionTargets.Count > 1 ? " + " + (_hero.ActionTargets.Count - 1) : "");
-        // 입력 테스트에서는 대상 피해 없이 Hero 공격 연출을 시작합니다.
+        // 입력 테스트에서는 대상 피해 없이 Hero 공격 연출을 시작함
         actor.TryStartRequestedAction();
     }
 

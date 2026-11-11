@@ -17,7 +17,10 @@ public class CHeroCriticalState : MonoBehaviour
         get
         {
             int total = 0;
-            for (int i = 0; i < _modifiers.Count; i++) total += _modifiers[i].Amount;
+            for (int i = 0; i < _modifiers.Count; i++)
+            {
+                total += _modifiers[i].Amount;
+            }
             return total;
         }
     }

@@ -117,7 +117,10 @@ public class CHeroSkillSO : CSkillDataSO
         get { return _requiresCorpse; }
     }
 
-    public bool ClearsCorpses { get { return _clearsCorpses || _requiresCorpse; } }
+    public bool ClearsCorpses
+    {
+        get { return _clearsCorpses || _requiresCorpse; }
+    }
 
     public bool CanChooseTarget(CEntity actor, CEntity target)
     {
@@ -136,15 +139,20 @@ public class CHeroSkillSO : CSkillDataSO
 
         if ((actor is CPlayer heroActor && heroActor.IsDeathPresented)
             || (target is CPlayer heroTarget && heroTarget.IsDeathPresented)
-            || (target is CEnemy enemyTarget && enemyTarget.IsDeathPresented))
+            || (target is CEnemy enemyTarget && (enemyTarget.IsDead || enemyTarget.IsDeathPresented)))
         {
             return false;
         }
 
-        CEnemy enemy = target as CEnemy;
-        if (enemy != null && enemy.CurrentHp <= 0)
+        if (EffectList != null)
         {
-            return false;
+            for (int i = 0; i < EffectList.Count; i++)
+            {
+                CEffectSO effect = EffectList[i];
+                if (effect == null || !(effect.Strategy is CHeroScienceHealStrategy)) continue;
+                if (!(target is CPlayer scienceTarget) || scienceTarget.HeroData == null
+                    || (long)scienceTarget.CurrentHp * 2 >= scienceTarget.HeroData.MaxHealth) return false;
+            }
         }
 
         // 사망 시스템 연결 전까지 시체 대상 스킬 사용 막기

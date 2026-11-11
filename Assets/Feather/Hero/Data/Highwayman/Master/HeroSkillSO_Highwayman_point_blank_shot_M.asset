@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_Highwayman_point_blank_shot_M
+  m_EditorClassIdentifier: 
+  _skillName: Point Blank Shot
+  _skillIcon: {fileID: 21300000, guid: f2551bfb4c5cac54a9d1774e970b85bc, type: 3}
+  _useableRank: 1
+  _targetableRank: 1
+  _isGroupTarget: 0
+  _cooldown: 1
+  _effectList:
+  - {fileID: 11400000, guid: 6d6639c31d1c36b499ada2b8f8854bde, type: 2}
+  - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
+  - {fileID: 11400000, guid: 29df23ca04db09a4d856b7b767e9a75d, type: 2}
+  - {fileID: 11400000, guid: c01bfa8131a22cf4899c3528a8061006, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 0ddba46bdfb0e0448892f6dae642d4a7, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_Highwayman_point_blank_shot
+  _endState: Base Layer.OriginalRecover_Highwayman_point_blank_shot
+  _presentationNote: Shares the hip-shot motion.
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_hipshot
+  _selectionHoldState: Base Layer.SourceReady_hipshot
+  _executionStartState: Base Layer.OriginalAction_Highwayman_point_blank_shot
+  _feedback: {fileID: 11400000, guid: 47025efd39a553545a300d090ff1f35d, type: 2}

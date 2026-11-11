@@ -14,17 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Highway Robbery
   _skillIcon: {fileID: 21300000, guid: d2aca686604dbee4791be6d08eae28f8, type: 3}
-  _useableRank: 14
+  _useableRank: 7
   _targetableRank: 7
+  _isGroupTarget: 0
   _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: 31208d68842142df8e5b3f472d21ab41, type: 2}
-  - {fileID: 11400000, guid: 9f198b4a9d424b3090964a37ccffcef0, type: 2}
+  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
+  - {fileID: 11400000, guid: f36dcb01d0cc8b247af546f3b8334a62, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_highway_robbery
   _endState: Base Layer.OriginalRecover_Highwayman_highway_robbery
   _presentationNote: Uses the aim-pose motion from the supplied model.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_advance
   _selectionHoldState: Base Layer.SourceReady_advance
   _executionStartState: Base Layer.OriginalAction_Highwayman_highway_robbery

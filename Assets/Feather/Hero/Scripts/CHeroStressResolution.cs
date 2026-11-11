@@ -18,9 +18,18 @@ public class CHeroStressResolution : MonoBehaviour
     private int _requestId;
     private EHeroStressResult _result;
 
-    public bool IsPending { get { return _isPending; } }
-    public bool HasResult { get { return _hasResult; } }
-    public int RequestId { get { return _requestId; } }
+    public bool IsPending
+    {
+        get { return _isPending; }
+    }
+    public bool HasResult
+    {
+        get { return _hasResult; }
+    }
+    public int RequestId
+    {
+        get { return _requestId; }
+    }
 
     public event Action<CPlayer> OnRequested;
     public event Action<CPlayer, EHeroStressResult> OnApplied;
@@ -70,6 +79,7 @@ public class CHeroStressResolution : MonoBehaviour
 
         _result = result;
         _hasResult = true;
+        if (result == EHeroStressResult.Resolute && _animation != null) _animation.PlayResolute();
         return true;
     }
 
@@ -97,6 +107,7 @@ public class CHeroStressResolution : MonoBehaviour
         _hasResult = false;
         _requestId++;
         if (cancelAnimation && _animation != null) _animation.CancelMeltdown();
+        if (_animation != null) _animation.EndResolute();
         return true;
     }
 
@@ -108,6 +119,7 @@ public class CHeroStressResolution : MonoBehaviour
         _hasResult = false;
         _requestId++;
         if (cancelAnimation && _animation != null) _animation.CancelMeltdown();
+        if (_animation != null) _animation.EndResolute();
     }
 
     private bool CanReceiveResult(int requestId)

@@ -20,9 +20,18 @@ public class CHeroRunStateTest : MonoBehaviour
         get { return Path.Combine(Application.persistentDataPath, "TempLee", "hero-run.json"); }
     }
 
-    public string Notice { get { return _notice; } }
-    public CHeroRunStateService Service { get { return _service; } }
-    public bool IsExpeditionActive { get { return _isExpeditionActive; } }
+    public string Notice
+    {
+        get { return _notice; }
+    }
+    public CHeroRunStateService Service
+    {
+        get { return _service; }
+    }
+    public bool IsExpeditionActive
+    {
+        get { return _isExpeditionActive; }
+    }
 
     private void Awake()
     {
@@ -34,10 +43,17 @@ public class CHeroRunStateTest : MonoBehaviour
     public bool TryStartExpedition()
     {
         if (!CanUseParty()) return false;
+        CHeroMasteryTest mastery = GetComponent<CHeroMasteryTest>();
+        if (mastery != null) mastery.CancelTraining();
         if (!_service.TryStartRun(Guid.NewGuid().ToString("N"), _party.Heroes, out _notice)) return false;
         _isExpeditionActive = true;
         _expeditionParty = _party.ActiveParty;
         _closedPartyState = null;
+        if (mastery != null && !mastery.TryPrepareHeroes(_party.Heroes, _service.RunId))
+        {
+            _notice = "New expedition saved. Mastery reset could not be saved.";
+            return false;
+        }
         BeginBattle();
         SelectSurvivor();
         _notice = "New expedition: full HP, zero stress, all Heroes alive.";

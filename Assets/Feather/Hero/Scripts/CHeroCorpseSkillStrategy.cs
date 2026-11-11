@@ -10,10 +10,22 @@ public class CHeroCorpseSkillStrategy : CEffectStrategy
     [SerializeField, Min(0)] private int _stealthTokens;
     [SerializeField, Min(0)] private int _stressRecovery;
 
-    public bool ResetsCooldowns { get { return _resetCooldowns; } }
-    public int HealPercent { get { return _healPercent; } }
-    public int StealthTokens { get { return _stealthTokens; } }
-    public int StressRecovery { get { return _stressRecovery; } }
+    public bool ResetsCooldowns
+    {
+        get { return _resetCooldowns; }
+    }
+    public int HealPercent
+    {
+        get { return _healPercent; }
+    }
+    public int StealthTokens
+    {
+        get { return _stealthTokens; }
+    }
+    public int StressRecovery
+    {
+        get { return _stressRecovery; }
+    }
 
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
@@ -30,7 +42,7 @@ public class CHeroCorpseSkillStrategy : CEffectStrategy
         CheckAccuracy(context, effectData.BaseChance);
         if (corpse == null || !corpse.TryRemove()) return;
 
-        // 제거는 명중 여부와 무관하며 실제 제거에 성공한 경우에만 보상합니다.
+        // 제거는 명중 여부와 무관하며 실제 제거에 성공한 경우에만 보상함
         if (_resetCooldowns) hero.SkillUses.ClearCooldowns();
         if (!context.IsHit || _healPercent <= 0) return;
 

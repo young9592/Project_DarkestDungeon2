@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class CPortraitImage : MonoBehaviour
+public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     #region Inspector
+    [Header("Connect")]
+    [SerializeField] private CBasicCombatManager _combatManager;
+
+    [Header("Turn Entity Id")]
+    [SerializeField] private int _id;
+
     [Header("Turn Portrait Image")]
     [SerializeField] private Image _entityPortrait;
     [SerializeField] private Image _markerImage;
@@ -26,7 +33,7 @@ public class CPortraitImage : MonoBehaviour
     #endregion
 
     #region Field
-
+    private CIndicator _connectIndicator = null;
     private RectTransform _rectTr;
     private Coroutine _coroutine;
     private int _prevTurnorder = 0;
@@ -45,8 +52,12 @@ public class CPortraitImage : MonoBehaviour
         _rectTr = GetComponent<RectTransform>();
     }
     // 초상화 초기화
-    public void Initialize(int index, EEntityType entityType, Sprite sprite)
+    public void Initialize(CBasicCombatManager combatManager, int id, int index, EEntityType entityType, Sprite sprite)
     {
+        _combatManager = combatManager;
+
+        _id = id;
+
         index = Mathf.Clamp(index, 0, _turnOrderPos.Count - 1);
 
         _currentTurnorder = index;
@@ -107,14 +118,68 @@ public class CPortraitImage : MonoBehaviour
 
     private IEnumerator CoLerpMove(Vector2 vec)
     {
-        float endTime = Time.time + _moveTime;
+        float nextTime = Time.time + _moveTime;
 
-        while (endTime > Time.time)
+        while (nextTime > Time.time)
         {
-            _rectTr.anchoredPosition = Vector2.Lerp(_rectTr.anchoredPosition, vec, Mathf.Max(1f - (endTime - Time.time) / _moveTime));
+            _rectTr.anchoredPosition = Vector2.Lerp(_rectTr.anchoredPosition, vec, Mathf.Clamp01(1f - (nextTime - Time.time) / _moveTime));
 
             yield return null;
         }
         _coroutine = null;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_connectIndicator == null)
+        {
+            CEntity entity = null;
+
+            // 동일한 개체인가?
+            for (int i = 0; i < _combatManager.EntityList.Count; i++)
+            {
+                if (_id == _combatManager.EntityList[i].id)
+                {
+                    entity = _combatManager.EntityList[i].entity;
+                }
+            }
+
+            _combatManager.EntitiesIndicator.TryGetValue(entity, out CIndicator indicator);
+
+            _connectIndicator = indicator;
+        }
+
+        // 여전히 null인지 확인후 실행
+        if (_connectIndicator != null)
+        {
+            _connectIndicator.EnterPortrait();
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (_connectIndicator == null)
+        {
+            CEntity entity = null;
+
+            // 동일한 개체인가?
+            for (int i = 0; i < _combatManager.EntityList.Count; i++)
+            {
+                if (_id == _combatManager.EntityList[i].id)
+                {
+                    entity = _combatManager.EntityList[i].entity;
+                }
+            }
+
+            _combatManager.EntitiesIndicator.TryGetValue(entity, out CIndicator indicator);
+
+            _connectIndicator = indicator;
+        }
+
+        // 여전히 null인지 확인후 실행
+        if (_connectIndicator != null)
+        {
+            _connectIndicator.ExitPortrait();
+        }
     }
 }

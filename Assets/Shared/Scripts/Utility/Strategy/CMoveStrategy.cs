@@ -17,6 +17,13 @@ public class CMoveStrategy : CEffectStrategy
             return;
         }
 
+        if (context.Target.TokenManager != null &&
+            context.Target.TokenManager.ConsumeToken(EEffectType.Immobilize))
+        {
+            CPrint.Log($"[{context.Target.name}] 이동 불가 토큰 보유로 인해 위치 이동이 차단되었습니다.");
+            return;
+        }
+
         if (context.Target != context.Caster && context.Target.EntityData != null)
         {
             int moveResist = context.Target.EntityData.Resistance.Move;
@@ -33,38 +40,83 @@ public class CMoveStrategy : CEffectStrategy
         int currentRankIndex = RankToIndex(context.Target.CurrentRank);
         if (currentRankIndex == 0) return;
 
-        int nextRankIndex = currentRankIndex;
+        int targetRankIndex = currentRankIndex;
 
         if (effectData.Damage == 0)
         {
             int offset = Random.Range(0, 2) == 0 ? -1 : 1;
-            nextRankIndex = Mathf.Clamp(currentRankIndex + offset, 1, 4);
-            if (nextRankIndex == currentRankIndex)
+            targetRankIndex = Mathf.Clamp(currentRankIndex + offset, 1, 4);
+            if (targetRankIndex == currentRankIndex)
             {
-                nextRankIndex = currentRankIndex == 1 ? 2 : currentRankIndex - 1;
+                targetRankIndex = currentRankIndex == 1 ? 2 : currentRankIndex - 1;
             }
         }
         else
         {
-            nextRankIndex = Mathf.Clamp(currentRankIndex + effectData.Damage, 1, 4);
+            targetRankIndex = Mathf.Clamp(currentRankIndex + effectData.Damage, 1, 4);
         }
 
-        ERank newRank = IndexToRank(nextRankIndex);
-        bool moved = false;
+        if (targetRankIndex == currentRankIndex) return;
 
-        if (context.Target is CPlayer player)
-        {
-            moved = player.TrySetRank(newRank);
-        }
-        else if (context.Target is CEnemy enemy)
-        {
-            moved = enemy.TrySetRank(newRank);
-        }
+        int stepDirection = targetRankIndex > currentRankIndex ? 1 : -1;
+        int steps = Mathf.Abs(targetRankIndex - currentRankIndex);
 
-        if (moved)
+        CEntity[] allEntities = Object.FindObjectsByType<CEntity>(FindObjectsSortMode.None);
+
+        for (int s = 0; s < steps; s++)
         {
-            CPrint.Log($"[열 이동] [{context.Target.name}] 위치 변경 : Rank {currentRankIndex} → Rank {nextRankIndex}");
+            int nextStepIndex = currentRankIndex + stepDirection;
+            ERank currentRankEnum = IndexToRank(currentRankIndex);
+            ERank nextRankEnum = IndexToRank(nextStepIndex);
+
+            CEntity occupant = FindOccupantAtRank(allEntities, context.Target, nextRankEnum);
+
+            if (occupant != null)
+            {
+                if (occupant.TokenManager != null &&
+                    occupant.TokenManager.ConsumeToken(EEffectType.Immobilize))
+                {
+                    CPrint.Log($"[열 이동 중단] {nextStepIndex}열에 있는 [{occupant.name}]가 이동 불가 상태라 밀어낼 수 없습니다.");
+                    break;
+                }
+
+                TryChangeEntityRank(occupant, currentRankEnum);
+                CPrint.Log($"[진형 연동] [{occupant.name}] 밀려남: Rank {nextStepIndex} → Rank {currentRankIndex}");
+            }
+
+            if (TryChangeEntityRank(context.Target, nextRankEnum))
+            {
+                CPrint.Log($"[열 이동] [{context.Target.name}] 위치 변경 : Rank {currentRankIndex} → Rank {nextStepIndex}");
+                currentRankIndex = nextStepIndex;
+            }
+            else
+            {
+                break;
+            }
         }
+    }
+
+    private CEntity FindOccupantAtRank(CEntity[] allEntity, CEntity movingEntity, ERank targetRank)
+    {
+        for (int i = 0; i < allEntity.Length; i++)
+        {
+            CEntity candidate = allEntity[i];
+            if (candidate == null || candidate == movingEntity || candidate.IsDead) continue;
+            if (!candidate.isActiveAndEnabled) continue;
+
+            if (candidate.EntityType == movingEntity.EntityType && candidate.CurrentRank == targetRank)
+            {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    private bool TryChangeEntityRank(CEntity entity, ERank newRank)
+    {
+        if (entity is CPlayer player) return player.TrySetRank(newRank);
+        if (entity is CEnemy enemy) return enemy.TrySetRank(newRank);
+        return false;
     }
 
     private int RankToIndex(ERank rank)

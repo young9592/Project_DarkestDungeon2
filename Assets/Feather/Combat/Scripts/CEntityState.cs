@@ -6,6 +6,13 @@ using UnityEngine.UI;
 // 현재 엔티티 상태
 public class CEntityState : MonoBehaviour
 {
+    public enum EEntityState
+    {
+        None,
+        Hero,
+        Enemy,
+        Enemy_Corpse
+    }
     #region Inspector
     [Header("Connect Object")]
     [SerializeField] private Canvas _canvas;
@@ -20,7 +27,8 @@ public class CEntityState : MonoBehaviour
     [SerializeField] private GameObject _burn;
 
     [Header("Entity Health")]
-    [SerializeField] private Image _HealthFill;
+    [SerializeField] private Image _hpFill;
+    [SerializeField] private RectTransform _hpBarBackgroundTr;
 
     [Header("Entity Stress")]
     [SerializeField] private GameObject _stressRoot;
@@ -54,9 +62,10 @@ public class CEntityState : MonoBehaviour
     private RectTransform _rectTr;
     private RectTransform _canvasRectTr;
     // 초기 연결상태 확인
-    private bool _initEntity = false;
-    private bool _doFollow = false;
-    private bool _isHero = false;
+    private bool _init = false;
+    private bool _doFollow = true;
+    private int _formationSize = 1;
+    private EEntityState _entityType = EEntityState.None;
     private bool _rendererCameraMode = false;
     #endregion
 
@@ -69,6 +78,8 @@ public class CEntityState : MonoBehaviour
 
     private void Awake()
     {
+        // Null check
+
         _rectTr = GetComponent<RectTransform>();
     }
 
@@ -96,36 +107,77 @@ public class CEntityState : MonoBehaviour
 
 
         bool isHero = entity is CPlayer;
-
-        _isHero = isHero;
+        bool isEnemy = entity is CEnemy;
+        bool isEnemyCorpse = entity is CEnemyCorpse;
 
         SetHealth();
 
         if (isHero)
         {
             SetStress();
+            _entityType = EEntityState.Hero;
+            _formationSize = 1;
         }
-        else
+        else if (isEnemy)
         {
             _stressRoot.SetActive(false);
+            _entityType = EEntityState.Enemy;
+
+            _formationSize = (entity as CEnemy).EnemyData.FormationSize;
+
+            if (_formationSize > 1)
+            {
+                _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
+            }
+
+        }
+        else if (isEnemyCorpse)
+        {
+            _stressRoot.SetActive(false);
+            _entityType = EEntityState.Enemy_Corpse;
+
+            _formationSize = (entity as CEnemy).Corpse.FormationSize;
+
+            if (_formationSize > 1)
+            {
+                _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
+            }
         }
 
         MoveState();
 
-
-        _initEntity = true;
+        _init = true;
     }
+    // 시체 상태가 되었을 때 재연결
+    public void ReConnect(GameObject target)
+    {
+        _init = false;
 
+        // 랜더링 모드 체크
+        if (_canvas.renderMode == RenderMode.ScreenSpaceCamera)
+        {
+            _rendererCameraMode = true;
+        }
+
+        if (target.TryGetComponent<CEnemyCorpse>(out CEnemyCorpse enemyCorpse))
+        {
+            _entityType = EEntityState.Enemy_Corpse;
+            _target = target;
+        }
+
+        SetTotalState();
+
+        _init = true;
+    }
     private void Update()
     {
-        if (!_initEntity)
+        if (!_init)
         {
             return;
         }
 
         CheckEntityDead();
         FollowEntity();
-        // 원래는 부분지점에서 처리하고 있었으나 부분별로 처리되는 곳이 있어서 추가
         SetTotalState();
     }
 
@@ -137,12 +189,22 @@ public class CEntityState : MonoBehaviour
             return;
         }
 
+        if (_target == null)
+        {
+            return;
+        }
+
         MoveState();
     }
 
     // 이동
     private void MoveState()
     {
+        if (_target == null)
+        {
+            return;
+        }
+
         Vector3 targetVec = _target.transform.position;
         Vector3 bottomPos = _target.transform.position + _offset;
         Vector3 screenPos = Camera.main.WorldToScreenPoint(bottomPos);
@@ -154,7 +216,7 @@ public class CEntityState : MonoBehaviour
 
     private void CheckEntityDead()
     {
-        if (!_initEntity)
+        if (!_init)
         {
             return;
         }
@@ -182,25 +244,35 @@ public class CEntityState : MonoBehaviour
     {
         foreach (EEffectType effect in Enum.GetValues(typeof(EEffectType)))
         {
-            if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn)
+            if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn || effect == EEffectType.Stress)
             {
-                if (_isHero)
+                if (_entityType == EEntityState.Hero)
                 {
                     CPlayer hero = _target.GetComponent<CPlayer>();
                     int haveDamage = hero.GetTotalDotDamageByType(effect);
                     bool remainDot = (haveDamage > 0 ? true : false);
                     SetEffect(effect, remainDot);
                 }
-                else
+                else if (_entityType == EEntityState.Enemy)
                 {
                     CEnemy enemy = _target.GetComponent<CEnemy>();
                     int haveDamage = enemy.GetTotalDotDamageByType(effect);
                     bool remainDot = (haveDamage > 0 ? true : false);
                     SetEffect(effect, remainDot);
                 }
+                // 시체는 현재 효과를 받을 수 없기 때문에 모두 꺼주기
+                else if (_entityType == EEntityState.Enemy_Corpse)
+                {
+                    SetEffect(effect, false);
+                }
             }
             else
             {
+                if (_entityType == EEntityState.Enemy_Corpse)
+                {
+                    SetEffect(effect, false);
+                }
+
                 CEntity entity = _target.GetComponent<CEntity>();
                 SetEffect(effect, entity.TokenManager.HasToken(effect));
             }
@@ -212,17 +284,37 @@ public class CEntityState : MonoBehaviour
         CEntity entity = _target.GetComponent<CEntity>();
 
         int maxHealth = entity.EntityData.MaxHealth;
-        int curHealth = _isHero ? ((CPlayer)entity).CurrentHp : ((CEnemy)entity).CurrentHp;
+        int curHealth = 0;
+
+        switch (_entityType)
+        {
+            case EEntityState.None:
+                break;
+            case EEntityState.Hero:
+                curHealth = ((CPlayer)entity).CurrentHp;
+                break;
+            case EEntityState.Enemy:
+                curHealth = ((CEnemy)entity).CurrentHp;
+                break;
+            case EEntityState.Enemy_Corpse:
+                curHealth = ((CEnemyCorpse)entity).CurrentHp;
+                break;
+        }
+
 
         float Clamp01 = Mathf.Clamp01((float)curHealth / (float)maxHealth);
-        _HealthFill.fillAmount = Clamp01;
+        _hpFill.fillAmount = Clamp01;
     }
     public void SetStress()
     {
         CEntity entity = _target.GetComponent<CEntity>();
 
         // 적은 스트레스가 없다.
-        if (!_isHero)
+        if (_entityType == EEntityState.Enemy)
+        {
+            return;
+        }
+        if (_entityType == EEntityState.Enemy_Corpse)
         {
             return;
         }
@@ -265,7 +357,7 @@ public class CEntityState : MonoBehaviour
             case EEffectType.BlockPlus:
                 _blockPlus.SetActive(toggle);
                 break;
-            case EEffectType.Guarded:
+            case EEffectType.Guard:
                 _guard.SetActive(toggle);
                 break;
             case EEffectType.Strength:
@@ -300,6 +392,9 @@ public class CEntityState : MonoBehaviour
                 break;
             case EEffectType.Combo:
                 _combo.SetActive(toggle);
+                break;
+            case EEffectType.Stress:
+                _horror.SetActive(toggle);
                 break;
             default:
                 break;

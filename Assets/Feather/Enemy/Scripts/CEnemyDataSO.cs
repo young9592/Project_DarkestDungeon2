@@ -22,7 +22,8 @@ public class CEnemyDataSO : CEntityDataSO
     [Header("Corpse")]
     [SerializeField] private bool _leavesCorpse = true;
     [SerializeField] private Sprite _corpseSprite;
-    [Tooltip("원작의 적별 시체 체력을 확인하기 전까지 사용하는 테스트 값입니다.")]
+    [SerializeField] private CEnemyCorpseDataSO _corpseData;
+    [Tooltip("시체 전용 데이터가 없는 적의 기본 체력입니다.")]
     [SerializeField, Min(1)] private int _corpseHealth = 5;
     [SerializeField, Min(0.001f)] private float _corpseWidth = 0.014f;
 
@@ -30,6 +31,7 @@ public class CEnemyDataSO : CEntityDataSO
     [Tooltip("공통 스킬 목록에 있는 스킬의 선택 규칙입니다. 설정하지 않은 스킬은 체력 제한 없이 비중 1로 선택합니다.")]
     [SerializeField] private List<CEnemySkillRule> _skillRules = new List<CEnemySkillRule>();
     [SerializeField] private EEnemyTargetSelection _targetSelection;
+    [SerializeField] private CSkillDataSO _comboPrioritySkill;
 
     [Header("Starting Token")]
     [SerializeField] private EEffectType _startingToken;
@@ -39,16 +41,45 @@ public class CEnemyDataSO : CEntityDataSO
 
     #region Property
     public int DeathDoorCount => _deathDoorCount;
-    public EEffectType StartingToken { get { return _startingToken; } }
-    public int StartingTokenCount { get { return Mathf.Max(0, _startingTokenCount); } }
-    public int ExtraStartingTokenChance { get { return Mathf.Clamp(_extraStartingTokenChance, 0, 100); } }
-    public bool LeavesCorpse { get { return _leavesCorpse; } }
-    public Sprite CorpseSprite { get { return _corpseSprite; } }
-    public int CorpseHealth { get { return Mathf.Max(1, _corpseHealth); } }
-    public float CorpseWidth { get { return Mathf.Max(0.001f, _corpseWidth); } }
+    public EEffectType StartingToken
+    {
+        get { return _startingToken; }
+    }
+    public int StartingTokenCount
+    {
+        get { return Mathf.Max(0, _startingTokenCount); }
+    }
+    public int ExtraStartingTokenChance
+    {
+        get { return Mathf.Clamp(_extraStartingTokenChance, 0, 100); }
+    }
+    public bool LeavesCorpse
+    {
+        get { return _leavesCorpse; }
+    }
+    public Sprite CorpseSprite
+    {
+        get { return _corpseSprite; }
+    }
+    public CEnemyCorpseDataSO CorpseData
+    {
+        get { return _corpseData; }
+    }
+    public int CorpseHealth
+    {
+        get { return _corpseData != null ? _corpseData.MaxHealth : Mathf.Max(1, _corpseHealth); }
+    }
+    public float CorpseWidth
+    {
+        get { return Mathf.Max(0.001f, _corpseWidth); }
+    }
     public EEnemyTargetSelection TargetSelection
     {
         get { return _targetSelection; }
+    }
+    public CSkillDataSO ComboPrioritySkill
+    {
+        get { return _comboPrioritySkill; }
     }
     public int FormationSize
     {
@@ -60,7 +91,7 @@ public class CEnemyDataSO : CEntityDataSO
     {
         if (skill == null || _skillRules == null) return null;
 
-        // 같은 스킬을 중복 설정하면 목록에서 먼저 나온 규칙을 사용합니다.
+        // 같은 스킬을 중복 설정하면 목록에서 먼저 나온 규칙을 사용함
         for (int i = 0; i < _skillRules.Count; i++)
         {
             CEnemySkillRule rule = _skillRules[i];

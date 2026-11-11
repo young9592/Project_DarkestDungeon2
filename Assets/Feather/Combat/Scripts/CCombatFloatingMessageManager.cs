@@ -17,7 +17,6 @@ public class CCombatFloatingMessageManager : MonoBehaviour
     [SerializeField] private GameObject _deathStampPrefab;
     [SerializeField] private GameObject _stressPrefab;
     [SerializeField] private GameObject _stressHealPrefab;
-    [SerializeField] private GameObject _targetPrefab;
     #endregion
 
 
@@ -48,7 +47,7 @@ public class CCombatFloatingMessageManager : MonoBehaviour
             case CCombatFloatingIcon.IconType.None:
                 break;
             case CCombatFloatingIcon.IconType.DeathStemp:
-                iconPrefab = _deathStampPrefab; 
+                iconPrefab = _deathStampPrefab;
                 break;
             case CCombatFloatingIcon.IconType.Stress:
                 iconPrefab = _stressPrefab;
@@ -56,8 +55,6 @@ public class CCombatFloatingMessageManager : MonoBehaviour
             case CCombatFloatingIcon.IconType.StressHealing:
                 iconPrefab = _stressHealPrefab;
                 break;
-            case CCombatFloatingIcon.IconType.Turn:
-                iconPrefab = _targetPrefab;
                 break;
             default:
                 break;

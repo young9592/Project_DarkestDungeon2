@@ -14,16 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Courageous Abandon
   _skillIcon: {fileID: 21300000, guid: 04ee4ccec23976c4c94ad5cfa6aba2d0, type: 3}
-  _useableRank: 1
-  _targetableRank: 1
-  _cooldown: 0
+  _useableRank: 3
+  _targetableRank: 3
+  _isGroupTarget: 0
+  _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: 0e654f1227b44e96a72728f1cdf915d4, type: 2}
+  - {fileID: 11400000, guid: f4480241895173548b9646900d15f1b0, type: 2}
+  - {fileID: 11400000, guid: 0d00428a28e39ab42997fc341d0ccfcd, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_CourageousAbandon
   _endState: Base Layer.OriginalRecover_ManAtArms_CourageousAbandon
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_bash
   _selectionHoldState: Base Layer.SourceReady_bash
   _executionStartState: Base Layer.OriginalAction_ManAtArms_CourageousAbandon

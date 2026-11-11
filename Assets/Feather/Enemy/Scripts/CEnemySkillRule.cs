@@ -15,12 +15,27 @@ public class CEnemySkillRule
 {
     [SerializeField] private CSkillDataSO _skill;
     [SerializeField, Range(-3, 3)] private int _rankMovement;
-    public int RankMovement { get { return Mathf.Clamp(_rankMovement, -3, 3); } }
+    [SerializeField] private bool _preferAvailableMovement;
+    public bool PreferAvailableMovement
+    {
+        get { return _preferAvailableMovement && RankMovement != 0; }
+    }
+
+    public int RankMovement
+    {
+        get { return Mathf.Clamp(_rankMovement, -3, 3); }
+    }
     [Header("Self Token")]
     [SerializeField] private EEffectType _selfToken;
     [SerializeField, Min(0)] private int _selfTokenCount;
-    public EEffectType SelfToken { get { return _selfToken; } }
-    public int SelfTokenCount { get { return Mathf.Max(0, _selfTokenCount); } }
+    public EEffectType SelfToken
+    {
+        get { return _selfToken; }
+    }
+    public int SelfTokenCount
+    {
+        get { return Mathf.Max(0, _selfTokenCount); }
+    }
 
     [Tooltip("같이 선택할 수 있는 스킬 사이의 비중입니다. 0이면 자동 선택에서 제외합니다.")]
     [SerializeField, Range(0, 100)] private int _weight = 1;

@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EEnemyActionRequestResult
+{
+    Rejected,
+    Requested,
+    WaitingForPresentation,
+    NoAvailableAction
+}
+
 public class CEnemyAI : MonoBehaviour
 {
     private CEnemy _enemy;
@@ -12,11 +20,26 @@ public class CEnemyAI : MonoBehaviour
     private CSkillDataSO _retrySkill;
     private bool _hasRequestedAction;
 
-    public CSkillDataSO PlannedSkill { get { return _plannedSkill; } }
-    public CEntity PlannedTarget { get { return _plannedTarget; } }
-    public IReadOnlyList<CEntity> PlannedTargets { get { return _plannedTargets; } }
-    public IReadOnlyList<CEntity> HeroTargets { get { return _heroes; } }
-    public bool IsExecuting { get { return _hasRequestedAction && _enemy.ActionState == EEntityActionState.Executing; } }
+    public CSkillDataSO PlannedSkill
+    {
+        get { return _plannedSkill; }
+    }
+    public CEntity PlannedTarget
+    {
+        get { return _plannedTarget; }
+    }
+    public IReadOnlyList<CEntity> PlannedTargets
+    {
+        get { return _plannedTargets; }
+    }
+    public IReadOnlyList<CEntity> HeroTargets
+    {
+        get { return _heroes; }
+    }
+    public bool IsExecuting
+    {
+        get { return _hasRequestedAction && _enemy.ActionState == EEntityActionState.Executing; }
+    }
 
     private void Awake()
     {
@@ -48,14 +71,23 @@ public class CEnemyAI : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_plannedSkill == null) return;
+        if (_plannedSkill == null)
+        {
+            // 피격 중 비운 의도는 연출이 끝나면 다시 선택함
+            if (_retrySkill != null && _enemy.AttackAnimation != null && !_enemy.AttackAnimation.IsBusy)
+            {
+                RefreshPlan();
+            }
+            return;
+        }
         if (_hasRequestedAction)
         {
+            RefreshRequestedGroupTargets();
             if (!_enemy.IsActionActive) ClearPlan();
             else if (!IsPlanValid())
             {
                 bool finishingHit = _enemy.ActionState == EEntityActionState.Executing
-                    && !_enemy.IsAttackPresentationPlaying
+                    && (!_enemy.IsAttackPresentationPlaying || _enemy.HasStartedSkillEffects)
                     && _plannedTarget is CPlayer target && target.IsDeathPresented
                     && target.DeathPresentation.WasHitReacting;
                 if (!finishingHit)
@@ -82,10 +114,10 @@ public class CEnemyAI : MonoBehaviour
     public bool TryPlanAction(IReadOnlyList<CEntity> heroes, IReadOnlyList<CEnemy> allies)
     {
         if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented
-            || _enemy.AttackAnimation == null || _enemy.AttackAnimation.IsBusy || _hasRequestedAction
+            || _enemy.AttackAnimation == null || _hasRequestedAction
             || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
 
-        if (_enemy.CurrentHp <= 0)
+        if (_enemy.IsDead)
         {
             ClearPlan();
             return false;
@@ -109,21 +141,34 @@ public class CEnemyAI : MonoBehaviour
                 if (ally != null && ally != _enemy && !_allies.Contains(ally)) _allies.Add(ally);
             }
         }
-        // 유효한 의도는 다시 추첨하지 않습니다.
+        // 피격 중이어도 연출 후 다시 고를 수 있게 후보는 보관함
+        if (_enemy.AttackAnimation.IsBusy) return false;
+
+        // 유효한 의도는 다시 추첨하지 않음
         if (IsPlanValid()) return true;
         CSkillDataSO previousSkill = _plannedSkill != null ? _plannedSkill : _retrySkill;
         ClearPlan();
 
         List<CSkillDataSO> candidates = _enemy.GetSkillCandidates();
         List<CSkillDataSO> usableSkills = new List<CSkillDataSO>();
+        List<CSkillDataSO> blockedSkills = new List<CSkillDataSO>();
         for (int i = 0; i < candidates.Count; i++)
         {
             CSkillDataSO skill = candidates[i];
-            if (skill == null || usableSkills.Contains(skill)) continue;
-            if (CEnemyTargetFilter.GetTargets(skill, _heroes).Count > 0) usableSkills.Add(skill);
+            if (!CanSelectSkill(skill)) continue;
+            if (IsPreferredMovementBlocked(skill)) blockedSkills.Add(skill);
+            else usableSkills.Add(skill);
         }
-        // 대상 수 때문에 스킬의 비중이 커지지 않도록 스킬을 먼저 고릅니다.
-        if (previousSkill != null && usableSkills.Contains(previousSkill)
+        // 다른 스킬이 없으면 이동이 막힌 공격도 선택할 수 있게 둠
+        if (usableSkills.Count == 0) usableSkills = blockedSkills;
+        // 대상 수가 스킬 선택 확률에 영향 주지 않게 스킬을 먼저 고름
+        CSkillDataSO comboSkill = _enemy.EnemyData.ComboPrioritySkill;
+        List<CEntity> comboTargets = usableSkills.Contains(comboSkill) ? GetComboTargets(comboSkill) : null;
+        if (comboTargets != null && comboTargets.Count > 0)
+        {
+            _plannedSkill = comboSkill;
+        }
+        else if (previousSkill != null && usableSkills.Contains(previousSkill)
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, previousSkill, _enemy.CurrentHp) > 0)
         {
             _plannedSkill = previousSkill;
@@ -135,7 +180,7 @@ public class CEnemyAI : MonoBehaviour
             for (int i = 0; i < _allies.Count; i++)
             {
                 CEnemy ally = _allies[i];
-                if (!ally.isActiveAndEnabled || ally.IsDead || ally.IsDeathPresented || ally.CurrentHp <= 0) continue;
+                if (!ally.isActiveAndEnabled || ally.IsDead || ally.IsDeathPresented) continue;
                 hasAlly = true;
                 if ((int)ally.CurrentRank < (int)_enemy.CurrentRank) allyInFront = true;
             }
@@ -143,7 +188,8 @@ public class CEnemyAI : MonoBehaviour
                 _enemy.CurrentHp, _enemy.CurrentRank, hasAlly, allyInFront);
         }
         if (_plannedSkill == null) return false;
-        List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
+        List<CEntity> targets = comboTargets != null && comboTargets.Count > 0
+            ? comboTargets : CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
         if (targets.Count == 0) return false;
         _plannedTarget = targets[Random.Range(0, targets.Count)];
         EEnemyTargetSelection selection = _enemy.EnemyData.TargetSelection;
@@ -163,13 +209,61 @@ public class CEnemyAI : MonoBehaviour
     public bool IsPlanValid()
     {
         return _enemy != null && _enemy.isActiveAndEnabled && !_enemy.IsDeathPresented
-            && _enemy.CurrentHp > 0 && _plannedSkill != null
+            && !_enemy.IsDead && _plannedSkill != null
             && IsHeroAvailable(_plannedTarget) && _heroes.Contains(_plannedTarget)
             && (IsExecuting || CSkillRankUtility.CanTargetSkill(_plannedSkill, _plannedTarget.CurrentRank))
             && (IsExecuting || CEnemySkillFilter.GetCandidates(_enemy.EnemyData, _enemy.CurrentRank).Contains(_plannedSkill))
             && (IsExecuting || _enemy.GetRemainingSkillCooldown(_plannedSkill) == 0)
             && (IsExecuting || ArePlannedTargetsValid())
+            && (_hasRequestedAction || !ShouldReplaceBlockedSkill())
+            && (_hasRequestedAction || IsExecuting || !ShouldPreferComboTarget())
             && CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, _plannedSkill, _enemy.CurrentHp) > 0;
+    }
+
+    private bool ShouldPreferComboTarget()
+    {
+        CSkillDataSO skill = _enemy.EnemyData.ComboPrioritySkill;
+        if (skill == null || !_enemy.GetSkillCandidates().Contains(skill)
+            || CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, skill, _enemy.CurrentHp) <= 0
+            || IsPreferredMovementBlocked(skill)) return false;
+        if (_plannedSkill == skill && _plannedTarget.TokenManager.HasToken(EEffectType.Combo)) return false;
+
+        return GetComboTargets(skill).Count > 0;
+    }
+
+    private List<CEntity> GetComboTargets(CSkillDataSO skill)
+    {
+        // 도발과 은신을 적용한 대상 중에서만 콤보를 확인함
+        List<CEntity> targets = CEnemyTargetFilter.GetTargets(skill, _heroes);
+        targets.RemoveAll(target => !target.TokenManager.HasToken(EEffectType.Combo));
+        return targets;
+    }
+
+    private bool CanSelectSkill(CSkillDataSO skill)
+    {
+        return CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, skill, _enemy.CurrentHp) > 0
+            && CEnemyTargetFilter.GetTargets(skill, _heroes).Count > 0;
+    }
+
+    private bool IsPreferredMovementBlocked(CSkillDataSO skill)
+    {
+        CEnemySkillRule rule = _enemy.EnemyData.GetSkillRule(skill);
+        CEnemyFormationMovement movement = _enemy.FormationMovement;
+        return rule != null && rule.PreferAvailableMovement && movement != null && movement.IsConfigured
+            && !movement.CanMoveOffset(rule.RankMovement);
+    }
+
+    private bool ShouldReplaceBlockedSkill()
+    {
+        if (!IsPreferredMovementBlocked(_plannedSkill)) return false;
+
+        List<CSkillDataSO> candidates = _enemy.GetSkillCandidates();
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            CSkillDataSO skill = candidates[i];
+            if (skill != _plannedSkill && CanSelectSkill(skill) && !IsPreferredMovementBlocked(skill)) return true;
+        }
+        return false;
     }
 
     private bool ArePlannedTargetsValid()
@@ -177,36 +271,79 @@ public class CEnemyAI : MonoBehaviour
         List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
         if (!targets.Contains(_plannedTarget)) return false;
         if (!_plannedSkill.IsGroupTarget) return _plannedTargets.Count == 1;
-        if (targets.Count != _plannedTargets.Count) return false;
-        for (int i = 0; i < targets.Count; i++)
+        if (!_plannedTargets.Contains(_plannedTarget)
+            || (!_hasRequestedAction && targets.Count != _plannedTargets.Count)) return false;
+        for (int i = 0; i < _plannedTargets.Count; i++)
         {
-            if (!_plannedTargets.Contains(targets[i])) return false;
+            if (!targets.Contains(_plannedTargets[i])) return false;
         }
         return true;
     }
 
+    internal void RefreshRequestedGroupTargets()
+    {
+        if (!_hasRequestedAction || _enemy.ActionState != EEntityActionState.Requested
+            || _plannedSkill == null || !_plannedSkill.IsGroupTarget) return;
+
+        List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
+        if (!targets.Contains(_plannedTarget)) return;
+
+        // 예약 이후 빠진 대상만 제외함
+        int previousCount = _plannedTargets.Count;
+        for (int i = _plannedTargets.Count - 1; i >= 0; i--)
+        {
+            if (!targets.Contains(_plannedTargets[i])) _plannedTargets.RemoveAt(i);
+        }
+        if (_plannedTargets.Count != previousCount) _enemy.UpdateRequestedGroupTargets(_plannedTargets);
+    }
+
     private bool RefreshPlan()
     {
-        // 다시 선택할 때 보관한 후보 목록이 비워지지 않도록 복사합니다.
+        // 다시 선택할 때 보관한 후보 목록이 비워지지 않게 복사함
         return TryPlanAction(new List<CEntity>(_heroes), new List<CEnemy>(_allies));
     }
 
     public bool TryRequestPlannedAction()
     {
-        if (!isActiveAndEnabled || _hasRequestedAction || _enemy == null
-            || _enemy.ActionState != EEntityActionState.Selecting) return false;
-        if (!IsPlanValid())
+        return RequestPlannedAction() == EEnemyActionRequestResult.Requested;
+    }
+
+    public EEnemyActionRequestResult RequestPlannedAction()
+    {
+        if (!isActiveAndEnabled || _enemy == null
+            || !_enemy.isActiveAndEnabled || _enemy.IsDead || _enemy.IsDeathPresented
+            || _enemy.AttackAnimation == null)
         {
-            if (!RefreshPlan())
-            {
-                ClearPlan();
-                return false;
-            }
+            return EEnemyActionRequestResult.Rejected;
         }
+
+        // 이전 행동이 끝날 때까지 새 요청은 대기함
+        if (_enemy.ActionState == EEntityActionState.Executing)
+        {
+            return EEnemyActionRequestResult.WaitingForPresentation;
+        }
+
+        if (_hasRequestedAction || _enemy.ActionState != EEntityActionState.Selecting)
+        {
+            return EEnemyActionRequestResult.Rejected;
+        }
+
+        if (_enemy.IsPresentationBusy) return EEnemyActionRequestResult.WaitingForPresentation;
+
+        if (!IsPlanValid() && !RefreshPlan())
+        {
+            ClearPlan();
+            return EEnemyActionRequestResult.NoAvailableAction;
+        }
+
         _hasRequestedAction = true;
-        bool sent = _enemy.TryRequestSkillAction(_plannedTargets, _plannedTarget, _plannedSkill);
-        if (!sent) _hasRequestedAction = false;
-        return sent;
+        if (_enemy.TryRequestSkillAction(_plannedTargets, _plannedTarget, _plannedSkill))
+        {
+            return EEnemyActionRequestResult.Requested;
+        }
+
+        _hasRequestedAction = false;
+        return EEnemyActionRequestResult.Rejected;
     }
 
     public void CancelPlan()
@@ -217,7 +354,7 @@ public class CEnemyAI : MonoBehaviour
 
     private bool IsHeroAvailable(CEntity hero)
     {
-        // 체력이 0이어도 죽음의 문 상태일 수 있어서 체력만으로 제외하지 않습니다.
+        // 체력이 0이어도 죽음의 문 상태일 수 있어 체력만으로 제외하지 않음
         return CEnemyTargetFilter.IsAvailable(hero);
     }
 

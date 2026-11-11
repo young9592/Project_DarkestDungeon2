@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 // 배틀코어에서 스킬 정보를 넘겨받아 Effect들을 순차적으로 실행하고 결과를 반환해주는 매니저
 public class CEffectManager : MonoBehaviour
@@ -90,11 +89,25 @@ public class CEffectManager : MonoBehaviour
                     bool anyHit = false;
                     bool anyCrit = false;
                     bool anyCombo = false;
+
                     for (int i = 0; i < targetCount; i++)
                     {
                         if (contexts[i].IsHit) anyHit = true;
                         if (contexts[i].IsCrit) anyCrit = true;
-                        if (consumedComboInThisSkill[i]) anyCombo = true;
+                        if (effectData.Condition == EEffectCondition.TargetHasCombo && contexts[i].IsHit)
+                        {
+                            if (consumedComboInThisSkill[i] ||
+                                (targets[i] != null && targets[i].TokenManager != null && targets[i].TokenManager.ConsumeToken(EEffectType.Combo)))
+                            {
+                                consumedComboInThisSkill[i] = true;
+                                anyCombo = true;
+                                CPrint.Log($"[Combo 연계] 공격 대상 [{targets[i].name}]의 콤보 토큰 소모하여 [{effectData.Name}] 발동");
+                            }
+                        }
+                        else if (consumedComboInThisSkill[i])
+                        {
+                            anyCombo = true;
+                        }
                     }
 
                     CEffectContext selfContext = new CEffectContext(caster, caster)
@@ -156,7 +169,14 @@ public class CEffectManager : MonoBehaviour
                 return true;
             case EEffectCondition.TargetHasCombo:
                 if (!context.IsHit) return false;
-                if (consumedCombo || context.Target.TokenManager.ConsumeToken(EEffectType.Combo))
+                if (consumedCombo)
+                {
+                    return true;
+                }
+                if (context.Target != context.Caster &&
+                    context.Target != null &&
+                    context.Target.TokenManager != null &&
+                    context.Target.TokenManager.ConsumeToken(EEffectType.Combo))
                 {
                     consumedCombo = true;
                     CPrint.Log($"[Combo 연계] [{context.Target.name}]의 콤보 토큰 소모하여 [{effectData.Name}] 발동");
@@ -167,6 +187,8 @@ public class CEffectManager : MonoBehaviour
                 return context.IsHit && context.IsCrit;
             case EEffectCondition.CasterIsDeathsDoor:
                 return context.Caster != null && context.Caster.IsDeathsDoor;
+            case EEffectCondition.CasterHasStealth:
+                return context.Caster != null && context.Caster.TokenManager.HasToken(EEffectType.Stealth);
             default:
                 return true;
         }

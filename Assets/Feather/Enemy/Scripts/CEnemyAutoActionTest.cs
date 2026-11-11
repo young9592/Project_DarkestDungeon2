@@ -10,6 +10,8 @@ public class CEnemyAutoActionTest : MonoBehaviour
     [SerializeField] private GameObject _heroRoot;
     [SerializeField] private CPlayer[] _heroes;
     [SerializeField] private CHeroActionTest _heroTest;
+    [Header("Random Enemy Group")]
+    [SerializeField] private CEnemy[] _randomEnemyPrefabs;
 
     private readonly List<CEnemyAI> _actors = new List<CEnemyAI>();
     private bool _isOpen;
@@ -20,8 +22,14 @@ public class CEnemyAutoActionTest : MonoBehaviour
     private int _completed;
     private int _interrupted;
     private int _skipped;
+    private string _enemyCountInput = "3";
+    private string _seedInput = "1";
+    private string _groupMessage;
 
-    public IReadOnlyList<CEnemyAI> Actors { get { return _actors; } }
+    public IReadOnlyList<CEnemyAI> Actors
+    {
+        get { return _actors; }
+    }
 
     public bool OpenTest()
     {
@@ -43,6 +51,47 @@ public class CEnemyAutoActionTest : MonoBehaviour
         _groupTest.ShowControls = false;
         _heroRoot.SetActive(true);
         _isOpen = true;
+        _groupMessage = string.Empty;
+        BindActors();
+        return true;
+    }
+
+    public IReadOnlyList<CEnemy> RandomEnemyPrefabs
+    {
+        get { return _randomEnemyPrefabs; }
+    }
+
+    public bool TryGenerateGroup(int enemyCount, int seed, out CEnemyGroupSO group, CEnemy requiredEnemy = null)
+    {
+        return CEnemyGroupGenerator.TryGenerate(_randomEnemyPrefabs, enemyCount, seed, out group, requiredEnemy: requiredEnemy);
+    }
+
+    public bool TryLoadRandomGroup(int enemyCount, int seed)
+    {
+        if (!_isOpen || _routine != null) return false;
+        if (enemyCount < 1 || enemyCount > 4)
+        {
+            _groupMessage = "Enemy count must be 1 to 4.";
+            return false;
+        }
+
+        if (!_groupTest.TryLoadGeneratedGroup(_randomEnemyPrefabs, enemyCount, seed))
+        {
+            _groupMessage = "No valid formation for this enemy count and seed.";
+            return false;
+        }
+
+        UnbindActors();
+        BindActors();
+        _completed = 0;
+        _interrupted = 0;
+        _skipped = 0;
+        _groupMessage = enemyCount + " enemies / seed " + seed;
+        return true;
+    }
+
+    private void BindActors()
+    {
         for (int i = 0; i < _groupTest.SpawnedEnemies.Count; i++)
         {
             CEnemy enemy = _groupTest.SpawnedEnemies[i];
@@ -55,7 +104,6 @@ public class CEnemyAutoActionTest : MonoBehaviour
             enemy.OnActionCompleted += HandleCompleted;
             enemy.OnActionInterrupted += HandleInterrupted;
         }
-        return true;
     }
 
     public void PlanAll()
@@ -98,7 +146,7 @@ public class CEnemyAutoActionTest : MonoBehaviour
                 continue;
             }
 
-            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인합니다.
+            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인함
             if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes, _groupTest.SpawnedEnemies)) || !enemy.TryBeginAction())
             {
                 _skipped++;
@@ -118,18 +166,35 @@ public class CEnemyAutoActionTest : MonoBehaviour
 
     private void HandleRequest(CEntity actor, CEntity target, CSkillDataSO skill)
     {
-        // 실제 전투 관리자 대신 연출 시작만 요청하고 효과는 적용하지 않습니다.
+        // 테스트 씬에서 행동 실행을 시작함
         actor.TryStartRequestedAction();
     }
 
-    private void HandleCompleted(CEntity actor) { _completed++; }
-    private void HandleInterrupted(CEntity actor) { _interrupted++; }
+    private void HandleCompleted(CEntity actor)
+    {
+        _completed++;
+    }
+    private void HandleInterrupted(CEntity actor)
+    {
+        _interrupted++;
+    }
 
     public void CloseTest()
     {
         if (!_isOpen) return;
         if (_routine != null) StopCoroutine(_routine);
         _routine = null;
+        UnbindActors();
+        _heroRoot.SetActive(false);
+        _groupTest.ClearGroup();
+        _groupTest.ShowControls = _groupControlsVisible;
+        _groupTest.enabled = _groupTestEnabled;
+        if (_heroTest != null) _heroTest.enabled = _heroTestEnabled;
+        _isOpen = false;
+    }
+
+    private void UnbindActors()
+    {
         for (int i = 0; i < _actors.Count; i++)
         {
             if (_actors[i] == null) continue;
@@ -140,15 +205,12 @@ public class CEnemyAutoActionTest : MonoBehaviour
             enemy.OnActionInterrupted -= HandleInterrupted;
         }
         _actors.Clear();
-        _heroRoot.SetActive(false);
-        _groupTest.ClearGroup();
-        _groupTest.ShowControls = _groupControlsVisible;
-        _groupTest.enabled = _groupTestEnabled;
-        if (_heroTest != null) _heroTest.enabled = _heroTestEnabled;
-        _isOpen = false;
     }
 
-    private void OnDisable() { CloseTest(); }
+    private void OnDisable()
+    {
+        CloseTest();
+    }
 
     private void OnGUI()
     {
@@ -159,7 +221,7 @@ public class CEnemyAutoActionTest : MonoBehaviour
             if (GUI.Button(new Rect(Screen.width - 150.0f, Screen.height - 60.0f, 140.0f, 25.0f), "Open Enemy AI")) OpenTest();
             return;
         }
-        GUILayout.BeginArea(new Rect(15.0f, 15.0f, 300.0f, 105.0f), GUI.skin.box);
+        GUILayout.BeginArea(new Rect(15.0f, 15.0f, 380.0f, 158.0f), GUI.skin.box);
         GUILayout.Label("Enemy AI / choose skills and Hero targets");
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Plan All")) PlanAll();
@@ -168,6 +230,7 @@ public class CEnemyAutoActionTest : MonoBehaviour
         GUILayout.EndHorizontal();
         GUILayout.Label("Done: " + _completed + " / Cancel: " + _interrupted + " / Skip: " + _skipped);
         GUILayout.Label(_routine != null ? "Playing planned actions" : "Plan first then run once");
+        DrawRandomGroupControls();
         GUILayout.EndArea();
         Camera camera = Camera.main;
         if (camera == null || _heroes == null) return;
@@ -177,5 +240,30 @@ public class CEnemyAutoActionTest : MonoBehaviour
             Vector3 point = camera.WorldToScreenPoint(_heroes[i].transform.position);
             GUI.Box(new Rect(point.x - 45.0f, Screen.height - point.y - 25.0f, 90.0f, 22.0f), _heroes[i].name);
         }
+    }
+
+    private void DrawRandomGroupControls()
+    {
+        bool previousEnabled = GUI.enabled;
+        GUI.enabled = previousEnabled && _routine == null;
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Enemies", GUILayout.ExpandWidth(false));
+        _enemyCountInput = GUILayout.TextField(_enemyCountInput, 1, GUILayout.Width(30.0f));
+        GUILayout.Label("Seed", GUILayout.ExpandWidth(false));
+        _seedInput = GUILayout.TextField(_seedInput, 11, GUILayout.Width(100.0f));
+        if (GUILayout.Button("Generate Group"))
+        {
+            if (int.TryParse(_enemyCountInput, out int count) && int.TryParse(_seedInput, out int seed))
+            {
+                TryLoadRandomGroup(count, seed);
+            }
+            else
+            {
+                _groupMessage = "Enter an enemy count and an integer seed.";
+            }
+        }
+        GUILayout.EndHorizontal();
+        GUI.enabled = previousEnabled;
+        GUILayout.Label(_groupMessage);
     }
 }

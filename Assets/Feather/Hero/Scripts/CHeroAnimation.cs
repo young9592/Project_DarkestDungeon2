@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CHeroAnimation : MonoBehaviour
 {
-    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown }
+    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown, Resolute }
 
     [Header("Animation")]
     [SerializeField] private Animator _animator;
@@ -12,10 +12,14 @@ public class CHeroAnimation : MonoBehaviour
 
     [SerializeField, Range(0.0f, 0.3f)] private float _returnBlendDuration = 0.12f;
 
+    private Renderer[] _skillWeapons;
+    private bool[] _previousWeaponVisibility;
+    private bool _skillWeaponsChanged;
     private bool _meltdownQueued;
     private CPlayer _hero;
     private CHeroSkillFeedback _feedback;
     private static readonly int _meltdownHash = Animator.StringToHash("Base Layer.Meltdown");
+    private static readonly int _resoluteHash = Animator.StringToHash("Base Layer.Resolute");
     private bool _returningToIdle;
     private EAnimationState _state;
     private bool _needsIdle;
@@ -42,12 +46,31 @@ public class CHeroAnimation : MonoBehaviour
     public event Action OnHitCompleted;
     public event Action OnHitInterrupted;
 
-    public bool IsBusy { get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued; } }
-    public bool IsMeltingDown { get { return _state == EAnimationState.Meltdown; } }
-    public bool IsMeltdownQueued { get { return _meltdownQueued; } }
-    public bool IsSelecting { get { return _state == EAnimationState.Selecting; } }
-    public bool IsAttacking { get { return _state == EAnimationState.Attack; } }
-    public bool IsHitReacting { get { return _state == EAnimationState.Hit; } }
+    public bool IsBusy
+    {
+        get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued
+            || _state == EAnimationState.Resolute; }
+    }
+    public bool IsMeltingDown
+    {
+        get { return _state == EAnimationState.Meltdown; }
+    }
+    public bool IsMeltdownQueued
+    {
+        get { return _meltdownQueued; }
+    }
+    public bool IsSelecting
+    {
+        get { return _state == EAnimationState.Selecting; }
+    }
+    public bool IsAttacking
+    {
+        get { return _state == EAnimationState.Attack; }
+    }
+    public bool IsHitReacting
+    {
+        get { return _state == EAnimationState.Hit; }
+    }
     public bool IsReady
     {
         get
@@ -86,6 +109,20 @@ public class CHeroAnimation : MonoBehaviour
         if (interrupted) OnMeltdownInterrupted?.Invoke();
     }
 
+    internal void PlayResolute()
+    {
+        if (!IsReady || IsBusy || !_animator.HasState(0, _resoluteHash)) return;
+        if (IsSelecting) CancelSelection();
+        _needsIdle = false;
+        _state = EAnimationState.Resolute;
+        _animator.Play(_resoluteHash, 0, 0.0f);
+    }
+
+    internal void EndResolute()
+    {
+        if (_state == EAnimationState.Resolute) PlayIdle();
+    }
+
     public bool TryPlaySelection(CSkillDataSO skill)
     {
         if (!CanPlayAttack(skill)) return false;
@@ -98,6 +135,7 @@ public class CHeroAnimation : MonoBehaviour
         if (!_animator.HasState(0, startHash) || !_animator.HasState(0, holdHash)) return false;
         if (IsSelecting && _selectionSkill == skill) return true;
 
+        UpdateSkillWeapons(skill);
         _needsIdle = false;
         _state = EAnimationState.Selecting;
         _selectionSkill = skill;
@@ -117,6 +155,7 @@ public class CHeroAnimation : MonoBehaviour
     {
         if (!CanPlayAttack(skill)) return false;
         bool prepared = IsSelecting && _selectionSkill == skill;
+        UpdateSkillWeapons(skill);
         _needsIdle = false;
         _state = EAnimationState.Attack;
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
@@ -142,6 +181,7 @@ public class CHeroAnimation : MonoBehaviour
     public bool TryPlayHit()
     {
         if (!CanPlayHit()) return false;
+        RestoreSkillWeapons();
         _needsIdle = false;
         _selectionSkill = null;
         _waitForSelection = false;
@@ -234,6 +274,14 @@ public class CHeroAnimation : MonoBehaviour
             }
             return;
         }
+        if (_state == EAnimationState.Resolute)
+        {
+            if (info.fullPathHash == _idleHash && !_animator.IsInTransition(0))
+            {
+                _state = EAnimationState.Idle;
+            }
+            return;
+        }
         if (IsSelecting) return;
         if (_waitForSelection)
         {
@@ -256,6 +304,7 @@ public class CHeroAnimation : MonoBehaviour
         if (_returningToIdle)
         {
             if (_animator.IsInTransition(0) || info.fullPathHash != _idleHash) return;
+            RestoreSkillWeapons();
             _returningToIdle = false;
             _state = EAnimationState.Idle;
             _needsIdle = false;
@@ -300,8 +349,56 @@ public class CHeroAnimation : MonoBehaviour
         OnHitCompleted?.Invoke();
     }
 
+    private void UpdateSkillWeapons(CSkillDataSO skill)
+    {
+        CHeroSkillSO heroSkill = CHeroSkillSO.GetBaseSkill(skill) as CHeroSkillSO;
+        bool isAbsinthe = heroSkill != null
+            && heroSkill.ExecutionStartState == "Base Layer.OriginalAction_GraveRobber_artemisia";
+        if (!isAbsinthe)
+        {
+            RestoreSkillWeapons();
+            return;
+        }
+        if (_skillWeaponsChanged || _animator == null) return;
+        if (_skillWeapons == null)
+        {
+            List<Renderer> weapons = new List<Renderer>();
+            Renderer[] renderers = _animator.GetComponentsInChildren<Renderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                string meshName = renderers[i].name;
+                if (meshName == "msh_grave_robber_wpn_bottle"
+                    || meshName == "msh_grave_robber_wpn_pickaxe"
+                    || meshName == "msh_grave_robber_wpn_dagger") weapons.Add(renderers[i]);
+            }
+            _skillWeapons = weapons.ToArray();
+            _previousWeaponVisibility = new bool[_skillWeapons.Length];
+        }
+        // 준비 자세에서 저장한 표시 상태는 사용 중에도 유지함
+        for (int i = 0; i < _skillWeapons.Length; i++)
+        {
+            Renderer weapon = _skillWeapons[i];
+            if (weapon == null) continue;
+            _previousWeaponVisibility[i] = weapon.forceRenderingOff;
+            weapon.forceRenderingOff = weapon.name != "msh_grave_robber_wpn_bottle";
+        }
+        _skillWeaponsChanged = true;
+    }
+
+    private void RestoreSkillWeapons()
+    {
+        if (!_skillWeaponsChanged || _skillWeapons == null) return;
+        for (int i = 0; i < _skillWeapons.Length; i++)
+        {
+            if (_skillWeapons[i] != null)
+                _skillWeapons[i].forceRenderingOff = _previousWeaponVisibility[i];
+        }
+        _skillWeaponsChanged = false;
+    }
+
     private void PlayIdle()
     {
+        RestoreSkillWeapons();
         _returningToIdle = false;
         _state = EAnimationState.Idle;
         _selectionSkill = null;

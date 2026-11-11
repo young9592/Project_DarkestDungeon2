@@ -24,6 +24,8 @@ public class CHeroPartyTest : MonoBehaviour
     [SerializeField] private CHeroPreparationPanel _preparation;
     [SerializeField] private CHeroPartyPresets _presets;
     [SerializeField] private CPartyEnemyPreview _enemyPreview;
+    [Header("Mastery")]
+    [SerializeField] private CHeroMasteryCatalogSO _masteryCatalog;
 
     private readonly List<CPlayer> _heroes = new List<CPlayer>();
     private readonly List<ERank> _displayedRanks = new List<ERank>();
@@ -34,6 +36,7 @@ public class CHeroPartyTest : MonoBehaviour
     private float _cameraSize;
     private int _selectedIndex;
     private int _partyIndex;
+    private CEnemyGroupSO _activeGroup;
     private int _requests;
     private Canvas _presentationCanvas;
     private GraphicRaycaster _presentationRaycaster;
@@ -147,6 +150,10 @@ public class CHeroPartyTest : MonoBehaviour
         {
             gameObject.AddComponent<CHeroRunStateTest>();
         }
+
+        CHeroMasteryTest mastery = GetComponent<CHeroMasteryTest>();
+        if (mastery == null) mastery = gameObject.AddComponent<CHeroMasteryTest>();
+        mastery.Initialize(_masteryCatalog, _input);
 
         if (_camera == null)
         {
@@ -323,6 +330,14 @@ public class CHeroPartyTest : MonoBehaviour
             return false;
         }
 
+        CHeroMasteryTest mastery = GetComponent<CHeroMasteryTest>();
+        if (mastery != null && !mastery.TryPrepareHeroes(nextHeroes, runState != null ? runState.RunId : null))
+        {
+            nextRoot.SetActive(false);
+            Destroy(nextRoot);
+            return false;
+        }
+
         ClearParty();
         _lastRequest = "Choose a skill and target";
         _loadedRoot = nextRoot;
@@ -380,15 +395,18 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool ResumePreview(int groupIndex)
     {
+        if (_groups == null || groupIndex < 0 || groupIndex >= _groups.Length) return false;
+        return ResumePreview(_groups[groupIndex]);
+    }
+
+    public bool ResumePreview(CEnemyGroupSO group)
+    {
         if (!_isOpen
             || !_isPreviewSuspended
             || _activeParty == null
             || !_activeParty.TryValidate(out _)
-            || _groups == null
-            || groupIndex < 0
-            || groupIndex >= _groups.Length
-            || _groups[groupIndex] == null
-            || !_groups[groupIndex].TryValidate(out _))
+            || group == null
+            || !group.TryValidate(out _))
         {
             return false;
         }
@@ -405,7 +423,7 @@ public class CHeroPartyTest : MonoBehaviour
             _presentationRaycaster.enabled = true;
         }
 
-        if (!TryLoadParty(_activeParty) || !SwitchGroup(groupIndex))
+        if (!TryLoadParty(_activeParty) || !SwitchGroup(group))
         {
             SuspendPreview();
             return false;
@@ -425,7 +443,7 @@ public class CHeroPartyTest : MonoBehaviour
         int nextRank = RankNumber(SelectedHero.CurrentRank) % 4 + 1;
         for (int i = 0; i < _heroes.Count; i++)
         {
-            if (RankNumber(_heroes[i].CurrentRank) == nextRank)
+            if (_heroes[i] != null && RankNumber(_heroes[i].CurrentRank) == nextRank)
             {
                 return TrySwapRanks(_selectedIndex, i);
             }
@@ -455,7 +473,7 @@ public class CHeroPartyTest : MonoBehaviour
         {
             for (int i = 0; i < _heroes.Count && i < _heroButtons.Length; i++)
             {
-                if (_heroButtons[i] != null && RankNumber(_heroes[i].CurrentRank) == rank)
+                if (_heroButtons[i] != null && _heroes[i] != null && RankNumber(_heroes[i].CurrentRank) == rank)
                 {
                     _heroButtons[i].transform.SetSiblingIndex(4 - rank);
                 }
@@ -471,6 +489,7 @@ public class CHeroPartyTest : MonoBehaviour
             || IsBusy
             || index < 0
             || index >= _heroes.Count
+            || _heroes[index] == null
             || _heroes[index].IsDeathPresented
             || !_heroes[index].isActiveAndEnabled)
         {
@@ -521,17 +540,15 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool SwitchGroup(int index)
     {
-        if (!_isOpen
-            || IsPreparing
-            || IsBusy
-            || _groups == null
-            || index < 0
-            || index >= _groups.Length
-            || !_groupTest.TryLoadGroup(_groups[index]))
-        {
-            return false;
-        }
+        if (_groups == null || index < 0 || index >= _groups.Length) return false;
+        return SwitchGroup(_groups[index]);
+    }
 
+    private bool SwitchGroup(CEnemyGroupSO group)
+    {
+        if (!_isOpen || IsPreparing || IsBusy || !_groupTest.TryLoadGroup(group)) return false;
+
+        _activeGroup = group;
         return RefreshHeroSelection();
     }
 
@@ -539,13 +556,14 @@ public class CHeroPartyTest : MonoBehaviour
     {
         if (!_isOpen || _input == null || _heroes.Count == 0) return false;
         if (_selectedIndex >= 0 && _selectedIndex < _heroes.Count
+            && _heroes[_selectedIndex] != null
             && !_heroes[_selectedIndex].IsDead && _heroes[_selectedIndex].isActiveAndEnabled)
         {
             return TrySelectHero(_selectedIndex);
         }
         for (int i = 0; i < _heroes.Count; i++)
         {
-            if (!_heroes[i].IsDead && _heroes[i].isActiveAndEnabled) return TrySelectHero(i);
+            if (_heroes[i] != null && !_heroes[i].IsDead && _heroes[i].isActiveAndEnabled) return TrySelectHero(i);
         }
         _selectedIndex = -1;
         _input.SetHero(null);
@@ -561,6 +579,8 @@ public class CHeroPartyTest : MonoBehaviour
             || second < 0
             || first >= _heroes.Count
             || second >= _heroes.Count
+            || _heroes[first] == null
+            || _heroes[second] == null
             || first == second)
         {
             return false;
@@ -633,13 +653,15 @@ public class CHeroPartyTest : MonoBehaviour
                 continue;
             }
 
-            _heroButtons[i].interactable = !IsPreparing && !IsBusy && i < _heroes.Count
-                && _heroes[i].isActiveAndEnabled && !_heroes[i].IsDeathPresented;
-            _heroButtons[i].image.color = i == _selectedIndex ? new Color(0.65f, 0.42f, 0.12f) : new Color(0.18f, 0.23f, 0.28f);
+            CPlayer hero = i < _heroes.Count ? _heroes[i] : null;
+            _heroButtons[i].interactable = hero != null && !IsPreparing && !IsBusy
+                && hero.isActiveAndEnabled && !hero.IsDeathPresented;
+            _heroButtons[i].image.color = hero != null && i == _selectedIndex
+                ? new Color(0.65f, 0.42f, 0.12f) : new Color(0.18f, 0.23f, 0.28f);
             Text label = _heroButtons[i].GetComponentInChildren<Text>();
-            if (label != null && i < _heroes.Count)
+            if (label != null)
             {
-                label.text = HeroLabel(_heroes[i]) + " / " + RankNumber(_heroes[i].CurrentRank);
+                label.text = hero != null ? HeroLabel(hero) + " / " + RankNumber(hero.CurrentRank) : string.Empty;
             }
         }
     }
@@ -786,25 +808,13 @@ public class CHeroPartyTest : MonoBehaviour
             return;
         }
 
-        GUILayout.BeginArea(new Rect(15, 15, 340, 140), GUI.skin.box);
+        int groupRows = _groups != null ? (_groups.Length + 2) / 3 : 0;
+        GUILayout.BeginArea(new Rect(15, 15, 340, 140 + groupRows * 24), GUI.skin.box);
         GUILayout.Label("Hero party / requests: " + _requests);
         GUI.enabled = !IsPreparing && !IsBusy;
+        DrawGroupButtons();
+
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("1 slot"))
-        {
-            SwitchGroup(0);
-        }
-
-        if (GUILayout.Button("2 slots"))
-        {
-            SwitchGroup(1);
-        }
-
-        if (GUILayout.Button("3 slots"))
-        {
-            SwitchGroup(2);
-        }
-
         if (GUILayout.Button("Clear Skill"))
         {
             TrySelectHero(_selectedIndex);
@@ -841,11 +851,34 @@ public class CHeroPartyTest : MonoBehaviour
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Next Hero turn")) TryBeginSelectedHeroTurn(false);
+            if (GUILayout.Button("Extra action"))
+            {
+                TryBeginSelectedHeroTurn(true);
+            }
             GUILayout.EndHorizontal();
             GUILayout.Label(_lastRequest);
         }
 
         GUILayout.EndArea();
         GUI.enabled = true;
+    }
+
+    private void DrawGroupButtons()
+    {
+        if (_groups == null || _groups.Length == 0) return;
+
+        for (int row = 0; row < _groups.Length; row += 3)
+        {
+            GUILayout.BeginHorizontal();
+            for (int i = row; i < row + 3 && i < _groups.Length; i++)
+            {
+                CEnemyGroupSO group = _groups[i];
+                if (group == null) continue;
+
+                string label = group == _activeGroup ? "> " + group.DisplayName : group.DisplayName;
+                if (GUILayout.Button(label)) SwitchGroup(i);
+            }
+            GUILayout.EndHorizontal();
+        }
     }
 }

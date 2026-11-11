@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class CEnemySkillSelector
 {
-    // 별도 규칙 없이 같은 비중으로 선택할 때 사용합니다.
+    // 별도 규칙 없이 같은 비중으로 선택할 때 사용함
     public static CSkillDataSO SelectRandom(List<CSkillDataSO> candidates)
     {
         if (candidates == null || candidates.Count == 0) return null;
@@ -47,7 +47,7 @@ public static class CEnemySkillSelector
         return rule != null ? rule.GetWeight(currentHp, enemyData.MaxHealth) : 1;
     }
 
-    // 열 검사를 마친 후보에 체력 조건과 선택 비중을 적용합니다.
+    // 열 검사를 마친 후보에 체력 조건과 선택 비중을 적용함
     public static CSkillDataSO SelectSkill(CEnemyDataSO enemyData, List<CSkillDataSO> candidates, int currentHp)
     {
         if (enemyData == null || candidates == null || candidates.Count == 0) return null;
@@ -77,7 +77,7 @@ public static class CEnemySkillSelector
             if (selectedWeight < 0.0f) return skill;
         }
 
-        // float 난수가 최댓값을 포함하는 경우 마지막 후보를 선택합니다.
+        // float 난수가 최댓값을 포함하는 경우 마지막 후보를 선택함
         return selectableSkills[selectableSkills.Count - 1];
     }
 }

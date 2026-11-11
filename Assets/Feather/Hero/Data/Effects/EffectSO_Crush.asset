@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Crush damage
   _effectType: 1
-  _damage: 6
+  _damage: 4
+  _maxDamage: 6
   _duration: 0
   _baseChance: 5
   _tokenType: 0

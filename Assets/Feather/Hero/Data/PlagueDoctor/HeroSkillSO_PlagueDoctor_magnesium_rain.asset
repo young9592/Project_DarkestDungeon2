@@ -15,18 +15,23 @@ MonoBehaviour:
   _skillName: Magnesium Rain
   _skillIcon: {fileID: 21300000, guid: 697d6ff33b105e145ad2f66259977c7e, type: 3}
   _useableRank: 12
-  _targetableRank: 15
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 2
   _effectList:
   - {fileID: 11400000, guid: 868337a8358a454893fe1f4a1883625c, type: 2}
-  - {fileID: 11400000, guid: 69977cb8ae9941c7833cdc1025f3a251, type: 2}
+  - {fileID: 11400000, guid: 0881931bdb5f4b94ba7a687d6f1a0683, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_PlagueDoctor_magnesium_rain
   _endState: Base Layer.OriginalRecover_PlagueDoctor_magnesium_rain
   _presentationNote: Shares the ignition motion.
   _requiresCorpse: 0
+  _clearsCorpses: 1
   _selectionStartState: Base Layer.SourceSelect_explosion
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_magnesium_rain
   _feedback: {fileID: 11400000, guid: 9c913b3007d48ee4bba39252a385781f, type: 2}
-  _clearsCorpses: 1

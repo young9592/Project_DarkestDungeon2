@@ -12,6 +12,8 @@ public class CHeroRunMemberState
     public int Health;
     public int Stress;
     public bool IsDead;
+    public ERank Rank;
+    public string[] SkillIds;
 }
 
 [Serializable]
@@ -44,6 +46,7 @@ public class CHeroRunSaveStore
         }
 
         HashSet<string> ids = new HashSet<string>();
+        ERank livingRanks = ERank.None;
         for (int i = 0; i < data.Members.Length; i++)
         {
             CHeroRunMemberState member = data.Members[i];
@@ -54,6 +57,26 @@ public class CHeroRunSaveStore
                 || (member.IsDead && member.Health != 0))
             {
                 return false;
+            }
+
+            // 이전 저장에는 열과 장착 스킬이 없음
+            if (member.Rank == ERank.None)
+            {
+                if (member.SkillIds != null && member.SkillIds.Length != 0) return false;
+                continue;
+            }
+            if (!CSkillRankUtility.IsSingleRank(member.Rank) || member.SkillIds == null
+                || member.SkillIds.Length > 5) return false;
+            if (!member.IsDead)
+            {
+                if ((livingRanks & member.Rank) != ERank.None) return false;
+                livingRanks |= member.Rank;
+            }
+            HashSet<string> skills = new HashSet<string>();
+            for (int j = 0; j < member.SkillIds.Length; j++)
+            {
+                string skillId = member.SkillIds[j];
+                if (string.IsNullOrWhiteSpace(skillId) || skillId.Length > 128 || !skills.Add(skillId)) return false;
             }
         }
 

@@ -16,13 +16,21 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: f89330344ec7fed41a7a3d492d7bad8d, type: 3}
   _useableRank: 12
   _targetableRank: 12
+  _isGroupTarget: 1
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: b33a27da6f6e14945b694fb9ff72c799, type: 2}
+  - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_PlagueDoctor_blinding_gas
   _endState: Base Layer.OriginalRecover_PlagueDoctor_blinding_gas
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_poison
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_blinding_gas

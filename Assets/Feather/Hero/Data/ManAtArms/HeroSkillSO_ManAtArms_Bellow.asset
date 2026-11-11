@@ -16,13 +16,21 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 5b62467fbd9f51249aab73bbb18a5259, type: 3}
   _useableRank: -1
   _targetableRank: -1
-  _cooldown: 1
-  _effectList: []
+  _isGroupTarget: 1
+  _cooldown: 2
+  _effectList:
+  - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
+  - {fileID: 11400000, guid: 64d034e5018e0cc4396285c475a6e366, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_ManAtArms_Bellow
   _endState: Base Layer.OriginalRecover_ManAtArms_Bellow
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_yell
   _selectionHoldState: Base Layer.SourceReady_yell
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Bellow

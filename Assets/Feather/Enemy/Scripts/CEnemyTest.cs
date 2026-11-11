@@ -254,7 +254,7 @@ public class CEnemyTest : MonoBehaviour
 
     private void HandleAttackCompleted()
     {
-        // 이 패널에서 선택한 적에게 요청한 공격만 완료 횟수에 반영합니다.
+        // 이 패널에서 선택한 적에게 요청한 공격만 완료 횟수에 반영함
         if (!_isWaitingForAttack) return;
 
         _isWaitingForAttack = false;

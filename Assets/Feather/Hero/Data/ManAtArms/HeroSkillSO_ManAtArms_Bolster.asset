@@ -16,13 +16,22 @@ MonoBehaviour:
   _skillIcon: {fileID: 21300000, guid: 9978a708a3d987848b50803757cfb005, type: 3}
   _useableRank: -1
   _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 1fc2313378f4bb147a81d0a17a109dc4, type: 2}
+  - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
+  - {fileID: 11400000, guid: bf7d725b37b67d04ca304639f6315278, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 1
   _startState: Base Layer.OriginalAntic_ManAtArms_Bolster
   _endState: Base Layer.OriginalRecover_ManAtArms_Bolster
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_maa_buffA
   _selectionHoldState: Base Layer.SourceReady_maa_buffA
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Bolster

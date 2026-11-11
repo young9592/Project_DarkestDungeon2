@@ -14,15 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Emboldening Vapours
   _skillIcon: {fileID: 21300000, guid: 3c40af37d1d06aa4aa9cd9a001410d67, type: 3}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 1
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 24eb3deb44d16c34989ee10164cf2219, type: 2}
+  - {fileID: 11400000, guid: e21826cb18f500a418742090bf99f3c6, type: 2}
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 4
   _startState: Base Layer.OriginalAntic_PlagueDoctor_emboldening_vapours
   _endState: Base Layer.OriginalRecover_PlagueDoctor_emboldening_vapours
   _presentationNote: Shares the support motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_poison
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_emboldening_vapours

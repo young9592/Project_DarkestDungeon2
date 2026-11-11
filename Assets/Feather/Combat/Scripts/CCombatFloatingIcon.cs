@@ -9,7 +9,6 @@ public class CCombatFloatingIcon : MonoBehaviour
         DeathStemp,
         Stress,
         StressHealing,
-        Turn,
     }
     #endregion
 
@@ -80,11 +79,6 @@ public class CCombatFloatingIcon : MonoBehaviour
             case IconType.StressHealing:
                 topVec = new Vector2(mesh.bounds.center.x, mesh.bounds.max.y);
                 screenPos = Camera.main.WorldToScreenPoint(topVec);
-                break;
-            // 현재 차례 아이콘 표시
-            case IconType.Turn:
-                Vector2 bottomVec = new Vector2(mesh.bounds.center.x, mesh.bounds.min.y);
-                screenPos = Camera.main.WorldToScreenPoint(bottomVec);
                 break;
             default:
                 break;

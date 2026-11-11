@@ -12,14 +12,43 @@ public class CEnemyCorpse : CEntity
     private int _health;
     private bool _hasSpawned;
 
-    public CEnemy Owner { get { return _owner; } }
-    public int CurrentHp { get { return _health; } }
-    public int FormationSize { get { return _owner != null ? _owner.EnemyData.FormationSize : 1; } }
-    public bool IsAvailable { get { return _hasSpawned && !_isDead && _health > 0 && isActiveAndEnabled; } }
-    public bool IsRemoved { get { return _hasSpawned && _isDead; } }
-    public override CEntityDataSO EntityData { get { return _owner != null ? _owner.EntityData : null; } }
-    public override EEntityType EntityType { get { return EEntityType.Enemy; } }
-    public override ERank CurrentRank { get { return _owner != null ? _owner.CurrentRank : ERank.None; } }
+    public CEnemy Owner
+    {
+        get { return _owner; }
+    }
+    public int CurrentHp
+    {
+        get { return _health; }
+    }
+    public int FormationSize
+    {
+        get { return _owner != null ? _owner.EnemyData.FormationSize : 1; }
+    }
+    public bool IsAvailable
+    {
+        get { return _hasSpawned && !_isDead && _health > 0 && isActiveAndEnabled; }
+    }
+    public bool IsRemoved
+    {
+        get { return _hasSpawned && _isDead; }
+    }
+    public override CEntityDataSO EntityData
+    {
+        get
+        {
+            if (_owner == null || _owner.EnemyData == null) return null;
+            CEnemyCorpseDataSO corpseData = _owner.EnemyData.CorpseData;
+            return corpseData != null ? (CEntityDataSO)corpseData : _owner.EntityData;
+        }
+    }
+    public override EEntityType EntityType
+    {
+        get { return EEntityType.Enemy; }
+    }
+    public override ERank CurrentRank
+    {
+        get { return _owner != null ? _owner.CurrentRank : ERank.None; }
+    }
 
     public event Action<CEnemyCorpse> OnRemoved;
     public event Action<CEnemyCorpse> OnDamaged;
@@ -100,14 +129,14 @@ public class CEnemyCorpse : CEntity
         _isDead = true;
         _sprite.enabled = false;
         TokenManager.ClearAllTokens();
-        // 효과 완료 콜백까지 대상 객체는 유지합니다.
+        // 효과 완료 콜백까지 대상 객체를 유지함
         OnRemoved?.Invoke(this);
         return true;
     }
 
     public override void ApplyStatusEffect(CEffect statusEffect)
     {
-        // 시체의 지속 피해 및 라운드 진행은 전투 라운드 연결 단계에서 처리합니다.
+        // 시체의 지속 피해와 라운드 진행은 전투 라운드 연결 단계에서 처리함
     }
 
     public override void ResetEntityState()

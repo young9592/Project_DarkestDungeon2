@@ -14,13 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Grapeshot Blast
   _skillIcon: {fileID: 21300000, guid: dce3eb82630207f459e9ad16cac7ac92, type: 3}
-  _useableRank: -1
+  _useableRank: 6
   _targetableRank: 3
-  _isGroupTarget: 0
+  _isGroupTarget: 1
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: df867a28e5fc43ad97318f9af49537f5, type: 2}
+  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
+  - {fileID: 11400000, guid: 6dd3c64df2e93764fa25e83509462ddd, type: 2}
   _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
   _baseSkill: {fileID: 0}
   _target: 3
   _startState: Base Layer.OriginalAntic_Highwayman_grapeshot_blast
