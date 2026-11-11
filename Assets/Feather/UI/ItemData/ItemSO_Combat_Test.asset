@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a8b6c86820167448be0cb48afd0049, type: 3}
+  m_Name: ItemSO_Combat_Test
+  m_EditorClassIdentifier: 
+  _itemName: Combat
+  _itemImage: {fileID: 21300000, guid: 775af82186ccc4546ba09b99ef305266, type: 3}
+  _itemState: 2
+  _currencyType: 0
+  _stateImage: {fileID: 21300000, guid: a787beacc17cc5144bc872f8090642ac, type: 3}
+  _stateColor: {r: 0.5169811, g: 0.04584547, b: 0.04584547, a: 1}
+  _buyRelics: 3
+  _buyBaubles: 0
+  _maxQuantity: 4
