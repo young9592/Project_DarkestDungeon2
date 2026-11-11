@@ -348,7 +348,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         // UI 정리
         _combatUI.ToggleEntityStateRoot(false);
-        _combatUI.ToggleTurnGuideRoot(false);
+        _combatUI.ToggleIndicatorRoot(false);
         _combatUI.HideAllIndicator();
         
         // 공격 방향에 따라 이펙트
@@ -571,7 +571,7 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         _combatUI.CloseCombatPanel();
-        _combatUI.ToggleTurnGuideRoot(true);
+        _combatUI.ToggleIndicatorRoot(true);
         _combatUI.ToggleEntityStateRoot(true);
         _combatManager.MyTurnIndicator.ViewMyturnIndicator();
 

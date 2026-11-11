@@ -2,17 +2,16 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class CCombatDebugMenu : MonoBehaviour
 {
     #region Inspector
     [Header("MessageManager")]
+    [SerializeField] private CCombatManager _combatManager;
+    [SerializeField] private CCombatUI _combatUI;
     [SerializeField] private CCombatFloatingMessageManager _messageManager;
 
     [Header("Debug Menu")]
-    [SerializeField] private CCombatManager _combatManager;
-
     [SerializeField] private GameObject _debugRoot;
     [SerializeField] private TMP_Dropdown _selectEntity;
     [SerializeField] private TMP_Dropdown _selectEffect;
@@ -20,6 +19,9 @@ public class CCombatDebugMenu : MonoBehaviour
 
     [Header("Test Effect")]
     [SerializeField] private List<CEffectSO> _effectSOList;
+
+    [Header("Option")]
+    [SerializeField] private bool _debugMode = false;
     #endregion
 
     #region Field
@@ -28,12 +30,42 @@ public class CCombatDebugMenu : MonoBehaviour
     private Dictionary<EEffectType, CEffectSO> _effectList = new Dictionary<EEffectType, CEffectSO>();
     private int _selecedtEffectIdx = 0;
     private int _selectedEntitytIdx = 0;
+    private  List<Object> _checkList = new List<Object>();
     #endregion
-
-
 
     private void Awake()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+        
+        _checkList.Add(_combatManager);
+        _checkList.Add(_combatUI);
+        _checkList.Add(_messageManager);
+        _checkList.Add(_debugRoot);
+        _checkList.Add(_selectEntity);
+        _checkList.Add(_selectEffect);
+        _checkList.Add(_shootEffectBtn);
+
+        if (_effectSOList.Count == 0)
+        {
+            CPrint.Warn("리스트가 누락되었습니다.");
+            enabled = false;
+            return;
+        }
+
+        for(int i = 0; i < _effectSOList.Count; i++)
+        {
+            _checkList.Add(_effectSOList[i]);
+        }
+
+        if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
+        {
+            enabled = false;
+            return;
+        }
+
         _applyOptionList.Add("데미지", EEffectType.Damage);
         _applyOptionList.Add("회복", EEffectType.Heal);
         _applyOptionList.Add("스트레스", EEffectType.None);
@@ -47,6 +79,8 @@ public class CCombatDebugMenu : MonoBehaviour
         _applyOptionList.Add("속도", EEffectType.Speed);
         _applyOptionList.Add("고정", EEffectType.Immobilize);
         _applyOptionList.Add("반격", EEffectType.Riposte);
+        _applyOptionList.Add("은신", EEffectType.Stealth);
+        _applyOptionList.Add("콤보", EEffectType.Combo);
 
         for (int i = 0; i < _effectSOList.Count; i++)
         {
@@ -56,6 +90,11 @@ public class CCombatDebugMenu : MonoBehaviour
 
     private void OnEnable()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
         _selectEffect.onValueChanged.AddListener(index => OnDropboxChanged("Effect", index));
         _selectEntity.onValueChanged.AddListener(index => OnDropboxChanged("Entity", index));
         _shootEffectBtn.onClick.AddListener(OnEffectApplyButton);
@@ -63,6 +102,11 @@ public class CCombatDebugMenu : MonoBehaviour
 
     private void OnDisable()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
         _selectEffect.onValueChanged.RemoveAllListeners();
         _selectEntity.onValueChanged.RemoveAllListeners();
         _shootEffectBtn.onClick.RemoveAllListeners();
@@ -70,12 +114,22 @@ public class CCombatDebugMenu : MonoBehaviour
 
     private void Update()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
         // Debug Menu Key
         DebugMenuKey();
     }
 
     public void Initialize()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
         _selectEffect.ClearOptions();
 
         var keys = _applyOptionList.Keys;
@@ -95,6 +149,11 @@ public class CCombatDebugMenu : MonoBehaviour
 
     private void DebugMenuKey()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.F8))
         {
             _debugRoot.SetActive(!_debugRoot.activeSelf);
@@ -103,6 +162,11 @@ public class CCombatDebugMenu : MonoBehaviour
     // 디버그용 엔티티 드롭박스
     public void SetDropboxEntityList()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
         _selectEntity.ClearOptions();
 
         List<string> options = new List<string>();
@@ -120,6 +184,12 @@ public class CCombatDebugMenu : MonoBehaviour
     // 디버그용 드랍박스 변경 리스너
     private void OnDropboxChanged(string dropboxName, int index)
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
+
         if (dropboxName == "Effect")
         {
             _selecedtEffectIdx = index;
@@ -132,8 +202,14 @@ public class CCombatDebugMenu : MonoBehaviour
     // 디버그용 버튼 리스너
     private void OnEffectApplyButton()
     {
+        if (!_debugMode)
+        {
+            return;
+        }
+
+
         List<(int id, CEntity entity)> entities = _combatManager.EntityList;
-        Dictionary<CEntity, CEntityState> entityStates = _combatManager.EntitiesState;
+        IReadOnlyDictionary<CEntity, CEntityState> entityStates = _combatUI.EntitiesState;
 
         string applyOptionText = _selectEffect.options[_selecedtEffectIdx].text;
         EEffectType applyOption = _applyOptionList[applyOptionText];
@@ -151,17 +227,11 @@ public class CCombatDebugMenu : MonoBehaviour
                     {
                         selectEntity.TakeDamage(damage);
 
-
                         if (selectEntity is CEnemy && selectEntity.IsDead)
                         {
-                            if (_combatManager.EntitiesState.ContainsKey(selectEntity))
+                            if (entityStates.ContainsKey(selectEntity))
                             {
-                                CEntityState entityState = _combatManager.EntitiesState[selectEntity];
-                                _combatManager.EntitiesState.Remove(selectEntity);
-                                CEnemyCorpse corpse = (selectEntity as CEnemy).Corpse;
-
-                                entityState.ReConnect(corpse.gameObject);
-                                _combatManager.EntitiesState.Add(corpse, entityState);
+                                _combatUI.ReconnectStateUI(selectEntity);
                             }
                         }
                     }
@@ -186,14 +256,9 @@ public class CCombatDebugMenu : MonoBehaviour
 
                         if (selectEntity is CEnemy && selectEntity.IsDead)
                         {
-                            if (_combatManager.EntitiesState.ContainsKey(selectEntity))
+                            if (_combatUI.EntitiesState.ContainsKey(selectEntity))
                             {
-                                CEntityState entityState = _combatManager.EntitiesState[selectEntity];
-                                _combatManager.EntitiesState.Remove(selectEntity);
-                                CEnemyCorpse corpse = (selectEntity as CEnemy).Corpse;
-
-                                entityState.ReConnect(corpse.gameObject);
-                                _combatManager.EntitiesState.Add(corpse, entityState);
+                                _combatUI.ReconnectStateUI(selectEntity);
                             }
                         }
                     }
@@ -242,6 +307,8 @@ public class CCombatDebugMenu : MonoBehaviour
             case EEffectType.Speed:
             case EEffectType.Immobilize:
             case EEffectType.Riposte:
+            case EEffectType.Stealth:
+            case EEffectType.Combo:
                 CEffect effect = new CEffect(_effectList[applyOption]);
                 selectEntity.ApplyStatusEffect(effect);
                 break;

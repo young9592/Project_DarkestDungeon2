@@ -79,6 +79,11 @@ public class CIndicator : MonoBehaviour
         CIndicatorMouseEvent.OnClickRankEvent += OnRankChangeClickData;
     }
 
+    private void OnDestroy()
+    {
+        CIndicatorMouseEvent.OnClickRankEvent -= OnRankChangeClickData;
+    }
+
     public void Initialize(Canvas canvas, GameObject target)
     {
         _canvas = canvas;
@@ -123,11 +128,6 @@ public class CIndicator : MonoBehaviour
 
 
         _init = true;
-    }
-
-    private void OnDestroy()
-    {
-        CIndicatorMouseEvent.OnClickRankEvent -= OnRankChangeClickData;
     }
     private void Update()
     {
@@ -322,7 +322,6 @@ public class CIndicator : MonoBehaviour
             _targetIndicator.SetActive(false);
         }
     }
-
     private void RankChangeHover()
     {
         if (_enableMouseDetect)

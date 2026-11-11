@@ -32,8 +32,9 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (CPrint.NullUnityObjectCheck(gameObject.name, _target))
+        if (_target == null)
         {
+            CPrint.Warn($"{gameObject.name}Å¸°ÙÀÌ¶û ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
             enabled = false;
             return;
         }
@@ -43,8 +44,9 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (CPrint.NullUnityObjectCheck(gameObject.name, _target))
+        if (_target == null)
         {
+            CPrint.Warn($"{gameObject.name}Å¸°ÙÀÌ¶û ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
             enabled = false;
             return;
         }
@@ -54,8 +56,9 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (CPrint.NullUnityObjectCheck(gameObject.name, _target))
+        if (_target == null)
         {
+            CPrint.Warn($"{gameObject.name}Å¸°ÙÀÌ¶û ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
             enabled = false;
             return;
         }
