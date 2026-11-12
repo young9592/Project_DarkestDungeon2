@@ -122,7 +122,12 @@ public class CIndicator : MonoBehaviour
 
             if (_formationSize > 1)
             {
-                _rectTr.localScale = new Vector3(_rectTr.localScale.x * _formationSize, _rectTr.localScale.y, _rectTr.localScale.z);
+                RectTransform[] rectTr = gameObject.GetComponentsInChildren<RectTransform>(true);
+
+                for (int i = 0; i < rectTr.Length; i++)
+                {
+                    rectTr[i].sizeDelta = new Vector2(rectTr[i].sizeDelta.x * _formationSize, rectTr[i].sizeDelta.y);
+                }
             }
         }
 

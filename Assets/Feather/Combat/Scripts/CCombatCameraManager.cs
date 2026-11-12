@@ -369,7 +369,7 @@ public class CCombatCameraManager : MonoBehaviour
             HighlightCharacter(entitiesTr[i].gameObject, layer);
         }
 
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
 
         // 犁积
         while (nextTime > Time.time)
@@ -468,16 +468,18 @@ public class CCombatCameraManager : MonoBehaviour
                 _combatUI.AttackRight();
             }
 
-            actor.CancelAction();
-            riposteEntity.CancelAction();
+            //actor.CancelAction();
+            //riposteEntity.CancelAction();
             
             // 单固瘤 贸府
             bool isHero = riposteEntity is CPlayer;
             if (isHero)
             {
+                //riposteEntity.ResetEntityState();
+                yield return new WaitForSeconds(0.1f);
+                //riposteEntity.TryBeginAction();
                 riposteEntity.TokenManager.ConsumeToken(EEffectType.Riposte);
-                int rand = Random.Range(1, 5);
-                actor.TakeDamage(rand);
+                (riposteEntity as CPlayer).TryQueueRipostePresentation();
             }
             else
             {
@@ -486,7 +488,7 @@ public class CCombatCameraManager : MonoBehaviour
                 actor.TakeDamage(rand);
             }
 
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
 
             bool _once = false;
 
