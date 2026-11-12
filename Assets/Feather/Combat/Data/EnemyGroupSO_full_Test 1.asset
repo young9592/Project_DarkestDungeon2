@@ -15,8 +15,8 @@ MonoBehaviour:
   _entries:
   - _enemyPrefab: {fileID: 4091325714474303996, guid: 53cfd4189e65b254faea99e5f7b07ddb, type: 3}
     _rank: 1
-  - _enemyPrefab: {fileID: 1462110948690307370, guid: 7fb7f42e50543d74caf9f009b7997154, type: 3}
+  - _enemyPrefab: {fileID: 2052442247830175294, guid: d01a15099c0607f4f955eafa6e128fae, type: 3}
     _rank: 2
-  - _enemyPrefab: {fileID: 4091325714474303996, guid: 53cfd4189e65b254faea99e5f7b07ddb, type: 3}
-    _rank: 8
+  - _enemyPrefab: {fileID: 1462110948690307370, guid: 7fb7f42e50543d74caf9f009b7997154, type: 3}
+    _rank: 4
   _displayName: 

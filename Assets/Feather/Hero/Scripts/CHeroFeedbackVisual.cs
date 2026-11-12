@@ -9,6 +9,8 @@ public class CHeroFeedbackVisual : MonoBehaviour
     [SerializeField] private bool _billboard = true;
     [SerializeField] private bool _alignToFlight;
     [SerializeField] private Vector2Int _sheet = Vector2Int.one;
+    [SerializeField] private bool _playParticles;
+    private ParticleSystem[] _particles;
     private Camera _camera;
     private MaterialPropertyBlock _properties;
     private Vector3 _start;
@@ -23,6 +25,11 @@ public class CHeroFeedbackVisual : MonoBehaviour
 
     private void Awake()
     {
+        if (_playParticles)
+        {
+            _particles = GetComponentsInChildren<ParticleSystem>(true);
+            return;
+        }
         if (_renderers == null || _renderers.Length == 0)
         {
             _renderers = GetComponentsInChildren<Renderer>(true);
@@ -43,6 +50,15 @@ public class CHeroFeedbackVisual : MonoBehaviour
         _isPlaying = true;
         transform.position = start;
         transform.localScale = _size;
+        if (_playParticles)
+        {
+            if (_billboard && _camera != null) transform.rotation = _camera.transform.rotation;
+            for (int i = 0; i < _particles.Length; i++)
+            {
+                _particles[i].Play(false);
+            }
+            return;
+        }
         UpdateVisual();
     }
 
@@ -57,7 +73,7 @@ public class CHeroFeedbackVisual : MonoBehaviour
             return;
         }
 
-        UpdateVisual();
+        if (!_playParticles) UpdateVisual();
     }
 
     private void UpdateVisual()
