@@ -34,7 +34,8 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         if (_target == null)
         {
-            CPrint.Warn("Target°úÀÇ ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
+            CPrint.Warn($"{gameObject.name}Å¸°ÙÀÌ¶û ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
+            enabled = false;
             return;
         }
 
@@ -45,7 +46,8 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         if (_target == null)
         {
-            CPrint.Warn("Target°úÀÇ ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
+            CPrint.Warn($"{gameObject.name}Å¸°ÙÀÌ¶û ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
+            enabled = false;
             return;
         }
 
@@ -56,7 +58,8 @@ public class CIndicatorMouseEvent : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         if (_target == null)
         {
-            CPrint.Warn("Target°úÀÇ ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
+            CPrint.Warn($"{gameObject.name}Å¸°ÙÀÌ¶û ¿¬°áÀÌ ²÷°å½À´Ï´Ù.");
+            enabled = false;
             return;
         }
 

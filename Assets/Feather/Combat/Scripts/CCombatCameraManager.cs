@@ -32,7 +32,7 @@ public class CCombatCameraManager : MonoBehaviour
     #region Inspector
 
     [Header("Connect")]
-    [SerializeField] private CBasicCombatManager _combatManager;
+    [SerializeField] private CCombatManager _combatManager;
     [SerializeField] private CCombatUI _combatUI;
     [SerializeField] private Camera _camera;
     [SerializeField] private CCombatFloatingMessageManager _messageManager;
@@ -348,7 +348,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         // UI 정리
         _combatUI.ToggleEntityStateRoot(false);
-        _combatUI.ToggleTurnGuideRoot(false);
+        _combatUI.ToggleIndicatorRoot(false);
         _combatUI.HideAllIndicator();
         
         // 공격 방향에 따라 이펙트
@@ -369,7 +369,7 @@ public class CCombatCameraManager : MonoBehaviour
             HighlightCharacter(entitiesTr[i].gameObject, layer);
         }
 
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
 
         // 재생
         while (nextTime > Time.time)
@@ -468,16 +468,18 @@ public class CCombatCameraManager : MonoBehaviour
                 _combatUI.AttackRight();
             }
 
-            actor.CancelAction();
-            riposteEntity.CancelAction();
+            //actor.CancelAction();
+            //riposteEntity.CancelAction();
             
             // 데미지 처리
             bool isHero = riposteEntity is CPlayer;
             if (isHero)
             {
+                //riposteEntity.ResetEntityState();
+                yield return new WaitForSeconds(0.1f);
+                //riposteEntity.TryBeginAction();
                 riposteEntity.TokenManager.ConsumeToken(EEffectType.Riposte);
-                int rand = Random.Range(1, 5);
-                actor.TakeDamage(rand);
+                (riposteEntity as CPlayer).TryQueueRipostePresentation();
             }
             else
             {
@@ -486,7 +488,7 @@ public class CCombatCameraManager : MonoBehaviour
                 actor.TakeDamage(rand);
             }
 
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
 
             bool _once = false;
 
@@ -571,7 +573,7 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         _combatUI.CloseCombatPanel();
-        _combatUI.ToggleTurnGuideRoot(true);
+        _combatUI.ToggleIndicatorRoot(true);
         _combatUI.ToggleEntityStateRoot(true);
         _combatManager.MyTurnIndicator.ViewMyturnIndicator();
 

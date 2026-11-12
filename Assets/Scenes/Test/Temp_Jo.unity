@@ -1186,41 +1186,6 @@ RectTransform:
   m_AnchoredPosition: {x: -175, y: 0}
   m_SizeDelta: {x: 30, y: 50}
   m_Pivot: {x: 1, y: 0.5}
---- !u!1 &242576561
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 242576562}
-  m_Layer: 5
-  m_Name: turn_guide_root
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &242576562
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242576561}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1297354845}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &250372114
 GameObject:
   m_ObjectHideFlags: 0
@@ -3339,7 +3304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: f95d88e7d604b4e478cd2f2460198e4a, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: 0a3008b566a75ef4d92891a13cad1a7c, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}
@@ -3431,8 +3396,8 @@ MonoBehaviour:
   _debugMenu: {fileID: 1963749767}
   _roundState: 0
   _actionDelay: 0.5
+  _prevEnemyActionDelay: 2
   _turnSkipDelay: 1.5
-  _portraitRemoveDelay: 0.05
 --- !u!4 &540853369
 Transform:
   m_ObjectHideFlags: 0
@@ -6068,7 +6033,7 @@ Transform:
   m_GameObject: {fileID: 776460677}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.009391308, y: -0.98987055, z: 9.058903}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9657,7 +9622,6 @@ RectTransform:
   - {fileID: 2035227789}
   - {fileID: 2119594960}
   - {fileID: 552428675}
-  - {fileID: 242576562}
   - {fileID: 1282045498}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13518,15 +13482,15 @@ MonoBehaviour:
   _enemyMoveResist: {fileID: 172004884}
   _enemyWeakResist: {fileID: 843045604}
   _roundText: {fileID: 1332195579}
-  _entitiesStateRoot: {fileID: 1032344542}
+  _stateRoot: {fileID: 1032344542}
   _entitiesStatePrefab: {fileID: 16947772588289049, guid: e29d2d3fc292f9e47a84d9d05b05d189, type: 3}
-  _entitiesIndicatorRoot: {fileID: 1282045497}
+  _indicatorRoot: {fileID: 1282045497}
   _indicatorPrefab: {fileID: 4433627223928225786, guid: 7bbd8bca507d21941bb02c0b74ce1497, type: 3}
   _turnOrderRoot: {fileID: 343295362}
   _turnOrderPrefab: {fileID: 5773832701994379882, guid: 57e0047f1eeaa0c4c9c9fb2978c85054, type: 3}
   _iconRoot: {fileID: 2119594959}
-  _turnGuideRoot: {fileID: 242576561}
   _textRoot: {fileID: 552428674}
+  _portraitRemoveDelay: 0.05
 --- !u!1 &1701490707
 GameObject:
   m_ObjectHideFlags: 0
@@ -14468,8 +14432,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e3c77e8584228540a70e67d6841bf05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _messageManager: {fileID: 2125789383}
   _combatManager: {fileID: 540853368}
+  _combatUI: {fileID: 1696955578}
+  _messageManager: {fileID: 2125789383}
   _debugRoot: {fileID: 1300091514}
   _selectEntity: {fileID: 30951993}
   _selectEffect: {fileID: 614959204}
@@ -14483,6 +14448,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 247a7f515201c2248ba1a737b0bd0c84, type: 2}
   - {fileID: 11400000, guid: 881d0ab0e686ad14bb35a3ac923290db, type: 2}
   - {fileID: 11400000, guid: a896c93efb6b77d47976c030d50afb9d, type: 2}
+  - {fileID: 11400000, guid: 7e070957af129f24ba77634e906ad847, type: 2}
+  - {fileID: 11400000, guid: 44d5d0c8872b51b488cc41e65c51e12a, type: 2}
+  _debugMode: 1
 --- !u!4 &1963749768
 Transform:
   m_ObjectHideFlags: 0
@@ -14492,7 +14460,7 @@ Transform:
   m_GameObject: {fileID: 1963749766}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 9}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15801,7 +15769,7 @@ Transform:
   m_GameObject: {fileID: 2125789382}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 9}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
