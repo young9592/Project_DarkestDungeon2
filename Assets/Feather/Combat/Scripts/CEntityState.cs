@@ -278,8 +278,13 @@ public class CEntityState : MonoBehaviour
         }
     }
 
-    public void SetHealth()
+    private void SetHealth()
     {
+        if (_target == null)
+        {
+            return;
+        }
+
         CEntity entity = _target.GetComponent<CEntity>();
 
         int maxHealth = entity.EntityData.MaxHealth;
@@ -304,7 +309,7 @@ public class CEntityState : MonoBehaviour
         float Clamp01 = Mathf.Clamp01((float)curHealth / (float)maxHealth);
         _hpFill.fillAmount = Clamp01;
     }
-    public void SetStress()
+    private void SetStress()
     {
         CEntity entity = _target.GetComponent<CEntity>();
 
@@ -313,6 +318,7 @@ public class CEntityState : MonoBehaviour
         {
             return;
         }
+
         if (_entityType == EEntityState.Enemy_Corpse)
         {
             return;
@@ -325,75 +331,75 @@ public class CEntityState : MonoBehaviour
         _stressFill.fillAmount = Clamp01;
     }
 
-    public void SetEffect(EEffectType effectType, bool toggle)
+    public void SetEffect(EEffectType effectType, bool contain)
     {
         switch (effectType)
         {
             case EEffectType.Bleed:
-                _bleed.SetActive(toggle);
+                _bleed.SetActive(contain);
                 break;
             case EEffectType.Blight:
-                _blight.SetActive(toggle);
+                _blight.SetActive(contain);
                 break;
             case EEffectType.Burn:
-                _burn.SetActive(toggle);
+                _burn.SetActive(contain);
                 break;
             case EEffectType.Crit:
-                _crit.SetActive(toggle);
+                _crit.SetActive(contain);
                 break;
             case EEffectType.Riposte:
-                _riposte.SetActive(toggle);
+                _riposte.SetActive(contain);
                 break;
             case EEffectType.Dodge:
-                _dodge.SetActive(toggle);
+                _dodge.SetActive(contain);
                 break;
             case EEffectType.DodgePlus:
-                _dodgePlus.SetActive(toggle);
+                _dodgePlus.SetActive(contain);
                 break;
             case EEffectType.Block:
-                _block.SetActive(toggle);
+                _block.SetActive(contain);
                 break;
             case EEffectType.BlockPlus:
-                _blockPlus.SetActive(toggle);
+                _blockPlus.SetActive(contain);
                 break;
             case EEffectType.Guard:
-                _guard.SetActive(toggle);
+                _guard.SetActive(contain);
                 break;
             case EEffectType.Strength:
-                _strength.SetActive(toggle);
+                _strength.SetActive(contain);
                 break;
             case EEffectType.Speed:
-                _speed.SetActive(toggle);
+                _speed.SetActive(contain);
                 break;
             case EEffectType.Stealth:
-                _stealth.SetActive(toggle);
+                _stealth.SetActive(contain);
                 break;
             case EEffectType.Daze:
-                _daze.SetActive(toggle);
+                _daze.SetActive(contain);
                 break;
             case EEffectType.Stun:
-                _stun.SetActive(toggle);
+                _stun.SetActive(contain);
                 break;
             case EEffectType.Blind:
-                _blind.SetActive(toggle);
+                _blind.SetActive(contain);
                 break;
             case EEffectType.Weak:
-                _weak.SetActive(toggle);
+                _weak.SetActive(contain);
                 break;
             case EEffectType.Vulnerable:
-                _vulnerable.SetActive(toggle);
+                _vulnerable.SetActive(contain);
                 break;
             case EEffectType.Taunt:
-                _taunt.SetActive(toggle);
+                _taunt.SetActive(contain);
                 break;
             case EEffectType.Immobilize:
-                _immoblize.SetActive(toggle);
+                _immoblize.SetActive(contain);
                 break;
             case EEffectType.Combo:
-                _combo.SetActive(toggle);
+                _combo.SetActive(contain);
                 break;
             case EEffectType.Stress:
-                _horror.SetActive(toggle);
+                _horror.SetActive(contain);
                 break;
             default:
                 break;
