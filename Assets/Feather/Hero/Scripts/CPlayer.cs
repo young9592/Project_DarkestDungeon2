@@ -135,6 +135,29 @@ public class CPlayer : CEntity
         CancelSkillSelection();
     }
 
+    public EDenialRestriction DenialRestriction { get; private set; }
+
+    public void SetDenialRestriction(EDenialRestriction restriction)
+    {
+        DenialRestriction = restriction;
+    }
+
+    public bool IsSkillDenied(CSkillDataSO skill)
+    {
+        if (!(skill is CHeroSkillSO heroSkill)) return false;
+
+        EHeroDenialCategory category;
+        switch (DenialRestriction)
+        {
+            case EDenialRestriction.Arms: category = EHeroDenialCategory.Melee; break;
+            case EDenialRestriction.Reach: category = EHeroDenialCategory.Ranged; break;
+            case EDenialRestriction.Fortitude: category = EHeroDenialCategory.HealthRecovery; break;
+            case EDenialRestriction.Reason: category = EHeroDenialCategory.StressRecovery; break;
+            default: return false;
+        }
+        return (heroSkill.DenialCategories & category) != EHeroDenialCategory.None;
+    }
+
     protected override bool CanExecuteRequestedAction()
     {
         return !_isTurnSkipped && !IsDead && !IsDeathPresented && ActionTarget != null
@@ -142,6 +165,7 @@ public class CPlayer : CEntity
             && AreActionTargetsValid()
             && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null
+            && !IsSkillDenied(ActionSkill)
             && _skillUses.CanUse(ActionSkill)
             && _equippedSkills.Contains(ActionSkill)
             && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
@@ -344,6 +368,7 @@ public class CPlayer : CEntity
 
     protected override void OnDisable()
     {
+        SetDenialRestriction(EDenialRestriction.None);
         if (_stressResolution != null) _stressResolution.ResetState();
         base.OnDisable();
         if (_actionAnimation != null)
@@ -509,7 +534,7 @@ public class CPlayer : CEntity
         }
 
         CSkillDataSO skill = _equippedSkills[skillIndex];
-        if (!_skillUses.CanUse(skill) || !CSkillRankUtility.CanUseSkill(skill, _currentRank))
+        if (IsSkillDenied(skill) || !_skillUses.CanUse(skill) || !CSkillRankUtility.CanUseSkill(skill, _currentRank))
         {
             CancelSkillSelection();
             return false;
@@ -650,6 +675,7 @@ public class CPlayer : CEntity
             && !_isRequesting
             && CanIssueActionRequest
             && _selectedSkill != null
+            && !IsSkillDenied(_selectedSkill)
             && _skillUses.CanUse(_selectedSkill)
             && target != null
             && target.isActiveAndEnabled
@@ -1107,6 +1133,7 @@ public class CPlayer : CEntity
 
     public override void ResetEntityState()
     {
+        SetDenialRestriction(EDenialRestriction.None);
         if (_heroData == null) return;
         if (_stressResolution != null) _stressResolution.ResetState();
 

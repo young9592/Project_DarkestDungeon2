@@ -1,5 +1,15 @@
 using UnityEngine;
 
+[System.Flags]
+public enum EHeroDenialCategory
+{
+    None = 0,
+    Melee = 1,
+    Ranged = 2,
+    HealthRecovery = 4,
+    StressRecovery = 8
+}
+
 public enum EHeroSkillTarget
 {
     Enemy,
@@ -13,6 +23,14 @@ public enum EHeroSkillTarget
 [CreateAssetMenu(menuName = "Data/Hero/Skill", fileName = "HeroSkillSO_")]
 public class CHeroSkillSO : CSkillDataSO
 {
+    [Header("Denial")]
+    [SerializeField] private EHeroDenialCategory _denialCategories;
+
+    public EHeroDenialCategory DenialCategories
+    {
+        get { return BaseSkill._denialCategories; }
+    }
+
     [Header("Battle Limits")]
     [SerializeField, Min(0)] private int _usesPerBattle;
 

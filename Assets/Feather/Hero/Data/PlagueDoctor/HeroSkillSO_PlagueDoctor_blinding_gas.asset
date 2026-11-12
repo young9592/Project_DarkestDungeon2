@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_blinding_gas
   _feedback: {fileID: 11400000, guid: e554b015ffa02d34d829eece038d22fd, type: 2}
+  _denialCategories: 2

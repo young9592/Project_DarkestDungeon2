@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_magnesium_rain
   _feedback: {fileID: 11400000, guid: 9c913b3007d48ee4bba39252a385781f, type: 2}
+  _denialCategories: 2
