@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum EEnemyActionRequestResult
@@ -12,6 +12,7 @@ public enum EEnemyActionRequestResult
 public class CEnemyAI : MonoBehaviour
 {
     private CEnemy _enemy;
+    private CDenialLock _denialLock;
     private CSkillDataSO _plannedSkill;
     private CEntity _plannedTarget;
     private readonly List<CEntity> _plannedTargets = new List<CEntity>();
@@ -44,6 +45,7 @@ public class CEnemyAI : MonoBehaviour
     private void Awake()
     {
         _enemy = GetComponent<CEnemy>();
+        _denialLock = GetComponent<CDenialLock>();
         if (_enemy == null)
         {
             enabled = false;
@@ -161,6 +163,7 @@ public class CEnemyAI : MonoBehaviour
         }
         // 다른 스킬이 없으면 이동이 막힌 공격도 선택할 수 있게 둠
         if (usableSkills.Count == 0) usableSkills = blockedSkills;
+        ApplyDenialSkillPreference(usableSkills);
         // 대상 수가 스킬 선택 확률에 영향 주지 않게 스킬을 먼저 고름
         CSkillDataSO comboSkill = _enemy.EnemyData.ComboPrioritySkill;
         List<CEntity> comboTargets = usableSkills.Contains(comboSkill) ? GetComboTargets(comboSkill) : null;
@@ -201,7 +204,13 @@ public class CEnemyAI : MonoBehaviour
                 _plannedTarget = targets[i];
             }
         }
-        if (_plannedSkill.IsGroupTarget) _plannedTargets.AddRange(targets);
+        if (IsCripplingDoubt(_plannedSkill))
+        {
+            _plannedTargets.Add(_plannedTarget);
+            targets.Remove(_plannedTarget);
+            if (targets.Count > 0) _plannedTargets.Add(targets[Random.Range(0, targets.Count)]);
+        }
+        else if (_plannedSkill.IsGroupTarget) _plannedTargets.AddRange(targets);
         else _plannedTargets.Add(_plannedTarget);
         return true;
     }
@@ -239,6 +248,28 @@ public class CEnemyAI : MonoBehaviour
         return targets;
     }
 
+    private void ApplyDenialSkillPreference(List<CSkillDataSO> skills)
+    {
+        if (_denialLock == null) return;
+
+        // 봉쇄를 맡은 자물쇠는 고유 공격을 우선함
+        CSkillDataSO unique = _denialLock.UniqueSkill;
+        if (_denialLock.PreferUniqueAttack && skills.Contains(unique))
+        {
+            skills.Clear();
+            skills.Add(unique);
+        }
+        else if (skills.Contains(_denialLock.CripplingDoubt) || skills.Contains(_denialLock.ParalyzingFear))
+        {
+            skills.Remove(unique);
+        }
+    }
+
+    private bool IsCripplingDoubt(CSkillDataSO skill)
+    {
+        return _denialLock != null && skill == _denialLock.CripplingDoubt;
+    }
+
     private bool CanSelectSkill(CSkillDataSO skill)
     {
         return CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, skill, _enemy.CurrentHp) > 0
@@ -271,8 +302,9 @@ public class CEnemyAI : MonoBehaviour
         List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
         if (!targets.Contains(_plannedTarget)) return false;
         if (!_plannedSkill.IsGroupTarget) return _plannedTargets.Count == 1;
+        int expectedCount = IsCripplingDoubt(_plannedSkill) ? Mathf.Min(2, targets.Count) : targets.Count;
         if (!_plannedTargets.Contains(_plannedTarget)
-            || (!_hasRequestedAction && targets.Count != _plannedTargets.Count)) return false;
+            || (!_hasRequestedAction && expectedCount != _plannedTargets.Count)) return false;
         for (int i = 0; i < _plannedTargets.Count; i++)
         {
             if (!targets.Contains(_plannedTargets[i])) return false;

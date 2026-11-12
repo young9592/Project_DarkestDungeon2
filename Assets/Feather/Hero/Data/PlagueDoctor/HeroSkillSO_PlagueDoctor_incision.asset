@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_knifeslash
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_incision
   _feedback: {fileID: 11400000, guid: 1d28a5469177c964484454010f3a4098, type: 2}
+  _denialCategories: 1

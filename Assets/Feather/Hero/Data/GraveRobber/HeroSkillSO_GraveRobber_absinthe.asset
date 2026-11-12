@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_potion
   _executionStartState: Base Layer.OriginalAction_GraveRobber_artemisia
   _feedback: {fileID: 11400000, guid: 6935f6d402ab39d488c19d9bc9780308, type: 2}
+  _denialCategories: 4

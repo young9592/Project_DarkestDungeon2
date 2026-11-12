@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_plague_grenade
   _feedback: {fileID: 11400000, guid: 2f66297d3896ddf41927f723b2065a44, type: 2}
+  _denialCategories: 2

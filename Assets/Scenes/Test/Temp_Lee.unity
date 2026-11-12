@@ -16508,6 +16508,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 49e5cdc58c954a18afebd70f87f247e8, type: 2}
   - {fileID: 11400000, guid: a6795a6b337d4fe5a0305c36efcced23, type: 2}
   - {fileID: 11400000, guid: b538ed2ff4b64974a3a06017a65dfe77, type: 2}
+  - {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
   _spawnRoot: {fileID: 703342397}
   _rankSlots:
   - {fileID: 1348785775}
@@ -22066,6 +22067,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 49e5cdc58c954a18afebd70f87f247e8, type: 2}
   - {fileID: 11400000, guid: a6795a6b337d4fe5a0305c36efcced23, type: 2}
   - {fileID: 11400000, guid: b538ed2ff4b64974a3a06017a65dfe77, type: 2}
+  - {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
   _otherPanels:
   - {fileID: 1241616898}
   - {fileID: 745037724}

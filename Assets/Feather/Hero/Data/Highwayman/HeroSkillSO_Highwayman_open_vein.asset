@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_wicked_slice
   _executionStartState: Base Layer.OriginalAction_Highwayman_open_vein
   _feedback: {fileID: 11400000, guid: 112e8eddcfc6773409039aba2cf72de7, type: 2}
+  _denialCategories: 1

@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_tracking_shot
   _feedback: {fileID: 11400000, guid: 15310f582ad94534ba66b403b4edcea7, type: 2}
+  _denialCategories: 2

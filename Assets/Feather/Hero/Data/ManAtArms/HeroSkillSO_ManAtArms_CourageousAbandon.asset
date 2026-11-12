@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_bash
   _executionStartState: Base Layer.OriginalAction_ManAtArms_CourageousAbandon
   _feedback: {fileID: 11400000, guid: fed0aef3142320b458c2bcbd6e1028e1, type: 2}
+  _denialCategories: 1

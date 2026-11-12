@@ -21,9 +21,13 @@ public class CEnemyDamageStrategy : CEffectStrategy
 
         bool hasCombo = _criticalOnCombo && context.Target.TokenManager.HasToken(EEffectType.Combo);
         bool hasCriticalToken = context.ConsumeCasterTokenOnce(EEffectType.Crit);
-        context.IsCrit = hasCriticalToken || hasCombo || CHeroCriticalState.Roll(context.Caster, effectData.BaseChance);
+        context.Caster.TryGetComponent(out CDenialLock denialLock);
+        int criticalChance = effectData.BaseChance;
+        if (denialLock != null) criticalChance += denialLock.CriticalChanceBonus;
+        context.IsCrit = hasCriticalToken || hasCombo || CHeroCriticalState.Roll(context.Caster, criticalChance);
 
         float damage = effectData.RollValue(context.IsCrit);
+        if (denialLock != null) damage *= 1.0f + denialLock.DamageBonusPercent * 0.01f;
         if (context.IsCrit) damage *= 1.5f;
         if (context.ConsumeCasterTokenOnce(EEffectType.Strength)) damage *= 1.5f;
         if (context.ConsumeCasterTokenOnce(EEffectType.Weak)) damage *= 0.5f;
@@ -41,6 +45,7 @@ public class CEnemyDamageStrategy : CEffectStrategy
         if (hasCombo) context.Target.TokenManager.ConsumeToken(EEffectType.Combo);
 
         context.Target.TakeDamage(Mathf.RoundToInt(damage));
+        if (denialLock != null) denialLock.ApplyInheritedOnHitEffect(context);
     }
 
     private bool CheckHit(CEffectContext context)
