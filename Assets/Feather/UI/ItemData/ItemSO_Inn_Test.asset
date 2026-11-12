@@ -15,7 +15,7 @@ MonoBehaviour:
   _itemName: Inn
   _itemImage: {fileID: 21300000, guid: de8d686466bf3e4439dc2123e756daa4, type: 3}
   _itemState: 4
-  _currencyType: 0
+  _currencyType: 1
   _stateImage: {fileID: 21300000, guid: 460fb085a94ca2f47b8dbcdaa11a4147, type: 3}
   _stateColor: {r: 0.4037736, g: 0.37840265, b: 0.26740476, a: 1}
   _buyRelics: 4

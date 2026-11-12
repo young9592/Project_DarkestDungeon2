@@ -15,7 +15,7 @@ MonoBehaviour:
   _itemName: Combat
   _itemImage: {fileID: 21300000, guid: 775af82186ccc4546ba09b99ef305266, type: 3}
   _itemState: 2
-  _currencyType: 0
+  _currencyType: 1
   _stateImage: {fileID: 21300000, guid: a787beacc17cc5144bc872f8090642ac, type: 3}
   _stateColor: {r: 0.5169811, g: 0.04584547, b: 0.04584547, a: 1}
   _buyRelics: 3
