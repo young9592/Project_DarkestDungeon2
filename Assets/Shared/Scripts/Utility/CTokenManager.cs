@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,17 +8,26 @@ using UnityEngine;
 public class CTokenManager
 {
     // 기본 토큰 최대 중첩 수치 (변동 가능)
-    private const int Max_Token_STACK = 2;
+    private const int Max_Token_STACK = 3;
     private const int MAX_COMBO_STACK = 1;
+    private const int DEFAULT_TOKEN_DURATION = 2;
 
     // 내가 가지고 있는 토큰들 관리하는 딕셔너리
     // Key : EEffectType, Value : Stack
     private Dictionary<EEffectType, int> _tokenStacks = new Dictionary<EEffectType, int>();
 
+    private Dictionary<EEffectType, int> _tokenDurations = new Dictionary<EEffectType, int>();
+
     /// <summary>
-    /// 새로운 토큰 득시 호출
+    /// UI 갱신용
+    /// 스택이나 토큰이 0이 될시 (TOKENTYPE, 0, 0) 되도록
     /// </summary>
-    public void AddToken(EEffectType tokenType, int amount = 1)
+    public event Action<EEffectType, int, int> OnTokenChanged;
+
+    /// <summary>
+    /// 새로운 토큰  흭득시 호출
+    /// </summary>
+    public void AddToken(EEffectType tokenType, int amount = 1, int duration = 0)
     {
         EEffectType oppositeToken = GetOppositeToken(tokenType);
         if (oppositeToken != EEffectType.None)
@@ -46,9 +56,17 @@ public class CTokenManager
             _tokenStacks[tokenType] = maxStack;
         }
 
-        CPrint.Log($"[Token] {tokenType} 토큰 득! (현재 스택 : {_tokenStacks[tokenType]}");
+        int targetDuration = duration > 0 ? duration : DEFAULT_TOKEN_DURATION;
+        if (!_tokenDurations.ContainsKey(tokenType) || _tokenDurations[tokenType] < targetDuration)
+        {
+            _tokenDurations[tokenType] = targetDuration;
+        }
 
-        // TODO : UI 매니저에 이벤트를 보내 토큰 득 애니메이션 + 아이콘 갱신
+        int finalStack = _tokenStacks[tokenType];
+        int finalTurn = _tokenDurations[tokenType];
+
+        CPrint.Log($"[Token 흭득] {GetFormattedTooltip(tokenType)}");
+        OnTokenChanged?.Invoke(tokenType, finalStack, finalTurn);
     }
 
     /// <summary>
@@ -64,11 +82,53 @@ public class CTokenManager
 
         _tokenStacks[tokenType]--;
 
-        CPrint.Log($"[Token] {tokenType} 토큰 소모! (남은 스택 : {_tokenStacks[tokenType]}");
-
-        // TODO : UI 매니저에 이벤트 보내 토큰 깨지는 애니메이션 및 아이콘 추가
+        if (_tokenStacks[tokenType] <= 0 )
+        {
+            _tokenStacks.Remove(tokenType);
+            _tokenDurations.Remove(tokenType);
+            CPrint.Log($"[Token 소멸] [{tokenType}] 토큰 모두 소모");
+            OnTokenChanged?.Invoke(tokenType, 0, 0);
+        }
+        else
+        {
+            int remainStack = _tokenStacks[tokenType];
+            int remainTurn = GetTokenDuration(tokenType);
+            CPrint.Log($"[Token 1회 소모] [{tokenType}] 남은 스택 : ({remainStack}), 남은 턴: ({remainTurn}턴)");
+            OnTokenChanged?.Invoke(tokenType, remainStack, remainTurn);
+        }
 
         return true;
+    }
+
+    /// <summary>
+    /// 캐릭터 턴이 돌아오거나 끝날 때 호출해 남은 턴 차감
+    /// </summary>
+    public void TickTokenTurns()
+    {
+        if (_tokenDurations.Count == 0) return;
+
+        List<EEffectType> activeTypes = new List<EEffectType>(_tokenDurations.Keys);
+        foreach (EEffectType type in activeTypes)
+        {
+            if (type == EEffectType.Stun) continue;
+
+            _tokenDurations[type]--;
+
+            if (_tokenDurations[type] <= 0 )
+            {
+                _tokenDurations.Remove(type);
+                _tokenStacks.Remove(type);
+                CPrint.Log($"[Token 턴 만료] [{type}] 유지 시간이 끝나 소멸하였습니다.");
+                OnTokenChanged?.Invoke(type, 0, 0);
+            }
+            else
+            {
+                int currentStack = GetTokenStack(type);
+                int currentTurn = _tokenDurations[type];
+                CPrint.Log($"[Token 턴 감소] [{type}] 현재 스택 : ({currentStack}), 남은 턴: ({currentTurn}턴)");
+                OnTokenChanged?.Invoke(type, currentStack, currentTurn);
+            }
+        }
     }
 
     /// <summary>
@@ -85,8 +145,14 @@ public class CTokenManager
     /// </summary>
     public void ClearAllTokens()
     {
+        List<EEffectType> keys = new List<EEffectType>(_tokenStacks.Keys);
         _tokenStacks.Clear();
-        CPrint.Log($"[Token] 모든 토큰이 초기화되었습니다.");
+        _tokenDurations.Clear();
+
+        foreach (EEffectType type in keys)
+        {
+            OnTokenChanged?.Invoke(type, 0, 0);
+        }
     }
 
     /// <summary>
@@ -121,14 +187,16 @@ public class CTokenManager
         EEffectType.Block, EEffectType.BlockPlus,
         EEffectType.Dodge, EEffectType.DodgePlus,
         EEffectType.Strength, EEffectType.Crit,
-        EEffectType.Speed, EEffectType.Taunt
+        EEffectType.Speed, EEffectType.Taunt,
+        EEffectType.Riposte, EEffectType.Stealth,
+        EEffectType.Guard
     };
 
     private static readonly EEffectType[] _negativeTokens = new EEffectType[]
     {
         EEffectType.Blind, EEffectType.Weak,
         EEffectType.Vulnerable, EEffectType.Stun,
-        EEffectType.Combo
+        EEffectType.Combo, EEffectType.Immobilize
     };
 
     /// <summary>
@@ -139,7 +207,9 @@ public class CTokenManager
         if (_tokenStacks.TryGetValue(tokenType, out int count) && count > 0)
         {
             _tokenStacks.Remove(tokenType);
-            CPrint.Log($"[Token] [{tokenType}] 토큰 {count}개 제거됨");
+            _tokenDurations.Remove(tokenType);
+            CPrint.Log($"[Token 제거] [{tokenType}] 토큰 {count}스택 제거됨");
+            OnTokenChanged?.Invoke(tokenType, 0, 0);
             return count;
         }
         return 0;
@@ -167,12 +237,12 @@ public class CTokenManager
             if (stolenTypes >= maxTypesCount) break;
 
             EEffectType type = _positiveTokens[i];
-            if (_tokenStacks.TryGetValue(type, out int count) && count > 0)
+            if (_tokenStacks.TryGetValue(type, out int stackCount) && stackCount > 0)
             {
-                _tokenStacks.Remove(type);
-                receiver.AddToken(type, count);
+                int remainTurn = GetTokenDuration(type);
+                RemoveTokenAll(type);
+                receiver.AddToken(type, stackCount, remainTurn);
                 stolenTypes++;
-                CPrint.Log($"[Token 강탈] [{type}] 토큰 {count}개를 강탈하였습니다");
             }
         }
         return stolenTypes;
@@ -205,5 +275,56 @@ public class CTokenManager
         }
 
         return totalConsumed;
+    }
+
+    /// <summary>
+    /// [UI 연동용] 현재 남은 발동 횟수
+    /// </summary>
+    public int GetTokenStack(EEffectType tokenType)
+    {
+        return _tokenStacks.TryGetValue(tokenType, out int count) ? count : 0;
+    }
+
+    /// <summary>
+    /// [UI 연동용] 현재 남은 유지 턴 수
+    /// </summary>
+    public int GetTokenDuration(EEffectType tokenType)
+    {
+        return (_tokenDurations.TryGetValue(tokenType, out int turns) && HasToken(tokenType) ? turns : 0);
+    }
+
+    public string GetFormattedTooltip(EEffectType tokenType)
+    {
+        int stack = GetTokenStack(tokenType);
+        int turn = GetTokenDuration(tokenType);
+        if (stack <= 0) return string.Empty;
+
+        GetTokenDisplayText(tokenType, out string korName, out string desc);
+        return $"{korName} ({stack}): {desc} ({turn}턴)";
+    }
+
+    private void GetTokenDisplayText(EEffectType tokenType, out string korName, out string desc)
+    {
+        switch (tokenType)
+        {
+            case EEffectType.Dodge: korName = "회피"; desc = "50% 확률로 다음 공격을 회피"; break;
+            case EEffectType.DodgePlus: korName = "회피+"; desc = "75% 확률로 다음 공격을 회피"; break;
+            case EEffectType.Block: korName = "방어"; desc = "다음 공격으로 받는 피해 -50%"; break;
+            case EEffectType.BlockPlus: korName = "방어+"; desc = "다음 공격으로 받는 피해 -75%"; break;
+            case EEffectType.Strength: korName = "힘"; desc = "다음 공격 피해량 +50%"; break;
+            case EEffectType.Weak: korName = "약화"; desc = "다음 공격 피해량 -50%"; break;
+            case EEffectType.Crit: korName = "치명타"; desc = "다음 공격 시 치명타 확률 100%"; break;
+            case EEffectType.Vulnerable: korName = "취약"; desc = "다음 공격으로 받는 피해 +50%"; break;
+            case EEffectType.Blind: korName = "실명"; desc = "50% 확률로 다음 공격 빗나감"; break;
+            case EEffectType.Speed: korName = "속도"; desc = "다음 라운드 행동 속도 +3"; break;
+            case EEffectType.Taunt: korName = "도발"; desc = "적에게 공격 대상으로 강제 지정됨"; break;
+            case EEffectType.Riposte: korName = "반격"; desc = "피격 시 공격자에게 반격 피해"; break;
+            case EEffectType.Stealth: korName = "은신"; desc = "적의 단일 공격 대상에서 제외됨"; break;
+            case EEffectType.Guard: korName = "수호"; desc = "아군이 다음 공격을 대신 맞아줌"; break;
+            case EEffectType.Combo: korName = "연계"; desc = "특정 스킬 피격 시 추가 효과 발동"; break;
+            case EEffectType.Stun: korName = "기절"; desc = "다음 턴 행동 불가"; break;
+            case EEffectType.Immobilize: korName = "이동불가"; desc = "열 이동 및 밀치기/당기기 면역"; break;
+            default: korName = tokenType.ToString(); desc = "특수 상태 토큰"; break;
+        }
     }
 }

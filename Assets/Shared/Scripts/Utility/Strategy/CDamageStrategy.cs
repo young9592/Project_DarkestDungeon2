@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [CreateAssetMenu(menuName = "Strategy/Effect/DamageStrategy", fileName = "DamageStrategy_")]
 public class CDamageStrategy : CEffectStrategy
@@ -34,7 +35,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 CPrint.Log($"[{attacker.name}] 의 공격이 [{defender.name}]에게서 빗나갔습니다.");
                 context.IsHit = false;
-                TryTriggerRiposte(defender, attacker);
+                //TryTriggerRiposte(defender, attacker);
                 return;
             }
         }
@@ -47,7 +48,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 CPrint.Log($"[{defender.name}] 의 [회피+] 토큰으로 공격을 회피했습니다.");
                 context.IsHit = false;
-                TryTriggerRiposte(defender, attacker);
+                //TryTriggerRiposte(defender, attacker);
                 return;
             }
         }
@@ -58,7 +59,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 CPrint.Log($"[{defender.name}] 의 [회피] 토큰으로 공격을 회피했습니다.");
                 context.IsHit = false;
-                TryTriggerRiposte(defender, attacker);
+                //TryTriggerRiposte(defender, attacker);
                 return;
             }
         }
@@ -126,10 +127,44 @@ public class CDamageStrategy : CEffectStrategy
         // 계산이 다 끝난 최종 데미지 수치만 전달받음
         defender.TakeDamage(calculatedDamage);
 
-        TryTriggerRiposte(defender, attacker);
+        //TryTriggerRiposte(defender, attacker);
     }
 
     private static bool _isExecutingRiposte = false;
+
+    public static bool TryExecuteRiposte(CEntity defender, CEntity attacker)
+    {
+        if (defender == null || attacker == null || defender == attacker) return false;
+        if (defender.IsDead || attacker.IsDead) return false;
+        if (defender.TokenManager.HasToken(EEffectType.Stun)) return false;
+
+        if (!defender.TokenManager.ConsumeToken(EEffectType.Riposte))
+        {
+            return false;
+        }
+
+        if (defender.RiposteSkill != null && defender.RiposteSkill.EffectList != null)
+        {
+            CPrint.Log($"[특수 반격 발동] [{defender.name}] → [{attacker.name}] 에게 <{defender.RiposteSkill.SkillName}> 실행");
+            CEffectContext riposteContext = new CEffectContext(defender, attacker);
+
+            foreach(CEffectSO effectData in defender.RiposteSkill.EffectList)
+            {
+                if (effectData == null || effectData.Strategy == null) continue;
+                if (attacker.IsDead && effectData.EffectTarget != EEffectTarget.Self) break;
+
+                effectData.Strategy.Apply(riposteContext, effectData);
+            }
+        }
+        else
+        {
+            int riposteDamage = UnityEngine.Random.Range(3, 6);
+            CPrint.Log($"[기본 반격 발동] [{defender.name}] 가 [{attacker.name}] 에게 [{riposteDamage}] 반격 피해를 입힙니다.");
+            attacker.TakeDamage(riposteDamage);
+        }
+
+        return true;
+    }
 
     private void TryTriggerRiposte(CEntity defender, CEntity attacker)
     {

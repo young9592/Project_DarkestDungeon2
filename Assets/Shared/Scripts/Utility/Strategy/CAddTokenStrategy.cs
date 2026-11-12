@@ -9,6 +9,8 @@ public class CAddTokenStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
+        if (context == null || context.Target == null || effectData == null) return;
+
         // 디버프성 토큰인데 공격 빗나갈시 부여 취소
         if (!context.IsHit && context.Target != context.Caster)
         {
@@ -25,6 +27,6 @@ public class CAddTokenStrategy : CEffectStrategy
 
         // Damage 필드를 부여할 토큰 개수(기본 1개)로 하거나 1로 고정
         int amount = Mathf.Max(1, effectData.Damage);
-        context.Target.TokenManager.AddToken(tokenToApply, amount);
+        context.Target.TokenManager.AddToken(tokenToApply, amount, effectData.Duration);
     }
 }
