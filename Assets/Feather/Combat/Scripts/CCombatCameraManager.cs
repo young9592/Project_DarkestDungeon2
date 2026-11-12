@@ -1,14 +1,12 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class CCombatCameraManager : MonoBehaviour
 {
     // 전투 연출 타입
-    public enum CombatTarget
+    public enum ECombatTarget
     {
         None,
         Hero_Attack,
@@ -21,31 +19,35 @@ public class CCombatCameraManager : MonoBehaviour
         Enemy_MultiTargetBuff,
     }
 
-    public enum CameraMoveDirection
+    public enum ECameraMoveDirection
     {
         None,
         Left,
         Right
     }
 
-
     #region Inspector
 
     [Header("Connect")]
     [SerializeField] private CCombatManager _combatManager;
     [SerializeField] private CCombatUI _combatUI;
-    [SerializeField] private Camera _camera;
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private Camera _highlightCamera;
     [SerializeField] private CCombatFloatingMessageManager _messageManager;
 
     [Header("Option")]
     [SerializeField] private string _highlightLayerName = "Highlight";
     [SerializeField] private string _defaultLayerName = "Default";
+
+    [Header("Riposte data")]
+    [SerializeField] private CSkillDataSO hwm;
+    [SerializeField] private CSkillDataSO man;
+    [SerializeField] private CSkillDataSO testRiposte;
     #endregion
 
     #region Field
     private HashSet<CEntity> _onceMessage = new HashSet<CEntity>();
-    private Transform _cameraTr;
-    private Vector3 _initVec;
+    private Transform _highlightCamTr;
     #endregion
 
     private void Awake()
@@ -56,7 +58,13 @@ public class CCombatCameraManager : MonoBehaviour
             return;
         }
 
-        if (CPrint.NullUnityObjectCheck(gameObject.name, _camera))
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _mainCamera))
+        {
+            enabled = false;
+            return;
+        }
+
+        if (CPrint.NullUnityObjectCheck(gameObject.name, _highlightCamera))
         {
             enabled = false;
             return;
@@ -83,28 +91,13 @@ public class CCombatCameraManager : MonoBehaviour
             return;
         }
 
-        _cameraTr = _camera.transform;
-        _initVec = _cameraTr.position;
-    }
-
-    public void ViewReset()
-    {
-        _cameraTr.position = _initVec;
-    }
-    public void ViewLeft()
-    {
-
-    }
-
-    public void ViewRight()
-    {
-
+        _highlightCamTr = _highlightCamera.transform;
     }
 
     // 행동 시 카메라 연출
     public Coroutine CombatAction(CEntity actor, IReadOnlyList<CEntity> entities)
     {
-        CombatTarget combatTarget = CombatTarget.None;
+        ECombatTarget combatTarget = ECombatTarget.None;
 
         // 판정
         bool isHero = actor is CPlayer;
@@ -114,7 +107,7 @@ public class CCombatCameraManager : MonoBehaviour
             // 자버프
             if (entities.Count == 0)
             {
-                combatTarget = CombatTarget.Hero_SoloBuff;
+                combatTarget = ECombatTarget.Hero_SoloBuff;
             }
             else
             {
@@ -123,21 +116,21 @@ public class CCombatCameraManager : MonoBehaviour
 
                 if (isAlly)
                 {
-                    combatTarget = CombatTarget.Hero_SingleTargetBuff;
+                    combatTarget = ECombatTarget.Hero_SingleTargetBuff;
 
                     // 본인 포함된 스킬인 경우
                     for (int i = 0; i < entities.Count; i++)
                     {
                         if (actor.Equals(entities[i]))
                         {
-                            combatTarget = CombatTarget.Hero_MultiTargetBuff;
+                            combatTarget = ECombatTarget.Hero_MultiTargetBuff;
                             break;
                         }
                     }
                 }
                 else
                 {
-                    combatTarget = CombatTarget.Hero_Attack;
+                    combatTarget = ECombatTarget.Hero_Attack;
                 }
             }
         }
@@ -145,7 +138,7 @@ public class CCombatCameraManager : MonoBehaviour
         {
             if (entities.Count == 0)
             {
-                combatTarget = CombatTarget.Enemy_SoloBuff;
+                combatTarget = ECombatTarget.Enemy_SoloBuff;
             }
             else
             {
@@ -153,20 +146,20 @@ public class CCombatCameraManager : MonoBehaviour
 
                 if (isAlly)
                 {
-                    combatTarget = CombatTarget.Enemy_SingleTargetBuff;
+                    combatTarget = ECombatTarget.Enemy_SingleTargetBuff;
 
                     for (int i = 0; i < entities.Count; i++)
                     {
                         if (actor.Equals(entities[i]))
                         {
-                            combatTarget = CombatTarget.Enemy_MultiTargetBuff;
+                            combatTarget = ECombatTarget.Enemy_MultiTargetBuff;
                             break;
                         }
                     }
                 }
                 else
                 {
-                    combatTarget = CombatTarget.Enemy_Attack;
+                    combatTarget = ECombatTarget.Enemy_Attack;
                 }
             }
         }
@@ -174,20 +167,20 @@ public class CCombatCameraManager : MonoBehaviour
         return CombatActionProcess(combatTarget, actor, entities);
     }
 
-    private Coroutine CombatActionProcess(CombatTarget combatTarget, CEntity actor, IReadOnlyList<CEntity> entities)
+    private Coroutine CombatActionProcess(ECombatTarget combatTarget, CEntity actor, IReadOnlyList<CEntity> entities)
     {
         // 이동 시키기 위해 transform 가져오기
         List<Transform> entitiesTr = new List<Transform>();
         // 카메라 이동방향
-        CameraMoveDirection moveDir = CameraMoveDirection.None;
+        ECameraMoveDirection moveDir = ECameraMoveDirection.None;
         // 반격 토큰을 가지고 있다면 중간에 화면을 다시 꺽어줘야합니다.
         CEntity riposteEntity = null;
 
         switch (combatTarget)
         {
-            case CombatTarget.None:
+            case ECombatTarget.None:
                 break;
-            case CombatTarget.Hero_Attack:
+            case ECombatTarget.Hero_Attack:
                 entitiesTr.Add(actor.gameObject.transform);
 
                 for (int i = 0; i < entities.Count; i++)
@@ -195,7 +188,7 @@ public class CCombatCameraManager : MonoBehaviour
                     entitiesTr.Add(entities[i].gameObject.transform);
                 }
 
-                moveDir = CameraMoveDirection.Right;
+                moveDir = ECameraMoveDirection.Right;
 
                 // TODO : 상대에게 반격 토큰 있는지 체크 필요
                 ERank minRank = ERank.None;
@@ -223,11 +216,11 @@ public class CCombatCameraManager : MonoBehaviour
                 }
 
                 break;
-            case CombatTarget.Hero_SoloBuff:
+            case ECombatTarget.Hero_SoloBuff:
                 entitiesTr.Add(actor.gameObject.transform);
-                moveDir = CameraMoveDirection.Right;
+                moveDir = ECameraMoveDirection.Right;
                 break;
-            case CombatTarget.Hero_SingleTargetBuff:
+            case ECombatTarget.Hero_SingleTargetBuff:
                 if (actor.CurrentRank > entities[0].CurrentRank)
                 {
                     entitiesTr.Add(actor.gameObject.transform);
@@ -238,24 +231,24 @@ public class CCombatCameraManager : MonoBehaviour
                     entitiesTr.Add(entities[0].gameObject.transform);
                     entitiesTr.Add(actor.gameObject.transform);
                 }
-                moveDir = CameraMoveDirection.Right;
+                moveDir = ECameraMoveDirection.Right;
                 break;
-            case CombatTarget.Hero_MultiTargetBuff:
+            case ECombatTarget.Hero_MultiTargetBuff:
                 for (int i = 0; i < entities.Count; i++)
                 {
                     entitiesTr.Add(entities[i].gameObject.transform);
                 }
 
-                moveDir = CameraMoveDirection.Right;
+                moveDir = ECameraMoveDirection.Right;
                 break;
-            case CombatTarget.Enemy_Attack:
+            case ECombatTarget.Enemy_Attack:
                 for (int i = 0; i < entities.Count; i++)
                 {
                     entitiesTr.Add(entities[i].gameObject.transform);
                 }
                 entitiesTr.Add(actor.gameObject.transform);
 
-                moveDir = CameraMoveDirection.Left;
+                moveDir = ECameraMoveDirection.Left;
 
                 // TODO : 상대에게 반격 토큰 있는지 체크 필요
 
@@ -284,11 +277,11 @@ public class CCombatCameraManager : MonoBehaviour
                     }
                 }
                 break;
-            case CombatTarget.Enemy_SoloBuff:
+            case ECombatTarget.Enemy_SoloBuff:
                 entitiesTr.Add(actor.gameObject.transform);
-                moveDir = CameraMoveDirection.Left;
+                moveDir = ECameraMoveDirection.Left;
                 break;
-            case CombatTarget.Enemy_SingleTargetBuff:
+            case ECombatTarget.Enemy_SingleTargetBuff:
                 if (actor.CurrentRank < entities[0].CurrentRank)
                 {
                     entitiesTr.Add(actor.gameObject.transform);
@@ -299,16 +292,16 @@ public class CCombatCameraManager : MonoBehaviour
                     entitiesTr.Add(entities[0].gameObject.transform);
                     entitiesTr.Add(actor.gameObject.transform);
                 }
-                moveDir = CameraMoveDirection.Left;
+                moveDir = ECameraMoveDirection.Left;
 
                 break;
-            case CombatTarget.Enemy_MultiTargetBuff:
+            case ECombatTarget.Enemy_MultiTargetBuff:
                 for (int i = 0; i < entities.Count; i++)
                 {
                     entitiesTr.Add(entities[i].gameObject.transform);
                 }
 
-                moveDir = CameraMoveDirection.Left;
+                moveDir = ECameraMoveDirection.Left;
                 break;
 
         }
@@ -316,7 +309,7 @@ public class CCombatCameraManager : MonoBehaviour
         return StartCoroutine(CoAction(actor, entitiesTr, moveDir, combatTarget, riposteEntity));
     }
 
-    private IEnumerator CoAction(CEntity actor, List<Transform> entitiesTr, CameraMoveDirection moveDir, CombatTarget combatTarget, CEntity riposteEntity)
+    private IEnumerator CoAction(CEntity actor, List<Transform> entitiesTr, ECameraMoveDirection moveDir, ECombatTarget combatTarget, CEntity riposteEntity)
     {
         _onceMessage.Clear();
 
@@ -337,9 +330,9 @@ public class CCombatCameraManager : MonoBehaviour
         float messageDelay = 0.1f;
         float nextTime = Time.time + delay;
         float nextMsgTime = Time.time + messageDelay;
-        float move = moveDir == CameraMoveDirection.Right ? 0.5f : -0.5f;
+        float move = moveDir == ECameraMoveDirection.Right ? 0.5f : -0.5f;
         List<Vector3> moveVec = new List<Vector3>();
-        _camera.orthographicSize = 2f;
+        _highlightCamera.orthographicSize = 2f;
 
         for (int i = 0; i < camInitPos.Count; i++)
         {
@@ -350,13 +343,13 @@ public class CCombatCameraManager : MonoBehaviour
         _combatUI.ToggleEntityStateRoot(false);
         _combatUI.ToggleIndicatorRoot(false);
         _combatUI.HideAllIndicator();
-        
+
         // 공격 방향에 따라 이펙트
-        if (combatTarget == CombatTarget.Hero_Attack)
+        if (combatTarget == ECombatTarget.Hero_Attack)
         {
             _combatUI.AttackRight();
         }
-        else if (combatTarget == CombatTarget.Enemy_Attack)
+        else if (combatTarget == ECombatTarget.Enemy_Attack)
         {
             _combatUI.AttackLeft();
         }
@@ -395,18 +388,18 @@ public class CCombatCameraManager : MonoBehaviour
                     continue;
                 }
 
-                if (combatTarget == CombatTarget.Hero_Attack || combatTarget == CombatTarget.Enemy_Attack)
+                if (combatTarget == ECombatTarget.Hero_Attack || combatTarget == ECombatTarget.Enemy_Attack)
                 {
                     if (_onceMessage.Contains(entity))
                     {
                         continue;
                     }
 
-                    if (entityIsHero && combatTarget == CombatTarget.Enemy_Attack)
+                    if (entityIsHero && combatTarget == ECombatTarget.Enemy_Attack)
                     {
                         if (entity.IsDead)
                         {
-                            _messageManager.ShowIcon(entityObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowIcon(entityObject, CIcon.IconType.DeathBlow);
                             _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
                             _onceMessage.Add(entity);
                         }
@@ -416,7 +409,7 @@ public class CCombatCameraManager : MonoBehaviour
                             _onceMessage.Add(entity);
                         }
                     }
-                    else if (!entityIsHero && combatTarget == CombatTarget.Hero_Attack)
+                    else if (!entityIsHero && combatTarget == ECombatTarget.Hero_Attack)
                     {
                         if (entity is CEnemyCorpse)
                         {
@@ -425,7 +418,7 @@ public class CCombatCameraManager : MonoBehaviour
 
                         if (entity.IsDead)
                         {
-                            _messageManager.ShowIcon(entityObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowIcon(entityObject, CIcon.IconType.DeathBlow);
                             _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
                             _onceMessage.Add(entity);
                         }
@@ -442,7 +435,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         // 반격 액션 재생 [ 임시 ]
         // 아직 전략 사용법을 몰라서 임시 처리하였습니다.
-        if (riposteEntity != null && !riposteEntity.IsDead && (combatTarget == CombatTarget.Hero_Attack || combatTarget == CombatTarget.Enemy_Attack))
+        if (riposteEntity != null && !riposteEntity.IsDead && (combatTarget == ECombatTarget.Hero_Attack || combatTarget == ECombatTarget.Enemy_Attack))
         {
             _onceMessage.Clear();
             moveVec.Clear();
@@ -459,33 +452,41 @@ public class CCombatCameraManager : MonoBehaviour
             }
 
             // 반대 방향으로 반격
-            if (combatTarget == CombatTarget.Hero_Attack)
+            if (combatTarget == ECombatTarget.Hero_Attack)
             {
                 _combatUI.AttackLeft();
             }
-            else if (combatTarget == CombatTarget.Enemy_Attack)
+            else if (combatTarget == ECombatTarget.Enemy_Attack)
             {
                 _combatUI.AttackRight();
             }
 
-            //actor.CancelAction();
-            //riposteEntity.CancelAction();
-            
             // 데미지 처리
             bool isHero = riposteEntity is CPlayer;
             if (isHero)
             {
-                //riposteEntity.ResetEntityState();
-                yield return new WaitForSeconds(0.1f);
-                //riposteEntity.TryBeginAction();
-                riposteEntity.TokenManager.ConsumeToken(EEffectType.Riposte);
+                if (riposteEntity.EntityData.Id == "hero_man_at_arms")
+                {
+                    riposteEntity.SetRiposteSkill(man);
+                }
+                else if (riposteEntity.EntityData.Id == "hero_highwayman")
+                {
+                    riposteEntity.SetRiposteSkill(hwm);
+                }
+
+                riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 100f;
+                actor.gameObject.GetComponentInChildren<Animator>().speed = 100f;
+                yield return new WaitForSeconds(0.05f);
+                riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 0f;
+                actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 (riposteEntity as CPlayer).TryQueueRipostePresentation();
+                CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
             }
             else
             {
-                riposteEntity.TokenManager.ConsumeToken(EEffectType.Riposte);
-                int rand = Random.Range(1, 5);
-                actor.TakeDamage(rand);
+                riposteEntity.SetRiposteSkill(testRiposte);
+                CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
+
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -501,11 +502,11 @@ public class CCombatCameraManager : MonoBehaviour
                     bool actorIsHero = actor is CPlayer;
                     GameObject actorObject = actor.gameObject;
 
-                    if (actorIsHero && combatTarget == CombatTarget.Enemy_Attack)
+                    if (actorIsHero && combatTarget == ECombatTarget.Enemy_Attack)
                     {
                         if (actor.IsDead)
                         {
-                            _messageManager.ShowIcon(actorObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowIcon(actorObject, CIcon.IconType.DeathBlow);
                             _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
                             _onceMessage.Add(actor);
                         }
@@ -515,7 +516,7 @@ public class CCombatCameraManager : MonoBehaviour
                             _onceMessage.Add(actor);
                         }
                     }
-                    else if (!actorIsHero && combatTarget == CombatTarget.Hero_Attack)
+                    else if (!actorIsHero && combatTarget == ECombatTarget.Hero_Attack)
                     {
                         if (actor is CEnemyCorpse)
                         {
@@ -524,7 +525,7 @@ public class CCombatCameraManager : MonoBehaviour
 
                         if (actor.IsDead)
                         {
-                            _messageManager.ShowIcon(actorObject, CCombatFloatingIcon.IconType.DeathStemp);
+                            _messageManager.ShowIcon(actorObject, CIcon.IconType.DeathBlow);
                             _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
                             _onceMessage.Add(actor);
                         }
@@ -549,17 +550,6 @@ public class CCombatCameraManager : MonoBehaviour
                 yield return null;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
         for (int i = 0; i < entitiesTr.Count; i++)
@@ -603,7 +593,7 @@ public class CCombatCameraManager : MonoBehaviour
                 entitiesTr[i].position = Vector3.Lerp(entitiesTr[i].position, returnVectorList[i], t);
             }
 
-            _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, 5f, t);
+            _highlightCamera.orthographicSize = Mathf.Lerp(_highlightCamera.orthographicSize, 5f, t);
 
             yield return null;
         }
@@ -661,7 +651,7 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         // 사전작업
-        _camera.orthographicSize = 1f;
+        _highlightCamera.orthographicSize = 1f;
 
         int layer = LayerMask.NameToLayer(_highlightLayerName);
         HighlightCharacter(hero.gameObject, layer);
@@ -704,7 +694,7 @@ public class CCombatCameraManager : MonoBehaviour
         int tick = 0;
 
         Quaternion rot = initQuat * Quaternion.Euler(0, 0, 0.5f);
-        Quaternion _cameraRot = _cameraTr.rotation;
+        Quaternion _cameraRot = _highlightCamTr.rotation;
 
         _combatUI.TogglePrefabRoot(false);
 
@@ -738,7 +728,7 @@ public class CCombatCameraManager : MonoBehaviour
 
                     if (tick > 30)
                     {
-                        _cameraTr.rotation = Quaternion.Euler(cameraBraveEffect ? Random.Range(0, bravePower) / 100f : -Random.Range(0, bravePower) / 100f, 0, 0);
+                        _highlightCamTr.rotation = Quaternion.Euler(cameraBraveEffect ? Random.Range(0, bravePower) / 100f : -Random.Range(0, bravePower) / 100f, 0, 0);
                         cameraBraveEffect = !cameraBraveEffect;
                         tick = Random.Range(0, 5);
                     }
@@ -752,7 +742,7 @@ public class CCombatCameraManager : MonoBehaviour
             }
         }
 
-        _cameraTr.rotation = _cameraRot;
+        _highlightCamTr.rotation = _cameraRot;
         _combatUI.TogglePrefabRoot(true);
         _combatUI.ResetCombatPanel();
 
@@ -767,14 +757,14 @@ public class CCombatCameraManager : MonoBehaviour
             heroTr.position = Vector3.Lerp(heroTr.position, initPos, dt);
             heroTr.rotation = Quaternion.Lerp(heroTr.rotation, initQuat, dt);
             heroTr.localScale = Vector3.Lerp(heroTr.localScale, initScale, dt);
-            _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, 5f, dt);
+            _highlightCamera.orthographicSize = Mathf.Lerp(_highlightCamera.orthographicSize, 5f, dt);
             yield return null;
         }
 
         heroTr.position = initPos;
         heroTr.rotation = initQuat;
         heroTr.localScale = initScale;
-        _camera.orthographicSize = 5f;
+        _highlightCamera.orthographicSize = 5f;
 
         layer = LayerMask.NameToLayer(_defaultLayerName);
         HighlightCharacter(hero.gameObject, layer);

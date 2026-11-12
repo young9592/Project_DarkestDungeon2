@@ -1232,10 +1232,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _combatManager: {fileID: 540853368}
   _combatUI: {fileID: 1696955578}
-  _camera: {fileID: 722894030}
+  _mainCamera: {fileID: 776204194}
+  _highlightCamera: {fileID: 722894030}
   _messageManager: {fileID: 2125789383}
   _highlightLayerName: Highlight
   _defaultLayerName: Default
+  hwm: {fileID: 11400000, guid: b57213c861cea334680e3b6485476a0a, type: 2}
+  man: {fileID: 11400000, guid: b57213c861cea334680e3b6485476a0a, type: 2}
+  testRiposte: {fileID: 11400000, guid: c6e3f13c986d2294fac0234746357aca, type: 2}
 --- !u!1 &252759437
 GameObject:
   m_ObjectHideFlags: 0
@@ -3269,7 +3273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _heroPartyPreset: {fileID: 11400000, guid: baff11290b25bde4998c91689225c4f6, type: 2}
+  _heroPartyPreset: {fileID: 11400000, guid: d48c06f3b4451e44087476f37891fbb0, type: 2}
   _heroRankPosition:
   - {fileID: 1592749159}
   - {fileID: 264886586}
@@ -3304,7 +3308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: 0a3008b566a75ef4d92891a13cad1a7c, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: 9fa4a031b91a7c44899010fc6e102b2b, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}
@@ -9468,7 +9472,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282045497}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9620,9 +9624,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2035227789}
+  - {fileID: 1282045498}
   - {fileID: 2119594960}
   - {fileID: 552428675}
-  - {fileID: 1282045498}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -13412,7 +13416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9fb272744f7aac45b13c9085d156611, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canvas: {fileID: 1297354844}
+  _canvas: {fileID: 384005849}
   _combatManager: {fileID: 540853368}
   _combatFrontPanel: {fileID: 2035227788}
   _meltdownPanel: {fileID: 1944139019}

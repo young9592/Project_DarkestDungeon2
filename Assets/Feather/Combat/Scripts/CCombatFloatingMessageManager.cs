@@ -38,31 +38,26 @@ public class CCombatFloatingMessageManager : MonoBehaviour
 
     // 현재는 죽음의 일격정도만 있습니다.
     // TODO : 스트레스, 스트레스 회복
-    public GameObject ShowIcon(GameObject target, CCombatFloatingIcon.IconType iconType, float delay = 0f)
+    public GameObject ShowIcon(GameObject target, CIcon.IconType iconType, float delay = 0f)
     {
         GameObject iconPrefab = default;
 
         switch (iconType)
         {
-            case CCombatFloatingIcon.IconType.None:
-                break;
-            case CCombatFloatingIcon.IconType.DeathStemp:
+            case CIcon.IconType.DeathBlow:
                 iconPrefab = _deathStampPrefab;
                 break;
-            case CCombatFloatingIcon.IconType.Stress:
+            case CIcon.IconType.Stress:
                 iconPrefab = _stressPrefab;
                 break;
-            case CCombatFloatingIcon.IconType.StressHealing:
+            case CIcon.IconType.StressHeal:
                 iconPrefab = _stressHealPrefab;
-                break;
-                break;
-            default:
                 break;
         }
 
 
         GameObject showPrefab = Instantiate(iconPrefab, _iconPrefabRoot.transform);
-        CCombatFloatingIcon icon = showPrefab.GetComponent<CCombatFloatingIcon>();
+        CIcon icon = showPrefab.GetComponent<CIcon>();
 
         if (delay == 0f)
         {
