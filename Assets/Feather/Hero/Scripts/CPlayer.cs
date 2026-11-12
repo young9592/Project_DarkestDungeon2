@@ -832,7 +832,7 @@ public class CPlayer : CEntity
             case EEffectType.Taunt:
             case EEffectType.Immobilize:
             case EEffectType.Combo:
-                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
                 if (_statusMessage != null && TokenManager.HasToken(tokenType)) _statusMessage.ShowAdded(tokenType);
                 break;
         }
@@ -938,6 +938,8 @@ public class CPlayer : CEntity
                     ModifyStress(horrorStress);
                 }
             }
+
+            TokenManager.TickTokenTurns();
 
             if (TokenManager.HasToken(EEffectType.Stun))
             {

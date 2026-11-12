@@ -564,6 +564,10 @@ public class CEnemy : CEntity
             }
             _isDead = true;
             _isDeathsDoor = false;
+
+            TokenManager.ClearAllTokens();
+            _activeStatusEffects.Clear();
+
             _deathPresentation.TryPlayConfirmedDeath();
             return;
         }
@@ -610,7 +614,7 @@ public class CEnemy : CEntity
             case EEffectType.Taunt:
             case EEffectType.Immobilize:
             case EEffectType.Combo:
-                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
                 break;
         }
     }
@@ -703,6 +707,12 @@ public class CEnemy : CEntity
             }
 
             if (!isActiveAndEnabled || _isDead || IsDeathPresented) return false;
+
+            if (!isExtraAction)
+            {
+                TokenManager.TickTokenTurns();
+            }
+
             return !TokenManager.ConsumeToken(EEffectType.Stun);
         }
         finally
@@ -737,6 +747,11 @@ public class CEnemy : CEntity
             _activeStatusEffects.RemoveAt(i);
         }
         return (int)Math.Min(int.MaxValue, total);
+    }
+
+    public override int DetonateAllDots()
+    {
+        return ConsumeRemainingDotDamage();
     }
 
     private bool IsDotEffect(EEffectType type)
