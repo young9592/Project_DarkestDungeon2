@@ -25,8 +25,6 @@ public class CTheInnUINavigationBar : MonoBehaviour
 
     private GameObject _currentOpenObject;
 
-    private EInnUI _currentOpenUI = EInnUI.None;
-
     private string _originalTitleText = "Torch and Crown";
 
     private bool _isBiomeSelected = false;
