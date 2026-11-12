@@ -7,6 +7,7 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     [SerializeField] private CHeroFeedbackVisual _launch;
     [SerializeField] private CHeroFeedbackVisual _projectile;
     [SerializeField] private CHeroFeedbackVisual _impact;
+    [SerializeField] private bool _playGroupImpactOnRelease;
     [SerializeField, Range(0.0f, 0.8f)] private float _releaseTime = 0.1f;
     [SerializeField, Range(1, 3)] private int _shotCount = 1;
     [SerializeField, Range(0.05f, 0.25f)] private float _shotSpacing = 0.15f;
@@ -27,6 +28,10 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     public CHeroFeedbackVisual Impact
     {
         get { return _impact; }
+    }
+    public bool PlayGroupImpactOnRelease
+    {
+        get { return _playGroupImpactOnRelease; }
     }
     public float ReleaseTime
     {

@@ -122,6 +122,12 @@ public class CHeroSkillFeedback : MonoBehaviour
         if (_feedback == null) return;
         int version = _feedbackVersion;
         _shots++;
+        if (_feedback.PlayGroupImpactOnRelease)
+        {
+            PlayGroupImpact();
+            return;
+        }
+
         Vector3 origin = Center(_hero);
         if (_feedback.Projectile != null && _projectileOrigin != null)
         {
@@ -158,6 +164,29 @@ public class CHeroSkillFeedback : MonoBehaviour
         }
     }
 
+    private void PlayGroupImpact()
+    {
+        CEntity firstTarget = null;
+        Vector3 center = Vector3.zero;
+        int count = 0;
+        for (int i = 0; i < _targets.Count; i++)
+        {
+            CEntity target = _targets[i];
+            if (target == null) continue;
+
+            if (firstTarget == null) firstTarget = target;
+            center += Center(target);
+            count++;
+        }
+
+        if (count == 0) return;
+        center /= count;
+        // 광역 이펙트는 대상들 가운데 한 번만 재생함
+        Spawn(_feedback.Impact, center, center, 0, false);
+        PlaySound(_feedback.ImpactSound);
+        OnImpactPlayed?.Invoke(_skill, firstTarget, center);
+    }
+
     private void AttackCompleted(CEntity actor)
     {
         if (_feedback == null) return;
@@ -168,7 +197,7 @@ public class CHeroSkillFeedback : MonoBehaviour
             if (version != _feedbackVersion) return;
         }
 
-        if (_hasDamage || _hasHeal) return;
+        if (_feedback.PlayGroupImpactOnRelease || _hasDamage || _hasHeal) return;
         // 아직 효과가 없는 보조 스킬도 선택한 대상에 연출만 재생
         for (int i = 0; i < _targets.Count; i++)
         {
@@ -194,7 +223,8 @@ public class CHeroSkillFeedback : MonoBehaviour
 
     private void Impact(CEntity target)
     {
-        if (_feedback == null || target == null || !_targets.Contains(target) || _impacted.Contains(target)) return;
+        if (_feedback == null || _feedback.PlayGroupImpactOnRelease) return;
+        if (target == null || !_targets.Contains(target) || _impacted.Contains(target)) return;
         _impacted.Add(target);
         Vector3 point = Center(target);
         Spawn(_feedback.Impact, point, point, 0, false);

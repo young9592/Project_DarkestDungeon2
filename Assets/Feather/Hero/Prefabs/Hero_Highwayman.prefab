@@ -69,6 +69,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 5896640174750390059}
+  _riposteActionState: Base Layer.RiposteAction
+  _riposteRecoveryState: Base Layer.RiposteRecovery
   _attackSkills:
   - {fileID: 11400000, guid: 42297f9ce4e12b04ea3aba5e192a2fcd, type: 2}
   - {fileID: 11400000, guid: 5014933490c21d14e8e06d3df48d5448, type: 2}

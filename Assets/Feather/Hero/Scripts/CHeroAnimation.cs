@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CHeroAnimation : MonoBehaviour
 {
-    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown, Resolute }
+    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown, Resolute, Riposte }
 
     [Header("Animation")]
     [SerializeField] private Animator _animator;
@@ -12,6 +12,13 @@ public class CHeroAnimation : MonoBehaviour
 
     [SerializeField, Range(0.0f, 0.3f)] private float _returnBlendDuration = 0.12f;
 
+    [Header("Riposte")]
+    [SerializeField] private string _riposteActionState;
+    [SerializeField] private string _riposteRecoveryState;
+
+    private bool _riposteQueued;
+    private int _riposteActionHash;
+    private int _riposteRecoveryHash;
     private Renderer[] _skillWeapons;
     private bool[] _previousWeaponVisibility;
     private bool _skillWeaponsChanged;
@@ -49,7 +56,7 @@ public class CHeroAnimation : MonoBehaviour
     public bool IsBusy
     {
         get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued
-            || _state == EAnimationState.Resolute; }
+            || _state == EAnimationState.Resolute || _state == EAnimationState.Riposte || _riposteQueued; }
     }
     public bool IsMeltingDown
     {
@@ -178,6 +185,21 @@ public class CHeroAnimation : MonoBehaviour
         return true;
     }
 
+    public bool TryQueueRiposte()
+    {
+        if (!IsReady || _riposteQueued || _hero == null || _hero.IsDead || _hero.IsDeathPresented
+            || (IsBusy && !IsHitReacting) || string.IsNullOrEmpty(_riposteActionState)
+            || string.IsNullOrEmpty(_riposteRecoveryState)) return false;
+
+        _riposteActionHash = Animator.StringToHash(_riposteActionState);
+        _riposteRecoveryHash = Animator.StringToHash(_riposteRecoveryState);
+        if (!_animator.HasState(0, _riposteActionHash) || !_animator.HasState(0, _riposteRecoveryHash)) return false;
+
+        if (IsSelecting) CancelSelection();
+        _riposteQueued = true;
+        return true;
+    }
+
     public bool TryPlayHit()
     {
         if (!CanPlayHit()) return false;
@@ -243,6 +265,14 @@ public class CHeroAnimation : MonoBehaviour
         if (_needsIdle && IsReady) PlayIdle();
         if (_state == EAnimationState.Idle)
         {
+            if (_riposteQueued && !_meltdownQueued)
+            {
+                _riposteQueued = false;
+                if (!IsReady || _hero == null || _hero.IsDead || _hero.IsDeathPresented) return;
+                _state = EAnimationState.Riposte;
+                _animator.Play(_riposteActionHash, 0, 0.0f);
+                return;
+            }
             if (!_meltdownQueued) return;
             if (!IsReady || _hero == null || _hero.IsDead || _hero.IsDeathPresented)
             {
@@ -264,6 +294,15 @@ public class CHeroAnimation : MonoBehaviour
             return;
         }
         AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+        if (_state == EAnimationState.Riposte)
+        {
+            if (_animator.IsInTransition(0)) return;
+            if (info.fullPathHash == _riposteActionHash && info.normalizedTime >= 1.0f)
+                _animator.Play(_riposteRecoveryHash, 0, 0.0f);
+            else if (info.fullPathHash == _idleHash
+                || (info.fullPathHash == _riposteRecoveryHash && info.normalizedTime >= 1.0f)) PlayIdle();
+            return;
+        }
         if (IsMeltingDown)
         {
             if (info.fullPathHash == _idleHash && !_animator.IsInTransition(0))
@@ -329,6 +368,7 @@ public class CHeroAnimation : MonoBehaviour
 
     public void CancelPlayback()
     {
+        _riposteQueued = false;
         EAnimationState interrupted = _state;
         bool meltdownInterrupted = _meltdownQueued || IsMeltingDown;
         _meltdownQueued = false;
@@ -340,6 +380,7 @@ public class CHeroAnimation : MonoBehaviour
 
     public void CompleteHitForDeath()
     {
+        _riposteQueued = false;
         if (!IsHitReacting)
         {
             return;

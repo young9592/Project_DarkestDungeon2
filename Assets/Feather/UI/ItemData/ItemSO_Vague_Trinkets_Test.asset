@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a8b6c86820167448be0cb48afd0049, type: 3}
+  m_Name: ItemSO_Vague_Trinkets_Test
+  m_EditorClassIdentifier: 
+  _itemName: Trinkets
+  _itemImage: {fileID: 21300000, guid: 22b55871028cb484a9c58771291845b1, type: 3}
+  _itemState: 3
+  _currencyType: 0
+  _stateImage: {fileID: 21300000, guid: ff4e42f2239e30845a530d588d0bf209, type: 3}
+  _stateColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+  _buyRelics: 0
+  _buyBaubles: 5
+  _maxQuantity: 1
