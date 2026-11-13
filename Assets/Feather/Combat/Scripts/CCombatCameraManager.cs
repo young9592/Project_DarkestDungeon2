@@ -343,6 +343,7 @@ public class CCombatCameraManager : MonoBehaviour
         _combatUI.ToggleEntityStateRoot(false);
         _combatUI.ToggleIndicatorRoot(false);
         _combatUI.HideAllIndicator();
+        _combatUI.DisableTooltip();
 
         // 공격 방향에 따라 이펙트
         if (combatTarget == ECombatTarget.Hero_Attack)
@@ -652,6 +653,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         // 사전작업
         _highlightCamera.orthographicSize = 1f;
+        _combatUI.DisableTooltip();
 
         int layer = LayerMask.NameToLayer(_highlightLayerName);
         HighlightCharacter(hero.gameObject, layer);

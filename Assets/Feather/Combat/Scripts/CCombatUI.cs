@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -936,5 +937,11 @@ public class CCombatUI : MonoBehaviour
     public void ToggleIndicatorRoot(bool toggle)
     {
         _indicatorRoot.SetActive(toggle);
+    }
+
+    public void DisableTooltip()
+    {
+        _tokenTooltip.SetActive(false);
+        _dotTooltip.SetActive(false);
     }
 }
