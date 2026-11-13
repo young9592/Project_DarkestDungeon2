@@ -163,9 +163,13 @@ public class CTokenManager
         switch (tokenType)
         {
             case EEffectType.Combo:
-                return MAX_COMBO_STACK; // 콤보는 1개
+            case EEffectType.DenialOfArms:
+            case EEffectType.DenialOfReach:
+            case EEffectType.DenialOfFortitude:
+            case EEffectType.DenialOfReason:
+                return MAX_COMBO_STACK; // 1스택 제한
             default:
-                return Max_Token_STACK; // 나머지는 2개
+                return Max_Token_STACK; // 나머지는 3개
         }
     }
 
@@ -196,7 +200,9 @@ public class CTokenManager
     {
         EEffectType.Blind, EEffectType.Weak,
         EEffectType.Vulnerable, EEffectType.Stun,
-        EEffectType.Combo, EEffectType.Immobilize
+        EEffectType.Combo, EEffectType.Immobilize,
+        EEffectType.DenialOfArms, EEffectType.DenialOfReach,
+        EEffectType.DenialOfFortitude, EEffectType.DenialOfReason
     };
 
     /// <summary>
@@ -324,6 +330,10 @@ public class CTokenManager
             case EEffectType.Combo: korName = "연계"; desc = "특정 스킬 피격 시 추가 효과 발동"; break;
             case EEffectType.Stun: korName = "기절"; desc = "다음 턴 행동 불가"; break;
             case EEffectType.Immobilize: korName = "이동불가"; desc = "열 이동 및 밀치기/당기기 면역"; break;
+            case EEffectType.DenialOfArms: korName = "무장 부정"; desc = "근접 공격 스킬 사용 금지"; break;
+            case EEffectType.DenialOfReach: korName = "도달 부정"; desc = "원거리 공격 스킬 사용 금지"; break;
+            case EEffectType.DenialOfFortitude: korName = "불굴 부정"; desc = "체력 치유 스킬 사용 금지"; break;
+            case EEffectType.DenialOfReason: korName = "이성 부정"; desc = "스트레스 치유 스킬 사용 금지"; break;
             default: korName = tokenType.ToString(); desc = "특수 상태 토큰"; break;
         }
     }

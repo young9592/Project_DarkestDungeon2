@@ -47,6 +47,7 @@ public class CPlayer : CEntity
     private bool _isRequesting;
     private bool _isStartingTurn;
     private bool _isTurnSkipped;
+    private EDenialRestriction _denialRestriction;
     private readonly CHeroSkillUseState _skillUses = new CHeroSkillUseState();
     private readonly CHeroSkillMovement _skillMovement = new CHeroSkillMovement();
     public CHeroSkillUseState SkillUses
@@ -135,27 +136,60 @@ public class CPlayer : CEntity
         CancelSkillSelection();
     }
 
-    public EDenialRestriction DenialRestriction { get; private set; }
+    public EDenialRestriction DenialRestriction
+    {
+        get
+        {
+            if (_denialRestriction != EDenialRestriction.None)
+            {
+                return _denialRestriction;
+            }
 
+            if (TokenManager != null)
+            {
+                if (TokenManager.HasToken(EEffectType.DenialOfArms)) return EDenialRestriction.Arms;
+                if (TokenManager.HasToken(EEffectType.DenialOfReach)) return EDenialRestriction.Reach;
+                if (TokenManager.HasToken(EEffectType.DenialOfFortitude)) return EDenialRestriction.Fortitude;
+                if (TokenManager.HasToken(EEffectType.DenialOfReason)) return EDenialRestriction.Reason;
+            }
+
+            return EDenialRestriction.None;
+        }
+    }
     public void SetDenialRestriction(EDenialRestriction restriction)
     {
-        DenialRestriction = restriction;
+        _denialRestriction = restriction;
     }
 
     public bool IsSkillDenied(CSkillDataSO skill)
     {
         if (!(skill is CHeroSkillSO heroSkill)) return false;
 
-        EHeroDenialCategory category;
-        switch (DenialRestriction)
+        EHeroDenialCategory blockedCategories = EHeroDenialCategory.None;
+
+        switch (_denialRestriction)
         {
-            case EDenialRestriction.Arms: category = EHeroDenialCategory.Melee; break;
-            case EDenialRestriction.Reach: category = EHeroDenialCategory.Ranged; break;
-            case EDenialRestriction.Fortitude: category = EHeroDenialCategory.HealthRecovery; break;
-            case EDenialRestriction.Reason: category = EHeroDenialCategory.StressRecovery; break;
-            default: return false;
+            case EDenialRestriction.Arms: blockedCategories |= EHeroDenialCategory.Melee; break;
+            case EDenialRestriction.Reach: blockedCategories |= EHeroDenialCategory.Ranged; break;
+            case EDenialRestriction.Fortitude: blockedCategories |= EHeroDenialCategory.HealthRecovery; break;
+            case EDenialRestriction.Reason: blockedCategories |= EHeroDenialCategory.StressRecovery; break;
         }
-        return (heroSkill.DenialCategories & category) != EHeroDenialCategory.None;
+
+        if (TokenManager !=  null)
+        {
+            if (TokenManager.HasToken(EEffectType.DenialOfArms))
+                blockedCategories |= EHeroDenialCategory.Melee;
+            if (TokenManager.HasToken(EEffectType.DenialOfReach))
+                blockedCategories |= EHeroDenialCategory.Ranged;
+            if (TokenManager.HasToken(EEffectType.DenialOfFortitude))
+                blockedCategories |= EHeroDenialCategory.HealthRecovery;
+            if (TokenManager.HasToken(EEffectType.DenialOfReason))
+                blockedCategories |= EHeroDenialCategory.StressRecovery;
+        }
+
+        if (blockedCategories == EHeroDenialCategory.None) return false;
+
+        return (heroSkill.DenialCategories & blockedCategories) != EHeroDenialCategory.None;
     }
 
     protected override bool CanExecuteRequestedAction()
@@ -858,6 +892,10 @@ public class CPlayer : CEntity
             case EEffectType.Taunt:
             case EEffectType.Immobilize:
             case EEffectType.Combo:
+            case EEffectType.DenialOfArms:
+            case EEffectType.DenialOfReach:
+            case EEffectType.DenialOfFortitude:
+            case EEffectType.DenialOfReason:
                 TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
                 if (_statusMessage != null && TokenManager.HasToken(tokenType)) _statusMessage.ShowAdded(tokenType);
                 break;
