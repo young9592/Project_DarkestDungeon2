@@ -436,18 +436,16 @@ public class CEntityState : MonoBehaviour
         {
             CEnemy enemy = entity as CEnemy;
             int deathArmorCount = enemy.RemainingDeathArmor;
+            CPrint.Log(deathArmorCount.ToString());
 
-            if (deathArmorCount != enemy.TokenManager.GetTokenStack(EEffectType.DeathArmor))
+            if (deathArmorCount == 0 && enemy.TokenManager.HasToken(EEffectType.DeathArmor))
+            {
+                enemy.TokenManager.ConsumeToken(EEffectType.DeathArmor);
+                enemy.TokenManager.AddToken(EEffectType.DeathDoor);
+            }
+            else if (deathArmorCount > 0 && deathArmorCount != enemy.TokenManager.GetTokenStack(EEffectType.DeathArmor))
             {
                 enemy.TokenManager.AddToken(EEffectType.DeathArmor, deathArmorCount, 99);
-            }
-            else if (enemy.IsDeathsDoor && deathArmorCount == 0 && enemy.TokenManager.HasToken(EEffectType.DeathDoor))
-            {
-                enemy.TokenManager.AddToken(EEffectType.DeathDoor, 1, 99);
-            }
-            else if (!enemy.IsDeathsDoor && enemy.TokenManager.HasToken(EEffectType.DeathDoor))
-            {
-                enemy.TokenManager.ConsumeToken(EEffectType.DeathDoor);
             }
         }
     }
