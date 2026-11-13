@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_CripplingDoubt
+  m_EditorClassIdentifier: 
+  _skillName: Crippling Doubt
+  _skillIcon: {fileID: 0}
+  _useableRank: 15
+  _targetableRank: 15
+  _isGroupTarget: 1
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: b201206cc458f394e9a5f3225968815b, type: 2}
+  - {fileID: 11400000, guid: 9d7d4997811f78449b237ffd10ed3697, type: 2}
+  - {fileID: 11400000, guid: d1676bbaea664464cb0f2cd1afcc3d3a, type: 2}

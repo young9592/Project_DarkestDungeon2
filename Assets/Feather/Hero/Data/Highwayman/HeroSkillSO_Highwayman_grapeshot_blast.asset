@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_grapeshot_blast
   _feedback: {fileID: 11400000, guid: c5b834575daa3b541a173467c29e4e32, type: 2}
+  _denialCategories: 2

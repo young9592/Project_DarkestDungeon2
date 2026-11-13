@@ -34,3 +34,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_thrown_dagger
   _executionStartState: Base Layer.OriginalAction_GraveRobber_glint_in_the_dark
   _feedback: {fileID: 11400000, guid: 7b5618b1ea9ebe646bdd0c91cfe3c963, type: 2}
+  _denialCategories: 2

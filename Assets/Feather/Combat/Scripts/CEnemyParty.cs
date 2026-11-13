@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -300,14 +301,45 @@ public class CEnemyParty : MonoBehaviour
 
         CPrint.Warn("Current Enemy State");
 
+
         for (int i = 0; i < _enemyList.Count; i++)
         {
             ERank rank = _enemyList[i].CurrentRank;
             CEnemy enemy = _enemyList[i];
 
-            _rankList.Add(rank, enemy);
+            if (!_rankList.ContainsKey(rank))
+            {
+                _rankList.Add(rank, enemy);
+            }
+            else
+            {
+                // 동일한 위치의 개체가 존재
+                CPrint.Error("동일한 위치의 개체가 존재합니다. 체크 필요.");
+
+                bool forceInput = false;
+
+                for (int j = 0; j < 4; j++)
+                {
+                    forceInput = _rankList.ContainsKey((ERank)(1 << j));
+
+                    if (forceInput)
+                    {
+                        _rankList.Add((ERank)(1 << j), enemy);
+                        CPrint.Error($"강제로 {((ERank)(1 << j))} 위치에 {enemy.EnemyData.Name}을 추가하였습니다.");
+                    }
+                }
+
+                if (!forceInput)
+                {
+                    CPrint.Error("강제로 위치 넣기에 실패하였습니다. 확인바람.");
+                }
+            }
+
 
         }
+
+
+
 
 
         for (int i = 0; i < 4; i++)

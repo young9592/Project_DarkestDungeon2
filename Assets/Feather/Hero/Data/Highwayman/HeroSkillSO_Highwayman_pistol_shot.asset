@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_pistol_shot
   _feedback: {fileID: 11400000, guid: b2432bda5093cb64e823b411810ebf71, type: 2}
+  _denialCategories: 2

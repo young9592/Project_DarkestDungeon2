@@ -33,6 +33,11 @@ public class CEnemyFormationMovement : MonoBehaviour
         get { return _members != null && HasValidSlots(); }
     }
 
+    internal IReadOnlyList<CEnemy> Members
+    {
+        get { return _members; }
+    }
+
     private void Awake()
     {
         _enemy = GetComponent<CEnemy>();

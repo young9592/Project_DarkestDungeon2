@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_plague_buff
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_battlefield_medicine
   _feedback: {fileID: 11400000, guid: 3af6838d214579342897055499b7ac4f, type: 2}
+  _denialCategories: 4

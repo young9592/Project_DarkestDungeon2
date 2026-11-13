@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_advance
   _executionStartState: Base Layer.OriginalAction_Highwayman_duelists_advance
   _feedback: {fileID: 11400000, guid: 4f0b3a3a7513d78488e38d9a4c146245, type: 2}
+  _denialCategories: 1

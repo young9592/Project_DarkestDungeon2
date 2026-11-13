@@ -32,7 +32,11 @@ public class CInventory : MonoBehaviour
 
     #endregion
     private List<InventoryItem> _displayItems = new List<InventoryItem>();
-
+    private CStore _store;
+    private void Awake()
+    {
+        _store = FindObjectOfType<CStore>();
+    }
     private void Start()
     {
         FreshSlot();
@@ -133,6 +137,9 @@ public class CInventory : MonoBehaviour
                 if (quantity <= 0)
                 {
                     FreshSlot();
+                    _inventoryCgyUI.UpdateItemQuantity();
+                    UpdateCurrnecy();
+                    UpdateStorePrice();
                     return;
                 }
             }
@@ -153,6 +160,7 @@ public class CInventory : MonoBehaviour
         FreshSlot();
         _inventoryCgyUI.UpdateItemQuantity();
         UpdateCurrnecy();
+        UpdateStorePrice();
     }
 
     public void RemoveItem(int slotIndex)
@@ -175,6 +183,7 @@ public class CInventory : MonoBehaviour
         FreshSlot();
         _inventoryCgyUI.UpdateItemQuantity();
         UpdateCurrnecy();
+        UpdateStorePrice();
     }
 
     public void SortItem()
@@ -210,5 +219,86 @@ public class CInventory : MonoBehaviour
         }
 
         return count;
+    }
+
+    public int GetCurrencyQuantity(CItem.ECurrencyType currencyType)
+    {
+        int total = 0;
+        foreach(InventoryItem item in _items)
+        {
+            if (item == null || item._item == null)
+                continue;
+            if (item._item._itemState != CItem.EItemState.Currency)
+                continue;
+            if(item._item._currencyType == currencyType)
+            {
+                total += item.quantity;
+            }
+        }
+        return total;
+    }
+    public bool CanAddItem(CItem item, int quantity)
+    {
+        int remainQuantity = quantity;
+
+        foreach (InventoryItem inventoryItem in _items)
+        {
+            if (inventoryItem == null || inventoryItem._item == null)
+                continue;
+            if(inventoryItem._item == item)
+            {
+                remainQuantity -= item._maxQuantity - inventoryItem.quantity;
+            }
+        }
+
+        if (remainQuantity <= 0)
+            return true;
+        int emptySlotCount = _slots.Length - GetCurrentItemCount();
+
+        return remainQuantity <= emptySlotCount * item._maxQuantity; 
+    }
+    public bool RemoveCurrency(CItem.ECurrencyType currencyType, int quantity)
+    {
+        if (GetCurrencyQuantity(currencyType) < quantity)
+            return false;
+        foreach(InventoryItem item in _items)
+        {
+            if (item == null || item._item == null)
+                continue;
+            if (item._item._itemState != CItem.EItemState.Currency)
+                continue;
+            if (item._item._currencyType != currencyType)
+                continue;
+
+            int removeQuantity = Mathf.Min(quantity, item.quantity);
+
+            item.quantity -= removeQuantity;
+            quantity -= removeQuantity;
+
+            if(item.quantity <= 0)
+            {
+                int index = _items.IndexOf(item);
+                _items[index] = null;
+            }
+
+            if (quantity <= 0)
+                break;
+
+        }
+        SortItem();
+        FreshSlot();
+        _inventoryCgyUI.UpdateItemQuantity();
+        UpdateCurrnecy();
+        UpdateStorePrice();
+        return true;
+    }
+
+    private void UpdateStorePrice()
+    {
+        if (_store == null)
+            _store = FindObjectOfType<CStore>();
+
+        if (_store != null)
+            _store.UpdatePriceColor();
     }
 }

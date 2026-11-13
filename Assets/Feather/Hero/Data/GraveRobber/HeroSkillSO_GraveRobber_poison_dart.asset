@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_dart
   _executionStartState: Base Layer.OriginalAction_GraveRobber_poison_dart
   _feedback: {fileID: 11400000, guid: 1ad418725bf6fe14c835550bc3ec5250, type: 2}
+  _denialCategories: 2

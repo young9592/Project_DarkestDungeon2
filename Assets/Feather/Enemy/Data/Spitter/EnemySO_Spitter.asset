@@ -23,23 +23,34 @@ MonoBehaviour:
     Stun: 10
     Move: 10
     Debuff: 10
+  _actions: 1
   _availableSkills:
   - {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
   - {fileID: 11400000, guid: df3bfebaf4ce4ffab46ec48a620fa6d5, type: 2}
+  _portraitTurnOrder: {fileID: 0}
+  _portraitInfo: {fileID: 0}
+  _skillSlotBackground: {fileID: 0}
   _formationSize: 1
   _deathDoorCount: 0
-  _skillRules:
-  - _skill: {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
-    _weight: 1
-    _minHpPercent: 0
-    _maxHpPercent: 100
-  _targetSelection: 2
-  _comboPrioritySkill: {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
   _leavesCorpse: 1
   _corpseSprite: {fileID: 21300000, guid: 76c87ad803e54e72a9f4be5d896f0ede, type: 3}
   _corpseData: {fileID: 11400000, guid: 86fcb53dd5dc4e0e849f1358cdf60761, type: 2}
   _corpseHealth: 5
   _corpseWidth: 0.014
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
+    _rankMovement: 0
+    _preferAvailableMovement: 0
+    _selfToken: 0
+    _selfTokenCount: 0
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 0
+    _preferredRanks: 0
+    _condition: 0
+  _targetSelection: 2
+  _comboPrioritySkill: {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
   _startingToken: 10
   _startingTokenCount: 1
   _extraStartingTokenChance: 50

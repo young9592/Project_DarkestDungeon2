@@ -271,6 +271,7 @@ public class CHeroPartyTest : MonoBehaviour
         _viewRoot.SetActive(true);
         _groupTest.enabled = true;
         _groupTest.ShowControls = false;
+        _groupTest.DenialRestrictionChanged += ApplyDenialRestriction;
         CHeroRunStateTest runState = GetComponent<CHeroRunStateTest>();
         bool activeExpedition = runState != null && runState.IsExpeditionActive;
         CHeroPartySO restored = !activeExpedition && _presets != null ? _presets.RestoreLastApplied() : null;
@@ -347,6 +348,7 @@ public class CHeroPartyTest : MonoBehaviour
         {
             _heroes[i].OnActionRequested += HandleRequest;
         }
+        ApplyDenialRestriction(_groupTest.ActiveDenialRestriction);
 
         UpdatePositions();
         UpdateButtonOrder();
@@ -532,6 +534,13 @@ public class CHeroPartyTest : MonoBehaviour
         return TrySelectHero(_selectedIndex);
     }
 
+    private void ApplyDenialRestriction(EDenialRestriction restriction)
+    {
+        for (int i = 0; i < _heroes.Count; i++)
+        {
+            if (_heroes[i] != null) _heroes[i].SetDenialRestriction(restriction);
+        }
+    }
     private void BindTargets()
     {
         _input.SetTargets(_groupTest.SpawnedEnemies, _rankStep);
@@ -686,6 +695,7 @@ public class CHeroPartyTest : MonoBehaviour
 
     private void ClearParty()
     {
+        ApplyDenialRestriction(EDenialRestriction.None);
         for (int i = 0; i < _heroes.Count; i++)
         {
             if (_heroes[i] == null)
@@ -739,6 +749,7 @@ public class CHeroPartyTest : MonoBehaviour
         ClearParty();
         if (_groupTest != null)
         {
+            _groupTest.DenialRestrictionChanged -= ApplyDenialRestriction;
             _groupTest.ClearGroup();
             _groupTest.enabled = false;
         }

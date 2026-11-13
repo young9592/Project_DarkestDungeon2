@@ -105,7 +105,6 @@ public class CEntityState : MonoBehaviour
 
         _canvasRectTr = _canvas.GetComponent<RectTransform>();
 
-
         bool isHero = entity is CPlayer;
         bool isEnemy = entity is CEnemy;
         bool isEnemyCorpse = entity is CEnemyCorpse;
@@ -149,7 +148,7 @@ public class CEntityState : MonoBehaviour
         _init = true;
     }
     // 시체 상태가 되었을 때 재연결
-    public void ReConnect(GameObject target)
+    public void ReconnectState(GameObject target)
     {
         _init = false;
 

@@ -191,6 +191,8 @@ public class CPartyEnemyPreview : MonoBehaviour
             }
         }
 
+        _groupTest.EndDenialRound();
+        _groupTest.TryAdvanceDenialRound();
         _routine = null;
         _partyTest.EndEnemyPreview();
     }

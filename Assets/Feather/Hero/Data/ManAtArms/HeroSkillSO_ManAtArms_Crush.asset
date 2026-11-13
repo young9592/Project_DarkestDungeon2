@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_crush
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Crush
   _feedback: {fileID: 11400000, guid: 4586fe5c47c671345b8f01fdc3f68264, type: 2}
+  _denialCategories: 1

@@ -9,7 +9,8 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 {
     #region Inspector
     [Header("Connect")]
-    [SerializeField] private CBasicCombatManager _combatManager;
+    [SerializeField] private CCombatManager _combatManager;
+    [SerializeField] private CCombatUI _combatUI;
 
     [Header("Turn Entity Id")]
     [SerializeField] private int _id;
@@ -18,8 +19,8 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [SerializeField] private Image _entityPortrait;
     [SerializeField] private Image _markerImage;
 
+    // 초상화 배치 위치
     [Header("Turnorder Pos")]
-    // 턴오더 배치 위치
     [SerializeField] private List<Vector2> _turnOrderPos;
 
     [Header("Maker Color")]
@@ -27,34 +28,42 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [SerializeField] private Color _enemyMakerColor;
 
     [Header("Option")]
-    // 오른쪽 상단 턴이 진행될 때 움직이는 애니메이션 진행 시간
-    // 2초면 2초간 Lerp가 실행되면서 목표위치로 이동합니다.
-    [SerializeField] private float _moveTime = 2f;
+    [SerializeField] private float _moveTime = 1.5f;
     #endregion
 
     #region Field
+    // 연결된 지시등
     private CIndicator _connectIndicator = null;
     private RectTransform _rectTr;
-    private Coroutine _coroutine;
+    private Coroutine _moveCoroutine;
     private int _prevTurnorder = 0;
     private int _currentTurnorder = 0;
+    private static float _portraitMoveTime = 0;
     // 최신 상태인지 체크
     private static bool _isDirty = false;
     #endregion
 
     #region Property
-    public float MoveTime => _moveTime;
+    public static float MoveTime => _portraitMoveTime;
     public static bool IsDirty { get { return _isDirty; } set { _isDirty = value; } }
     #endregion
 
     private void Awake()
     {
         _rectTr = GetComponent<RectTransform>();
+        _portraitMoveTime = _moveTime;
     }
+    private void OnValidate()
+    {
+        _portraitMoveTime = Mathf.Min(_moveTime, 0f);
+    }
+
     // 초상화 초기화
-    public void Initialize(CBasicCombatManager combatManager, int id, int index, EEntityType entityType, Sprite sprite)
+    public void Initialize(CCombatManager combatManager, CCombatUI combatUI, int id, int index, EEntityType entityType, Sprite sprite)
     {
         _combatManager = combatManager;
+
+        _combatUI = combatUI;
 
         _id = id;
 
@@ -82,10 +91,10 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void Move(int index)
     {
         // 코루틴이 돌고있는데 들어왔다는건 Move가 두번 호출된 상황인 것
-        if (_coroutine != null)
+        if (_moveCoroutine != null)
         {
-            StopCoroutine(_coroutine);
-            _coroutine = null;
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
             _currentTurnorder = _prevTurnorder;
         }
 
@@ -98,11 +107,11 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             else if (_currentTurnorder == _turnOrderPos.Count - 1 && _currentTurnorder - index >= 2)
             {
                 _rectTr.anchoredPosition = _turnOrderPos[_turnOrderPos.Count - 2];
-                _coroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
+                _moveCoroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
             }
             else
             {
-                _coroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
+                _moveCoroutine = StartCoroutine(CoLerpMove(_turnOrderPos[index]));
             }
         }
         else
@@ -126,7 +135,8 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
             yield return null;
         }
-        _coroutine = null;
+
+        _moveCoroutine = null;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -144,9 +154,10 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 }
             }
 
-            _combatManager.EntitiesIndicator.TryGetValue(entity, out CIndicator indicator);
-
-            _connectIndicator = indicator;
+            if (_combatUI.EntitiesIndicator.TryGetValue(entity, out CIndicator indicator))
+            {
+                _connectIndicator = indicator;
+            }
         }
 
         // 여전히 null인지 확인후 실행
@@ -171,9 +182,10 @@ public class CPortraitImage : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 }
             }
 
-            _combatManager.EntitiesIndicator.TryGetValue(entity, out CIndicator indicator);
-
-            _connectIndicator = indicator;
+            if (_combatUI.EntitiesIndicator.TryGetValue(entity, out CIndicator indicator))
+            {
+                _connectIndicator = indicator;
+            }
         }
 
         // 여전히 null인지 확인후 실행
