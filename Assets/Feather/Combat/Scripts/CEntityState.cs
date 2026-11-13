@@ -301,7 +301,7 @@ public class CEntityState : MonoBehaviour
                     {
                         CPlayer hero = _target.GetComponent<CPlayer>();
                         int totalDamage = hero.GetTotalDotDamageByType(effect);
-                        int remain = 1;
+                        int remain = hero.GetMaxRemainingEffectTurns(effect);
                         bool remainDot = (totalDamage > 0 ? true : false);
 
                         if (remainDot)
@@ -322,7 +322,7 @@ public class CEntityState : MonoBehaviour
                     {
                         CEnemy enemy = _target.GetComponent<CEnemy>();
                         int totalDamage = enemy.GetTotalDotDamageByType(effect);
-                        int remain = 1;
+                        int remain = enemy.GetMaxRemainingEffectTurns(effect);
                         bool remainDot = (totalDamage > 0 ? true : false);
 
                         if (remainDot)
@@ -343,7 +343,7 @@ public class CEntityState : MonoBehaviour
                     // 시체는 현재 효과를 받을 수 없기 때문에 모두 꺼주기
                     else if (_entityType == EEntityState.Enemy_Corpse)
                     {
-                        CEnemyCorpse enemyCorpse = _target.GetComponent<CEnemy>().Corpse;
+                        dotInfomation.ResetDot();
                     }
                 }
             }
