@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyGroupSO_full_Test
   m_EditorClassIdentifier: 
   _entries:
-  - _enemyPrefab: {fileID: 2481291059542486020, guid: 7070c8cad223112408e443156453e4c0, type: 3}
+  - _enemyPrefab: {fileID: 1462110948690307370, guid: 7fb7f42e50543d74caf9f009b7997154, type: 3}
     _rank: 1
   - _enemyPrefab: {fileID: 4091325714474303996, guid: 53cfd4189e65b254faea99e5f7b07ddb, type: 3}
     _rank: 4

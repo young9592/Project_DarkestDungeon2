@@ -90,10 +90,16 @@ public class CEnemyParty : MonoBehaviour
             // Rotaion 조정
             enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 180f, 0);
 
-            // 구울같은 개체는 등을 보여줬어..
+            // 일부 개체는 등을 보여줬어..
             if (enemyPrefab.EntityData.Id == "enemy_ghoul")
             {
                 enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
+            }
+
+            if(enemyPrefab.EntityData.Id == "enemy_spitter")
+            {
+                enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
+                enemyPrefab.gameObject.GetComponentInChildren<Animator>().gameObject.transform.localScale = Vector3.one;
             }
 
             // 스크립트 잠시 중단
@@ -320,12 +326,13 @@ public class CEnemyParty : MonoBehaviour
 
                 for (int j = 0; j < 4; j++)
                 {
-                    forceInput = _rankList.ContainsKey((ERank)(1 << j));
+                    forceInput = !_rankList.ContainsKey((ERank)(1 << j));
 
                     if (forceInput)
                     {
                         _rankList.Add((ERank)(1 << j), enemy);
-                        CPrint.Error($"강제로 {((ERank)(1 << j))} 위치에 {enemy.EnemyData.Name}을 추가하였습니다.");
+                        CPrint.Error($"강제로 {((ERank)(1 << j))} 위치에 {enemy.EnemyData.Name}을 강제로 추가하였습니다.");
+                        break;
                     }
                 }
 
@@ -334,13 +341,7 @@ public class CEnemyParty : MonoBehaviour
                     CPrint.Error("강제로 위치 넣기에 실패하였습니다. 확인바람.");
                 }
             }
-
-
         }
-
-
-
-
 
         for (int i = 0; i < 4; i++)
         {

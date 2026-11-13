@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class CHeroParty : MonoBehaviour
 {
@@ -86,6 +83,8 @@ public class CHeroParty : MonoBehaviour
             heroPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
             CPlayer hero = heroPrefab.GetComponent<CPlayer>();
+
+            hero.TryEquipLoadout(_heroPartyPreset.Members[i].Loadout);
 
             // 리스트 추가
             _heroList.Add(hero);
@@ -238,12 +237,13 @@ public class CHeroParty : MonoBehaviour
 
                 for (int j = 0; j < 4; j++)
                 {
-                    forceInput = _rankList.ContainsKey((ERank)(1 << j));
+                    forceInput = !_rankList.ContainsKey((ERank)(1 << j));
 
                     if (forceInput)
                     {
                         _rankList.Add((ERank)(1 << j), hero);
-                        CPrint.Error($"강제로 {((ERank)(1 << j))} 위치에 {hero.HeroData.Name}을 추가하였습니다.");
+                        CPrint.Error($"강제로 {((ERank)(1 << j))} 위치에 {hero.HeroData.Name}을 강제로 추가하였습니다.");
+                        break;
                     }
                 }
 

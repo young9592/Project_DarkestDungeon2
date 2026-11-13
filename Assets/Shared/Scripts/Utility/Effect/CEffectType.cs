@@ -21,6 +21,7 @@ public enum EEffectType
     Blight,
     Burn,
 
+
     // 버프목록
     Crit,               // 치명타     [ 다음 공격 100% 치명타 ]
     Riposte,            // 반격       [ 공격 받을 때 반격 ]
@@ -44,8 +45,12 @@ public enum EEffectType
 
     // 특수 토큰
     Combo,              // 연계       [ 대상 효과를 가진 기술에 추가 효과 ]
-                         
-                        
-    // 이거말고도 더 많은데 일단 여기까지...
+
+    Horror,
+    Regen,
+
+    // 죽음의 문턱, 죽음의 문턱 방어토큰
+    DeathDoor,
+    DeathArmor,
 }
 

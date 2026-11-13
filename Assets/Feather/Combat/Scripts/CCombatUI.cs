@@ -104,6 +104,11 @@ public class CCombatUI : MonoBehaviour
     [Header("Text Prefab Root")]
     [SerializeField] private GameObject _textRoot;
 
+    [Header("Dot/Token Infomation Tooltip")]
+    [SerializeField] private GameObject _dotTooltip;
+    [SerializeField] private GameObject _tokenTooltip;
+
+
     [Header("Option")]
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
     #endregion
@@ -253,6 +258,9 @@ public class CCombatUI : MonoBehaviour
         _checkList.Add(_combatBorder);
         _checkList.Add(_combatTriangle);
 
+        _checkList.Add(_dotTooltip);
+        _checkList.Add(_tokenTooltip);
+
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
         {
             enabled = false;
@@ -326,7 +334,7 @@ public class CCombatUI : MonoBehaviour
     public void CreateStateUI(CEntity entity)
     {
         CEntityState state = Instantiate(_entitiesStatePrefab, _stateRoot.transform).GetComponent<CEntityState>();
-        state.Initialize(_canvas, entity.gameObject);
+        state.Initialize(_canvas, _tokenTooltip, _dotTooltip, entity.gameObject);
 
         _entitiesState.Add(entity, state);
     }
