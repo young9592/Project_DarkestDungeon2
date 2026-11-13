@@ -322,11 +322,11 @@ PrefabInstance:
     - target: {fileID: -2873071954018570763, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value:
-      objectReference: {fileID: 2100000, guid: c539f551acb3445439b9de1831fe7328, type: 2}
+      objectReference: {fileID: 2100000, guid: 652460ad8d4446509ea094d7f3858ccb, type: 2}
     - target: {fileID: -2360709840994232811, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value:
-      objectReference: {fileID: 2100000, guid: c539f551acb3445439b9de1831fe7328, type: 2}
+      objectReference: {fileID: 2100000, guid: aa15b70e2bcc4d70add9383447784b30, type: 2}
     - target: {fileID: 919132149155446097, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Name
       value: OriginalModel
@@ -334,7 +334,7 @@ PrefabInstance:
     - target: {fileID: 1072473958577707160, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value:
-      objectReference: {fileID: 2100000, guid: c539f551acb3445439b9de1831fe7328, type: 2}
+      objectReference: {fileID: 2100000, guid: 652460ad8d4446509ea094d7f3858ccb, type: 2}
     - target: {fileID: 2328953074811961972, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value:
@@ -342,11 +342,11 @@ PrefabInstance:
     - target: {fileID: 3538339586428374675, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value:
-      objectReference: {fileID: 2100000, guid: c539f551acb3445439b9de1831fe7328, type: 2}
+      objectReference: {fileID: 2100000, guid: aa15b70e2bcc4d70add9383447784b30, type: 2}
     - target: {fileID: 5754870804805121931, guid: 00038e74f533f274ebab670bb93c12fa, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value:
-      objectReference: {fileID: 2100000, guid: c539f551acb3445439b9de1831fe7328, type: 2}
+      objectReference: {fileID: 2100000, guid: 652460ad8d4446509ea094d7f3858ccb, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
