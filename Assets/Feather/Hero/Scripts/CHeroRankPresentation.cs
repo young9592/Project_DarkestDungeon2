@@ -61,7 +61,7 @@ public class CHeroRankPresentation : MonoBehaviour
         SnapToRank();
     }
 
-    private bool HasPendingMovement()
+    internal bool HasPendingMovement()
     {
         return isActiveAndEnabled && _isConfigured && _hero != null
             && (_isMoving || (CSkillRankUtility.IsSingleRank(_hero.CurrentRank)

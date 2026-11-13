@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_double
   _executionStartState: Base Layer.OriginalAction_Highwayman_double_cross
   _feedback: {fileID: 11400000, guid: 0a24657226b264149bb4c55036aa2788, type: 2}
+  _denialCategories: 1

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_CerebralFalter
+  m_EditorClassIdentifier: 
+  _skillName: Cerebral Falter
+  _skillIcon: {fileID: 0}
+  _useableRank: 15
+  _targetableRank: 15
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 9ff2afb469a3fb845aea69a01cd6eb03, type: 2}
+  - {fileID: 11400000, guid: 19a4ac5e8a90b9641aff144d1e3ae096, type: 2}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +21,15 @@ public class CEnemyGroupTest : MonoBehaviour
     private CEnemyIntentTest _selectedIntent;
     private string _message = "Load a group to preview its ranks";
     private int _groupOptionIndex;
+    private CDenialRoundPattern _denialPattern;
+    private int _denialRound;
     public bool ShowControls { get; set; } = true;
+    public event Action<EDenialRestriction> DenialRestrictionChanged;
+
+    public EDenialRestriction ActiveDenialRestriction
+    {
+        get { return _denialPattern != null ? _denialPattern.ActiveRestriction : EDenialRestriction.None; }
+    }
 
     public IReadOnlyList<CEnemy> SpawnedEnemies
     {
@@ -159,9 +168,10 @@ public class CEnemyGroupTest : MonoBehaviour
         // 배치 검사 통과 후 기존 테스트 숨기고 적 교체
         HideExistingTests();
         DestroySpawnedEnemies();
-        for (int i = 0; i < group.Entries.Count; i++)
+        IReadOnlyList<CEnemyGroupEntry> entries = group.GetSpawnEntries();
+        for (int i = 0; i < entries.Count; i++)
         {
-            CEnemyGroupEntry entry = group.Entries[i];
+            CEnemyGroupEntry entry = entries[i];
             Transform slot = _rankSlots[GetRankIndex(entry.Rank)];
             int endIndex = GetRankIndex(entry.Rank) + entry.EnemyPrefab.EnemyData.FormationSize - 1;
             Vector3 center = (slot.position + _rankSlots[endIndex].position) * 0.5f;
@@ -179,7 +189,12 @@ public class CEnemyGroupTest : MonoBehaviour
 
         for (int i = 0; i < _spawnedEnemies.Count; i++)
         {
-            _spawnedEnemies[i].FormationMovement.Configure(_spawnedEnemies, _rankSlots);
+            CEnemy enemy = _spawnedEnemies[i];
+            enemy.FormationMovement.Configure(_spawnedEnemies, _rankSlots);
+            if (_denialPattern == null && enemy.TryGetComponent(out CDenialLock _))
+            {
+                _denialPattern = new CDenialRoundPattern();
+            }
         }
         TrySelectEnemy(0);
         if (_groupOptions != null)
@@ -194,7 +209,29 @@ public class CEnemyGroupTest : MonoBehaviour
         }
 
         _message = group.name + " / " + _spawnedEnemies.Count + " enemies";
+        TryAdvanceDenialRound();
         return true;
+    }
+
+    public bool TryAdvanceDenialRound()
+    {
+        int nextRound = _denialRound + 1;
+        if (_denialPattern == null || !_denialPattern.TryBeginRound(nextRound, _spawnedEnemies, out CDenialLock selected))
+            return false;
+
+        _denialRound = nextRound;
+        _message = "Round " + _denialRound + " / Denial of " + selected.Restriction;
+        DenialRestrictionChanged?.Invoke(ActiveDenialRestriction);
+        return true;
+    }
+
+    public void EndDenialRound()
+    {
+        if (ActiveDenialRestriction == EDenialRestriction.None) return;
+
+        _denialPattern.EndRound();
+        _message = "Round " + _denialRound + " / Denial ended";
+        DenialRestrictionChanged?.Invoke(EDenialRestriction.None);
     }
 
     public void ClearGroup()
@@ -312,6 +349,9 @@ public class CEnemyGroupTest : MonoBehaviour
 
     private void DestroySpawnedEnemies()
     {
+        EndDenialRound();
+        _denialPattern = null;
+        _denialRound = 0;
         // 조합 교체 전에 선택한 적 해제
         _selectedEnemy = null;
         _selectedIntent = null;
@@ -381,6 +421,11 @@ public class CEnemyGroupTest : MonoBehaviour
         if (GUILayout.Button("Clear Group"))
         {
             ClearGroup();
+        }
+
+        if (_denialPattern != null && GUILayout.Button("Next Round"))
+        {
+            TryAdvanceDenialRound();
         }
 
         GUILayout.EndHorizontal();

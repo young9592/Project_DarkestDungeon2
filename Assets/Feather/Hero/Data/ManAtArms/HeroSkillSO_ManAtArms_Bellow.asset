@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_yell
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Bellow
   _feedback: {fileID: 11400000, guid: 0c3994292cf90d14da377d450e5ec284, type: 2}
+  _denialCategories: 2

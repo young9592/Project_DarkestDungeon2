@@ -18,6 +18,7 @@ public class CEnemy : CEntity
     private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
     private readonly List<CEntity> _requestedTargets = new List<CEntity>();
     private CEnemyFormationMovement _formationMovement;
+    private CDenialLock _denialLock;
     private CSkillDataSO _movementSkill;
     private CSkillDataSO _selfTokenSkill;
     public CEnemyFormationMovement FormationMovement
@@ -79,6 +80,7 @@ public class CEnemy : CEntity
     protected override void Awake()
     {
         base.Awake();
+        _denialLock = GetComponent<CDenialLock>();
         _formationMovement = GetComponent<CEnemyFormationMovement>();
         if (_formationMovement == null) _formationMovement = gameObject.AddComponent<CEnemyFormationMovement>();
         _deathPresentation = GetComponent<CEntityDeathPresentation>();
@@ -258,6 +260,18 @@ public class CEnemy : CEntity
             && (!hero.DeathPresentation.WasHitReacting || (IsAttackPresentationPlaying && !HasStartedSkillEffects)))
         {
             CancelAction();
+        }
+
+        if (ActionState == EEntityActionState.Executing && _movementSkill != null
+            && _formationMovement != null && _attackAnimation.IsAttacking)
+        {
+            CEnemySkillRule rule = _enemyData.GetSkillRule(_movementSkill);
+            if (rule != null && rule.AttackMoveDuration > 0.0f)
+            {
+                CSkillDataSO movementSkill = _movementSkill;
+                _movementSkill = null;
+                _formationMovement.TryMove(movementSkill, rule.AttackMoveDuration);
+            }
         }
     }
 
@@ -568,6 +582,7 @@ public class CEnemy : CEntity
             TokenManager.ClearAllTokens();
             _activeStatusEffects.Clear();
 
+            if (_denialLock != null) _denialLock.ApplyDeathEffect(_formationMovement.Members);
             _deathPresentation.TryPlayConfirmedDeath();
             return;
         }
@@ -658,6 +673,7 @@ public class CEnemy : CEntity
         if (criticalState != null) criticalState.ClearModifiers();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
+        if (_denialLock != null) _denialLock.ResetDeathEffects();
     }
 
     // 턴 시작에만 한 번 호출함. 행동 재시도 때는 호출 안 함

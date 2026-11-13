@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_lunge
   _executionStartState: Base Layer.OriginalAction_GraveRobber_lunge
   _feedback: {fileID: 11400000, guid: 761fcc3ccb32f8340aa7d66df492446d, type: 2}
+  _denialCategories: 1

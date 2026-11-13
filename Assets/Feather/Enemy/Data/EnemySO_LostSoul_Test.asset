@@ -43,6 +43,7 @@ MonoBehaviour:
     _condition: 4
   - _skill: {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
     _rankMovement: -2
+    _attackMoveDuration: 1.05
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100

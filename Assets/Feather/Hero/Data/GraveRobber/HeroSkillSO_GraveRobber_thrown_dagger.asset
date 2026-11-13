@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_thrown_dagger
   _executionStartState: Base Layer.OriginalAction_GraveRobber_thrown_dagger
   _feedback: {fileID: 11400000, guid: 92c295b8d7b703140b893f07902c7bf0, type: 2}
+  _denialCategories: 2

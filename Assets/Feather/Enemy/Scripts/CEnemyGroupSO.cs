@@ -8,6 +8,7 @@ public class CEnemyGroupSO : ScriptableObject
     [Tooltip("Rank는 시작 열이고 적 데이터의 Formation Size만큼 자리를 차지합니다.")]
     [SerializeField] private List<CEnemyGroupEntry> _entries = new List<CEnemyGroupEntry>();
     [SerializeField] private string _displayName;
+    [SerializeField] private bool _shuffleSingleRankEnemies;
     public string DisplayName
     {
         get { return _displayName; }
@@ -16,6 +17,32 @@ public class CEnemyGroupSO : ScriptableObject
     public IReadOnlyList<CEnemyGroupEntry> Entries
     {
         get { return _entries; }
+    }
+
+    public IReadOnlyList<CEnemyGroupEntry> GetSpawnEntries()
+    {
+        if (!_shuffleSingleRankEnemies || _entries == null) return _entries;
+
+        List<CEnemy> prefabs = new List<CEnemy>();
+        for (int i = 0; i < _entries.Count; i++)
+        {
+            CEnemyGroupEntry entry = _entries[i];
+            if (entry == null) return _entries;
+            CEnemy prefab = entry.EnemyPrefab;
+            if (prefab == null || prefab.EnemyData == null || prefab.EnemyData.FormationSize != 1) return _entries;
+            prefabs.Add(prefab);
+        }
+
+        List<CEnemyGroupEntry> shuffled = new List<CEnemyGroupEntry>();
+        for (int i = 0; i < prefabs.Count; i++)
+        {
+            int selected = Random.Range(i, prefabs.Count);
+            CEnemy prefab = prefabs[selected];
+            prefabs[selected] = prefabs[i];
+            prefabs[i] = prefab;
+            shuffled.Add(new CEnemyGroupEntry(prefab, _entries[i].Rank));
+        }
+        return shuffled;
     }
 
     internal static CEnemyGroupSO CreateRuntime(List<CEnemyGroupEntry> entries)

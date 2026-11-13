@@ -37,3 +37,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_flashing_daggers
   _executionStartState: Base Layer.OriginalAction_GraveRobber_pirouette
   _feedback: {fileID: 11400000, guid: d23a0dbf09253c346ab2a0ea4704df5c, type: 2}
+  _denialCategories: 2

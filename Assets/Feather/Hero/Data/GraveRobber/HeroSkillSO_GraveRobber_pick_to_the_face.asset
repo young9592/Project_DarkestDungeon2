@@ -34,3 +34,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_pick_to_the_face
   _executionStartState: Base Layer.OriginalAction_GraveRobber_pick_to_the_face
   _feedback: {fileID: 11400000, guid: 18bd87bce3ee2e545a17960fe099c85c, type: 2}
+  _denialCategories: 1

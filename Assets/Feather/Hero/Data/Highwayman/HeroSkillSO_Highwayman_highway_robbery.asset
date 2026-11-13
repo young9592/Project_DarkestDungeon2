@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_advance
   _executionStartState: Base Layer.OriginalAction_Highwayman_highway_robbery
   _feedback: {fileID: 11400000, guid: 58a5c5246eb4bb64cacf4176e6ee6f9f, type: 2}
+  _denialCategories: 1

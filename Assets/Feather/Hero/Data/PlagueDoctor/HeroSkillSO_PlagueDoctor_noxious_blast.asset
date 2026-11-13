@@ -36,3 +36,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_noxious_blast
   _feedback: {fileID: 11400000, guid: 0b702003d52908d458de8591b947d5f7, type: 2}
+  _denialCategories: 2

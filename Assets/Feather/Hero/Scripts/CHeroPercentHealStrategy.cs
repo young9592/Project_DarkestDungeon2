@@ -21,6 +21,8 @@ public class CHeroPercentHealStrategy : CEffectStrategy
         if (context == null || !context.IsHit || context.Target == null
             || context.Target.EntityData == null || context.Target.IsDead || effectData == null) return;
 
+        if (context.Caster is CPlayer caster && caster.DenialRestriction == EDenialRestriction.Fortitude) return;
+
         if (_healthThreshold < 100 && context.Target is CPlayer hero
             && (long)hero.CurrentHp * 100 >= (long)hero.HeroData.MaxHealth * _healthThreshold) return;
 

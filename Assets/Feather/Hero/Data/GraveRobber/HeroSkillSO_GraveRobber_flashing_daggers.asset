@@ -35,3 +35,4 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_flashing_daggers
   _executionStartState: Base Layer.OriginalAction_GraveRobber_flashing_daggers
   _feedback: {fileID: 11400000, guid: 2cca6687f0eb90a4f81fba84348d5eb1, type: 2}
+  _denialCategories: 2
