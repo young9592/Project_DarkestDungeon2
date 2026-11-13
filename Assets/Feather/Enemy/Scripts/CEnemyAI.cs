@@ -116,8 +116,7 @@ public class CEnemyAI : MonoBehaviour
     public bool TryPlanAction(IReadOnlyList<CEntity> heroes, IReadOnlyList<CEnemy> allies)
     {
         if (!isActiveAndEnabled || _enemy == null || !_enemy.isActiveAndEnabled || _enemy.IsDeathPresented
-            || _enemy.AttackAnimation == null || _hasRequestedAction
-            || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
+            || _enemy.AttackAnimation == null) return false;
 
         if (_enemy.IsDead)
         {
@@ -143,6 +142,9 @@ public class CEnemyAI : MonoBehaviour
                 if (ally != null && ally != _enemy && !_allies.Contains(ally)) _allies.Add(ally);
             }
         }
+        // 이전 행동 중에도 다음 턴에서 고를 후보는 보관함
+        if (_hasRequestedAction || (_enemy.IsActionActive && _enemy.ActionState != EEntityActionState.Selecting)) return false;
+
         // 피격 중이어도 연출 후 다시 고를 수 있게 후보는 보관함
         if (_enemy.AttackAnimation.IsBusy) return false;
 
@@ -350,7 +352,7 @@ public class CEnemyAI : MonoBehaviour
         }
 
         // 이전 행동이 끝날 때까지 새 요청은 대기함
-        if (_enemy.ActionState == EEntityActionState.Executing)
+        if (_enemy.ActionState == EEntityActionState.Executing || _enemy.IsPresentationBusy)
         {
             return EEnemyActionRequestResult.WaitingForPresentation;
         }
@@ -359,8 +361,6 @@ public class CEnemyAI : MonoBehaviour
         {
             return EEnemyActionRequestResult.Rejected;
         }
-
-        if (_enemy.IsPresentationBusy) return EEnemyActionRequestResult.WaitingForPresentation;
 
         if (!IsPlanValid() && !RefreshPlan())
         {
