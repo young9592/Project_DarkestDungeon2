@@ -879,9 +879,9 @@ public class CCombatManager : MonoBehaviour
 
         if (_currentTurnState == TurnState.Normal)
         {
-            if (_turnList[0].entity.ExtraAction)
+            if (MyTurn.ExtraAction)
             {
-                _turnList[0].entity.SetExtraAction(false);
+                MyTurn.SetExtraAction(false);
                 _currentTurnState = TurnState.Extra;
             }
             else

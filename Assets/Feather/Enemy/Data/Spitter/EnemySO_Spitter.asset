@@ -27,8 +27,8 @@ MonoBehaviour:
   _availableSkills:
   - {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
   - {fileID: 11400000, guid: df3bfebaf4ce4ffab46ec48a620fa6d5, type: 2}
-  _portraitTurnOrder: {fileID: 0}
-  _portraitInfo: {fileID: 0}
+  _portraitTurnOrder: {fileID: 21300000, guid: 270e053416c310a42b8ae8fb47ff4d60, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 7e63f4949c66abf47be80501b82f7252, type: 3}
   _skillSlotBackground: {fileID: 0}
   _formationSize: 1
   _deathDoorCount: 0

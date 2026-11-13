@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3100379987156371097}
   - component: {fileID: 3509908099219728644}
   - component: {fileID: 8448947224374475715}
-  - component: {fileID: 8026237464971702930}
+  - component: {fileID: 4598489661569299262}
   m_Layer: 5
   m_Name: Stress
   m_TagString: Untagged
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 150}
+  m_SizeDelta: {x: 150, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3509908099219728644
 CanvasRenderer:
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8026237464971702930
+--- !u!114 &4598489661569299262
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,14 +86,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6143967996554263153}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06a7680c05c1f5941a02f38007f5976c, type: 3}
+  m_Script: {fileID: 11500000, guid: 40701bdeea1b29f49a5ad390b4fb2ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _subEffect: {fileID: 0}
-  _iconType: 2
-  _durationTime: 2
-  _sharpness: 25
-  _offset: {x: 0, y: 0}
+  _iconImage: {fileID: 7208951982945904006}
+  _shader: {fileID: 2100000, guid: c37ec88ff20902047a2cc4e66665719e, type: 2}
 --- !u!1 &7396148279390738520
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,7 +158,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: ef6a4276e778f3545a114552acd82419, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

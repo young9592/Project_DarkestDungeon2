@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,8 @@ public class CEntityState : MonoBehaviour
     [SerializeField] private GameObject _bleed;
     [SerializeField] private GameObject _blight;
     [SerializeField] private GameObject _burn;
+    [SerializeField] private GameObject _horror;
+    [SerializeField] private GameObject _regen;
 
     [Header("Entity Health")]
     [SerializeField] private Image _hpFill;
@@ -42,7 +45,6 @@ public class CEntityState : MonoBehaviour
     [SerializeField] private GameObject _weak;
     [SerializeField] private GameObject _blind;
     [SerializeField] private GameObject _immoblize;
-    [SerializeField] private GameObject _horror;
     [SerializeField] private GameObject _combo;
     [SerializeField] private GameObject _death;
     [SerializeField] private GameObject _deathArmor;
@@ -59,14 +61,18 @@ public class CEntityState : MonoBehaviour
     #endregion
 
     #region Field
+    private Dictionary<EEffectType, GameObject> _effectDict = new Dictionary<EEffectType, GameObject>();
     private RectTransform _rectTr;
     private RectTransform _canvasRectTr;
+
     // 초기 연결상태 확인
     private bool _init = false;
     private bool _doFollow = true;
     private int _formationSize = 1;
     private EEntityState _entityType = EEntityState.None;
     private bool _rendererCameraMode = false;
+    private GameObject _tokenTooltip;
+    private GameObject _dotTooltip;
     #endregion
 
     #region Property
@@ -84,10 +90,20 @@ public class CEntityState : MonoBehaviour
     }
 
     // 초기 생성시 연결처리
-    public void Initialize(Canvas canvas, GameObject target)
+    public void Initialize(Canvas canvas, GameObject tokenTooltip, GameObject dotTooltip, GameObject target)
     {
         _canvas = canvas;
         _target = target;
+
+        if (_tokenTooltip == null)
+        {
+            _tokenTooltip = tokenTooltip;
+        }
+
+        if(_dotTooltip == null)
+        {
+            _dotTooltip = dotTooltip;
+        }
 
         if (_canvas == null || _target == null)
         {
@@ -142,6 +158,32 @@ public class CEntityState : MonoBehaviour
                 _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
             }
         }
+
+        _effectDict.Add(EEffectType.Bleed, _bleed);
+        _effectDict.Add(EEffectType.Blight, _blight);
+        _effectDict.Add(EEffectType.Burn, _burn);
+        _effectDict.Add(EEffectType.Horror, _horror);
+        _effectDict.Add(EEffectType.Regen, _regen);
+        _effectDict.Add(EEffectType.Daze, _daze);
+        _effectDict.Add(EEffectType.Stun, _stun);
+        _effectDict.Add(EEffectType.Taunt, _taunt);
+        _effectDict.Add(EEffectType.Vulnerable, _vulnerable);
+        _effectDict.Add(EEffectType.Weak, _weak);
+        _effectDict.Add(EEffectType.Blind, _blind);
+        _effectDict.Add(EEffectType.Immobilize, _immoblize);
+        _effectDict.Add(EEffectType.Combo, _combo);
+        _effectDict.Add(EEffectType.DeathDoor, _death);
+        _effectDict.Add(EEffectType.DeathArmor, _deathArmor);
+        _effectDict.Add(EEffectType.Block, _block);
+        _effectDict.Add(EEffectType.BlockPlus, _blockPlus);
+        _effectDict.Add(EEffectType.Guard, _guard);
+        _effectDict.Add(EEffectType.Dodge, _dodge);
+        _effectDict.Add(EEffectType.DodgePlus, _dodgePlus);
+        _effectDict.Add(EEffectType.Speed, _speed);
+        _effectDict.Add(EEffectType.Strength, _strength);
+        _effectDict.Add(EEffectType.Stealth, _stealth);
+        _effectDict.Add(EEffectType.Riposte, _riposte);
+        _effectDict.Add(EEffectType.Crit, _crit);
 
         MoveState();
 
@@ -243,43 +285,117 @@ public class CEntityState : MonoBehaviour
     {
         foreach (EEffectType effect in Enum.GetValues(typeof(EEffectType)))
         {
-            if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn || effect == EEffectType.Stress)
+            // 도트 데미지
+            if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn || effect == EEffectType.Horror || effect == EEffectType.Regen)
             {
-                if (_entityType == EEntityState.Hero)
+                if (_effectDict.TryGetValue(effect, out GameObject target))
                 {
-                    CPlayer hero = _target.GetComponent<CPlayer>();
-                    int haveDamage = hero.GetTotalDotDamageByType(effect);
-                    bool remainDot = (haveDamage > 0 ? true : false);
-                    SetEffect(effect, remainDot);
-                }
-                else if (_entityType == EEntityState.Enemy)
-                {
-                    CEnemy enemy = _target.GetComponent<CEnemy>();
-                    int haveDamage = enemy.GetTotalDotDamageByType(effect);
-                    bool remainDot = (haveDamage > 0 ? true : false);
-                    SetEffect(effect, remainDot);
-                }
-                // 시체는 현재 효과를 받을 수 없기 때문에 모두 꺼주기
-                else if (_entityType == EEntityState.Enemy_Corpse)
-                {
-                    SetEffect(effect, false);
+                    CDotInfomation dotInfomation = target.GetComponent<CDotInfomation>();
+
+                    if (!dotInfomation.IsInitialize)
+                    {
+                        dotInfomation.Initialize(_dotTooltip);
+                    }
+
+                    if (_entityType == EEntityState.Hero)
+                    {
+                        CPlayer hero = _target.GetComponent<CPlayer>();
+                        int totalDamage = hero.GetTotalDotDamageByType(effect);
+                        int remain = 1;
+                        bool remainDot = (totalDamage > 0 ? true : false);
+
+                        if (remainDot)
+                        {
+                            if (!target.activeSelf)
+                            {
+                                target.SetActive(true);
+                            }
+
+                            dotInfomation.SetData(remain, totalDamage);
+                        }
+                        else
+                        {
+                            dotInfomation.ResetDot();
+                        }
+                    }
+                    else if (_entityType == EEntityState.Enemy)
+                    {
+                        CEnemy enemy = _target.GetComponent<CEnemy>();
+                        int totalDamage = enemy.GetTotalDotDamageByType(effect);
+                        int remain = 1;
+                        bool remainDot = (totalDamage > 0 ? true : false);
+
+                        if (remainDot)
+                        {
+                            if (!target.activeSelf)
+                            {
+                                target.SetActive(true);
+                            }
+
+                            dotInfomation.SetData(remain, totalDamage);
+                        }
+                        else
+                        {
+                            dotInfomation.ResetDot();
+                        }
+
+                    }
+                    // 시체는 현재 효과를 받을 수 없기 때문에 모두 꺼주기
+                    else if (_entityType == EEntityState.Enemy_Corpse)
+                    {
+                        CEnemyCorpse enemyCorpse = _target.GetComponent<CEnemy>().Corpse;
+                    }
                 }
             }
+            // 토큰
             else
             {
-                if (_entityType == EEntityState.Enemy_Corpse)
+                if (_effectDict.TryGetValue(effect, out GameObject target))
                 {
-                    SetEffect(effect, false);
-                }
+                    CTokenInfomation tokenInfomation = target.GetComponent<CTokenInfomation>();
 
-                CEntity entity = _target.GetComponent<CEntity>();
-                SetEffect(effect, entity.TokenManager.HasToken(effect));
+                    if (!tokenInfomation.IsInitialize)
+                    {
+                        tokenInfomation.Initialize(_tokenTooltip);
+                    }
+
+                    if (_entityType == EEntityState.Enemy_Corpse)
+                    {
+                        tokenInfomation.ResetToken();
+                        continue;
+                    }
+
+                    CEntity entity = _target.GetComponent<CEntity>();
+                    CTokenManager tokenManager = entity.TokenManager;
+
+                    if (tokenManager.HasToken(effect))
+                    {
+                        int duration = tokenManager.GetTokenDuration(effect);
+                        int stack = tokenManager.GetTokenStack(effect);
+
+                        if (!target.activeSelf)
+                        {
+                            target.SetActive(true);
+                        }
+
+                        tokenInfomation.SetTokenState(duration, stack);
+                    }
+                    else
+                    {
+                        tokenInfomation.ResetToken();
+                    }
+                }
             }
         }
     }
 
-    public void SetHealth()
+    private void SetHealth()
     {
+        if (_target == null)
+        {
+            return;
+        }
+
         CEntity entity = _target.GetComponent<CEntity>();
 
         int maxHealth = entity.EntityData.MaxHealth;
@@ -303,8 +419,39 @@ public class CEntityState : MonoBehaviour
 
         float Clamp01 = Mathf.Clamp01((float)curHealth / (float)maxHealth);
         _hpFill.fillAmount = Clamp01;
+
+        // 죽음의 문턱 상태인지 확인
+        if (entity is CPlayer)
+        {
+            if (entity.IsDeathsDoor && !entity.TokenManager.HasToken(EEffectType.DeathDoor))
+            {
+                entity.TokenManager.AddToken(EEffectType.DeathDoor, 1, 99);
+            }
+            else if (!entity.IsDeathsDoor && entity.TokenManager.HasToken(EEffectType.DeathDoor))
+            {
+                entity.TokenManager.ConsumeToken(EEffectType.DeathDoor);
+            }
+        }
+        else if (entity is CEnemy)
+        {
+            CEnemy enemy = entity as CEnemy;
+            int deathdoorCount = enemy.RemainingDeathArmor;
+
+            if (deathdoorCount > 0)
+            {
+
+            }
+            else if (enemy.IsDeathsDoor && deathdoorCount == 0 && enemy.TokenManager.HasToken(EEffectType.DeathDoor))
+            {
+                enemy.TokenManager.AddToken(EEffectType.DeathDoor, 1, 99);
+            }
+            else if (!enemy.IsDeathsDoor && enemy.TokenManager.HasToken(EEffectType.DeathDoor))
+            {
+                enemy.TokenManager.ConsumeToken(EEffectType.DeathDoor);
+            }
+        }
     }
-    public void SetStress()
+    private void SetStress()
     {
         CEntity entity = _target.GetComponent<CEntity>();
 
@@ -313,6 +460,7 @@ public class CEntityState : MonoBehaviour
         {
             return;
         }
+
         if (_entityType == EEntityState.Enemy_Corpse)
         {
             return;
@@ -323,80 +471,5 @@ public class CEntityState : MonoBehaviour
 
         float Clamp01 = Mathf.Clamp01((float)curStress / (float)maxStress);
         _stressFill.fillAmount = Clamp01;
-    }
-
-    public void SetEffect(EEffectType effectType, bool toggle)
-    {
-        switch (effectType)
-        {
-            case EEffectType.Bleed:
-                _bleed.SetActive(toggle);
-                break;
-            case EEffectType.Blight:
-                _blight.SetActive(toggle);
-                break;
-            case EEffectType.Burn:
-                _burn.SetActive(toggle);
-                break;
-            case EEffectType.Crit:
-                _crit.SetActive(toggle);
-                break;
-            case EEffectType.Riposte:
-                _riposte.SetActive(toggle);
-                break;
-            case EEffectType.Dodge:
-                _dodge.SetActive(toggle);
-                break;
-            case EEffectType.DodgePlus:
-                _dodgePlus.SetActive(toggle);
-                break;
-            case EEffectType.Block:
-                _block.SetActive(toggle);
-                break;
-            case EEffectType.BlockPlus:
-                _blockPlus.SetActive(toggle);
-                break;
-            case EEffectType.Guard:
-                _guard.SetActive(toggle);
-                break;
-            case EEffectType.Strength:
-                _strength.SetActive(toggle);
-                break;
-            case EEffectType.Speed:
-                _speed.SetActive(toggle);
-                break;
-            case EEffectType.Stealth:
-                _stealth.SetActive(toggle);
-                break;
-            case EEffectType.Daze:
-                _daze.SetActive(toggle);
-                break;
-            case EEffectType.Stun:
-                _stun.SetActive(toggle);
-                break;
-            case EEffectType.Blind:
-                _blind.SetActive(toggle);
-                break;
-            case EEffectType.Weak:
-                _weak.SetActive(toggle);
-                break;
-            case EEffectType.Vulnerable:
-                _vulnerable.SetActive(toggle);
-                break;
-            case EEffectType.Taunt:
-                _taunt.SetActive(toggle);
-                break;
-            case EEffectType.Immobilize:
-                _immoblize.SetActive(toggle);
-                break;
-            case EEffectType.Combo:
-                _combo.SetActive(toggle);
-                break;
-            case EEffectType.Stress:
-                _horror.SetActive(toggle);
-                break;
-            default:
-                break;
-        }
     }
 }

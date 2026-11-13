@@ -320,13 +320,13 @@ public class CCombatDebugMenu : MonoBehaviour
                 {
                     selectEntity.ModifyStress(stress);
                     _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Stress, $"{stress}");
-                    _messageManager.ShowIcon(selectEntity.gameObject, CCombatFloatingIcon.IconType.Stress);
+                    _messageManager.ShowIcon(selectEntity.gameObject, CIcon.IconType.Stress);
                 }
                 else if (applyOptionText == "스트레스 회복")
                 {
                     selectEntity.ModifyStress(-stress);
                     _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Stress, $"{stress}");
-                    _messageManager.ShowIcon(selectEntity.gameObject, CCombatFloatingIcon.IconType.StressHealing);
+                    _messageManager.ShowIcon(selectEntity.gameObject, CIcon.IconType.StressHeal);
                 }
                 else
                 {
