@@ -935,7 +935,12 @@ public class CPlayer : CEntity
                         case EEffectType.Bleed: bleedDamage += effect.Damage; break;
                         case EEffectType.Blight: blightDamage += effect.Damage; break;
                         case EEffectType.Burn: burnDamage += effect.Damage; break;
-                        case EEffectType.Stress: horrorStress += effect.Damage; break;
+                        case EEffectType.Stress:
+                            if (UnityEngine.Random.value < 0.5f)
+                            {
+                                horrorStress += effect.Damage;
+                            }
+                            break;
                     }
 
                     effect.DecreaseTurn();
