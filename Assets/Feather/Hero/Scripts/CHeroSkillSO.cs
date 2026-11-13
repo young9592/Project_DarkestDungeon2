@@ -210,4 +210,67 @@ public class CHeroSkillSO : CSkillDataSO
         }
         return false;
     }
+
+    public bool IsBlockedByDenial(CTokenManager tokenManager)
+    {
+        if (tokenManager == null) return false;
+
+        EHeroDenialCategory categories = DenialCategories;
+
+        if (tokenManager.HasToken(EEffectType.DenialOfArms) &&
+            (categories & EHeroDenialCategory.Melee) != 0)
+        {
+            return true;
+        }
+
+        if (tokenManager.HasToken(EEffectType.DenialOfReach) &&
+            (categories & EHeroDenialCategory.Ranged) != 0)
+        {
+            return true;
+        }
+
+        if (tokenManager.HasToken(EEffectType.DenialOfFortitude) &&
+            ((categories & EHeroDenialCategory.HealthRecovery) != 0 || HasHealEffect()))
+        {
+            return true;
+        }
+
+        if (tokenManager.HasToken(EEffectType.DenialOfReason) &&
+            ((categories & EHeroDenialCategory.StressRecovery) != 0 || HasStressHealEffect()))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HasHealEffect()
+    {
+        if (EffectList == null) return false;
+        for (int i = 0; i < EffectList.Count; i++)
+        {
+            CEffectSO effect = EffectList[i];
+            if (effect == null) continue;
+            if (effect.EffectType == EEffectType.Heal && effect.Condition == EEffectCondition.None)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool HasStressHealEffect()
+    {
+        if (EffectList == null) return false;
+        for (int i = 0; i < EffectList.Count; i++)
+        {
+            CEffectSO effect = EffectList[i];
+            if (effect == null) continue;
+            if (effect.EffectType == EEffectType.Stress && effect.Damage < 0 && effect.Condition == EEffectCondition.None)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -52,5 +52,11 @@ public enum EEffectType
     // 죽음의 문턱, 죽음의 문턱 방어토큰
     DeathDoor,
     DeathArmor,
+
+    DenialOfArms,       // 근접 공격 금지
+    DenialOfReach,      // 원거리 공격 금지
+    DenialOfFortitude,  // 치유 스킬 금지
+    DenialOfReason      // 스트레스 치유 금지 
+
 }
 
