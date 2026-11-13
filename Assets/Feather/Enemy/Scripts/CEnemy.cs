@@ -261,6 +261,18 @@ public class CEnemy : CEntity
         {
             CancelAction();
         }
+
+        if (ActionState == EEntityActionState.Executing && _movementSkill != null
+            && _formationMovement != null && _attackAnimation.IsAttacking)
+        {
+            CEnemySkillRule rule = _enemyData.GetSkillRule(_movementSkill);
+            if (rule != null && rule.AttackMoveDuration > 0.0f)
+            {
+                CSkillDataSO movementSkill = _movementSkill;
+                _movementSkill = null;
+                _formationMovement.TryMove(movementSkill, rule.AttackMoveDuration);
+            }
+        }
     }
 
     protected override bool CanBeginAction()
