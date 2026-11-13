@@ -655,7 +655,6 @@ public class CCombatManager : MonoBehaviour
                     _combatUI.CloseHeroInfomation();
                     MyTurn.TryStartRequestedAction();
                     SnapMoveSkill();
-
                     _combatUI.UseSkill(_currentActionSkillData);
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
                     _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
