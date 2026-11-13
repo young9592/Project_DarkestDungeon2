@@ -735,7 +735,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 252274900165408408}
   _moreHave: {fileID: 3875947243091206944}
-  _connectEffectType: 10
+  _connectEffectType: 28
   _duration: 0
   _stack: 0
 --- !u!1 &576408663228147816
@@ -981,7 +981,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 7928609537124079782}
   _moreHave: {fileID: 1870642235232929324}
-  _connectEffectType: 28
+  _connectEffectType: 24
   _duration: 0
   _stack: 0
 --- !u!1 &731343937575476542
@@ -1073,7 +1073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltip: {fileID: 0}
-  _connectEffectType: 8
+  _connectEffectType: 26
   _duration: 0
   _totalDamage: 0
 --- !u!1 &883534532454020493
@@ -1534,7 +1534,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 3838240561186086860}
   _moreHave: {fileID: 3641643624551671212}
-  _connectEffectType: 14
+  _connectEffectType: 10
   _duration: 0
   _stack: 0
 --- !u!1 &1263649268166187397
@@ -2843,7 +2843,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 5652852476697586385}
   _moreHave: {fileID: 7443468860299920310}
-  _connectEffectType: 9
+  _connectEffectType: 27
   _duration: 0
   _stack: 0
 --- !u!1 &2284137494493648071
@@ -3090,7 +3090,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 7358711395655905882}
   _moreHave: {fileID: 3999951224123564207}
-  _connectEffectType: 23
+  _connectEffectType: 19
   _duration: 0
   _stack: 0
 --- !u!1 &2420384322079551040
@@ -3258,7 +3258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltip: {fileID: 0}
-  _connectEffectType: 7
+  _connectEffectType: 25
   _duration: 0
   _totalDamage: 0
 --- !u!1 &2481496297602388250
@@ -4216,7 +4216,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 2326969811559509876}
   _moreHave: {fileID: 5871954326304364087}
-  _connectEffectType: 21
+  _connectEffectType: 17
   _duration: 0
   _stack: 0
 --- !u!1 &3412382055901832965
@@ -4386,7 +4386,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 1302726249360997246}
   _moreHave: {fileID: 6762422507101425374}
-  _connectEffectType: 26
+  _connectEffectType: 22
   _duration: 0
   _stack: 0
 --- !u!1 &3529323178505328826
@@ -4481,7 +4481,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 5626570610406574308}
   _moreHave: {fileID: 2533424989513451504}
-  _connectEffectType: 20
+  _connectEffectType: 16
   _duration: 0
   _stack: 0
 --- !u!1 &3552548427755278445
@@ -5332,7 +5332,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 8685730094926856481}
   _moreHave: {fileID: 7324689071185965443}
-  _connectEffectType: 12
+  _connectEffectType: 8
   _duration: 0
   _stack: 0
 --- !u!1 &4482543609040555117
@@ -6168,7 +6168,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 3201932646022609370}
   _moreHave: {fileID: 2481496297602388250}
-  _connectEffectType: 16
+  _connectEffectType: 12
   _duration: 0
   _stack: 0
 --- !u!1 &5007037731401113658
@@ -6844,7 +6844,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 272484621964738306}
   _moreHave: {fileID: 4571983196060788906}
-  _connectEffectType: 25
+  _connectEffectType: 21
   _duration: 0
   _stack: 0
 --- !u!1 &5466055956774480581
@@ -6939,7 +6939,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 3821934013730514502}
   _moreHave: {fileID: 7250635528832242046}
-  _connectEffectType: 15
+  _connectEffectType: 11
   _duration: 0
   _stack: 0
 --- !u!1 &5514738239672439000
@@ -7145,7 +7145,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 6239606402648440348}
   _moreHave: {fileID: 4964065321764719376}
-  _connectEffectType: 13
+  _connectEffectType: 9
   _duration: 0
   _stack: 0
 --- !u!1 &5577332608555275679
@@ -7898,7 +7898,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 1192583401946576348}
   _moreHave: {fileID: 5007037731401113658}
-  _connectEffectType: 18
+  _connectEffectType: 14
   _duration: 0
   _stack: 0
 --- !u!1 &6219971256097885965
@@ -8220,7 +8220,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 1502238873255595816}
   _moreHave: {fileID: 6766913191946752571}
-  _connectEffectType: 27
+  _connectEffectType: 23
   _duration: 0
   _stack: 0
 --- !u!1 &6435059681321736116
@@ -8606,7 +8606,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 8373392703152768875}
   _moreHave: {fileID: 984200754255735989}
-  _connectEffectType: 11
+  _connectEffectType: 7
   _duration: 0
   _stack: 0
 --- !u!1 &6568686931991210093
@@ -9131,7 +9131,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 8285755945917083719}
   _moreHave: {fileID: 8875156204241586548}
-  _connectEffectType: 22
+  _connectEffectType: 18
   _duration: 0
   _stack: 0
 --- !u!1 &7088613280777631657
@@ -9376,7 +9376,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 1591156090424103482}
   _moreHave: {fileID: 6219971256097885965}
-  _connectEffectType: 19
+  _connectEffectType: 15
   _duration: 0
   _stack: 0
 --- !u!1 &7250635528832242046
@@ -9773,7 +9773,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 3278224019865364076}
   _moreHave: {fileID: 6456142801231367663}
-  _connectEffectType: 17
+  _connectEffectType: 13
   _duration: 0
   _stack: 0
 --- !u!1 &7281046179057813530
@@ -11706,7 +11706,7 @@ MonoBehaviour:
   _tooltip: {fileID: 0}
   _twoHave: {fileID: 1784901699315117518}
   _moreHave: {fileID: 7468928940926117026}
-  _connectEffectType: 24
+  _connectEffectType: 20
   _duration: 0
   _stack: 0
 --- !u!1 &9190719446105599914
