@@ -19,6 +19,13 @@ public class CHeroRankPresentation : MonoBehaviour
     private float _duration;
     private bool _isConfigured;
     private bool _isMoving;
+    private bool _needsRankSyncAfterHighlight;
+    private int _highlightLayer;
+
+    private bool IsHighlighted
+    {
+        get { return gameObject.layer == _highlightLayer; }
+    }
 
     public bool IsBusy
     {
@@ -49,6 +56,7 @@ public class CHeroRankPresentation : MonoBehaviour
     private void Awake()
     {
         _hero = GetComponent<CPlayer>();
+        _highlightLayer = LayerMask.NameToLayer("Highlight");
     }
 
     public void Configure(Vector3 frontPosition, Vector3 rankStep, IReadOnlyList<CPlayer> party)
@@ -63,19 +71,26 @@ public class CHeroRankPresentation : MonoBehaviour
 
     internal bool HasPendingMovement()
     {
-        return isActiveAndEnabled && _isConfigured && _hero != null
+        return isActiveAndEnabled && !IsHighlighted && _isConfigured && _hero != null
             && (_isMoving || (CSkillRankUtility.IsSingleRank(_hero.CurrentRank)
             && _hero.CurrentRank != _destinationRank));
     }
 
     public void SnapToRank()
     {
+        if (IsHighlighted)
+        {
+            _needsRankSyncAfterHighlight = true;
+            return;
+        }
+
         if (!_isConfigured || _hero == null || !TryGetPosition(_hero.CurrentRank, out Vector3 position))
         {
             return;
         }
 
         _destinationRank = _hero.CurrentRank;
+        _needsRankSyncAfterHighlight = false;
         _isMoving = false;
         transform.position = position;
     }
@@ -99,6 +114,19 @@ public class CHeroRankPresentation : MonoBehaviour
     {
         if (!_isConfigured || _hero == null)
         {
+            return;
+        }
+
+        if (IsHighlighted)
+        {
+            // 확대 중에는 카메라가 모델 위치를 잡음
+            _needsRankSyncAfterHighlight |= _isMoving || _hero.CurrentRank != _destinationRank;
+            return;
+        }
+
+        if (_needsRankSyncAfterHighlight)
+        {
+            SnapToRank();
             return;
         }
 
