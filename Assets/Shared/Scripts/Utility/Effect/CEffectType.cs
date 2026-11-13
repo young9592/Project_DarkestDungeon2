@@ -20,6 +20,12 @@ public enum EEffectType
     Bleed,
     Blight,
     Burn,
+    Horror,
+    Regen,
+
+    // 죽음의 문턱, 죽음의 문턱 방어토큰
+    DeathDoor,
+    DeathArmor,
 
     // 버프목록
     Crit,               // 치명타     [ 다음 공격 100% 치명타 ]
