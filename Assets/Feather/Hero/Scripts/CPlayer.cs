@@ -989,6 +989,22 @@ public class CPlayer : CEntity
     }
 
     // 특정 도트 합산 데미지 반환
+    public int GetMaxRemainingEffectTurns(EEffectType effectType)
+    {
+        if (effectType == EEffectType.None || _activeStatusEffects == null) return 0;
+
+        int remainingTurns = 0;
+        for (int i = 0; i < _activeStatusEffects.Count; i++)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null || effect.EffectType != effectType) continue;
+
+            remainingTurns = Mathf.Max(remainingTurns, effect.RemainingTurns);
+        }
+
+        return remainingTurns;
+    }
+
     public int GetTotalDotDamageByType(EEffectType dotType)
     {
         int total = 0;
