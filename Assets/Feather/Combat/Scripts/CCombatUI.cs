@@ -108,6 +108,7 @@ public class CCombatUI : MonoBehaviour
     [Header("Dot/Token Infomation Tooltip")]
     [SerializeField] private GameObject _dotTooltip;
     [SerializeField] private GameObject _tokenTooltip;
+    [SerializeField] private GameObject _healthTooltip;
 
 
     [Header("Option")]
@@ -261,6 +262,7 @@ public class CCombatUI : MonoBehaviour
 
         _checkList.Add(_dotTooltip);
         _checkList.Add(_tokenTooltip);
+        _checkList.Add(_healthTooltip);
 
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
         {
@@ -335,7 +337,7 @@ public class CCombatUI : MonoBehaviour
     public void CreateStateUI(CEntity entity)
     {
         CEntityState state = Instantiate(_entitiesStatePrefab, _stateRoot.transform).GetComponent<CEntityState>();
-        state.Initialize(_canvas, _tokenTooltip, _dotTooltip, entity.gameObject);
+        state.Initialize(_canvas, _healthTooltip,  _tokenTooltip, _dotTooltip, entity.gameObject);
 
         _entitiesState.Add(entity, state);
     }
