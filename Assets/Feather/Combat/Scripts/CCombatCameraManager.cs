@@ -489,7 +489,6 @@ public class CCombatCameraManager : MonoBehaviour
             {
                 riposteEntity.SetRiposteSkill(testRiposte);
                 CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
-
             }
 
             yield return new WaitForSeconds(0.1f);
