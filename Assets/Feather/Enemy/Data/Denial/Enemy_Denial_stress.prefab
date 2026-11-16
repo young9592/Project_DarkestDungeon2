@@ -179,6 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 65467396330750470}
+  _hitRecoveryExitTime: 0.77261025
+  _hitRecoveryBlendTime: 0.5928991
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: a74b9084d86c8a1459e138329dedf490, type: 2}
     _attackState: Base Layer.Attack
