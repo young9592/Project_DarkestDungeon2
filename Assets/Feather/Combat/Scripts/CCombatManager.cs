@@ -438,7 +438,7 @@ public class CCombatManager : MonoBehaviour
 
         int[] dotList = new int[] { total.bleed, total.blight, total.burn };
 
-        CCombatFloatingText.EMessageType[] dotType = new CCombatFloatingText.EMessageType[] { CCombatFloatingText.EMessageType.Bleed, CCombatFloatingText.EMessageType.Blight, CCombatFloatingText.EMessageType.Burn };
+        EEffectType[] dotType = new EEffectType[] { EEffectType.Bleed, EEffectType.Blight, EEffectType.Burn };
 
         for (int i = 0, delay = 1; i < dotList.Length; i++)
         {
@@ -446,7 +446,7 @@ public class CCombatManager : MonoBehaviour
             {
                 continue;
             }
-            _messageManager.ShowMessage(MyTurn.gameObject, dotType[i], dotList[i].ToString(), default, delay * 0.3f);
+            CCombatFloatingMessageManager.ShowDot(MyTurn.gameObject, EDotType.Damage, dotType[i], dotList[i], default, delay * 0.3f);
             delay++;
         }
     }
