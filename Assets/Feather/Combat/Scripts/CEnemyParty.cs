@@ -93,13 +93,26 @@ public class CEnemyParty : MonoBehaviour
             // 일부 개체는 등을 보여줬어..
             if (enemyPrefab.EntityData.Id == "enemy_ghoul")
             {
-                enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
+                Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
+                enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
             }
 
-            if(enemyPrefab.EntityData.Id == "enemy_spitter")
+            if (enemyPrefab.EntityData.Id == "enemy_spitter")
             {
-                enemyPrefab.gameObject.transform.localScale = new Vector3(enemyPrefab.gameObject.transform.localScale.x, enemyPrefab.gameObject.transform.localScale.y, -enemyPrefab.gameObject.transform.localScale.z);
+                Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
+                enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
                 enemyPrefab.gameObject.GetComponentInChildren<Animator>().gameObject.transform.localScale = Vector3.one;
+            }
+
+            if (enemyPrefab.EnemyData.Id == "enemy_denial_health" || enemyPrefab.EnemyData.Id == "enemy_denial_melee" || enemyPrefab.EnemyData.Id == "enemy_denial_ranged" || enemyPrefab.EnemyData.Id == "enemy_denial_stress")
+            {
+                foreach (Transform tr in enemyPrefab.GetComponentsInChildren<Transform>(true))
+                {
+                    tr.localScale = Vector3.one;
+                }
+                enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 90f, 0);
+                Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
+                enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
             }
 
             // 스크립트 잠시 중단
