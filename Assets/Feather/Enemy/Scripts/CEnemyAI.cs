@@ -13,6 +13,7 @@ public class CEnemyAI : MonoBehaviour
 {
     private CEnemy _enemy;
     private CDenialLock _denialLock;
+    private CFanaticIgnition _ignition;
     private CSkillDataSO _plannedSkill;
     private CEntity _plannedTarget;
     private readonly List<CEntity> _plannedTargets = new List<CEntity>();
@@ -46,6 +47,7 @@ public class CEnemyAI : MonoBehaviour
     {
         _enemy = GetComponent<CEnemy>();
         _denialLock = GetComponent<CDenialLock>();
+        _ignition = GetComponent<CFanaticIgnition>();
         if (_enemy == null)
         {
             enabled = false;
@@ -148,6 +150,16 @@ public class CEnemyAI : MonoBehaviour
         // 피격 중이어도 연출 후 다시 고를 수 있게 후보는 보관함
         if (_enemy.AttackAnimation.IsBusy) return false;
 
+        CSkillDataSO ignition = _enemy.AvailableIgnition;
+        if (ignition != null)
+        {
+            ClearPlan();
+            _plannedSkill = ignition;
+            _plannedTarget = _enemy;
+            _plannedTargets.Add(_enemy);
+            return true;
+        }
+
         // 유효한 의도는 다시 추첨하지 않음
         if (IsPlanValid()) return true;
         CSkillDataSO previousSkill = _plannedSkill != null ? _plannedSkill : _retrySkill;
@@ -194,7 +206,7 @@ public class CEnemyAI : MonoBehaviour
         }
         if (_plannedSkill == null) return false;
         List<CEntity> targets = comboTargets != null && comboTargets.Count > 0
-            ? comboTargets : CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
+            ? comboTargets : GetTargets(_plannedSkill);
         if (targets.Count == 0) return false;
         _plannedTarget = targets[Random.Range(0, targets.Count)];
         EEnemyTargetSelection selection = _enemy.EnemyData.TargetSelection;
@@ -219,9 +231,14 @@ public class CEnemyAI : MonoBehaviour
 
     public bool IsPlanValid()
     {
+        if (_enemy != null && _enemy.AvailableIgnition != null)
+            return _plannedSkill == _enemy.AvailableIgnition && _plannedTarget == _enemy
+                && _enemy.isActiveAndEnabled && !_enemy.IsDead && !_enemy.IsDeathPresented;
+
         return _enemy != null && _enemy.isActiveAndEnabled && !_enemy.IsDeathPresented
             && !_enemy.IsDead && _plannedSkill != null
-            && IsHeroAvailable(_plannedTarget) && _heroes.Contains(_plannedTarget)
+            && _enemy.IsSkillTargetAvailable(_plannedSkill, _plannedTarget)
+            && (_heroes.Contains(_plannedTarget) || (_enemy.IsAllySkill(_plannedSkill) && _plannedTarget is CEnemy ally && _allies.Contains(ally)))
             && (IsExecuting || CSkillRankUtility.CanTargetSkill(_plannedSkill, _plannedTarget.CurrentRank))
             && (IsExecuting || CEnemySkillFilter.GetCandidates(_enemy.EnemyData, _enemy.CurrentRank).Contains(_plannedSkill))
             && (IsExecuting || _enemy.GetRemainingSkillCooldown(_plannedSkill) == 0)
@@ -275,7 +292,22 @@ public class CEnemyAI : MonoBehaviour
     private bool CanSelectSkill(CSkillDataSO skill)
     {
         return CEnemySkillSelector.GetSelectionWeight(_enemy.EnemyData, skill, _enemy.CurrentHp) > 0
-            && CEnemyTargetFilter.GetTargets(skill, _heroes).Count > 0;
+            && GetTargets(skill).Count > 0;
+    }
+
+    private List<CEntity> GetTargets(CSkillDataSO skill)
+    {
+        if (!_enemy.IsAllySkill(skill))
+            return CEnemyTargetFilter.GetTargets(skill, _heroes, _ignition != null && _ignition.CanTargetStealth(skill));
+
+        List<CEntity> targets = new List<CEntity>();
+        for (int i = 0; i < _allies.Count; i++)
+        {
+            CEnemy ally = _allies[i];
+            if (_enemy.IsSkillTargetAvailable(skill, ally) && CSkillRankUtility.CanTargetSkill(skill, ally.CurrentRank))
+                targets.Add(ally);
+        }
+        return targets;
     }
 
     private bool IsPreferredMovementBlocked(CSkillDataSO skill)
@@ -301,7 +333,7 @@ public class CEnemyAI : MonoBehaviour
 
     private bool ArePlannedTargetsValid()
     {
-        List<CEntity> targets = CEnemyTargetFilter.GetTargets(_plannedSkill, _heroes);
+        List<CEntity> targets = GetTargets(_plannedSkill);
         if (!targets.Contains(_plannedTarget)) return false;
         if (!_plannedSkill.IsGroupTarget) return _plannedTargets.Count == 1;
         int expectedCount = IsCripplingDoubt(_plannedSkill) ? Mathf.Min(2, targets.Count) : targets.Count;

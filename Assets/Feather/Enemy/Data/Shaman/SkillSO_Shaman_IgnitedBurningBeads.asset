@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_Shaman_IgnitedBurningBeads
+  m_EditorClassIdentifier: 
+  _skillName: Burning Beads
+  _skillIcon: {fileID: 0}
+  _useableRank: 12
+  _targetableRank: 15
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 0927f670c18c4de42af49558fb32ee32, type: 2}
+  - {fileID: 11400000, guid: 63f1afaccd3f4363b9514147a8ce436b, type: 2}
+  - {fileID: 11400000, guid: 160985f21ec712841b2c94a94afcd5c0, type: 2}
+  - {fileID: 11400000, guid: 9f04fc190a5a7dd44b9d29b64623b8e7, type: 2}
