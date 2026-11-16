@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Cerebral Falter
   _skillIcon: {fileID: 0}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:

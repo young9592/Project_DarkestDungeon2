@@ -10,7 +10,7 @@ public static class CEnemyTargetFilter
             && CSkillRankUtility.IsSingleRank(target.CurrentRank);
     }
 
-    public static List<CEntity> GetTargets(CSkillDataSO skill, IReadOnlyList<CEntity> heroes)
+    public static List<CEntity> GetTargets(CSkillDataSO skill, IReadOnlyList<CEntity> heroes, bool ignoreStealth = false)
     {
         List<CEntity> targets = new List<CEntity>();
         if (skill == null || heroes == null) return targets;
@@ -29,7 +29,7 @@ public static class CEnemyTargetFilter
         // 광역 공격은 은신 대상도 포함하며 도발로 범위를 좁히지 않음
         if (skill.IsGroupTarget) return targets;
 
-        if (hasVisibleTarget)
+        if (hasVisibleTarget && !ignoreStealth)
         {
             for (int i = targets.Count - 1; i >= 0; i--)
             {
