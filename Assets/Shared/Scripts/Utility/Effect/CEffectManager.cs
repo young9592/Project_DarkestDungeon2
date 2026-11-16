@@ -56,12 +56,16 @@ public class CEffectManager : MonoBehaviour
         int targetCount = targets.Count;
         CEffectContext[] contexts = new CEffectContext[targetCount];
         bool[] consumedComboInThisSkill = new bool[targetCount];
+        int skillCrit = (skillData is CHeroSkillSO heroSkill) ? heroSkill.CritChance : 5;
 
         Dictionary<EEffectType, bool> sharedCasterTokens = new Dictionary<EEffectType, bool>();
 
         for (int i=0 ; i < targetCount ; i++)
         {
-            contexts[i] = new CEffectContext(caster, targets[i], sharedCasterTokens);
+            contexts[i] = new CEffectContext(caster, targets[i], sharedCasterTokens)
+            {
+                SkillCritChance = skillCrit
+            };
             consumedComboInThisSkill[i] = false;
         }
 

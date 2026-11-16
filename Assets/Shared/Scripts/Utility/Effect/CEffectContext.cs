@@ -14,6 +14,8 @@ public class CEffectContext
     public bool IsHit { get; set; }
     public bool IsCrit { get; set; }
 
+    public int SkillCritChance { get; set; } = 5;
+
     private readonly Dictionary<EEffectType, bool> _sharedCasterTokens;
 
     public CEffectContext(CEntity caster, CEntity target, Dictionary<EEffectType, bool> sharedCasterTokens = null)

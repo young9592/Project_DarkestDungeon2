@@ -70,10 +70,14 @@ public class CDamageStrategy : CEffectStrategy
             context.IsCrit = true;
             CPrint.Log($"[{attacker.name}] 의 [치명타] 토큰 소모");
         }
-        else if (Random.Range(1, 101) <= 5)
+        else
         {
-            context.IsCrit = true;
-            CPrint.Log($"[{attacker.name}] 기본 확률 치명타 발동");
+            int baseCritChance = context.SkillCritChance;
+            if (Random.Range(1, 101) <= baseCritChance)
+            {
+                context.IsCrit = true;
+                CPrint.Log($"[{context.Caster.name}] 기본 확률({baseCritChance}%) 치명타 발동");
+            }
         }
 
         // 2. Base 롤링

@@ -8,10 +8,29 @@ public enum EEnemyTargetSelection
     Rearmost
 }
 
+public enum EEnemyCategory
+{
+    None = 0,
+    Gaunt,      // Lost Soul, Ghoul
+    Beast,      // Rabid Dog, Spitter
+    Fanatic,    // Firemouth
+    Cosmic,     // Shackles of Denial
+    Cultist,    // 사교도
+    Pillager,   // 약탈자
+    Cadaver,    // 시체
+    Swine
+}
+
 [CreateAssetMenu(menuName = "Data/Entity/Enemy", fileName = "EnemySO_")]
 public class CEnemyDataSO : CEntityDataSO
 {
     #region Inspector
+    [Header("Enemy Category")]
+    [SerializeField] private EEnemyCategory _enemyCategory = EEnemyCategory.None;
+
+    [Tooltip("UI에 직접 표시할 한글 종족명이 필요할 시 입력 (비워두면 Category 기준 자동 반환됨")]
+    [SerializeField] private string _enemyTypeDisplayName;
+
     [Header("Formation")]
     [Range(1, 4)]
     [SerializeField] private int _formationSize = 1;
@@ -40,6 +59,33 @@ public class CEnemyDataSO : CEntityDataSO
     #endregion
 
     #region Property
+    public EEnemyCategory EnemyCategory
+    {
+        get { return _enemyCategory; }
+    }
+    public string EnemyTypeDisplayName
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(_enemyTypeDisplayName))
+            {
+                return _enemyTypeDisplayName;
+            }
+
+            switch (_enemyCategory)
+            {
+                case EEnemyCategory.Gaunt:      return "실성자";
+                case EEnemyCategory.Beast:      return "짐승";
+                case EEnemyCategory.Fanatic:    return "광신도";
+                case EEnemyCategory.Cultist:    return "사교도";
+                case EEnemyCategory.Cosmic:     return "우주적 존재";
+                case EEnemyCategory.Pillager:   return "약탈자";
+                case EEnemyCategory.Cadaver:    return "시체";
+                case EEnemyCategory.Swine:      return "스와인";
+                default:                        return "적";
+            }
+        }
+    }
     public int DeathDoorCount => _deathDoorCount;
     public EEffectType StartingToken
     {
