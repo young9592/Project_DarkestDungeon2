@@ -15,6 +15,9 @@ public class CEnemyAttackAnimation : MonoBehaviour
     [SerializeField] private Animator _animator;
     [Header("Skill Animations")]
     [SerializeField] private List<CEnemySkillAnimation> _skillAnimations = new List<CEnemySkillAnimation>();
+    [Header("Hit Recovery")]
+    [SerializeField, Range(0.0f, 1.0f)] private float _hitRecoveryExitTime = 1.0f;
+    [SerializeField, Min(0.0f)] private float _hitRecoveryBlendTime;
     private static readonly int _idleStateHash = Animator.StringToHash("Base Layer.Idle");
     private static readonly int _attackStateHash = Animator.StringToHash("Base Layer.Attack");
     private static readonly int _attackPoseStateHash = Animator.StringToHash("Base Layer.AttackPose");
@@ -23,6 +26,7 @@ public class CEnemyAttackAnimation : MonoBehaviour
     private bool _isReady;
     private EAnimationState _state;
     private bool _needsIdle;
+    private bool _isHitRecoveryBlending;
     private int _currentAttackCompletionHash;
     // 비활성화로 중단되면 완료 알림 생략
     public event Action OnAttackStarted;
@@ -166,12 +170,12 @@ public class CEnemyAttackAnimation : MonoBehaviour
                 OnAttackCompleted?.Invoke();
                 break;
             case EAnimationState.Hit:
-                if (!HasFinished(_hitRecoverStateHash))
+                if (!TryCompleteHitRecovery())
                 {
                     return;
                 }
 
-                PlayIdle();
+                _state = EAnimationState.Idle;
                 OnHitCompleted?.Invoke();
                 break;
         }
@@ -317,6 +321,7 @@ public class CEnemyAttackAnimation : MonoBehaviour
         }
 
         _needsIdle = false;
+        _isHitRecoveryBlending = false;
         _state = EAnimationState.Hit;
         _animator.Play(_hitStateHash, 0, 0.0f);
         OnHitStarted?.Invoke();
@@ -327,6 +332,32 @@ public class CEnemyAttackAnimation : MonoBehaviour
     {
         return IsReady && !IsBusy;
     }
+
+    private bool TryCompleteHitRecovery()
+    {
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        if (_isHitRecoveryBlending && stateInfo.fullPathHash == _idleStateHash)
+        {
+            return !_animator.IsInTransition(0);
+        }
+
+        if (_animator.IsInTransition(0) || stateInfo.fullPathHash != _hitRecoverStateHash
+            || stateInfo.normalizedTime < _hitRecoveryExitTime)
+        {
+            return false;
+        }
+
+        if (_hitRecoveryBlendTime > 0.0f)
+        {
+            _isHitRecoveryBlending = true;
+            _animator.CrossFadeInFixedTime(_idleStateHash, _hitRecoveryBlendTime, 0, 0.0f);
+            return false;
+        }
+
+        PlayIdle();
+        return true;
+    }
+
 
     private bool HasFinished(int stateHash)
     {
