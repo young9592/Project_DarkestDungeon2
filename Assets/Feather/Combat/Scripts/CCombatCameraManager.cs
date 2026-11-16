@@ -38,6 +38,8 @@ public class CCombatCameraManager : MonoBehaviour
     [Header("Option")]
     [SerializeField] private string _highlightLayerName = "Highlight";
     [SerializeField] private string _defaultLayerName = "Default";
+    [SerializeField] private float _actionZoomValue = 2f;
+    [SerializeField] private float _meltdownZoomValue = 1.5f;
 
     [Header("Riposte data")]
     [SerializeField] private CSkillDataSO hwm;
@@ -332,7 +334,7 @@ public class CCombatCameraManager : MonoBehaviour
         float nextMsgTime = Time.time + messageDelay;
         float move = moveDir == ECameraMoveDirection.Right ? 0.5f : -0.5f;
         List<Vector3> moveVec = new List<Vector3>();
-        _highlightCamera.orthographicSize = 2f;
+        _highlightCamera.orthographicSize = _actionZoomValue;
 
         for (int i = 0; i < camInitPos.Count; i++)
         {
@@ -343,6 +345,7 @@ public class CCombatCameraManager : MonoBehaviour
         _combatUI.ToggleEntityStateRoot(false);
         _combatUI.ToggleIndicatorRoot(false);
         _combatUI.HideAllIndicator();
+        _combatUI.DisableTooltip();
 
         // 공격 방향에 따라 이펙트
         if (combatTarget == ECombatTarget.Hero_Attack)
@@ -651,7 +654,8 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         // 사전작업
-        _highlightCamera.orthographicSize = 1f;
+        _highlightCamera.orthographicSize = _meltdownZoomValue;
+        _combatUI.DisableTooltip();
 
         int layer = LayerMask.NameToLayer(_highlightLayerName);
         HighlightCharacter(hero.gameObject, layer);
@@ -666,19 +670,19 @@ public class CCombatCameraManager : MonoBehaviour
         // 카메라 앞으로 영웅 끌어오기
         if (hero.HeroData.Id == "hero_man_at_arms")
         {
-            heroTr.position = new Vector3(0, -1, 0);
+            heroTr.position = new Vector3(0, -2, 0);
         }
         else if (hero.HeroData.Id == "hero_highwayman")
         {
-            heroTr.position = new Vector3(0.35f, -1.25f, 0);
+            heroTr.position = new Vector3(0.35f, -2.25f, 0);
         }
         else if (hero.HeroData.Id == "hero_grave_robber")
         {
-            heroTr.position = new Vector3(0, -1.2f, 0);
+            heroTr.position = new Vector3(0, -2.2f, 0);
         }
         else if (hero.HeroData.Id == "hero_plague_doctor")
         {
-            heroTr.position = new Vector3(0.2f, -1.1f, 0);
+            heroTr.position = new Vector3(0.2f, -2.1f, 0);
         }
 
 

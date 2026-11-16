@@ -1,5 +1,6 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,9 +30,14 @@ public class CEntityState : MonoBehaviour
     [SerializeField] private GameObject _horror;
     [SerializeField] private GameObject _regen;
 
+    [Header("HealthInfomation Detect Area")]
+    [SerializeField] private CHealthInfomation _healthInfomation;
+
     [Header("Entity Health")]
+    [SerializeField] private RectTransform _hpbarRoot;
     [SerializeField] private Image _hpFill;
-    [SerializeField] private RectTransform _hpBarBackgroundTr;
+    [SerializeField] private Image _hpLost;
+    [SerializeField] private Image _hpRecover;
 
     [Header("Entity Stress")]
     [SerializeField] private GameObject _stressRoot;
@@ -71,8 +77,17 @@ public class CEntityState : MonoBehaviour
     private int _formationSize = 1;
     private EEntityState _entityType = EEntityState.None;
     private bool _rendererCameraMode = false;
-    private GameObject _tokenTooltip;
-    private GameObject _dotTooltip;
+    // 역동적인 체력바 구현
+    private int _prevHealth = -1;
+    private Coroutine _effectHpBarCoroutine = null;
+    // 중간에 변경되는 사항 적용
+    private bool _againCoroutine = false;
+    private float _changeDesire = 0f;
+    //툴팁
+    private static GameObject _tokenTooltip;
+    private static GameObject _dotTooltip;
+    private static GameObject _healthTooltip;
+    private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
@@ -84,31 +99,85 @@ public class CEntityState : MonoBehaviour
 
     private void Awake()
     {
-        // Null check
+        // Effect
+        _checkList.Add(_bleed);
+        _checkList.Add(_blight);
+        _checkList.Add(_burn);
+        _checkList.Add(_horror);
+        _checkList.Add(_regen);
+
+        // Entity Health
+        _checkList.Add(_hpbarRoot);
+        _checkList.Add(_hpFill);
+        _checkList.Add(_hpLost);
+        _checkList.Add(_hpRecover);
+
+        // Entity Stress
+        _checkList.Add(_stressRoot);
+        _checkList.Add(_stressFill);
+
+        // Entity Token
+        _checkList.Add(_daze);
+        _checkList.Add(_stun);
+        _checkList.Add(_taunt);
+        _checkList.Add(_vulnerable);
+        _checkList.Add(_weak);
+        _checkList.Add(_blind);
+        _checkList.Add(_immoblize);
+        _checkList.Add(_combo);
+        _checkList.Add(_death);
+        _checkList.Add(_deathArmor);
+        _checkList.Add(_block);
+        _checkList.Add(_blockPlus);
+        _checkList.Add(_guard);
+        _checkList.Add(_dodge);
+        _checkList.Add(_dodgePlus);
+        _checkList.Add(_speed);
+        _checkList.Add(_strength);
+        _checkList.Add(_stealth);
+        _checkList.Add(_riposte);
+        _checkList.Add(_crit);
+
+        _checkList.Add(_healthInfomation);
+
+        if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
+        {
+            enabled = false;
+            return;
+        }
 
         _rectTr = GetComponent<RectTransform>();
+
+        _hpLost.enabled = false;
+        _hpRecover.enabled = false;
     }
 
     // 초기 생성시 연결처리
-    public void Initialize(Canvas canvas, GameObject tokenTooltip, GameObject dotTooltip, GameObject target)
+    public void Initialize(Canvas canvas, GameObject healthTooltip, GameObject tokenTooltip, GameObject dotTooltip, GameObject target)
     {
         _canvas = canvas;
         _target = target;
+
+        if (_canvas == null || _target == null)
+        {
+            CPrint.Warn($"{gameObject.name} : Initialize 값 전달 오류");
+            return;
+        }
+
+        // 툴팁 연결
+        if (_healthTooltip == null)
+        {
+            _healthTooltip = healthTooltip;
+        }
 
         if (_tokenTooltip == null)
         {
             _tokenTooltip = tokenTooltip;
         }
 
-        if(_dotTooltip == null)
+        if (_dotTooltip == null)
         {
             _dotTooltip = dotTooltip;
-        }
-
-        if (_canvas == null || _target == null)
-        {
-            CPrint.Warn($"{gameObject.name} : Initialize 값 전달 오류");
-            return;
         }
 
         // 랜더링 모드 체크
@@ -142,7 +211,7 @@ public class CEntityState : MonoBehaviour
 
             if (_formationSize > 1)
             {
-                _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
+                _hpbarRoot.sizeDelta = new Vector2(_hpbarRoot.sizeDelta.x * _formationSize, _hpbarRoot.sizeDelta.y);
             }
 
         }
@@ -155,7 +224,7 @@ public class CEntityState : MonoBehaviour
 
             if (_formationSize > 1)
             {
-                _hpBarBackgroundTr.localScale = new Vector3(_hpBarBackgroundTr.localScale.x * _formationSize, _hpBarBackgroundTr.localScale.y, _hpBarBackgroundTr.localScale.z);
+                _hpbarRoot.sizeDelta = new Vector2(_hpbarRoot.sizeDelta.x * _formationSize, _hpbarRoot.sizeDelta.y);
             }
         }
 
@@ -187,6 +256,11 @@ public class CEntityState : MonoBehaviour
 
         MoveState();
 
+        if (!_healthInfomation.IsInitialize && _entityType != EEntityState.None)
+        {
+            _healthInfomation.Initialize(_healthTooltip, _entityType);
+        }
+
         _init = true;
     }
     // 시체 상태가 되었을 때 재연결
@@ -206,6 +280,7 @@ public class CEntityState : MonoBehaviour
             _target = target;
         }
 
+        _prevHealth = -1;
         SetTotalState();
 
         _init = true;
@@ -268,7 +343,7 @@ public class CEntityState : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    // 현재 변화된 상태가 있는지 체크 [ 아래 코드들 SetHealth부터 변화가 있을 지점에만 배치된 함수들입니다. ]
+    // 현재 변화된 상태가 있는지 체크
     public void SetTotalState()
     {
         if (_target == null)
@@ -283,7 +358,7 @@ public class CEntityState : MonoBehaviour
     // 플레이어 내부에서도 작업되는게 있어서 추가된 함수
     private void CheckEffect()
     {
-        foreach (EEffectType effect in Enum.GetValues(typeof(EEffectType)))
+        foreach (EEffectType effect in System.Enum.GetValues(typeof(EEffectType)))
         {
             // 도트 데미지
             if (effect == EEffectType.Bleed || effect == EEffectType.Blight || effect == EEffectType.Burn || effect == EEffectType.Horror || effect == EEffectType.Regen)
@@ -301,7 +376,7 @@ public class CEntityState : MonoBehaviour
                     {
                         CPlayer hero = _target.GetComponent<CPlayer>();
                         int totalDamage = hero.GetTotalDotDamageByType(effect);
-                        int remain = 1;
+                        int remain = hero.GetMaxRemainingEffectTurns(effect);
                         bool remainDot = (totalDamage > 0 ? true : false);
 
                         if (remainDot)
@@ -322,7 +397,7 @@ public class CEntityState : MonoBehaviour
                     {
                         CEnemy enemy = _target.GetComponent<CEnemy>();
                         int totalDamage = enemy.GetTotalDotDamageByType(effect);
-                        int remain = 1;
+                        int remain = enemy.GetMaxRemainingEffectTurns(effect);
                         bool remainDot = (totalDamage > 0 ? true : false);
 
                         if (remainDot)
@@ -343,7 +418,7 @@ public class CEntityState : MonoBehaviour
                     // 시체는 현재 효과를 받을 수 없기 때문에 모두 꺼주기
                     else if (_entityType == EEntityState.Enemy_Corpse)
                     {
-                        CEnemyCorpse enemyCorpse = _target.GetComponent<CEnemy>().Corpse;
+                        dotInfomation.ResetDot();
                     }
                 }
             }
@@ -399,26 +474,83 @@ public class CEntityState : MonoBehaviour
         CEntity entity = _target.GetComponent<CEntity>();
 
         int maxHealth = entity.EntityData.MaxHealth;
-        int curHealth = 0;
+        int curHealth = -1;
+
+
 
         switch (_entityType)
         {
-            case EEntityState.None:
-                break;
             case EEntityState.Hero:
-                curHealth = ((CPlayer)entity).CurrentHp;
+                CPlayer hero = entity as CPlayer;
+                curHealth = hero.CurrentHp;
                 break;
             case EEntityState.Enemy:
-                curHealth = ((CEnemy)entity).CurrentHp;
+                CEnemy enemy = entity as CEnemy;
+                curHealth = enemy.CurrentHp;
                 break;
             case EEntityState.Enemy_Corpse:
-                curHealth = ((CEnemyCorpse)entity).CurrentHp;
+                CEnemyCorpse enemyCorpse = entity as CEnemyCorpse;
+                curHealth = enemyCorpse.CurrentHp;
                 break;
         }
 
+        // 변화된 체력
+        if (curHealth == -1)
+        {
+            _hpFill.fillAmount = 1;
+        }
+        else if (_prevHealth == -1)
+        {
+            _hpFill.fillAmount = 1;
+        }
+        // 데미지를 입은 상황
+        else if (_prevHealth > curHealth)
+        {
+            // 깍인만큼 바로 적용
+            float currentHpClamp = Mathf.Clamp01((float)curHealth / (float)maxHealth);
+            _hpFill.fillAmount = currentHpClamp;
 
-        float Clamp01 = Mathf.Clamp01((float)curHealth / (float)maxHealth);
-        _hpFill.fillAmount = Clamp01;
+            // 체력을 잃기 전 위치에서부터..
+            float changeHpClame = Mathf.Clamp01((float)_prevHealth / (float)maxHealth);
+            _hpLost.enabled = true;
+            _hpLost.fillAmount = changeHpClame;
+
+            // 잃은 만큼 보간으로 애니메이션 적용
+            if (_effectHpBarCoroutine == null)
+            {
+                _effectHpBarCoroutine = StartCoroutine(CoHealthChangeEffect(_hpLost, changeHpClame, currentHpClamp, _hpLost));
+            }
+            else
+            {
+                _changeDesire = Mathf.Clamp01((float)curHealth / (float)maxHealth);
+                _againCoroutine = true;
+            }
+        }
+        // 체력 회복한 상황
+        else if (_prevHealth < curHealth)
+        {
+            // 현재 체력은 변화되기 전 위치에서
+            float currentHpClamp = Mathf.Clamp01((float)_prevHealth / (float)maxHealth);
+            _hpFill.fillAmount = currentHpClamp;
+
+            // 회복하는 양 위치 적용
+            float changeHpClame = Mathf.Clamp01((float)curHealth / (float)maxHealth);
+            _hpRecover.enabled = true;
+            _hpRecover.fillAmount = changeHpClame;
+
+            // 회복된 만큼 애니메이션 적용
+            if (_effectHpBarCoroutine == null)
+            {
+                _effectHpBarCoroutine = StartCoroutine(CoHealthChangeEffect(_hpFill, currentHpClamp, changeHpClame, _hpRecover));
+            }
+            else
+            {
+                _changeDesire = Mathf.Clamp01((float)curHealth / (float)maxHealth);
+                _againCoroutine = true;
+            }
+        }
+
+        _prevHealth = curHealth;
 
         // 죽음의 문턱 상태인지 확인
         if (entity is CPlayer)
@@ -435,21 +567,51 @@ public class CEntityState : MonoBehaviour
         else if (entity is CEnemy)
         {
             CEnemy enemy = entity as CEnemy;
-            int deathdoorCount = enemy.RemainingDeathArmor;
+            int deathArmorCount = enemy.RemainingDeathArmor;
 
-            if (deathdoorCount > 0)
-            {
 
-            }
-            else if (enemy.IsDeathsDoor && deathdoorCount == 0 && enemy.TokenManager.HasToken(EEffectType.DeathDoor))
+            if (deathArmorCount == 0 && enemy.TokenManager.HasToken(EEffectType.DeathArmor))
             {
-                enemy.TokenManager.AddToken(EEffectType.DeathDoor, 1, 99);
+                enemy.TokenManager.ConsumeToken(EEffectType.DeathArmor);
+                enemy.TokenManager.AddToken(EEffectType.DeathDoor);
             }
-            else if (!enemy.IsDeathsDoor && enemy.TokenManager.HasToken(EEffectType.DeathDoor))
+            else if (deathArmorCount > 0 && deathArmorCount != enemy.TokenManager.GetTokenStack(EEffectType.DeathArmor))
             {
-                enemy.TokenManager.ConsumeToken(EEffectType.DeathDoor);
+                enemy.TokenManager.AddToken(EEffectType.DeathArmor, deathArmorCount, 99);
             }
         }
+
+        // 데이터 적용
+        _healthInfomation.SetHealth(curHealth, maxHealth);
+    }
+    // 회복이나 데미지를 받을 시 체력 깍이는 이펙트 [ 만약 깍이거나 회복되는 이벤트가 동시에 들어오면 애니메이션 오류가 생길겁니다. ]
+    private IEnumerator CoHealthChangeEffect(Image target, float start, float desire, Image effect)
+    {
+        float delay = 1f;
+        float nextTime = Time.time + delay;
+
+        while (nextTime > Time.time)
+        {
+            // 중간에 회복이 또 들어오는 경우 [ 주로 디버그 ]
+            if (_againCoroutine)
+            {
+                desire = _changeDesire;
+                _againCoroutine = false;
+                _changeDesire = 0;
+            }
+
+            float t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
+
+            target.fillAmount = Mathf.Lerp(start, desire, t);
+
+            yield return null;
+        }
+
+        target.fillAmount = desire;
+        effect.enabled = false;
+        _againCoroutine = false;
+        _changeDesire = 0;
+        _effectHpBarCoroutine = null;
     }
     private void SetStress()
     {
@@ -471,5 +633,7 @@ public class CEntityState : MonoBehaviour
 
         float Clamp01 = Mathf.Clamp01((float)curStress / (float)maxStress);
         _stressFill.fillAmount = Clamp01;
+
+        _healthInfomation.SetStress(curStress, maxStress);
     }
 }

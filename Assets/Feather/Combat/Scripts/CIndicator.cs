@@ -271,13 +271,33 @@ public class CIndicator : MonoBehaviour
         {
             if (_view.IsHovered)
             {
-                _enemyFullLight.SetActive(true);
-                _heroSemiLight.SetActive(false);
+                if (_entityType == EEntityType.Hero)
+                {
+                    _playerTurnHoverFlag = true;
+
+                    _heroFullLight.SetActive(TotalFlag);
+                    _heroSemiLight.SetActive(false);
+                }
+                else
+                {
+                    _enemyFullLight.SetActive(true);
+                    _heroSemiLight.SetActive(false);
+                }
             }
             else
             {
-                _enemyFullLight.SetActive(false);
-                _heroSemiLight.SetActive(false);
+                if (_entityType == EEntityType.Hero)
+                {
+                    _playerTurnHoverFlag = false;
+
+                    _heroFullLight.SetActive(TotalFlag);
+                    _heroSemiLight.SetActive(false);
+                }
+                else
+                {
+                    _enemyFullLight.SetActive(false);
+                    _heroSemiLight.SetActive(false);
+                }
             }
         }
     }
