@@ -79,7 +79,7 @@ public class CTokenManager
         {
             return false;
         }
-
+        
         _tokenStacks[tokenType]--;
 
         if (_tokenStacks[tokenType] <= 0 )

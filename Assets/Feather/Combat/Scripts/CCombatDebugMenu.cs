@@ -30,7 +30,7 @@ public class CCombatDebugMenu : MonoBehaviour
     private Dictionary<EEffectType, CEffectSO> _effectList = new Dictionary<EEffectType, CEffectSO>();
     private int _selecedtEffectIdx = 0;
     private int _selectedEntitytIdx = 0;
-    private  List<Object> _checkList = new List<Object>();
+    private List<Object> _checkList = new List<Object>();
     #endregion
 
     private void Awake()
@@ -39,7 +39,7 @@ public class CCombatDebugMenu : MonoBehaviour
         {
             return;
         }
-        
+
         _checkList.Add(_combatManager);
         _checkList.Add(_combatUI);
         _checkList.Add(_messageManager);
@@ -55,7 +55,7 @@ public class CCombatDebugMenu : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < _effectSOList.Count; i++)
+        for (int i = 0; i < _effectSOList.Count; i++)
         {
             _checkList.Add(_effectSOList[i]);
         }
@@ -246,7 +246,6 @@ public class CCombatDebugMenu : MonoBehaviour
                             (selectEntity as CEnemy).Corpse.TakeDamage(damage);
                         }
                     }
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage, $"{damage}");
                 }
                 else
                 {
@@ -273,14 +272,6 @@ public class CCombatDebugMenu : MonoBehaviour
                             (selectEntity as CEnemy).Corpse.TakeDamage((int)(damage * 1.5f));
                         }
                     }
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit, $"{(int)(damage * 1.5f)}");
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Damage_Crit_Msg, "치명타!");
-                }
-
-
-                if (selectEntity.IsDeathsDoor)
-                {
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!");
                 }
                 break;
             case EEffectType.Heal:
@@ -290,13 +281,10 @@ public class CCombatDebugMenu : MonoBehaviour
                 if (rand < 6)
                 {
                     selectEntity.TakeDamage(-heal);
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal}");
                 }
                 else
                 {
                     selectEntity.TakeDamage(-heal * 2);
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Heal, $"{heal * 2}");
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Heal_Crit_Msg, "치명타!");
                 }
                 break;
             case EEffectType.Bleed:
@@ -319,19 +307,15 @@ public class CCombatDebugMenu : MonoBehaviour
                 if (applyOptionText == "스트레스")
                 {
                     selectEntity.ModifyStress(stress);
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Stress, $"{stress}");
-                    _messageManager.ShowIcon(selectEntity.gameObject, CIcon.IconType.Stress);
                 }
                 else if (applyOptionText == "스트레스 회복")
                 {
                     selectEntity.ModifyStress(-stress);
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.Stress, $"{stress}");
-                    _messageManager.ShowIcon(selectEntity.gameObject, CIcon.IconType.StressHeal);
                 }
                 else
                 {
                     selectEntity.SetExtraAction(true);
-                    _messageManager.ShowMessage(selectEntity.gameObject, CCombatFloatingText.EMessageType.None, "추가 행동 부여");
+                    CCombatFloatingMessageManager.ShowDefault(selectEntity.gameObject, "추가 행동 부여");
                 }
 
                 break;

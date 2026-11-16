@@ -299,6 +299,28 @@ public class CCombatManager : MonoBehaviour
             return;
         }
 
+        // 모든 엔티티가 액션받을수 있는 상태인지 확인
+        bool allEntitiesIdle = true;
+
+        for (int i = 0; i < _entityList.Count; i++)
+        {
+            if (_entityList[i].entity is CEnemyCorpse)
+            {
+                continue;
+            }
+
+            if (_entityList[i].entity.ActionState != EEntityActionState.Idle)
+            {
+                allEntitiesIdle = false;
+                break;
+            }
+        }
+
+        if (!allEntitiesIdle)
+        {
+            return;
+        }
+
         // 현재 랭크에 맞게 딕셔너리 최신화
         _heroParty.UpdateCurrentRank();
         _enemyParty.UpdateCurrentRank();
@@ -585,7 +607,6 @@ public class CCombatManager : MonoBehaviour
     // 기절 : 현재 라운드의 차례를 넘깁니다.
     private IEnumerator CoStun()
     {
-        _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.Stun, "기절!");
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);
         _combatUI.MoveTurnOrder();
@@ -595,7 +616,6 @@ public class CCombatManager : MonoBehaviour
     // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
     private IEnumerator CoDaze()
     {
-        _messageManager.ShowMessage(_turnList[0].entity.gameObject, CCombatFloatingText.EMessageType.Daze, "현기증!");
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);
@@ -633,7 +653,7 @@ public class CCombatManager : MonoBehaviour
                 if (_combatUI.Pass)
                 {
                     doAction = true;
-                    _messageManager.ShowMessage(MyTurn.gameObject, CCombatFloatingText.EMessageType.None, "턴넘김");
+                    CCombatFloatingMessageManager.ShowDefault(MyTurn.gameObject, "턴넘김");
                     MyTurn.CancelAction();
                     _combatUI.Pass = false;
                     break;
