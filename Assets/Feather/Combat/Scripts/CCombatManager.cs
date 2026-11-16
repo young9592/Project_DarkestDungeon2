@@ -436,11 +436,13 @@ public class CCombatManager : MonoBehaviour
             enemy.OnTurnStart();
         }
 
-        int[] dotList = new int[] { total.bleed, total.blight, total.burn };
+        List<int> dotList = new List<int> { total.bleed, total.blight, total.burn };
 
         EEffectType[] dotType = new EEffectType[] { EEffectType.Bleed, EEffectType.Blight, EEffectType.Burn };
 
-        for (int i = 0, delay = 1; i < dotList.Length; i++)
+        // TODO : 재생 추가해야합니다.
+
+        for (int i = 0, delay = 1; i < dotList.Count; i++)
         {
             if (dotList[i] == 0)
             {

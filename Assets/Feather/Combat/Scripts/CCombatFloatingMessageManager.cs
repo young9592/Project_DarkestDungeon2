@@ -66,6 +66,7 @@ public class CCombatFloatingMessageManager : MonoBehaviour
 
         CEntity entity = target.GetComponent<CEntity>();
 
+        // 사실 죽문저항이나 죽문파괴는 엔티티 내부에서 해야할것같습니다.
         switch (type)
         {
             case EDamageType.Damage:
