@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Crippling Doubt
   _skillIcon: {fileID: 0}
-  _useableRank: 15
-  _targetableRank: 15
+  _useableRank: -1
+  _targetableRank: -1
   _isGroupTarget: 1
   _cooldown: 0
   _effectList:

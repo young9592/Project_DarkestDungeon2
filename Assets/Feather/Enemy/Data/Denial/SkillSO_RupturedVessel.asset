@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Ruptured Vessel
   _skillIcon: {fileID: 0}
-  _useableRank: 15
+  _useableRank: -1
   _targetableRank: 3
   _isGroupTarget: 1
   _cooldown: 0

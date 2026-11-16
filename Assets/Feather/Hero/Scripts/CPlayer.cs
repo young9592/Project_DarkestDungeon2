@@ -156,9 +156,69 @@ public class CPlayer : CEntity
             return EDenialRestriction.None;
         }
     }
-    public void SetDenialRestriction(EDenialRestriction restriction)
+    public void SetDenialRestriction(EDenialRestriction restriction, int duration = 2)
     {
         _denialRestriction = restriction;
+
+        if (TokenManager != null)
+        {
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfArms);
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfReach);
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfFortitude);
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfReason);
+
+            if (!_isDead && restriction != EDenialRestriction.None)
+            {
+                EEffectType denialToken = GetDenialTokenType(restriction);
+                if (denialToken != EEffectType.None)
+                {
+                    TokenManager.AddToken(denialToken, 1, Mathf.Max(1, duration));
+                    if (_statusMessage != null && TokenManager.HasToken(denialToken))
+                    {
+                        _statusMessage.ShowAdded(denialToken);
+                    }
+                }
+            }
+        }
+
+        if (_selectedSkill != null && IsSkillDenied(_selectedSkill))
+        {
+            CancelSkillSelection();
+        }
+    }
+
+    public static void ApplyPartyDenialRestriction(IReadOnlyList<CPlayer> party, EDenialRestriction restriction, int duration = 2)
+    {
+        if (party == null) return;
+
+        for (int i = 0; i < party.Count; i++)
+        {
+            CPlayer hero = party[i];
+            if (hero == null || hero.IsDead) continue;
+
+            hero.SetDenialRestriction(restriction, duration);
+        }
+    }
+
+    private static EEffectType GetDenialTokenType(EDenialRestriction restriction)
+    {
+        switch (restriction)
+        {
+            case EDenialRestriction.Arms:       return EEffectType.DenialOfArms;
+            case EDenialRestriction.Reach:      return EEffectType.DenialOfReach;
+            case EDenialRestriction.Fortitude:  return EEffectType.DenialOfFortitude;
+            case EDenialRestriction.Reason:     return EEffectType.DenialOfReason;
+            default:                            return EEffectType.None;
+        }
+    }
+
+    private bool HasAnyDenialToken()
+    {
+        if (TokenManager == null) return false;
+        return TokenManager.HasToken(EEffectType.DenialOfArms)
+            || TokenManager.HasToken(EEffectType.DenialOfReach)
+            || TokenManager.HasToken(EEffectType.DenialOfFortitude)
+            || TokenManager.HasToken(EEffectType.DenialOfReason);
     }
 
     public bool IsSkillDenied(CSkillDataSO skill)
@@ -525,6 +585,7 @@ public class CPlayer : CEntity
     public bool TryRestoreRunState(CHeroRunMemberState state)
     {
         if (!CanRestoreRunState(state)) return false;
+        SetDenialRestriction(EDenialRestriction.None);
         if (_stressResolution != null) _stressResolution.ResetState();
         CancelAction();
         CancelSkillSelection();
@@ -1010,6 +1071,11 @@ public class CPlayer : CEntity
 
             TokenManager.TickTokenTurns();
 
+            if (_denialRestriction != EDenialRestriction.None && !HasAnyDenialToken())
+            {
+                _denialRestriction = EDenialRestriction.None;
+            }
+
             if (TokenManager.HasToken(EEffectType.Stun))
             {
                 CPrint.Log($"[{_heroData.DefaultName}] 기절 상태 확인\n" +
@@ -1109,6 +1175,7 @@ public class CPlayer : CEntity
         _isDeathsDoor = false;
         _currentHp = 0;
 
+        SetDenialRestriction(EDenialRestriction.None);
         TokenManager.ClearAllTokens();
         CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
         if (criticalState != null) criticalState.ClearModifiers();
