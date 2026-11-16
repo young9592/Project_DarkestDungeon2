@@ -48,7 +48,6 @@ public class CCombatCameraManager : MonoBehaviour
     #endregion
 
     #region Field
-    private HashSet<CEntity> _onceMessage = new HashSet<CEntity>();
     private Transform _highlightCamTr;
     #endregion
 
@@ -313,8 +312,6 @@ public class CCombatCameraManager : MonoBehaviour
 
     private IEnumerator CoAction(CEntity actor, List<Transform> entitiesTr, ECameraMoveDirection moveDir, ECombatTarget combatTarget, CEntity riposteEntity)
     {
-        _onceMessage.Clear();
-
         List<Vector3> camInitPos = new List<Vector3>();
 
         float space = 2f * Mathf.Clamp01((5f - entitiesTr.Count) / 4f) + 1f;
@@ -329,9 +326,7 @@ public class CCombatCameraManager : MonoBehaviour
 
         // 준비
         float delay = riposteEntity == null ? 2f : 1f;
-        float messageDelay = 0.1f;
         float nextTime = Time.time + delay;
-        float nextMsgTime = Time.time + messageDelay;
         float move = moveDir == ECameraMoveDirection.Right ? 0.5f : -0.5f;
         List<Vector3> moveVec = new List<Vector3>();
         _highlightCamera.orthographicSize = _actionZoomValue;
@@ -385,62 +380,13 @@ public class CCombatCameraManager : MonoBehaviour
                 {
                     animator.speed = 0;
                 }
-
-                if (nextMsgTime > Time.time)
-                {
-                    continue;
-                }
-
-                if (combatTarget == ECombatTarget.Hero_Attack || combatTarget == ECombatTarget.Enemy_Attack)
-                {
-                    if (_onceMessage.Contains(entity))
-                    {
-                        continue;
-                    }
-
-                    if (entityIsHero && combatTarget == ECombatTarget.Enemy_Attack)
-                    {
-                        if (entity.IsDead)
-                        {
-                            _messageManager.ShowIcon(entityObject, CIcon.IconType.DeathBlow);
-                            _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
-                            _onceMessage.Add(entity);
-                        }
-                        else if (entity.IsDeathsDoor)
-                        {
-                            _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!");
-                            _onceMessage.Add(entity);
-                        }
-                    }
-                    else if (!entityIsHero && combatTarget == ECombatTarget.Hero_Attack)
-                    {
-                        if (entity is CEnemyCorpse)
-                        {
-                            continue;
-                        }
-
-                        if (entity.IsDead)
-                        {
-                            _messageManager.ShowIcon(entityObject, CIcon.IconType.DeathBlow);
-                            _messageManager.ShowMessage(entityObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
-                            _onceMessage.Add(entity);
-                        }
-                    }
-                }
             }
             yield return null;
         }
 
-
-
-
-
-
-        // 반격 액션 재생 [ 임시 ]
-        // 아직 전략 사용법을 몰라서 임시 처리하였습니다.
+        // 반격
         if (riposteEntity != null && !riposteEntity.IsDead && (combatTarget == ECombatTarget.Hero_Attack || combatTarget == ECombatTarget.Enemy_Attack))
         {
-            _onceMessage.Clear();
             moveVec.Clear();
             camInitPos.Clear();
 
@@ -498,42 +444,6 @@ public class CCombatCameraManager : MonoBehaviour
             while (nextTime > Time.time)
             {
                 float t = 1f - (nextTime - Time.time) / delay;
-
-                if (!_once)
-                {
-                    bool actorIsHero = actor is CPlayer;
-                    GameObject actorObject = actor.gameObject;
-
-                    if (actorIsHero && combatTarget == ECombatTarget.Enemy_Attack)
-                    {
-                        if (actor.IsDead)
-                        {
-                            _messageManager.ShowIcon(actorObject, CIcon.IconType.DeathBlow);
-                            _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
-                            _onceMessage.Add(actor);
-                        }
-                        else if (actor.IsDeathsDoor)
-                        {
-                            _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!");
-                            _onceMessage.Add(actor);
-                        }
-                    }
-                    else if (!actorIsHero && combatTarget == ECombatTarget.Hero_Attack)
-                    {
-                        if (actor is CEnemyCorpse)
-                        {
-                            continue;
-                        }
-
-                        if (actor.IsDead)
-                        {
-                            _messageManager.ShowIcon(actorObject, CIcon.IconType.DeathBlow);
-                            _messageManager.ShowMessage(actorObject, CCombatFloatingText.EMessageType.Death, "죽음의 일격!");
-                            _onceMessage.Add(actor);
-                        }
-                    }
-                    _once = true;
-                }
 
                 for (int i = 0; i < camInitPos.Count; i++)
                 {

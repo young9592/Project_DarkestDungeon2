@@ -10,27 +10,54 @@ public class CCombatFloatingText : MonoBehaviour
         None = 0,
 
         Damage,
-        Damage_Crit,
-        Damage_Crit_Msg,
+        Damage_Critical,
+        Damage_Critical_Text,
 
         Heal,
-        Heal_Crit_Msg,
+        Heal_Critical_Text,
+
+        Miss,
 
         Stress,
+
         // Dot
         Bleed,
         Blight,
         Burn,
+        Regen,
+        Horror,
+        Horror_Back_Text,
+
         // Token
         Daze,
         Stun,
+        Taunt,
+        Vulnerable,
+        Weak,
+        Blind,
+        Immobilize,
+
+
+        Combo,
+        Combo_Use,
+        Guard,
+        Block,
+        Block_Plus,
+        Dodge,
+        Dodge_Plus,
+        Strength,
+        Stealth,
+        Riposte,
+        CriticalToken,
         Speed,
 
+
+        Death_Armor_Break,
         Death_Door,
         Death
     }
     // 메세지 정렬 방식
-    private enum ETextType
+    private enum ETextAlignType
     {
         Default,
         Dot,
@@ -48,14 +75,36 @@ public class CCombatFloatingText : MonoBehaviour
     [SerializeField] private float _speed = 200f;
 
     [Header("Sprite")]
+    [SerializeField] private Sprite _healSprite;
+    [SerializeField] private Sprite _deathDoorSprite;
+    [SerializeField] private Sprite _deathArmorBreakSprite;
+
     [SerializeField] private Sprite _bleedSprite;
     [SerializeField] private Sprite _blightSprite;
     [SerializeField] private Sprite _burnSprite;
+    [SerializeField] private Sprite _regenSprite;
+    [SerializeField] private Sprite _horrorSprite;
+
     [SerializeField] private Sprite _dazeSprite;
     [SerializeField] private Sprite _stunSprite;
-    [SerializeField] private Sprite _healSprite;
+    [SerializeField] private Sprite _tauntSprite;
+    [SerializeField] private Sprite _vulnerableSprite;
+    [SerializeField] private Sprite _weakSprite;
+    [SerializeField] private Sprite _blindSprite;
+    [SerializeField] private Sprite _immobilizeSprite;
+
+    [SerializeField] private Sprite _comboSprite;
+    [SerializeField] private Sprite _guardSprite;
+    [SerializeField] private Sprite _blockSprite;
+    [SerializeField] private Sprite _blockPlusSprite;
+    [SerializeField] private Sprite _dodgeSprite;
+    [SerializeField] private Sprite _dodgePlusSprite;
+    [SerializeField] private Sprite _strengthSprite;
+    [SerializeField] private Sprite _stealthSprite;
+    [SerializeField] private Sprite _riposteSprite;
+    [SerializeField] private Sprite _critSprite;
     [SerializeField] private Sprite _speedSprite;
-    [SerializeField] private Sprite _deathDoorSprite;
+
     #endregion
 
     #region Field
@@ -117,18 +166,18 @@ public class CCombatFloatingText : MonoBehaviour
         {
             _rectTr.anchoredPosition += offset;
         }
-        
+
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, _rendererCameraMode ? Camera.main : null, out uiLocalPos);
         _rectTr.anchoredPosition = uiLocalPos;
 
         switch (type)
         {
             case EMessageType.None:
-                SetAlignment(ETextType.Default);
+                SetAlignment(ETextAlignType.Default);
                 break;
             // 죽음의 일격!
             case EMessageType.Death:
-                SetAlignment(ETextType.Default);
+                SetAlignment(ETextAlignType.Default);
                 _text.color = new Color32(213, 68, 17, 255);
                 _stopText = true;
                 // 죽음의 일격! 메세지 위치조정
@@ -136,7 +185,7 @@ public class CCombatFloatingText : MonoBehaviour
                 _rectTr.localScale = Vector3.one * 5f;
                 break;
             case EMessageType.Death_Door:
-                SetAlignment(ETextType.Dot);
+                SetAlignment(ETextAlignType.Dot);
                 _text.color = new Color32(154, 20, 23, 255);
                 _stopText = true;
                 _iconImage.sprite = _deathDoorSprite;
@@ -144,70 +193,177 @@ public class CCombatFloatingText : MonoBehaviour
                 _rectTr.anchoredPosition += Vector2.down * 50f;
                 _rectTr.localScale = Vector3.one * 5f;
                 break;
+            case EMessageType.Death_Armor_Break:
+                SetAlignment(ETextAlignType.Dot);
+                _text.color = new Color32(154, 20, 23, 255);
+                _stopText = true;
+                _iconImage.sprite = _deathArmorBreakSprite;
+                // 죽음 저항 파괴 메세지 위치조정
+                _rectTr.anchoredPosition += Vector2.down * 50f;
+                _rectTr.localScale = Vector3.one * 5f;
+                break;
             // 데미지, 치명타데미지, 치명타! 메세지
             case EMessageType.Damage:
-                SetAlignment(ETextType.Default);
+                SetAlignment(ETextAlignType.Default);
                 _speed = 100;
                 _text.color = new Color32(218, 20, 37, 255);
                 break;
-            case EMessageType.Damage_Crit:
-                SetAlignment(ETextType.Default);
+            case EMessageType.Damage_Critical:
+                SetAlignment(ETextAlignType.Default);
                 _speed = 100;
                 _text.color = new Color32(241, 116, 9, 255);
                 break;
-            case EMessageType.Damage_Crit_Msg:
-                SetAlignment(ETextType.Default);
+            case EMessageType.Damage_Critical_Text:
+                SetAlignment(ETextAlignType.Default);
                 _speed = 100;
                 _text.color = new Color32(241, 116, 9, 255);
                 // 치명타! 메세지 위치조정
                 _rectTr.anchoredPosition += Vector2.up * 50f;
                 break;
+            case EMessageType.Miss:
+                SetAlignment(ETextAlignType.Default);
+                _speed = 100;
+                _text.color = new Color32(52, 52, 52, 255);
+                break;
             case EMessageType.Heal:
-                SetAlignment(ETextType.Dot, text);
+                SetAlignment(ETextAlignType.Dot, text);
                 _speed = 100;
                 _iconImage.sprite = _healSprite;
                 _text.color = new Color32(151, 255, 183, 255);
                 break;
-            case EMessageType.Heal_Crit_Msg:
-                SetAlignment(ETextType.Default, text);
+            case EMessageType.Heal_Critical_Text:
+                SetAlignment(ETextAlignType.Default, text);
                 _speed = 100;
                 _text.color = new Color32(151, 255, 183, 255);
                 // 치명타! 메세지 위치조정
                 _rectTr.anchoredPosition += Vector2.up * 80f;
                 break;
+            // 스트레스 및 회복
             case EMessageType.Stress:
-                SetAlignment(ETextType.Default, text);
+                SetAlignment(ETextAlignType.Default, text);
                 _speed = -30;
                 _text.color = new Color32(244, 243, 230, 255);
                 Vector2 topVec = new Vector2(mesh.bounds.center.x, mesh.bounds.max.y);
                 screenPos = Camera.main.WorldToScreenPoint(topVec);
                 break;
+            // DOT
             case EMessageType.Bleed:
-                SetAlignment(ETextType.Dot, text);
+                SetAlignment(ETextAlignType.Dot, text);
                 _iconImage.sprite = _bleedSprite;
                 _text.color = new Color32(140, 8, 24, 255);
                 break;
             case EMessageType.Blight:
                 _iconImage.sprite = _blightSprite;
-                SetAlignment(ETextType.Dot, text);
+                SetAlignment(ETextAlignType.Dot, text);
                 _text.color = new Color32(43, 82, 60, 255);
                 break;
             case EMessageType.Burn:
                 _iconImage.sprite = _burnSprite;
-                SetAlignment(ETextType.Dot, text);
+                SetAlignment(ETextAlignType.Dot, text);
                 _text.color = new Color32(159, 64, 30, 255);
                 break;
+            case EMessageType.Regen:
+                SetAlignment(ETextAlignType.Dot, text);
+                _iconImage.sprite = _regenSprite;
+                _text.color = new Color32(151, 255, 183, 255);
+                break;
+            //공포 이중 텍스트
+            case EMessageType.Horror:
+                SetAlignment(ETextAlignType.Dot, text);
+                _iconImage.sprite = _horrorSprite;
+                _text.color = new Color32(0, 0, 0, 255);
+                break;
+            case EMessageType.Horror_Back_Text:
+                SetAlignment(ETextAlignType.Dot, text);
+                _iconImage.sprite = null;
+                _iconFrameImage.enabled = false;
+                _iconImage.enabled = false;
+                _iconInnerImage.enabled = false;
+                _text.color = new Color32(255, 255, 255, 255);
+                _rectTr.anchoredPosition += Vector2.right * 2f;
+                _rectTr.anchoredPosition += Vector2.down * 2f;
+                break;
+            // 부정토큰
             case EMessageType.Stun:
                 _iconImage.sprite = _stunSprite;
-                SetAlignment(ETextType.Token, text);
+                SetAlignment(ETextAlignType.Token, text);
                 break;
             case EMessageType.Daze:
                 _iconImage.sprite = _dazeSprite;
-                SetAlignment(ETextType.Token, text);
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Taunt:
+                _iconImage.sprite = _tauntSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Vulnerable:
+                _iconImage.sprite = _vulnerableSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Weak:
+                _iconImage.sprite = _weakSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Blind:
+                _iconImage.sprite = _blindSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Immobilize:
+                _iconImage.sprite = _immobilizeSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            // 콤보
+            case EMessageType.Combo:
+                _iconImage.sprite = _comboSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Combo_Use:
+                SetAlignment(ETextAlignType.Default);
+                _speed = 100;
+                _text.color = new Color32(81, 183, 160, 255);
+                // 연계! 메세지 위치조정
+                _rectTr.anchoredPosition += Vector2.up * 50f;
+                break;
+            // 긍정토큰
+            case EMessageType.Block:
+                _iconImage.sprite = _blockSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Block_Plus:
+                _iconImage.sprite = _blockPlusSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Dodge:
+                _iconImage.sprite = _dodgeSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Dodge_Plus:
+                _iconImage.sprite = _dodgePlusSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Guard:
+                _iconImage.sprite = _guardSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Strength:
+                _iconImage.sprite = _strengthSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Stealth:
+                _iconImage.sprite = _stealthSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Riposte:
+                _iconImage.sprite = _riposteSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.CriticalToken:
+                _iconImage.sprite = _critSprite;
+                SetAlignment(ETextAlignType.Token, text);
                 break;
             case EMessageType.Speed:
                 _iconImage.sprite = _speedSprite;
-                SetAlignment(ETextType.Token, text);
+                SetAlignment(ETextAlignType.Token, text);
                 break;
             default:
                 break;
@@ -219,11 +375,11 @@ public class CCombatFloatingText : MonoBehaviour
         Destroy(gameObject, _duration);
     }
 
-    private void SetAlignment(ETextType textType, string text = null)
+    private void SetAlignment(ETextAlignType textType, string text = null)
     {
         switch (textType)
         {
-            case ETextType.Default:
+            case ETextAlignType.Default:
                 _textRectTr.anchorMin = new Vector2(0.5f, 0.5f);
                 _textRectTr.anchorMax = new Vector2(0.5f, 0.5f);
                 _textRectTr.pivot = new Vector2(0.5f, 0.5f);
@@ -232,7 +388,7 @@ public class CCombatFloatingText : MonoBehaviour
                 _iconFrameImage.enabled = false;
                 _iconInnerImage.enabled = false;
                 break;
-            case ETextType.Dot:
+            case ETextAlignType.Dot:
                 _iconFrameImage.enabled = false;
                 _iconInnerImage.enabled = false;
                 _text.alignment = TextAlignmentOptions.Left;
@@ -251,7 +407,7 @@ public class CCombatFloatingText : MonoBehaviour
                     _text.margin = new Vector4(30, 0, 0, 0);
                 }
                 break;
-            case ETextType.Token:
+            case ETextAlignType.Token:
                 _textRectTr.anchorMin = new Vector2(1, 0.5f);
                 _textRectTr.anchorMax = new Vector2(1, 0.5f);
                 _textRectTr.pivot = new Vector2(1, 0.5f);
@@ -286,6 +442,7 @@ public class CCombatFloatingText : MonoBehaviour
     {
         switch (_type)
         {
+            case EMessageType.Death_Armor_Break:
             case EMessageType.Death_Door:
             case EMessageType.Death:
                 _rectTr.localScale = Vector3.Lerp(_rectTr.localScale, Vector3.one, 1f - Mathf.Exp(-30 * Time.deltaTime));
