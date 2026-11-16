@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillName: Mental Lashes
   _skillIcon: {fileID: 0}
-  _useableRank: 15
+  _useableRank: -1
   _targetableRank: 12
   _isGroupTarget: 1
   _cooldown: 0
