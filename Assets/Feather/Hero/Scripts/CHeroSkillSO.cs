@@ -23,6 +23,28 @@ public enum EHeroSkillTarget
 [CreateAssetMenu(menuName = "Data/Hero/Skill", fileName = "HeroSkillSO_")]
 public class CHeroSkillSO : CSkillDataSO
 {
+    [Header("Description & Crit")]
+    [SerializeField, Range(0, 100)] private int _critChance = 5;
+    [TextArea(2, 4)]
+    [SerializeField] private string _mainDescription;
+    [TextArea(2, 4)]
+    [SerializeField] private string _subDescription;
+
+    public int CritChance
+    {
+        get { return _critChance; }
+    }
+
+    public string MainDescription
+    {
+        get { return _mainDescription; }
+    }
+
+    public string SubDescription
+    {
+        get { return _subDescription; }
+    }
+
     [Header("Denial")]
     [SerializeField] private EHeroDenialCategory _denialCategories;
 
