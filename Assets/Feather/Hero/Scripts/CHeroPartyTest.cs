@@ -607,6 +607,32 @@ public class CHeroPartyTest : MonoBehaviour
         return true;
     }
 
+    // 테스트 씬에서 피해를 받은 적의 전용 반격을 실행함
+    private void BindTestRipostes(CPlayer actor)
+    {
+        var targets = actor.ActionTargets;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!(targets[i] is CEnemy enemy) || !enemy.HasConfiguredRiposte) continue;
+            int healthBefore = enemy.CurrentHp;
+            actor.OnActionCompleted += Complete;
+            actor.OnActionInterrupted += Interrupt;
+
+            void Complete(CEntity entity)
+            {
+                Interrupt(entity);
+                if (enemy != null && enemy.CurrentHp < healthBefore) enemy.TryExecuteConfiguredRiposte(actor);
+            }
+
+            void Interrupt(CEntity entity)
+            {
+                actor.OnActionCompleted -= Complete;
+                actor.OnActionInterrupted -= Interrupt;
+            }
+        }
+    }
+
+
     private void HandleRequest(CEntity actor, CEntity target, CSkillDataSO skill)
     {
         if (!_isOpen || actor != SelectedHero)
@@ -622,6 +648,7 @@ public class CHeroPartyTest : MonoBehaviour
             + " -> "
             + ((CPlayer)actor).ActionTargets.Count
             + " target(s)";
+        BindTestRipostes((CPlayer)actor);
         // 파티 미리보기에서 행동 연출 재생
         actor.TryStartRequestedAction();
     }

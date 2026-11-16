@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_Whipper
+  m_EditorClassIdentifier: 
+  _id: enemy_whipper
+  _name: Whipper
+  _enemyCategory: 3
+  _maxHealth: 16
+  _speed: 2
+  _resistance:
+    Bleed: 20
+    Blight: 20
+    Burn: 40
+    Stun: 10
+    Move: 20
+    Debuff: 10
+  _actions: 1
+  _availableSkills:
+  - {fileID: 11400000, guid: 1f83fa63e1695ee40bfb2911e3996529, type: 2}
+  - {fileID: 11400000, guid: e1fc873ca1215334095eb9a5031d47c1, type: 2}
+  - {fileID: 11400000, guid: c512bed77ec235448a8298fd641fd767, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: 97f9c98dfb3806948a944b620c0e639c, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: ee87357c374a65f48bcd0a69d2dce6af, type: 3}
+  _skillSlotBackground: {fileID: 0}
+  _formationSize: 1
+  _deathDoorCount: 0
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 0}
+  _corpseData: {fileID: 0}
+  _corpseHealth: 9
+  _corpseWidth: 0.014
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: c512bed77ec235448a8298fd641fd767, type: 2}
+    _rankMovement: -2
+    _attackMoveDuration: 1
+    _preferAvailableMovement: 0
+    _selfToken: 0
+    _selfTokenCount: 0
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 0
+    _preferredRanks: 0
+    _condition: 0
+  _targetSelection: 0
+  _comboPrioritySkill: {fileID: 0}
+  _startingToken: 0
+  _startingTokenCount: 0
+  _extraStartingTokenChance: 0

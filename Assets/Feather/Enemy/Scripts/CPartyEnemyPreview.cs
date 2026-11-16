@@ -152,42 +152,11 @@ public class CPartyEnemyPreview : MonoBehaviour
             }
 
             CEnemy enemy = actor.GetComponent<CEnemy>();
-            while (enemy != null && enemy.isActiveAndEnabled && enemy.IsPresentationBusy)
+            yield return RunAction(actor, enemy, false);
+            if (enemy != null && !enemy.IsDead && enemy.ExtraAction)
             {
-                yield return null;
-            }
-
-            bool canAct = enemy != null && enemy.OnTurnStart();
-            while (enemy != null && enemy.isActiveAndEnabled && enemy.IsPresentationBusy)
-            {
-                yield return null;
-            }
-
-            if (!canAct || enemy == null || !enemy.isActiveAndEnabled)
-            {
-                _skipped++;
-                actor.CancelPlan();
-                continue;
-            }
-
-            // 턴 시작 피해로 의도가 해제되거나 HP 조건이 바뀌면 기존 AI로 다시 확인함
-            if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes, _groupTest.SpawnedEnemies)) || !enemy.TryBeginAction())
-            {
-                _skipped++;
-                actor.CancelPlan();
-                continue;
-            }
-
-            if (!actor.TryRequestPlannedAction())
-            {
-                _skipped++;
-                enemy.CancelAction();
-                continue;
-            }
-
-            while (enemy != null && enemy.IsActionActive)
-            {
-                yield return null;
+                enemy.SetExtraAction(false);
+                yield return RunAction(actor, enemy, true);
             }
         }
 
@@ -195,6 +164,41 @@ public class CPartyEnemyPreview : MonoBehaviour
         _groupTest.TryAdvanceDenialRound();
         _routine = null;
         _partyTest.EndEnemyPreview();
+    }
+
+    private IEnumerator RunAction(CEnemyAI actor, CEnemy enemy, bool isExtraAction)
+    {
+        while (enemy != null && enemy.isActiveAndEnabled && enemy.IsPresentationBusy)
+            yield return null;
+
+        bool canAct = enemy != null && enemy.OnTurnStart(isExtraAction);
+        while (enemy != null && enemy.isActiveAndEnabled && enemy.IsPresentationBusy)
+            yield return null;
+
+        if (!canAct || enemy == null || !enemy.isActiveAndEnabled)
+        {
+            _skipped++;
+            actor.CancelPlan();
+            yield break;
+        }
+
+        // 턴 시작 피해나 점화 때문에 의도가 바뀌면 다시 고름
+        if ((!actor.IsPlanValid() && !actor.TryPlanAction(_heroes, _groupTest.SpawnedEnemies)) || !enemy.TryBeginAction())
+        {
+            _skipped++;
+            actor.CancelPlan();
+            yield break;
+        }
+
+        if (!actor.TryRequestPlannedAction())
+        {
+            _skipped++;
+            enemy.CancelAction();
+            yield break;
+        }
+
+        while (enemy != null && enemy.IsActionActive)
+            yield return null;
     }
 
     private void HandleRequest(CEntity actor, CEntity target, CSkillDataSO skill)

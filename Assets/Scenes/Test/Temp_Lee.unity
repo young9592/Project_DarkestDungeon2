@@ -22068,6 +22068,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a6795a6b337d4fe5a0305c36efcced23, type: 2}
   - {fileID: 11400000, guid: b538ed2ff4b64974a3a06017a65dfe77, type: 2}
   - {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
+  - {fileID: 11400000, guid: 63b0045b6ceadef44a3b0f2e5296cbe0, type: 2}
+  - {fileID: 11400000, guid: b4852ee76976c0e4d97148451c0fb1f8, type: 2}
   _otherPanels:
   - {fileID: 1241616898}
   - {fileID: 745037724}
