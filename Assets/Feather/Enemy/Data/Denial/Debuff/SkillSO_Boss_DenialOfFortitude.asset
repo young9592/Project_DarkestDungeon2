@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
-  m_Name: SkillSO_Boss_Common_ParalyzingFear
+  m_Name: SkillSO_Boss_DenialOfFortitude
   m_EditorClassIdentifier: 
-  _skillName: ParalyzingFear
+  _skillName: DenialOfFortitude
   _skillIcon: {fileID: 0}
   _useableRank: -1
   _targetableRank: -1
-  _isGroupTarget: 0
-  _cooldown: 1
+  _isGroupTarget: 1
+  _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
-  - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
-  - {fileID: 11400000, guid: 46fca03385f87094d8a55572dd857d33, type: 2}
+  - {fileID: 11400000, guid: 82f591a8adda04349b63c8bd6a33925e, type: 2}
