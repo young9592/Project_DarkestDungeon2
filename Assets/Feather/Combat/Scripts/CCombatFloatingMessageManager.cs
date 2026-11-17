@@ -30,6 +30,13 @@ public enum EDotType
     Damage,
 }
 
+public enum EEntityState
+{
+    DeathBlow,          // 죽음의 일격 [ 공통 ]
+    DeathDoor,          // 죽음의 문턱 [ 플레이어 ]
+    DeathArmorBreak,    // 죽음 저항 토큰 파괴 [ 적 ]
+}
+
 public class CCombatFloatingMessageManager : MonoBehaviour
 {
     #region Inspector
@@ -66,73 +73,14 @@ public class CCombatFloatingMessageManager : MonoBehaviour
 
         CEntity entity = target.GetComponent<CEntity>();
 
-        // 사실 죽문저항이나 죽문파괴는 엔티티 내부에서 해야할것같습니다.
         switch (type)
         {
             case EDamageType.Damage:
                 _instance.DrawText(target, CCombatFloatingText.EMessageType.Damage, value.ToString(), offset, delay);
-
-                if (entity is CPlayer)
-                {
-                    if (entity.IsDeathsDoor && !entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!", offset, delay);
-                    }
-                    else if (entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death, "죽음의 일격!", offset, delay);
-                    }
-                }
-                else if (entity is CEnemy)
-                {
-                    // 시체 상태는 예외
-                    if ((entity as CEnemy).Corpse.IsAvailable)
-                    {
-                        return;
-                    }
-
-                    if (entity.IsDeathsDoor && !entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Armor_Break, "죽음 저항 파괴!", offset, delay);
-                    }
-                    else if (entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death, "죽음의 일격!", offset, delay);
-                    }
-                }
                 break;
             case EDamageType.Damage_Critical:
                 _instance.DrawText(target, CCombatFloatingText.EMessageType.Damage_Critical, value.ToString(), offset, delay);
                 _instance.DrawText(target, CCombatFloatingText.EMessageType.Damage_Critical_Text, "치명타!", offset, delay);
-
-                if (entity is CPlayer)
-                {
-                    if (entity.IsDeathsDoor && !entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!", offset, delay);
-                    }
-                    else if (entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death, "죽음의 일격!", offset, delay);
-                    }
-                }
-                else if (entity is CEnemy)
-                {
-                    // 시체 상태는 예외
-                    if ((entity as CEnemy).Corpse.IsAvailable)
-                    {
-                        return;
-                    }
-
-                    if (entity.IsDeathsDoor && !entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Armor_Break, "죽음 저항 파괴!", offset, delay);
-                    }
-                    else if (entity.IsDead)
-                    {
-                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Death, "죽음의 일격!", offset, delay);
-                    }
-                }
                 break;
             case EDamageType.Miss:
                 _instance.DrawText(target, CCombatFloatingText.EMessageType.Miss, "빗나감!", offset, delay);
@@ -465,6 +413,27 @@ public class CCombatFloatingMessageManager : MonoBehaviour
         }
     }
 
+    public static void ShowDeath(GameObject target, EEntityState entityState, Vector3 offset = default, float delay = 0f)
+    {
+        if (_instance == null)
+        {
+            return;
+        }
+
+        switch (entityState)
+        {
+            case EEntityState.DeathBlow:
+                _instance.DrawText(target, CCombatFloatingText.EMessageType.Death, "죽음의 일격!", offset, delay);
+                _instance.DrawIcon(target, CIcon.IconType.DeathBlow, delay);
+                break;
+            case EEntityState.DeathDoor:
+                _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Door, "죽음의 문턱!", offset, delay);
+                break;
+            case EEntityState.DeathArmorBreak:
+                _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Armor_Break, "죽음 저항 파괴!", offset, delay);
+                break;
+        }
+    }
     // 일반 텍스트 출력
     public static void ShowDefault(GameObject target, string text, Vector3 offset = default, float delay = 0f)
     {

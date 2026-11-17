@@ -220,7 +220,7 @@ public class CCombatDebugMenu : MonoBehaviour
             case EEffectType.Damage:
                 int rand = Random.Range(0, 10);
                 int damage = (int)(Random.Range(1, 5) * (rand >= 6 ? 1.5f : 1f));
-
+                CCombatFloatingMessageManager.ShowDeath(selectEntity.gameObject, (EEntityState)Random.Range(0, 3));
 
                 if (!selectEntity.IsDead)
                 {
