@@ -87,7 +87,7 @@ public class CPlayer : CEntity
     {
         get { return _actionTargets; }
     }
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _currentHp; }
     }
@@ -847,12 +847,7 @@ public class CPlayer : CEntity
 
     #region CEntity Overrides, DOT, Stress & Death's Door Logic
     // Effect Core 파이프라인에서 최종 연산된 데미지를 받음
-    public override void TakeDamage(int finalDamage)
-    {
-        ApplyDamage(finalDamage, true);
-    }
-
-    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
     {
         if (!isActiveAndEnabled || _isDead || _heroData == null || finalDamage == 0)
         {
@@ -1057,7 +1052,7 @@ public class CPlayer : CEntity
                     CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
                         $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totalTickDamage}] 데미지");
 
-                    ApplyDamage(totalTickDamage, false);
+                    ApplyPeriodicDamage(totalTickDamage);
 
                     if (_isDead) return;
                 }

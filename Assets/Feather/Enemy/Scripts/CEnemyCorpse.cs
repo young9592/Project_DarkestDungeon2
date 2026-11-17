@@ -16,7 +16,7 @@ public class CEnemyCorpse : CEntity
     {
         get { return _owner; }
     }
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _health; }
     }
@@ -114,7 +114,7 @@ public class CEnemyCorpse : CEntity
         return false;
     }
 
-    public override void TakeDamage(int finalDamage)
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
     {
         if (!IsAvailable || finalDamage <= 0) return;
         _health = Mathf.Max(0, _health - finalDamage);
