@@ -234,6 +234,9 @@ public class CCombatManager : MonoBehaviour
 
         _currentTurnState = TurnState.Normal;
 
+        // entityDataSo의 잘못된 배치도 정렬
+        SortEntitiesPosition(true);
+
         for (int i = 0; i < _entityList.Count; i++)
         {
             if (_entityList[i].entity.IsDead)
@@ -275,6 +278,10 @@ public class CCombatManager : MonoBehaviour
             (_turnList[i], _turnList[max.index]) = (_turnList[max.index], _turnList[i]);
         }
 
+        // TODO : 보스의 특수패턴에서 무조건 선턴을 가져가는 상황이 있습니다.
+        // 
+        
+
         // 턴 이미지 세팅 및 생성
         _combatUI.CreateTurnOrderPortraitList(_turnList);
 
@@ -308,7 +315,7 @@ public class CCombatManager : MonoBehaviour
             {
                 continue;
             }
-
+            
             if (_entityList[i].entity.ActionState != EEntityActionState.Idle)
             {
                 allEntitiesIdle = false;
@@ -316,6 +323,16 @@ public class CCombatManager : MonoBehaviour
             }
         }
 
+        // 적 피격모션이 끝났는지도 체크
+        for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+        {
+            if (_enemyParty.EnemyList[i].IsHitPresentationPlaying)
+            {
+                allEntitiesIdle = false;
+                break;
+            }
+        }
+        
         if (!allEntitiesIdle)
         {
             return;
@@ -747,7 +764,7 @@ public class CCombatManager : MonoBehaviour
         MyTurn.OnActionRequested -= OnActionData;
 
         // 이동스킬 사용한 개체 정리
-        SortEntitiesPosition();
+        SortEntitiesPosition(true);
         yield return _sortCoroutine;
 
         yield return new WaitForSeconds(_actionDelay);

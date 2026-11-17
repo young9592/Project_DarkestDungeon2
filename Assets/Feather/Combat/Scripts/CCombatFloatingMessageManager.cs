@@ -351,12 +351,44 @@ public class CCombatFloatingMessageManager : MonoBehaviour
                 }
                 break;
             case EEffectType.DenialOfArms:
+                switch (type)
+                {
+                    case ETokenType.Add:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.DenialOfArms, "추가", offset, delay);
+                        break;
+                    case ETokenType.Consume:
+                        break;
+                }
                 break;
             case EEffectType.DenialOfReach:
+                switch (type)
+                {
+                    case ETokenType.Add:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.DenialOfReach, "추가", offset, delay);
+                        break;
+                    case ETokenType.Consume:
+                        break;
+                }
                 break;
             case EEffectType.DenialOfFortitude:
+                switch (type)
+                {
+                    case ETokenType.Add:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.DenialOfFortitude, "추가", offset, delay);
+                        break;
+                    case ETokenType.Consume:
+                        break;
+                }
                 break;
             case EEffectType.DenialOfReason:
+                switch (type)
+                {
+                    case ETokenType.Add:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.DenialOfReason, "추가", offset, delay);
+                        break;
+                    case ETokenType.Consume:
+                        break;
+                }
                 break;
         }
 

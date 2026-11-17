@@ -115,6 +115,15 @@ public class CEnemyParty : MonoBehaviour
                 enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
             }
 
+            if(enemyPrefab.EnemyData.Id == "enemy_whipper" || enemyPrefab.EnemyData.Id == "enemy_flayer" || enemyPrefab.EnemyData.Id == "enemy_shaman")
+            {
+                foreach (Transform tr in enemyPrefab.GetComponentsInChildren<Transform>(true))
+                {
+                    tr.gameObject.layer = 0;
+                }
+                enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, -160f, 0);
+            }
+
             // 스크립트 잠시 중단
             enemyPrefab.GetComponent<CEntityHealthView>().enabled = false;
 
