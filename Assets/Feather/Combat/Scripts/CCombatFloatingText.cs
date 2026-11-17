@@ -173,7 +173,10 @@ public class CCombatFloatingText : MonoBehaviour
             mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
         }
 
-
+        if (mesh == null)
+        {
+            return;
+        }
        
 
 
@@ -214,7 +217,7 @@ public class CCombatFloatingText : MonoBehaviour
                 _stopText = true;
                 _iconImage.sprite = _deathDoorSprite;
                 // 죽음의 문턱! 메세지 위치조정
-                _rectTr.anchoredPosition += Vector2.down * 50f;
+                _rectTr.anchoredPosition -= new Vector2(_rectTr.sizeDelta.x * 0.5f, 0);
                 _rectTr.localScale = Vector3.one * 5f;
                 break;
             case EMessageType.Death_Armor_Break:
@@ -223,7 +226,7 @@ public class CCombatFloatingText : MonoBehaviour
                 _stopText = true;
                 _iconImage.sprite = _deathArmorBreakSprite;
                 // 죽음 저항 파괴 메세지 위치조정
-                _rectTr.anchoredPosition += Vector2.down * 50f;
+                _rectTr.anchoredPosition -= new Vector2(_rectTr.sizeDelta.x * 0.5f, 0);
                 _rectTr.localScale = Vector3.one * 5f;
                 break;
             // 데미지, 치명타데미지, 치명타! 메세지
