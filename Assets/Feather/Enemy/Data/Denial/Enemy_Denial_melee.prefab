@@ -156,6 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _restriction: 1
   _uniqueSkill: {fileID: 11400000, guid: d195339fcba0ad844912d02100b8dafc, type: 2}
+  _roundOpeningSkill: {fileID: 11400000, guid: 8b4355a4b50f145449837cb69d12a1dd, type: 2}
   _cripplingDoubt: {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
   _paralyzingFear: {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
   _blindOnHit: {fileID: 0}

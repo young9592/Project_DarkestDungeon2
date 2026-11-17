@@ -25,8 +25,38 @@ public class CAddTokenStrategy : CEffectStrategy
             // 만일 TokenType을 따로 작성 안했을 시 EffectType 기준
         }
 
+        if (context.Target is CPlayer targetHero &&
+            TryGetDenialRestriction(tokenToApply, out EDenialRestriction restriction))
+        {
+            int duration = effectData.Duration > 0 ? effectData.Duration : 2;
+            targetHero.SetDenialRestriction(restriction, duration);
+            return;
+        }
+
         // Damage 필드를 부여할 토큰 개수(기본 1개)로 하거나 1로 고정
         int amount = Mathf.Max(1, effectData.Damage);
         context.Target.TokenManager.AddToken(tokenToApply, amount, effectData.Duration);
+    }
+
+    private static bool TryGetDenialRestriction(EEffectType tokenType, out EDenialRestriction restriction)
+    {
+        switch (tokenType)
+        {
+            case EEffectType.DenialOfArms:
+                restriction = EDenialRestriction.Arms;
+                return true;
+            case EEffectType.DenialOfReach:
+                restriction = EDenialRestriction.Reach;
+                return true;
+            case EEffectType.DenialOfFortitude:
+                restriction = EDenialRestriction.Fortitude;
+                return true;
+            case EEffectType.DenialOfReason:
+                restriction = EDenialRestriction.Reason;
+                return true;
+            default:
+                restriction = EDenialRestriction.None;
+                return false;
+        }
     }
 }
