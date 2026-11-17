@@ -424,6 +424,7 @@ public class CCombatCameraManager : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
                 riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
+             
                 CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
             }
 

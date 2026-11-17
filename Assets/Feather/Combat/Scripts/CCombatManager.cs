@@ -280,7 +280,7 @@ public class CCombatManager : MonoBehaviour
 
         // TODO : 보스의 특수패턴에서 무조건 선턴을 가져가는 상황이 있습니다.
         // 
-        
+
 
         // 턴 이미지 세팅 및 생성
         _combatUI.CreateTurnOrderPortraitList(_turnList);
@@ -311,11 +311,14 @@ public class CCombatManager : MonoBehaviour
 
         for (int i = 0; i < _entityList.Count; i++)
         {
-            if (_entityList[i].entity is CEnemyCorpse)
+            if (_entityList[i].entity is CEnemy)
             {
-                continue;
+                if ((_entityList[i].entity as CEnemy).Corpse.IsAvailable)
+                {
+                    continue;
+                }
             }
-            
+
             if (_entityList[i].entity.ActionState != EEntityActionState.Idle)
             {
                 allEntitiesIdle = false;
@@ -326,13 +329,18 @@ public class CCombatManager : MonoBehaviour
         // 적 피격모션이 끝났는지도 체크
         for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
         {
+            if (_enemyParty.EnemyList[i].Corpse.IsAvailable)
+            {
+                continue;
+            }
+
             if (_enemyParty.EnemyList[i].IsHitPresentationPlaying)
             {
                 allEntitiesIdle = false;
                 break;
             }
         }
-        
+
         if (!allEntitiesIdle)
         {
             return;
@@ -355,7 +363,6 @@ public class CCombatManager : MonoBehaviour
 
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
-
         // 상태에 맞는 행동 실행
         switch (entityState)
         {
@@ -626,6 +633,7 @@ public class CCombatManager : MonoBehaviour
     // 기절 : 현재 라운드의 차례를 넘깁니다.
     private IEnumerator CoStun()
     {
+        CCombatFloatingMessageManager.ShowToken(MyTurn.gameObject, ETokenType.Consume, EEffectType.Stun);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);
         _combatUI.MoveTurnOrder();
@@ -635,6 +643,7 @@ public class CCombatManager : MonoBehaviour
     // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
     private IEnumerator CoDaze()
     {
+        CCombatFloatingMessageManager.ShowToken(MyTurn.gameObject, ETokenType.Consume, EEffectType.Daze);
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);

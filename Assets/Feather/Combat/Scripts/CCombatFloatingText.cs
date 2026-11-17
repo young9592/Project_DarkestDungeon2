@@ -161,7 +161,20 @@ public class CCombatFloatingText : MonoBehaviour
             }
         }
 
-        SkinnedMeshRenderer mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
+        SkinnedMeshRenderer mesh = null;
+
+        if (target.GetComponent<CEntity>() is CEnemyCorpse)
+        {
+            CEnemyCorpse corpse = target.GetComponent<CEntity>() as CEnemyCorpse;
+            mesh = corpse.Owner.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+        }
+        else
+        {
+            mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
+        }
+
+
+       
 
 
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
@@ -376,7 +389,7 @@ public class CCombatFloatingText : MonoBehaviour
                 _iconImage.sprite = _speedSprite;
                 SetAlignment(ETextAlignType.Token, text);
                 break;
-                // 보스 특수토큰
+            // 보스 특수토큰
             case EMessageType.DenialOfArms:
                 _iconImage.sprite = _denialOfArmsSprite;
                 SetAlignment(ETextAlignType.Token, text);
