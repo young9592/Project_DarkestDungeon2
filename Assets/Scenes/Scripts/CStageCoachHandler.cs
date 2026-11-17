@@ -11,15 +11,19 @@ public class CStageCoach : MonoBehaviour
 
     #region Inspector
     [Header("StageCoach Connect")]
-    [SerializeField] private Rigidbody _horseRigid;
+    [SerializeField] private Rigidbody _horse;
+
+    
     [Header("StageCoach State")]
     [SerializeField] private ECoachState _coachState = ECoachState.None;
+    [SerializeField] private float _currentSpeed = 0f; 
+
+    [Header("Option")]
+    [SerializeField] private float _maxSpeed = 10f;
     #endregion
 
     #region Field
     private Vector2 _input = Vector2.zero;
-    private float _maxSpeed = 1f;
-    private float _currentSpeed = 0f; 
     private bool _connect = false;
     #endregion
 
@@ -31,6 +35,11 @@ public class CStageCoach : MonoBehaviour
             CPrint.Log("디스패쳐와 연결 완료");
             _connect = true;
         }
+    }
+
+    private void Start()
+    {
+        _coachState = ECoachState.Stop;
     }
 
     private void OnEnable()
@@ -63,7 +72,7 @@ public class CStageCoach : MonoBehaviour
 
         Vector3 moveVec = new Vector3(dir.x, 0, _currentSpeed);
 
-
+        _horse.velocity = moveVec;
     }
 
     // 마차 이동

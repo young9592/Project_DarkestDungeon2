@@ -19,14 +19,15 @@ public class CEnemyParty : MonoBehaviour
     private List<CEnemy> _enemyList = new List<CEnemy>();
 
     private static bool _isReady = false;
-
+    private static bool _isDenialBoss = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public List<CEnemy> EnemyList => _enemyList;
+    public IReadOnlyList<CEnemy> EnemyList => _enemyList;
     public IReadOnlyDictionary<ERank, CEnemy> RankList => _rankList;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
+    public static bool IsDenialBoss => _isDenialBoss;
     #endregion
     void Start()
     {
@@ -113,6 +114,7 @@ public class CEnemyParty : MonoBehaviour
                 enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 90f, 0);
                 Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
                 enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
+                _isDenialBoss = true;
             }
 
             if(enemyPrefab.EnemyData.Id == "enemy_whipper" || enemyPrefab.EnemyData.Id == "enemy_flayer" || enemyPrefab.EnemyData.Id == "enemy_shaman")

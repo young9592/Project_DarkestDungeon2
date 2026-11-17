@@ -1,3 +1,4 @@
+using System.Drawing;
 using TMPro;
 using UnityEngine;
 
@@ -21,6 +22,26 @@ public class CTokenText : MonoBehaviour
         }
         else if (type == EEffectType.DeathArmor)
         {
+            desc = $"{SetTokenDesc(type)}";
+        }
+        else if (type == EEffectType.DenialOfArms)
+        {
+            name = $"<color=#42556b>{SetTokenName(type)}</color> : ";
+            desc = $"{SetTokenDesc(type)}";
+        }
+        else if (type == EEffectType.DenialOfReach)
+        {
+            name = $"<color=#42556b>{SetTokenName(type)}</color> : ";
+            desc = $"{SetTokenDesc(type)}";
+        }
+        else if (type == EEffectType.DenialOfFortitude)
+        {
+            name = $"<color=#42556b>{SetTokenName(type)}</color> : ";
+            desc = $"{SetTokenDesc(type)}";
+        }
+        else if (type == EEffectType.DenialOfReason)
+        {
+            name = $"<color=#42556b>{SetTokenName(type)}</color> : ";
             desc = $"{SetTokenDesc(type)}";
         }
         else
@@ -97,6 +118,18 @@ public class CTokenText : MonoBehaviour
             case EEffectType.Combo:
                 name = "연계";
                 break;
+            case EEffectType.DenialOfArms:
+                name = "근접 잠금";
+                break;
+            case EEffectType.DenialOfReach:
+                name = "원거리 잠금";
+                break;
+            case EEffectType.DenialOfFortitude:
+                name = "체력 잠금";
+                break;
+            case EEffectType.DenialOfReason:
+                name = "스트레스 잠금";
+                break;
             default:
                 break;
         }
@@ -170,8 +203,24 @@ public class CTokenText : MonoBehaviour
             case EEffectType.Combo:
                 text = "지정 시 추가 기술 효과 발동";
                 break;
+            case EEffectType.DenialOfArms:
+                text = "근접 기술 사용 불가";
+                break;
+
+            case EEffectType.DenialOfReach:
+                text = "원거리 기술 사용 불가";
+                break;
+
+            case EEffectType.DenialOfFortitude:
+                text = "치유 기술이나 아이템 사용 불가";
+                break;
+
+            case EEffectType.DenialOfReason:
+                text = "스트레스 치유 기술이나 아이템 사용 불가";
+                break;
             default:
                 break;
+                
         }
 
         return text;

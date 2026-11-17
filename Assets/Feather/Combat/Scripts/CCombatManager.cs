@@ -88,6 +88,10 @@ public class CCombatManager : MonoBehaviour
     private CIndicator _myTurnIndicator = null;
     private bool _battleEnd = false;
 
+    // 1챕터 보스 id
+    private Dictionary<CEnemy, int> _chapterOneBossId = new Dictionary<CEnemy, int>();
+    private bool _firstTurnAction = false;
+
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -202,6 +206,12 @@ public class CCombatManager : MonoBehaviour
 
                     for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
                     {
+                        // 1챕터 보스전용
+                        if (CEnemyParty.IsDenialBoss)
+                        {
+                            _chapterOneBossId.Add(_enemyParty.EnemyList[i], id);
+                        }
+
                         _entityList.Add((id, _enemyParty.EnemyList[i]));
                         id++;
                     }
@@ -278,8 +288,19 @@ public class CCombatManager : MonoBehaviour
             (_turnList[i], _turnList[max.index]) = (_turnList[max.index], _turnList[i]);
         }
 
-        // TODO : 보스의 특수패턴에서 무조건 선턴을 가져가는 상황이 있습니다.
-        // 
+        // 1챕터 보스의 특수패턴 : 선턴을 가져가는 상황이 있습니다.
+        if (CEnemyParty.IsDenialBoss)
+        {
+            CEnemyAI.EndDenialRound(_enemyParty.EnemyList, _heroParty.HeroList);
+
+            int randomBossTurn = Random.Range(0, _enemyParty.EnemyList.Count);
+
+            CEnemy enemy = _enemyParty.EnemyList[randomBossTurn];
+
+            _turnList.Insert(0, (_chapterOneBossId[enemy], enemy, 999));
+
+            _firstTurnAction = true;
+        }
 
 
         // 턴 이미지 세팅 및 생성
@@ -715,7 +736,22 @@ public class CCombatManager : MonoBehaviour
             // 적 액션
             else
             {
+
                 CEnemyAI actor = MyTurn.GetComponent<CEnemyAI>();
+
+                if (_firstTurnAction)
+                {
+                    CEnemyAI.TryQueueDenialOpening(MyTurn as CEnemy, _combatUI.Round);
+                    bool isOpeningSkill = (MyTurn as CEnemy).AvailableDenialOpening;
+
+                    if (isOpeningSkill)
+                    {
+                        _firstTurnAction = false;
+                    }
+                    yield return new WaitUntil(() => isOpeningSkill);
+                }
+
+
                 actor.TryRequestPlannedAction();
                 EEnemyActionRequestResult result = actor.RequestPlannedAction();
                 CEnemy enemy = MyTurn as CEnemy;
@@ -769,6 +805,7 @@ public class CCombatManager : MonoBehaviour
             }
             yield return null;
         }
+
 
         MyTurn.OnActionRequested -= OnActionData;
 
