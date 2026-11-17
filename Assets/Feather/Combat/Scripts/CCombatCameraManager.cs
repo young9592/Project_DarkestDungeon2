@@ -40,11 +40,6 @@ public class CCombatCameraManager : MonoBehaviour
     [SerializeField] private string _defaultLayerName = "Default";
     [SerializeField] private float _actionZoomValue = 2f;
     [SerializeField] private float _meltdownZoomValue = 1.5f;
-
-    [Header("Riposte data")]
-    [SerializeField] private CSkillDataSO hwm;
-    [SerializeField] private CSkillDataSO man;
-    [SerializeField] private CSkillDataSO testRiposte;
     #endregion
 
     #region Field
@@ -414,17 +409,8 @@ public class CCombatCameraManager : MonoBehaviour
             bool isHero = riposteEntity is CPlayer;
             if (isHero)
             {
-                if (riposteEntity.EntityData.Id == "hero_man_at_arms")
-                {
-                    riposteEntity.SetRiposteSkill(man);
-                }
-                else if (riposteEntity.EntityData.Id == "hero_highwayman")
-                {
-                    riposteEntity.SetRiposteSkill(hwm);
-                }
-
-                riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 100f;
-                actor.gameObject.GetComponentInChildren<Animator>().speed = 100f;
+                riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 300f;
+                actor.gameObject.GetComponentInChildren<Animator>().speed = 300f;
                 yield return new WaitForSeconds(0.05f);
                 riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
@@ -433,7 +419,12 @@ public class CCombatCameraManager : MonoBehaviour
             }
             else
             {
-                riposteEntity.SetRiposteSkill(testRiposte);
+                riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 300f;
+                actor.gameObject.GetComponentInChildren<Animator>().speed = 300f;
+                yield return new WaitForSeconds(0.05f);
+                riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 0f;
+                actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
+             
                 CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
             }
 

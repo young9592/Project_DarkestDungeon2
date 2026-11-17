@@ -1509,9 +1509,6 @@ MonoBehaviour:
   _defaultLayerName: Default
   _actionZoomValue: 2
   _meltdownZoomValue: 1
-  hwm: {fileID: 11400000, guid: b57213c861cea334680e3b6485476a0a, type: 2}
-  man: {fileID: 11400000, guid: b57213c861cea334680e3b6485476a0a, type: 2}
-  testRiposte: {fileID: 11400000, guid: c6e3f13c986d2294fac0234746357aca, type: 2}
 --- !u!1 &252759437
 GameObject:
   m_ObjectHideFlags: 0
@@ -3709,7 +3706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: b4852ee76976c0e4d97148451c0fb1f8, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}
@@ -4575,7 +4572,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 611889735}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10260}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8406,7 +8403,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1032344542}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10260}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

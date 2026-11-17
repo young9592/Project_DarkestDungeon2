@@ -54,7 +54,13 @@ public class CCombatFloatingText : MonoBehaviour
 
         Death_Armor_Break,
         Death_Door,
-        Death
+        Death,
+
+        DenialOfArms,
+        DenialOfReach,
+        DenialOfFortitude,
+        DenialOfReason,
+
     }
     // 메세지 정렬 방식
     private enum ETextAlignType
@@ -105,6 +111,11 @@ public class CCombatFloatingText : MonoBehaviour
     [SerializeField] private Sprite _critSprite;
     [SerializeField] private Sprite _speedSprite;
 
+    [SerializeField] private Sprite _denialOfArmsSprite;
+    [SerializeField] private Sprite _denialOfReachSprite;
+    [SerializeField] private Sprite _denialOfFortitudeSprite;
+    [SerializeField] private Sprite _denialOfReasonSprite;
+
     #endregion
 
     #region Field
@@ -150,7 +161,20 @@ public class CCombatFloatingText : MonoBehaviour
             }
         }
 
-        SkinnedMeshRenderer mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
+        SkinnedMeshRenderer mesh = null;
+
+        if (target.GetComponent<CEntity>() is CEnemyCorpse)
+        {
+            CEnemyCorpse corpse = target.GetComponent<CEntity>() as CEnemyCorpse;
+            mesh = corpse.Owner.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+        }
+        else
+        {
+            mesh = target.GetComponentInChildren<SkinnedMeshRenderer>();
+        }
+
+
+       
 
 
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
@@ -363,6 +387,23 @@ public class CCombatFloatingText : MonoBehaviour
                 break;
             case EMessageType.Speed:
                 _iconImage.sprite = _speedSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            // 보스 특수토큰
+            case EMessageType.DenialOfArms:
+                _iconImage.sprite = _denialOfArmsSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.DenialOfReach:
+                _iconImage.sprite = _denialOfReachSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.DenialOfFortitude:
+                _iconImage.sprite = _denialOfFortitudeSprite;
+                SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.DenialOfReason:
+                _iconImage.sprite = _denialOfReachSprite;
                 SetAlignment(ETextAlignType.Token, text);
                 break;
             default:
