@@ -47,7 +47,7 @@ public class CHeroCorpseSkillStrategy : CEffectStrategy
         if (!context.IsHit || _healPercent <= 0) return;
 
         int heal = Mathf.RoundToInt(hero.HeroData.MaxHealth * (_healPercent / 100.0f));
-        if (heal > 0 && hero.DenialRestriction != EDenialRestriction.Fortitude) hero.TakeDamage(-heal);
+        if (heal > 0 && hero.DenialRestriction != EDenialRestriction.Fortitude) hero.ApplyHealingEffect(context.Caster, heal, false);
         if (_stealthTokens > 0) hero.TokenManager.AddToken(EEffectType.Stealth, _stealthTokens);
         if (_stressRecovery > 0 && hero.DenialRestriction != EDenialRestriction.Reason) hero.ModifyStress(-_stressRecovery);
     }

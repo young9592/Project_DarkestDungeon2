@@ -16,6 +16,7 @@ public class CEnemyDamageStrategy : CEffectStrategy
         if (!CheckHit(context))
         {
             context.IsHit = false;
+            context.Target.ReportMissedDamage(context.Caster);
             return;
         }
 
@@ -44,7 +45,7 @@ public class CEnemyDamageStrategy : CEffectStrategy
         if (context.Target.TokenManager.ConsumeToken(EEffectType.Vulnerable)) damage *= 1.5f;
         if (hasCombo) context.Target.TokenManager.ConsumeToken(EEffectType.Combo);
 
-        context.Target.TakeDamage(Mathf.RoundToInt(damage));
+        context.Target.ApplyDamageEffect(context.Caster, Mathf.RoundToInt(damage), context.IsCrit);
         if (denialLock != null) denialLock.ApplyInheritedOnHitEffect(context);
     }
 

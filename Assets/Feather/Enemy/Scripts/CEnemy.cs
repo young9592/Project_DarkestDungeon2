@@ -76,7 +76,7 @@ public class CEnemy : CEntity
         get { return _attackAnimation; }
     }
 
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _currentHp; }
     }
@@ -612,12 +612,7 @@ public class CEnemy : CEntity
     }
 
 
-    public override void TakeDamage(int finalDamage)
-    {
-        ApplyDamage(finalDamage, true);
-    }
-
-    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
     {
         if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
         {
@@ -793,7 +788,7 @@ public class CEnemy : CEntity
 
                 if (totalDamage > 0)
                 {
-                    ApplyDamage((int)Math.Min(int.MaxValue, totalDamage), false);
+                    ApplyPeriodicDamage((int)Math.Min(int.MaxValue, totalDamage));
                 }
             }
 

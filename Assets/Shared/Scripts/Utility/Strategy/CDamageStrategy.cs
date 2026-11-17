@@ -35,6 +35,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 CPrint.Log($"[{attacker.name}] 의 공격이 [{defender.name}]에게서 빗나갔습니다.");
                 context.IsHit = false;
+                defender.ReportMissedDamage(attacker);
                 //TryTriggerRiposte(defender, attacker);
                 return;
             }
@@ -48,6 +49,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 CPrint.Log($"[{defender.name}] 의 [회피+] 토큰으로 공격을 회피했습니다.");
                 context.IsHit = false;
+                defender.ReportMissedDamage(attacker);
                 //TryTriggerRiposte(defender, attacker);
                 return;
             }
@@ -59,6 +61,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 CPrint.Log($"[{defender.name}] 의 [회피] 토큰으로 공격을 회피했습니다.");
                 context.IsHit = false;
+                defender.ReportMissedDamage(attacker);
                 //TryTriggerRiposte(defender, attacker);
                 return;
             }
@@ -129,7 +132,7 @@ public class CDamageStrategy : CEffectStrategy
         int calculatedDamage = Mathf.RoundToInt(finalDamage);
         CPrint.Log($"[{attacker.name}]가 [{defender.name}]에게 최종 데미지 [{calculatedDamage}]를 입혔습니다.");
         // 계산이 다 끝난 최종 데미지 수치만 전달받음
-        defender.TakeDamage(calculatedDamage);
+        defender.ApplyDamageEffect(attacker, calculatedDamage, context.IsCrit);
 
         //TryTriggerRiposte(defender, attacker);
     }
@@ -164,7 +167,7 @@ public class CDamageStrategy : CEffectStrategy
         {
             int riposteDamage = UnityEngine.Random.Range(3, 6);
             CPrint.Log($"[기본 반격 발동] [{defender.name}] 가 [{attacker.name}] 에게 [{riposteDamage}] 반격 피해를 입힙니다.");
-            attacker.TakeDamage(riposteDamage);
+            attacker.ApplyDamageEffect(defender, riposteDamage, false);
         }
 
         return true;
@@ -197,7 +200,7 @@ public class CDamageStrategy : CEffectStrategy
             {
                 int riposteDamage = Random.Range(3, 6);
                 CPrint.Log($"[반격] [{defender.name}]가 공격자인 [{attacker.name}]에게 [{riposteDamage}] 반격 피해를 입힙니다");
-                attacker.TakeDamage(riposteDamage);
+                attacker.ApplyDamageEffect(defender, riposteDamage, false);
             }
 
             _isExecutingRiposte = false;

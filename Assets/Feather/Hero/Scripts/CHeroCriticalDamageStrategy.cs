@@ -13,6 +13,7 @@ public class CHeroCriticalDamageStrategy : CEffectStrategy
         if (context.ConsumeCasterTokenOnce(EEffectType.Blind) && Random.Range(1, 101) <= 50)
         {
             context.IsHit = false;
+            context.Target.ReportMissedDamage(context.Caster);
             return;
         }
 
@@ -21,6 +22,7 @@ public class CHeroCriticalDamageStrategy : CEffectStrategy
             if (Random.Range(1, 101) <= 75)
             {
                 context.IsHit = false;
+                context.Target.ReportMissedDamage(context.Caster);
                 return;
             }
         }
@@ -29,6 +31,7 @@ public class CHeroCriticalDamageStrategy : CEffectStrategy
             if (Random.Range(1, 101) <= 75)
             {
                 context.IsHit = false;
+                context.Target.ReportMissedDamage(context.Caster);
                 return;
             }
         }
@@ -45,6 +48,6 @@ public class CHeroCriticalDamageStrategy : CEffectStrategy
         else if (context.Target.TokenManager.ConsumeToken(EEffectType.Block)) finalDamage *= 0.5f;
         if (context.Target.TokenManager.ConsumeToken(EEffectType.Vulnerable)) finalDamage *= 1.5f;
 
-        context.Target.TakeDamage(Mathf.RoundToInt(finalDamage));
+        context.Target.ApplyDamageEffect(context.Caster, Mathf.RoundToInt(finalDamage), context.IsCrit);
     }
 }

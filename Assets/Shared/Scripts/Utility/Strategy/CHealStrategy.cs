@@ -32,7 +32,7 @@ public class CHealStrategy : CEffectStrategy
         }
 
         // 지금은 TakeDamage에 음수로 처리중인데 나중에 CEntity Heal() 함수를 파서 할 수도..?
-        context.Target.TakeDamage(-healAmount);
+        context.Target.ApplyHealingEffect(context.Caster, healAmount, context.IsCrit);
         CPrint.Log($"[{context.Caster.name}]가 [{context.Target.name}]의 체력을 [{healAmount}] 회복시켰습니다.");
     }
 }

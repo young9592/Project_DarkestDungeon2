@@ -10,6 +10,6 @@ public class CHeroDotConversionStrategy : CEffectStrategy
 
         long scaled = (long)enemy.ConsumeRemainingDotDamage() * Mathf.Max(0, effectData.Damage);
         int damage = (int)System.Math.Min(int.MaxValue, System.Math.Round(scaled / 100.0));
-        if (damage > 0) enemy.TakeDamage(damage);
+        if (damage > 0) enemy.ApplyDamageEffect(context.Caster, damage, false);
     }
 }

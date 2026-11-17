@@ -35,6 +35,6 @@ public class CHeroPercentHealStrategy : CEffectStrategy
 
         int percent = Mathf.Clamp(effectData.Damage, 0, 100);
         int amount = Mathf.RoundToInt(context.Target.EntityData.MaxHealth * (percent / 100f));
-        if (amount > 0) context.Target.TakeDamage(-amount);
+        if (amount > 0) context.Target.ApplyHealingEffect(context.Caster, amount, false);
     }
 }
