@@ -150,6 +150,10 @@ MonoBehaviour:
   _stealth: {fileID: 3529323178505328826}
   _riposte: {fileID: 4467056553764495627}
   _crit: {fileID: 6518825762793652245}
+  _denialOfArms: {fileID: 6762581854564216834}
+  _denialOfReach: {fileID: 425110984606348212}
+  _denialOfFortitude: {fileID: 4813505953821129784}
+  _denialOfReason: {fileID: 5699709292765156922}
 --- !u!1 &44662514602269617
 GameObject:
   m_ObjectHideFlags: 0

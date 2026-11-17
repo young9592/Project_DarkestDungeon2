@@ -291,7 +291,7 @@ public class CCombatManager : MonoBehaviour
         // 1챕터 보스의 특수패턴 : 선턴을 가져가는 상황이 있습니다.
         if (CEnemyParty.IsDenialBoss)
         {
-            //EndDenialRound
+            CEnemyAI.EndDenialRound(_enemyParty.EnemyList, _heroParty.HeroList);
 
             int randomBossTurn = Random.Range(0, _enemyParty.EnemyList.Count);
 
@@ -736,14 +736,22 @@ public class CCombatManager : MonoBehaviour
             // 적 액션
             else
             {
-                
-                if (_firstTurnAction)
-                {
-                    //TryQueueDenialOpening
-                }
-                
 
                 CEnemyAI actor = MyTurn.GetComponent<CEnemyAI>();
+
+                if (_firstTurnAction)
+                {
+                    CEnemyAI.TryQueueDenialOpening(MyTurn as CEnemy, _combatUI.Round);
+                    bool isOpeningSkill = (MyTurn as CEnemy).AvailableDenialOpening;
+
+                    if (isOpeningSkill)
+                    {
+                        _firstTurnAction = false;
+                    }
+                    yield return new WaitUntil(() => isOpeningSkill);
+                }
+
+
                 actor.TryRequestPlannedAction();
                 EEnemyActionRequestResult result = actor.RequestPlannedAction();
                 CEnemy enemy = MyTurn as CEnemy;
@@ -797,6 +805,7 @@ public class CCombatManager : MonoBehaviour
             }
             yield return null;
         }
+
 
         MyTurn.OnActionRequested -= OnActionData;
 

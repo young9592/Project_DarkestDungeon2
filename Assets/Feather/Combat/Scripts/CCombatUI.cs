@@ -149,6 +149,7 @@ public class CCombatUI : MonoBehaviour
     public IReadOnlyDictionary<CEntity, CEntityState> EntitiesState => _entitiesState;
     public IReadOnlyDictionary<CEntity, CIndicator> EntitiesIndicator => _entitiesIndicator;
     public float PortraitRemoveDelay => _portraitRemoveDelay;
+    public int Round => _round;
     #endregion
 
     private void Awake()
