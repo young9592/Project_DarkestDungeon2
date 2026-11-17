@@ -110,6 +110,51 @@ public class CEnemyAI : MonoBehaviour
         }
     }
 
+    public static bool TryQueueDenialOpening(CEnemy selectedLock, int roundNumber)
+    {
+        if (selectedLock == null || !selectedLock.isActiveAndEnabled || selectedLock.IsDead
+            || selectedLock.IsDeathPresented
+            || (selectedLock.IsActionActive && selectedLock.ActionState != EEntityActionState.Selecting)
+            || !selectedLock.TryGetComponent(out CEnemyAI ai) || !ai.isActiveAndEnabled
+            || ai._denialLock == null || !ai._denialLock.isActiveAndEnabled) return false;
+
+        IReadOnlyList<CEnemy> allies = selectedLock.FormationMovement != null
+            ? selectedLock.FormationMovement.Members : null;
+        for (int i = 0; allies != null && i < allies.Count; i++)
+        {
+            CEnemy ally = allies[i];
+            if (ally != null && ally.TryGetComponent(out CDenialLock denialLock)
+                && denialLock.LastOpeningRound >= roundNumber) return false;
+        }
+
+        if (!ai._denialLock.TryQueueOpeningSkill(roundNumber)) return false;
+
+        // ?? ???? ? ? ??? ?? ???? ???? ?? ?
+        for (int i = 0; allies != null && i < allies.Count; i++)
+        {
+            CEnemy ally = allies[i];
+            if (ally != null && ally != selectedLock && ally.TryGetComponent(out CDenialLock denialLock))
+                denialLock.ConsumeOpeningSkill();
+        }
+        ai.ClearPlan();
+        return true;
+    }
+
+    public static void EndDenialRound(IReadOnlyList<CEnemy> enemies, IReadOnlyList<CPlayer> heroes)
+    {
+        if (enemies != null)
+        {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                CEnemy enemy = enemies[i];
+                if (enemy != null && enemy.TryGetComponent(out CDenialLock denialLock))
+                    denialLock.ConsumeOpeningSkill();
+            }
+        }
+
+        CPlayer.ApplyPartyDenialRestriction(heroes, EDenialRestriction.None);
+    }
+
     public bool TryPlanAction(IReadOnlyList<CEntity> heroes)
     {
         return TryPlanAction(heroes, null);
@@ -149,6 +194,17 @@ public class CEnemyAI : MonoBehaviour
 
         // 피격 중이어도 연출 후 다시 고를 수 있게 후보는 보관함
         if (_enemy.AttackAnimation.IsBusy) return false;
+
+        CSkillDataSO opening = _enemy.AvailableDenialOpening;
+        if (opening != null)
+        {
+            ClearPlan();
+            _plannedTargets.AddRange(CEnemyTargetFilter.GetTargets(opening, _heroes));
+            if (_plannedTargets.Count == 0) return false;
+            _plannedSkill = opening;
+            _plannedTarget = _plannedTargets[0];
+            return true;
+        }
 
         CSkillDataSO ignition = _enemy.AvailableIgnition;
         if (ignition != null)
@@ -231,6 +287,11 @@ public class CEnemyAI : MonoBehaviour
 
     public bool IsPlanValid()
     {
+        if (_enemy != null && _enemy.AvailableDenialOpening != null)
+            return _plannedSkill == _enemy.AvailableDenialOpening && _enemy.isActiveAndEnabled
+                && !_enemy.IsDead && !_enemy.IsDeathPresented
+                && (IsExecuting || ArePlannedTargetsValid());
+
         if (_enemy != null && _enemy.AvailableIgnition != null)
             return _plannedSkill == _enemy.AvailableIgnition && _plannedTarget == _enemy
                 && _enemy.isActiveAndEnabled && !_enemy.IsDead && !_enemy.IsDeathPresented;
