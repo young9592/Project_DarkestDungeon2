@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EffectSO_Ghoul_Howl_Horror
   m_EditorClassIdentifier:
   _name: Ghoul / Howl Horror
-  _effectType: 3
+  _effectType: 25
   _effectTarget: 0
   _damage: 1
   _maxDamage: 0
