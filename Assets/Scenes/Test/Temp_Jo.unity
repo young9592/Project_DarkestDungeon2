@@ -3590,8 +3590,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.5211837, b: 0, a: 1}
-  m_Intensity: 3
-  m_Range: 7
+  m_Intensity: 5
+  m_Range: 5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -3706,7 +3706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: b4852ee76976c0e4d97148451c0fb1f8, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}

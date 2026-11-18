@@ -563,7 +563,13 @@ public class CCombatManager : MonoBehaviour
                 {
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
-                    if (enemy.Corpse.IsAvailable)
+                    // 일단 보스는 시체가 없습니다.
+                    if(CEnemyParty.IsDenialBoss)
+                    {
+                        RemoveDeathEntity(i);
+                        isDirty = true;
+                    }
+                    else if (enemy.Corpse.IsAvailable)
                     {
                         // 시체 상태로 변환 시 한번만 턴순서 제거 처리
                         if (_corpseCheck.Contains(enemy))
