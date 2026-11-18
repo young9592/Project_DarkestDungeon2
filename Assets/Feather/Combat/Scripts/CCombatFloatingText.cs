@@ -61,6 +61,8 @@ public class CCombatFloatingText : MonoBehaviour
         DenialOfFortitude,
         DenialOfReason,
 
+        Cure, 
+
     }
     // 메세지 정렬 방식
     private enum ETextAlignType
@@ -408,6 +410,10 @@ public class CCombatFloatingText : MonoBehaviour
             case EMessageType.DenialOfReason:
                 _iconImage.sprite = _denialOfReachSprite;
                 SetAlignment(ETextAlignType.Token, text);
+                break;
+            case EMessageType.Cure:
+                _text.color = new Color32(255, 255, 255, 255);
+                SetAlignment(ETextAlignType.Default, text);
                 break;
             default:
                 break;

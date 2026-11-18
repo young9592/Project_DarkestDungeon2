@@ -19,15 +19,16 @@ public enum EDamageType
 // 토큰 획득 혹은 소모
 public enum ETokenType
 {
-    Add,
-    Consume,
+    Add,                // 토큰 획득 메시지
+    Consume,            // 토큰 소모 메세지
 }
 
 // 도트 획득 혹은 데미지 받음
 public enum EDotType
 {
-    Add,
-    Damage,
+    Add,                // 도트 추가
+    Damage,             // 도트 데미지
+    Resist,             // 저항
 }
 
 public enum EEntityState
@@ -35,6 +36,11 @@ public enum EEntityState
     DeathBlow,          // 죽음의 일격 [ 공통 ]
     DeathDoor,          // 죽음의 문턱 [ 플레이어 ]
     DeathArmorBreak,    // 죽음 저항 토큰 파괴 [ 적 ]
+}
+
+public enum EOtherType
+{
+    Cure,               // 디버프 치유됨
 }
 
 public class CCombatFloatingMessageManager : MonoBehaviour
@@ -362,6 +368,9 @@ public class CCombatFloatingMessageManager : MonoBehaviour
                     case EDotType.Damage:
                         _instance.DrawText(target, CCombatFloatingText.EMessageType.Bleed, value.ToString(), offset, delay);
                         break;
+                    case EDotType.Resist:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Bleed, "저항", offset, delay);
+                        break;
                 }
                 break;
             case EEffectType.Blight:
@@ -373,6 +382,9 @@ public class CCombatFloatingMessageManager : MonoBehaviour
                     case EDotType.Damage:
                         _instance.DrawText(target, CCombatFloatingText.EMessageType.Blight, value.ToString(), offset, delay);
                         break;
+                    case EDotType.Resist:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Blight, "저항", offset, delay);
+                        break;
                 }
                 break;
             case EEffectType.Burn:
@@ -383,6 +395,9 @@ public class CCombatFloatingMessageManager : MonoBehaviour
                         break;
                     case EDotType.Damage:
                         _instance.DrawText(target, CCombatFloatingText.EMessageType.Burn, value.ToString(), offset, delay);
+                        break;
+                    case EDotType.Resist:
+                        _instance.DrawText(target, CCombatFloatingText.EMessageType.Burn, "저항", offset, delay);
                         break;
                 }
                 break;
@@ -412,7 +427,7 @@ public class CCombatFloatingMessageManager : MonoBehaviour
                 break;
         }
     }
-
+    // 죽음 관련 3종 출력
     public static void ShowDeath(GameObject target, EEntityState entityState, Vector3 offset = default, float delay = 0f)
     {
         if (_instance == null)
@@ -431,6 +446,21 @@ public class CCombatFloatingMessageManager : MonoBehaviour
                 break;
             case EEntityState.DeathArmorBreak:
                 _instance.DrawText(target, CCombatFloatingText.EMessageType.Death_Armor_Break, "죽음 저항 파괴!", offset, delay);
+                break;
+        }
+    }
+    // 기타 상황들 출력 [ 치료 ]
+    public static void ShowOther(GameObject target, EOtherType otherType, Vector3 offset = default, float delay = 0f)
+    {
+        if (_instance == null)
+        {
+            return;
+        }
+
+        switch (otherType)
+        {
+            case EOtherType.Cure:
+                _instance.DrawText(target, CCombatFloatingText.EMessageType.Cure, "치료!", offset, delay);
                 break;
         }
     }
