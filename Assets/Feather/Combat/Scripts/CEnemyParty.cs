@@ -102,7 +102,7 @@ public class CEnemyParty : MonoBehaviour
             {
                 Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
                 enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
-                enemyPrefab.gameObject.GetComponentInChildren<Animator>().gameObject.transform.localScale = Vector3.one;
+                enemyPrefab.gameObject.GetComponentInChildren<Animator>().gameObject.transform.localScale = Vector3.one * 0.93f;
             }
 
             if (enemyPrefab.EnemyData.Id == "enemy_denial_health" || enemyPrefab.EnemyData.Id == "enemy_denial_melee" || enemyPrefab.EnemyData.Id == "enemy_denial_ranged" || enemyPrefab.EnemyData.Id == "enemy_denial_stress")
