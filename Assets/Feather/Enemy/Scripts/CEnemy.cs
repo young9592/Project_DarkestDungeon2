@@ -653,6 +653,7 @@ public class CEnemy : CEntity
             {
                 _remainingDeathArmor--;
                 _isDeathsDoor = true;
+                CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathArmorBreak);
                 return;
             }
             _isDead = true;
@@ -663,6 +664,7 @@ public class CEnemy : CEntity
             _activeStatusEffects.Clear();
 
             if (_denialLock != null) _denialLock.ApplyDeathEffect(_formationMovement.Members);
+            CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathBlow);
             _deathPresentation.TryPlayConfirmedDeath();
             return;
         }

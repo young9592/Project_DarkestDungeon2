@@ -37,6 +37,8 @@ public class CPlayer : CEntity
     // 배틀 상태 변화 이벤트
     public event Action<CPlayer, int, int> OnHealthChanged;
     public event Action<CPlayer, int, int> OnStressChanged;
+    // 실제 증가량은 양수, 회복량은 음수. 마지막 값은 공포로 인한 변화 여부.
+    public event Action<CPlayer, int, bool> OnStressEffectResolved;
     public event Action<CPlayer, bool> OnDeathDoorChanged;
     public event Action<CPlayer> OnMeltdownTriggered;
     public event Action<CPlayer> OnResoluteTriggered;
@@ -961,17 +963,24 @@ public class CPlayer : CEntity
     // 스트레스 수치 증감
     public override void ModifyStress(int stressAmount)
     {
+        ApplyStressChange(stressAmount, false);
+    }
+
+    private void ApplyStressChange(int stressAmount, bool isHorror)
+    {
         if (!isActiveAndEnabled || _isDead || _heroData == null || stressAmount == 0)
         {
             return;
         }
 
         int previousStress = _currentStress;
-        _currentStress = Mathf.Clamp(_currentStress + stressAmount, 0, MAX_STRESS);
+        _currentStress = (int)Math.Max(0L, Math.Min(MAX_STRESS, (long)previousStress + stressAmount));
+        int appliedAmount = _currentStress - previousStress;
 
-        if (_currentStress != previousStress)
+        if (appliedAmount != 0)
         {
             OnStressChanged?.Invoke(this, previousStress, _currentStress);
+            OnStressEffectResolved?.Invoke(this, appliedAmount, isHorror);
             CPrint.Log($"[{_heroData.DefaultName}] 스트레스 변화: {previousStress} → {_currentStress}/{MAX_STRESS}");
         }
 
@@ -1060,7 +1069,7 @@ public class CPlayer : CEntity
                 // 공포는 일반 턴 시작에 스트레스로 적용함
                 if (horrorStress > 0)
                 {
-                    ModifyStress(horrorStress);
+                    ApplyStressChange(horrorStress, true);
                 }
             }
 
@@ -1131,6 +1140,7 @@ public class CPlayer : CEntity
 
         TokenManager.AddToken(EEffectType.Weak, 1);
 
+        CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
         OnDeathDoorChanged?.Invoke(this, true);
     }
 
@@ -1180,6 +1190,7 @@ public class CPlayer : CEntity
 
         CPrint.Log($"[{_heroData.DefaultName}] 사망.. 전투 불능 상태가 되었습니다.");
 
+        CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathBlow);
         OnPlayerDied?.Invoke(this);
     }
 
