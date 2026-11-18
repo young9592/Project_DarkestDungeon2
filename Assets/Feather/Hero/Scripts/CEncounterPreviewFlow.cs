@@ -298,6 +298,18 @@ public class CEncounterPreviewFlow : MonoBehaviour
         }
     }
 
+    public bool TryRetryPartySave()
+    {
+        if (_screen != EScreen.Preparing || _preparation == null || !_preparation.HasPendingPartySave)
+        {
+            return false;
+        }
+
+        bool saved = _preparation.TryRetryPartySave();
+        if (_status != null) _status.text = _preparation.SaveNotice;
+        return saved;
+    }
+
     public bool TryEnter()
     {
         if (_screen != EScreen.Preparing
@@ -478,7 +490,14 @@ public class CEncounterPreviewFlow : MonoBehaviour
 
         if (_status != null)
         {
-            _status.text = valid ? "Ready. Enter with your current formation and equipped skills." : message;
+            if (_preparation != null && _preparation.HasPendingPartySave)
+            {
+                _status.text = _preparation.SaveNotice;
+            }
+            else
+            {
+                _status.text = valid ? "Ready. Enter with your current formation and equipped skills." : message;
+            }
         }
     }
 
@@ -738,6 +757,12 @@ public class CEncounterPreviewFlow : MonoBehaviour
     private void OnGUI()
     {
         if (!CTempLeeTestUI.CanShow(this)) return;
+
+        if (_screen == EScreen.Preparing && _preparation != null && _preparation.HasPendingPartySave
+            && GUI.Button(new Rect(Screen.width - 180, Screen.height - 185, 170, 26), "Retry Party Save"))
+        {
+            TryRetryPartySave();
+        }
 
         if (_screen == EScreen.Preparing && _randomGroupSource != null) DrawRandomGroupControls();
 

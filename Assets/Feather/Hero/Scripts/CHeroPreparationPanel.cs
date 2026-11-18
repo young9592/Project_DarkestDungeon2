@@ -42,6 +42,15 @@ public class CHeroPreparationPanel : MonoBehaviour
     {
         get { return _presets != null ? _presets.Notice : string.Empty; }
     }
+    public bool HasPendingPartySave
+    {
+        get { return _presets != null && _presets.HasPendingAppliedSave; }
+    }
+
+    public bool TryRetryPartySave()
+    {
+        return _presets != null && _presets.TryRetryAppliedSave();
+    }
 
     public int SelectedIndex
     {
@@ -327,10 +336,8 @@ public class CHeroPreparationPanel : MonoBehaviour
         if (_presets != null)
         {
             _presets.Close();
-            if (TryCaptureParty(out CHeroSavedParty saved))
-            {
-                _presets.SaveApplied(saved);
-            }
+            TryCaptureParty(out CHeroSavedParty saved);
+            _presets.SaveApplied(saved);
         }
 
         OnClosed?.Invoke(true);
