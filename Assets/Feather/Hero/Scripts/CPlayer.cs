@@ -980,13 +980,13 @@ public class CPlayer : CEntity
 
     public bool HasHorror
     {
-        get { return GetTotalDotDamageByType(EEffectType.Stress) > 0; }
+        get { return GetTotalDotDamageByType(EEffectType.Horror) > 0; }
     }
 
     internal void ApplyHorror(CEffectSO effectData)
     {
         if (!isActiveAndEnabled || _isDead || IsDeathPresented || effectData == null
-            || effectData.EffectType != EEffectType.Stress || effectData.Damage <= 0 || effectData.Duration <= 0) return;
+            || effectData.EffectType != EEffectType.Horror || effectData.Damage <= 0 || effectData.Duration <= 0) return;
 
         _activeStatusEffects.Add(new CEffect(effectData));
     }
@@ -1029,7 +1029,7 @@ public class CPlayer : CEntity
                         case EEffectType.Bleed: bleedDamage += effect.Damage; break;
                         case EEffectType.Blight: blightDamage += effect.Damage; break;
                         case EEffectType.Burn: burnDamage += effect.Damage; break;
-                        case EEffectType.Stress:
+                        case EEffectType.Horror:
                             if (UnityEngine.Random.value < 0.5f)
                             {
                                 horrorStress += effect.Damage;
@@ -1233,7 +1233,7 @@ public class CPlayer : CEntity
         {
             EEffectType currentType = _activeStatusEffects[i].EffectType;
 
-            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Stress))
+            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Horror))
             {
                 _activeStatusEffects.RemoveAt(i);
                 removedCount++;
