@@ -81,7 +81,7 @@ public class CInputDispatcher : MonoBehaviour
         }
 
         _move.action.performed += OnMovePerformed;
-        _move.action.performed += OnMoveCanceled;
+        _move.action.canceled += OnMoveCanceled;
         _skill.action.performed += OnSkillSelected;
 
         _isReady = true;
@@ -98,7 +98,7 @@ public class CInputDispatcher : MonoBehaviour
         if (_move == null || _move.action == null)
         {
             _move.action.performed -= OnMovePerformed;
-            _move.action.performed -= OnMoveCanceled;
+            _move.action.canceled -= OnMoveCanceled;
         }
         if (_skill == null || _skill.action == null)
         {
