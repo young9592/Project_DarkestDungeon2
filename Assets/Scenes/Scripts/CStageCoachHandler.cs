@@ -42,6 +42,8 @@ public class CStageCoach : MonoBehaviour
     #region Field
     private Vector2 _input = Vector2.zero;
     private bool _connect = false;
+    private bool _isPressed = false;
+    private float _nextTime = 0f;
 
     private int _hashSpeed;
     private int _hashTurnSpeed;
@@ -97,11 +99,18 @@ public class CStageCoach : MonoBehaviour
 
     private void Update()
     {
+        // 꾹 누르면 자동으로 달리기로 전환
+        if (_isPressed && _nextTime < Time.time && _coachState == ECoachState.Walk)
+        {
+            _coachState = ECoachState.Run;
+        }
+
+
         Vector3 moveVec = Vector3.zero;
 
         if (_coachState == ECoachState.Walk)
         {
-            _currentSpeed = _maxSpeed * 0.4f;
+            _currentSpeed = _maxSpeed * 0.6f;
 
             moveVec = new Vector3(0, 0, _currentSpeed);
 
@@ -124,15 +133,13 @@ public class CStageCoach : MonoBehaviour
             _body.velocity = new Vector3(_body.velocity.x * 0.9f, _body.velocity.y, _body.velocity.z * 0.9f);
         }
 
-        float rot = _input.x * _rotatePower * (_coachState == ECoachState.Run ? 1 : 0.5f);
+        float rot = _input.x * _rotatePower * (_coachState == ECoachState.Run ? 1 : 0.3f);
 
         if (_currentSpeed / _maxSpeed >= 0.3f)
         {
             _leftTr.position += new Vector3(rot, 0, 0);
             _rightTr.position += new Vector3(rot, 0, 0);
         }
-
-
 
         // Speed Animator
         float speedFloat = Mathf.Clamp01(_currentSpeed / _maxSpeed);
@@ -157,6 +164,12 @@ public class CStageCoach : MonoBehaviour
     // 마차 이동
     private void OnMoveHandler(Vector2 vec)
     {
+        if (vec == Vector2.zero)
+        {
+            _isPressed = false;
+        }
+
+
         if (_coachState == ECoachState.Walk || _coachState == ECoachState.Run)
         {
             if (vec.y < 0)
@@ -183,6 +196,8 @@ public class CStageCoach : MonoBehaviour
             if (vec.y > 0)
             {
                 _pressCount++;
+                _isPressed = true;
+                _nextTime = Time.time + 1f;
 
                 if (_pressCount == 1)
                 {
