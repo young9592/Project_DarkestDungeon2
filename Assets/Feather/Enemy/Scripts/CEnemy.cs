@@ -685,6 +685,7 @@ public class CEnemy : CEntity
                 && !_activeStatusEffects.Contains(statusEffect))
             {
                 _activeStatusEffects.Add(statusEffect);
+                CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
             }
             return;
         }
