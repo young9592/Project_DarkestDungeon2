@@ -66,11 +66,18 @@ public abstract class CEntity : MonoBehaviour
     {
         // 생성될 때 토큰 주머니 생성
         TokenManager = new CTokenManager();
+        TokenManager.OnTokenAdded += ShowAddedToken;
         _isDeathsDoor = false;
         _isDead = false;
         OnHealthEffectResolved += CHealthEffectMessagePresenter.Show;
     }
 
+
+    private void ShowAddedToken(EEffectType type)
+    {
+        if (!isActiveAndEnabled || IsDead || this is CEnemyCorpse) return;
+        CCombatFloatingMessageManager.ShowToken(gameObject, ETokenType.Add, type);
+    }
 
     public event Action<CHealthEffectResult> OnHealthEffectResolved;
     public event Action<CEntity> OnActionStarted;
