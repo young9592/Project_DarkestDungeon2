@@ -175,10 +175,6 @@ public class CPlayer : CEntity
                 if (denialToken != EEffectType.None)
                 {
                     TokenManager.AddToken(denialToken, 1, Mathf.Max(1, duration));
-                    if (_statusMessage != null && TokenManager.HasToken(denialToken))
-                    {
-                        _statusMessage.ShowAdded(denialToken);
-                    }
                 }
             }
         }
@@ -919,7 +915,7 @@ public class CPlayer : CEntity
                 || _activeStatusEffects.Contains(statusEffect)) return;
 
             _activeStatusEffects.Add(statusEffect);
-            if (_statusMessage != null) _statusMessage.ShowAdded(statusEffect.EffectType);
+            CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
 
             int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
             CPrint.Log($"[{_heroData.DefaultName}] 에게 [{statusEffect.EffectType}] 추가 부여 \n" +
@@ -955,7 +951,6 @@ public class CPlayer : CEntity
             case EEffectType.DenialOfFortitude:
             case EEffectType.DenialOfReason:
                 TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
-                if (_statusMessage != null && TokenManager.HasToken(tokenType)) _statusMessage.ShowAdded(tokenType);
                 break;
         }
     }
@@ -981,6 +976,8 @@ public class CPlayer : CEntity
         {
             OnStressChanged?.Invoke(this, previousStress, _currentStress);
             OnStressEffectResolved?.Invoke(this, appliedAmount, isHorror);
+            EDamageType type = appliedAmount > 0 ? EDamageType.Stress : EDamageType.Stress_Heal;
+            CCombatFloatingMessageManager.ShowDamage(gameObject, type, Mathf.Abs(appliedAmount));
             CPrint.Log($"[{_heroData.DefaultName}] 스트레스 변화: {previousStress} → {_currentStress}/{MAX_STRESS}");
         }
 
@@ -998,6 +995,7 @@ public class CPlayer : CEntity
             || effectData.EffectType != EEffectType.Horror || effectData.Damage <= 0 || effectData.Duration <= 0) return;
 
         _activeStatusEffects.Add(new CEffect(effectData));
+        CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, EEffectType.Horror, effectData.Damage);
     }
 
     public void OnTurnStart()
@@ -1164,6 +1162,7 @@ public class CPlayer : CEntity
 
         if (randomRoll <= deathblowResist)
         {
+            CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
             CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격을 버텼습니다.");
         }
         else

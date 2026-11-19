@@ -23,6 +23,7 @@ public class CTokenManager
     /// 스택이나 토큰이 0이 될시 (TOKENTYPE, 0, 0) 되도록
     /// </summary>
     public event Action<EEffectType, int, int> OnTokenChanged;
+    public event Action<EEffectType> OnTokenAdded;
 
     /// <summary>
     /// 새로운 토큰  흭득시 호출
@@ -47,6 +48,8 @@ public class CTokenManager
             _tokenStacks[tokenType] = 0;
         }
 
+        int previousStack = _tokenStacks[tokenType];
+        int previousDuration = GetTokenDuration(tokenType);
         _tokenStacks[tokenType] += amount;
 
         // 토큰별 최대 중첩 수 제한
@@ -67,6 +70,10 @@ public class CTokenManager
 
         CPrint.Log($"[Token 흭득] {GetFormattedTooltip(tokenType)}");
         OnTokenChanged?.Invoke(tokenType, finalStack, finalTurn);
+        if (finalStack > previousStack || finalTurn > previousDuration)
+        {
+            OnTokenAdded?.Invoke(tokenType);
+        }
     }
 
     /// <summary>
