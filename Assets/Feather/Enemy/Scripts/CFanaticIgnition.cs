@@ -4,6 +4,7 @@ public class CFanaticIgnition : MonoBehaviour
 {
     [SerializeField] private CSkillDataSO _igniteSkill;
     [SerializeField] private CEnemyDataSO _ignitedData;
+    [SerializeField] private CSkillDataSO _ignitedRiposteSkill;
     [SerializeField] private CSkillDataSO _allySkill;
     [SerializeField] private CSkillDataSO _stealthIgnoringSkill;
     [Header("Ignition Presentation")]
@@ -16,6 +17,11 @@ public class CFanaticIgnition : MonoBehaviour
     public CSkillDataSO AvailableIgnition
     {
         get { return !_isIgnited && _normalTurns >= 2 && _ignitedData != null ? _igniteSkill : null; }
+    }
+
+    public CSkillDataSO IgnitedRiposteSkill
+    {
+        get { return _isIgnited ? _ignitedRiposteSkill : null; }
     }
 
     public bool IsAllySkill(CSkillDataSO skill)

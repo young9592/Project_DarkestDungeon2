@@ -378,6 +378,7 @@ public class CEnemy : CEntity
             {
                 int lostHealth = _enemyData.MaxHealth - _currentHp;
                 _enemyData = ignitedData;
+                if (_ignition.IgnitedRiposteSkill != null) SetRiposteSkill(_ignition.IgnitedRiposteSkill);
                 _currentHp = Mathf.Max(1, _enemyData.MaxHealth - lostHealth);
                 SetExtraAction(true);
             }
@@ -612,21 +613,31 @@ public class CEnemy : CEntity
         return true;
     }
 
+    private CSkillDataSO ConfiguredRiposteSkill
+    {
+        get
+        {
+            return _ignition != null && _ignition.IgnitedRiposteSkill != null
+                ? _ignition.IgnitedRiposteSkill : _configuredRiposteSkill;
+        }
+    }
+
     public bool HasConfiguredRiposte
     {
-        get { return _configuredRiposteSkill != null; }
+        get { return ConfiguredRiposteSkill != null; }
     }
 
     public bool TryExecuteConfiguredRiposte(CEntity attacker)
     {
-        if (_configuredRiposteSkill == null || attacker == null || attacker == this || attacker.IsDead
+        CSkillDataSO skill = ConfiguredRiposteSkill;
+        if (skill == null || attacker == null || attacker == this || attacker.IsDead
             || IsDead || IsDeathPresented || IsActionActive || _attackAnimation == null
             || TokenManager == null || !TokenManager.HasToken(EEffectType.Riposte)
             || TokenManager.HasToken(EEffectType.Stun)) return false;
 
-        if (!_attackAnimation.TryPlayAttack(_configuredRiposteSkill)) return false;
+        if (!_attackAnimation.TryPlayAttack(skill)) return false;
 
-        SetRiposteSkill(_configuredRiposteSkill);
+        SetRiposteSkill(skill);
         return CDamageStrategy.TryExecuteRiposte(this, attacker);
     }
 
@@ -746,6 +757,7 @@ public class CEnemy : CEntity
         if (_ignition != null)
         {
             _ignition.ResetIgnition();
+            SetRiposteSkill(_configuredRiposteSkill);
             _enemyData = _initialEnemyData;
             SetExtraAction(false);
         }
