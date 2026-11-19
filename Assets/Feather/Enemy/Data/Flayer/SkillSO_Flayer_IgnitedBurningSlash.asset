@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_Flayer_IgnitedBurningSlash
+  m_EditorClassIdentifier: 
+  _skillName: Burning Slash
+  _skillIcon: {fileID: 0}
+  _useableRank: 3
+  _targetableRank: 3
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 4a67c82c66b54afe8c09fb0b4d5d9d30, type: 2}
+  - {fileID: 11400000, guid: 4cf7ed11af8045d9a61e527664100129, type: 2}
+  - {fileID: 11400000, guid: 2a7b3041a62f46e8ab636358a32f2002, type: 2}
+  - {fileID: 11400000, guid: 5216c8f44d20448294ae1302aecc3372, type: 2}
+  - {fileID: 11400000, guid: 63f1afaccd3f4363b9514147a8ce436b, type: 2}

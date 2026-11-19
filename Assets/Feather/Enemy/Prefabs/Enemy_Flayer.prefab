@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 463262537598669059}
   - component: {fileID: 4738803201036245165}
   - component: {fileID: 1876958152761477557}
+  - component: {fileID: 5325278047100472870}
   m_Layer: 0
   m_Name: Enemy_Flayer
   m_TagString: Untagged
@@ -85,6 +86,26 @@ MonoBehaviour:
     _attackState: Base Layer.Riposte
     _completionState: Base Layer.RiposteRecover
     _feedback: {fileID: 0}
+  - _skill: {fileID: 11400000, guid: d4c050c80fba48a889cce99492d56e0a, type: 2}
+    _attackState: Base Layer.Ignite
+    _completionState: Base Layer.IgniteRecover
+    _feedback: {fileID: 0}
+  - _skill: {fileID: 11400000, guid: f113147ff3a8468ab5e5360aaa63c562, type: 2}
+    _attackState: Base Layer.IgnitedStab
+    _completionState: Base Layer.IgnitedStabRecover
+    _feedback: {fileID: 0}
+  - _skill: {fileID: 11400000, guid: 8aaeba952248420a8c7b1d81b11f66c2, type: 2}
+    _attackState: Base Layer.Attack
+    _completionState: Base Layer.AttackPose
+    _feedback: {fileID: 0}
+  - _skill: {fileID: 11400000, guid: 0ae461d93a6e4f269a6066b5949e2177, type: 2}
+    _attackState: Base Layer.Advance
+    _completionState: Base Layer.AdvanceRecover
+    _feedback: {fileID: 0}
+  - _skill: {fileID: 11400000, guid: 2d077246549642c3a57e26f7ad806e12, type: 2}
+    _attackState: Base Layer.IgnitedStab
+    _completionState: Base Layer.IgnitedStabRecover
+    _feedback: {fileID: 0}
   _recoverHitOnResume: 0
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
@@ -115,6 +136,30 @@ MonoBehaviour:
   _width: 72
   _heroColor: {r: 0.25, g: 0.72, b: 0.44, a: 1}
   _enemyColor: {r: 0.78, g: 0.29, b: 0.25, a: 1}
+--- !u!114 &5325278047100472870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7514549272760341423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 215616a050d2ff2439b449a8e72852ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _igniteSkill: {fileID: 11400000, guid: d4c050c80fba48a889cce99492d56e0a, type: 2}
+  _ignitedData: {fileID: 11400000, guid: a423235bb1df4714809004646922c61e, type: 2}
+  _ignitedRiposteSkill: {fileID: 11400000, guid: 2d077246549642c3a57e26f7ad806e12, type: 2}
+  _allySkill: {fileID: 0}
+  _stealthIgnoringSkill: {fileID: 0}
+  _igniteEffects:
+  - {fileID: 5272489352084284036}
+  - {fileID: 4511714986923404291}
+  - {fileID: 3615015120725521180}
+  _burningEffects:
+  - {fileID: 5917424479451151948}
+  - {fileID: 2893373024337696069}
 --- !u!1001 &5066122077631472983
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -189,8 +234,33 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6645633107118905282, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
   m_PrefabInstance: {fileID: 5066122077631472983}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2893373024337696069 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7955934608428920850, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+  m_PrefabInstance: {fileID: 5066122077631472983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3615015120725521180 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8387222208560125515, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+  m_PrefabInstance: {fileID: 5066122077631472983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4511714986923404291 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8706214338800437588, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+  m_PrefabInstance: {fileID: 5066122077631472983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5272489352084284036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1109537050647824339, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+  m_PrefabInstance: {fileID: 5066122077631472983}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &5828302665704093255 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1633735006930981648, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+  m_PrefabInstance: {fileID: 5066122077631472983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5917424479451151948 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1463829335916813083, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
   m_PrefabInstance: {fileID: 5066122077631472983}
   m_PrefabAsset: {fileID: 0}
