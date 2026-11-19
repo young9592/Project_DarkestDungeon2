@@ -107,7 +107,6 @@ public class CCombatManager : MonoBehaviour
     public IReadOnlyDictionary<ERank, CEnemy> EnemyRank => _enemyParty.RankList;
     public IReadOnlyList<CPlayer> HeroParty => _heroParty.HeroList;
     public IReadOnlyList<CEnemy> EnemyParty => _enemyParty.EnemyList;
-
     public CHeroBattleInput BattleInput => _heroBattleInput;
     #endregion
 
@@ -516,7 +515,12 @@ public class CCombatManager : MonoBehaviour
                 {
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
-                    if (enemy.Corpse.IsAvailable)
+                    // 일단 보스는 시체가 없습니다.
+                    if (CEnemyParty.IsDenialBoss)
+                    {
+                        RemoveDeathEntity(i);
+                    }
+                    else if (enemy.Corpse.IsAvailable)
                     {
                         // 시체 상태로 변환 시 한번만 턴순서 제거 처리
                         if (_corpseCheck.Contains(enemy))
@@ -564,7 +568,7 @@ public class CCombatManager : MonoBehaviour
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
                     // 일단 보스는 시체가 없습니다.
-                    if(CEnemyParty.IsDenialBoss)
+                    if (CEnemyParty.IsDenialBoss)
                     {
                         RemoveDeathEntity(i);
                         isDirty = true;
@@ -664,7 +668,7 @@ public class CCombatManager : MonoBehaviour
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);
         _combatUI.MoveTurnOrder();
-        _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime);
+        _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime + 0.5f);
         _actionCoroutine = null;
     }
     // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
@@ -676,6 +680,7 @@ public class CCombatManager : MonoBehaviour
         yield return new WaitForSeconds(_turnSkipDelay);
         _combatUI.CopyTurnOrderPortrait();
         _combatUI.MoveTurnOrder();
+        _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime + 0.5f);
         _actionCoroutine = null;
     }
     // 스트레스
@@ -978,7 +983,7 @@ public class CCombatManager : MonoBehaviour
             {
                 _turnList.RemoveAt(0);
                 _combatUI.MoveTurnOrder();
-                _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime);
+                _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime + 0.5f);
             }
         }
         // 추가행동 후 턴에선 
@@ -986,7 +991,7 @@ public class CCombatManager : MonoBehaviour
         {
             _turnList.RemoveAt(0);
             _combatUI.MoveTurnOrder();
-            _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime);
+            _combatUI.RemoveTurnOrder(0, CPortraitImage.MoveTime + 0.5f);
             _currentTurnState = TurnState.Normal;
         }
     }

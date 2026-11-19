@@ -148,6 +148,8 @@ public class CCombatFloatingText : MonoBehaviour
     // offset은 여러 메세지가 한번에 출력되는 경우 위치 조정되는걸 구현하기 위함
     public void SetText(Canvas canvas, GameObject target, EMessageType type, string text, Vector2 offset = default)
     {
+        gameObject.SetActive(true);
+
         if (canvas == null)
         {
             CPrint.Warn("FloatingText Canvas Disconncet.");

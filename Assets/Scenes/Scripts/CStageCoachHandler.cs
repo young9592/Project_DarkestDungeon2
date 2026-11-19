@@ -124,7 +124,7 @@ public class CStageCoach : MonoBehaviour
             _body.velocity = new Vector3(_body.velocity.x * 0.9f, _body.velocity.y, _body.velocity.z * 0.9f);
         }
 
-        float rot = _input.x * _rotatePower;
+        float rot = _input.x * _rotatePower * (_coachState == ECoachState.Run ? 1 : 0.5f);
 
         if (_currentSpeed / _maxSpeed >= 0.3f)
         {
