@@ -22,6 +22,8 @@ public class CDeathBlow : CIcon
 
     public override void SetIcon(Canvas canvas, GameObject target)
     {
+        gameObject.SetActive(true);
+
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
         Vector2 uiLocalPos;
 

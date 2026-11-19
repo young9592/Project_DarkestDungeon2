@@ -5,7 +5,8 @@ public class CStageCoach : MonoBehaviour
     public enum ECoachState
     {
         None,
-        Auto,
+        Walk,
+        Run,
         Stop
     }
 
@@ -33,17 +34,23 @@ public class CStageCoach : MonoBehaviour
     [Header("Option")]
     [SerializeField] private float _maxSpeed = 10f;
     [SerializeField] private float _rotatePower = 10f;
+
+    [Header("Runtime Check")]
+    [SerializeField] private int _pressCount;    // 걷기, 달리기 구분위한 함수
     #endregion
 
     #region Field
     private Vector2 _input = Vector2.zero;
     private bool _connect = false;
+    private bool _isPressed = false;
+    private float _nextTime = 0f;
 
     private int _hashSpeed;
     private int _hashTurnSpeed;
 
     private Transform _leftTr;
     private Transform _rightTr;
+
     #endregion
 
     private void Awake()
@@ -92,9 +99,25 @@ public class CStageCoach : MonoBehaviour
 
     private void Update()
     {
+        // 꾹 누르면 자동으로 달리기로 전환
+        if (_isPressed && _nextTime < Time.time && _coachState == ECoachState.Walk)
+        {
+            _coachState = ECoachState.Run;
+        }
+
+
         Vector3 moveVec = Vector3.zero;
 
-        if (_coachState == ECoachState.Auto)
+        if (_coachState == ECoachState.Walk)
+        {
+            _currentSpeed = _maxSpeed * 0.6f;
+
+            moveVec = new Vector3(0, 0, _currentSpeed);
+
+            _leftHorse.velocity = moveVec;
+            _rightHorse.velocity = moveVec;
+        }
+        else if (_coachState == ECoachState.Run)
         {
             _currentSpeed = Mathf.Clamp(_currentSpeed + 0.05f, 0, _maxSpeed);
 
@@ -105,21 +128,18 @@ public class CStageCoach : MonoBehaviour
         }
         else if (_coachState == ECoachState.Stop)
         {
-            _currentSpeed = Mathf.Clamp(_currentSpeed - 0.05f, 0, _maxSpeed);
-            //_leftHorse.velocity = moveVec;
-            //_rightHorse.velocity = moveVec;
-            //_body.velocity = _body.velocity * 0.9f;
+            _currentSpeed = 0;
+            
+            _body.velocity = new Vector3(_body.velocity.x * 0.9f, _body.velocity.y, _body.velocity.z * 0.9f);
         }
 
-        float rot = _input.x * _rotatePower;
+        float rot = _input.x * _rotatePower * (_coachState == ECoachState.Run ? 1 : 0.3f);
 
         if (_currentSpeed / _maxSpeed >= 0.3f)
         {
             _leftTr.position += new Vector3(rot, 0, 0);
             _rightTr.position += new Vector3(rot, 0, 0);
         }
-
-
 
         // Speed Animator
         float speedFloat = Mathf.Clamp01(_currentSpeed / _maxSpeed);
@@ -144,22 +164,53 @@ public class CStageCoach : MonoBehaviour
     // 마차 이동
     private void OnMoveHandler(Vector2 vec)
     {
-        if (_coachState == ECoachState.Auto)
+        if (vec == Vector2.zero)
+        {
+            _isPressed = false;
+        }
+
+
+        if (_coachState == ECoachState.Walk || _coachState == ECoachState.Run)
         {
             if (vec.y < 0)
             {
                 _coachState = ECoachState.Stop;
+                _pressCount = 0;
+            }
+            else if (vec.y > 0)
+            {
+                _pressCount++;
+
+                if (_pressCount == 1)
+                {
+                    _coachState = ECoachState.Walk;
+                }
+                else if (_pressCount > 1)
+                {
+                    _coachState = ECoachState.Run;
+                }
             }
         }
         else if (_coachState == ECoachState.Stop)
         {
             if (vec.y > 0)
             {
-                _coachState = ECoachState.Auto;
+                _pressCount++;
+                _isPressed = true;
+                _nextTime = Time.time + 1f;
+
+                if (_pressCount == 1)
+                {
+                    _coachState = ECoachState.Walk; 
+                }
+                else if(_pressCount > 1)
+                {
+                    _coachState = ECoachState.Run;
+                }
             }
         }
 
 
-        _input = vec;
+            _input = vec;
     }
 }

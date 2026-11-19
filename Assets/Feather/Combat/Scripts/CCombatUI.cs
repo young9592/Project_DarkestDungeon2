@@ -1,7 +1,7 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -327,7 +327,7 @@ public class CCombatUI : MonoBehaviour
 
         }
 
-        if(!isHit)
+        if (!isHit)
         {
             CloseEnemyInfomation();
         }
@@ -338,7 +338,7 @@ public class CCombatUI : MonoBehaviour
     public void CreateStateUI(CEntity entity)
     {
         CEntityState state = Instantiate(_entitiesStatePrefab, _stateRoot.transform).GetComponent<CEntityState>();
-        state.Initialize(_canvas, _healthTooltip,  _tokenTooltip, _dotTooltip, entity.gameObject);
+        state.Initialize(_canvas, _healthTooltip, _tokenTooltip, _dotTooltip, entity.gameObject);
 
         _entitiesState.Add(entity, state);
     }
@@ -412,7 +412,7 @@ public class CCombatUI : MonoBehaviour
     }
     public void RemoveTurnOrder(int index, float customDelay = -1f)
     {
-        Destroy(_turnPortraitList[index], customDelay <= 0f ? _portraitRemoveDelay : customDelay);
+        Destroy(_turnPortraitList[index], customDelay == -1f ? _portraitRemoveDelay : customDelay);
         _turnPortraitList.RemoveAt(index);
     }
     // 현기증으로 인한 턴 밀림 시 초상화 추가 생성
@@ -420,7 +420,6 @@ public class CCombatUI : MonoBehaviour
     {
         GameObject copyObj = Instantiate(_turnPortraitList[0], _turnOrderRoot.transform);
         _turnPortraitList.Add(copyObj);
-        RemoveTurnOrder(0, CPortraitImage.MoveTime);
     }
     // 초상화 이동
     public void MoveTurnOrder(bool isDirty = false)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static CIcon;
 using static UnityEngine.Rendering.DebugUI;
 
 public enum EDamageType
@@ -467,7 +468,7 @@ public class CCombatFloatingMessageManager : MonoBehaviour
     // 일반 텍스트 출력
     public static void ShowDefault(GameObject target, string text, Vector3 offset = default, float delay = 0f)
     {
-        if(_instance == null)
+        if (_instance == null)
         {
             return;
         }
@@ -480,12 +481,18 @@ public class CCombatFloatingMessageManager : MonoBehaviour
         GameObject textPrefab = Instantiate(_floatingTextPrefab, _floatingTextRoot.transform);
         CCombatFloatingText floatText = textPrefab.GetComponent<CCombatFloatingText>();
 
-        if (delay == 0f)
+        if (CCombatCameraManager.MessageWaiting && messageType == CCombatFloatingText.EMessageType.Stress)
+        {
+            textPrefab.SetActive(false);
+            StartCoroutine(CoActionDelayShow(() => floatText.SetText(_canvas, target, messageType, text, offset)));
+        }
+        else if (delay == 0f)
         {
             floatText.SetText(_canvas, target, messageType, text, offset);
         }
         else
         {
+            textPrefab.SetActive(false);
             StartCoroutine(CoDelayShow(() => floatText.SetText(_canvas, target, messageType, text, offset), delay));
         }
     }
@@ -510,12 +517,18 @@ public class CCombatFloatingMessageManager : MonoBehaviour
         GameObject showPrefab = Instantiate(iconPrefab, _iconPrefabRoot.transform);
         CIcon icon = showPrefab.GetComponent<CIcon>();
 
-        if (delay == 0f)
+        if (CCombatCameraManager.MessageWaiting && iconType != CIcon.IconType.DeathBlow)
+        {
+            showPrefab.SetActive(false);
+            StartCoroutine(CoActionDelayShow(() => icon.SetIcon(_canvas, target)));
+        }
+        else if (delay == 0f)
         {
             icon.SetIcon(_canvas, target);
         }
         else
         {
+            showPrefab.SetActive(false);
             StartCoroutine(CoDelayShow(() => icon.SetIcon(_canvas, target), delay));
         }
     }
@@ -579,6 +592,11 @@ public class CCombatFloatingMessageManager : MonoBehaviour
     {
 
         yield return new WaitForSeconds(delay);
+        action.Invoke();
+    }
+    private IEnumerator CoActionDelayShow(Action action)
+    {
+        yield return new WaitUntil(() => !CCombatCameraManager.MessageWaiting );
         action.Invoke();
     }
 }

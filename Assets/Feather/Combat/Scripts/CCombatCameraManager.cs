@@ -44,6 +44,11 @@ public class CCombatCameraManager : MonoBehaviour
 
     #region Field
     private Transform _highlightCamTr;
+    private static bool _messageWaiting = false;
+    #endregion
+
+    #region Property
+    public static bool MessageWaiting => _messageWaiting;
     #endregion
 
     private void Awake()
@@ -165,6 +170,8 @@ public class CCombatCameraManager : MonoBehaviour
 
     private Coroutine CombatActionProcess(ECombatTarget combatTarget, CEntity actor, IReadOnlyList<CEntity> entities)
     {
+        _messageWaiting = true;
+
         // 이동 시키기 위해 transform 가져오기
         List<Transform> entitiesTr = new List<Transform>();
         // 카메라 이동방향
@@ -424,13 +431,11 @@ public class CCombatCameraManager : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
                 riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
-             
+
                 CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
             }
 
             yield return new WaitForSeconds(0.1f);
-
-            bool _once = false;
 
             while (nextTime > Time.time)
             {
@@ -490,6 +495,11 @@ public class CCombatCameraManager : MonoBehaviour
         while (nextTime > Time.time)
         {
             float t = 1f - (nextTime - Time.time) / delay;
+
+            if (t > 0.2f)
+            {
+                _messageWaiting = false;
+            }
 
             for (int i = 0; i < entitiesTr.Count; i++)
             {
