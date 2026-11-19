@@ -16,11 +16,6 @@ public class CInventory : MonoBehaviour
     [SerializeField] private CInventoryUICurrency _currencyUI;
     [SerializeField] private List<InventoryItem> _items = new List<InventoryItem>();
 
-    [SerializeField] private CItem _testItem;
-    [SerializeField] private CItem _testItem1;
-    [SerializeField] private CItem _testItem2;
-    [SerializeField] private CItem _testItem3;
-
     [SerializeField] private CSlot[] _slots;
     #endregion
     #region Property
@@ -42,16 +37,6 @@ public class CInventory : MonoBehaviour
         FreshSlot();
         _inventoryCgyUI.UpdateItemQuantity();
         UpdateCurrnecy();
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            AddItem(_testItem, 10);
-            AddItem(_testItem1, 10);
-            AddItem(_testItem2, 2);
-            AddItem(_testItem3, 1);
-        }
     }
 
     private void UpdateCurrnecy()

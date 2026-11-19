@@ -23,13 +23,22 @@ public class CTheInnUINavigationBar : MonoBehaviour
     [SerializeField] private GameObject _restText;
     #endregion
 
+    private CInventoryAnimation _inventoryAni;
     private GameObject _currentOpenObject;
-
+   
     private string _originalTitleText = "Torch and Crown";
 
     private bool _isBiomeSelected = false;
     private bool _isUIOpen;
+    private void Start()
+    {
+        _inventoryAni = FindObjectOfType<CInventoryAnimation>();
 
+        if (_inventoryAni != null)
+        {
+            _inventoryAni.SetInn(true);
+        }
+    }
     private void Update()
     {
         _restText.SetActive(!_isBiomeSelected && !_isUIOpen);
@@ -39,6 +48,11 @@ public class CTheInnUINavigationBar : MonoBehaviour
     public void ClickRestText()
     {
         ResetBiomeSelection();
+        if (_inventoryAni != null)
+        {
+            _inventoryAni.SetInn(false);
+            _inventoryAni.InventoryMenuExit();
+        }
         Debug.Log("여정 시작");
     }
 

@@ -11,8 +11,6 @@ public class CChapterUIButton : MonoBehaviour
     //챕터 텍스트
     [SerializeField] private TMP_Text _chapterText;
 
-    [SerializeField] private int _chapterIndex;
-
     //눌렀을 시 변하는 글씨
     [SerializeField] private GameObject _signature;
     //시작 글씨
@@ -24,7 +22,6 @@ public class CChapterUIButton : MonoBehaviour
     //텍스트를 눌렀을때
     public void OnClick()
     {
-        _chapterMenu.SelectChapter(_chapterIndex);
         _signatureWhite.SetActive(true);
     }
 
