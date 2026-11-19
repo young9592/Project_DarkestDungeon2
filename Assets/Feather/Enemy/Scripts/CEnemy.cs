@@ -57,6 +57,17 @@ public class CEnemy : CEntity
         get { return _ignition != null ? _ignition.AvailableIgnition : null; }
     }
 
+    internal CSkillDataSO AvailableDenialOpening
+    {
+        get
+        {
+            if (_denialLock == null) return null;
+            if (ActionState == EEntityActionState.Executing && _denialLock.IsOpeningSkill(ActionSkill))
+                return ActionSkill;
+            return _denialLock.AvailableOpeningSkill;
+        }
+    }
+
     public bool IsAllySkill(CSkillDataSO skill)
     {
         return _ignition != null && _ignition.IsAllySkill(skill);
@@ -76,7 +87,7 @@ public class CEnemy : CEntity
         get { return _attackAnimation; }
     }
 
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _currentHp; }
     }
@@ -316,8 +327,9 @@ public class CEnemy : CEntity
     {
         if (ActionSkill != null && ActionSkill == AvailableIgnition) return !_isDead && ActionTarget == this;
         if (_isDead || ActionSkill == null
-            || !GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
-            || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0) return false;
+            || (ActionSkill != AvailableDenialOpening &&
+                (!GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
+                 || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0))) return false;
 
         CEnemyAI ai = GetComponent<CEnemyAI>();
         if (ai != null && ai.PlannedSkill == ActionSkill)
@@ -377,6 +389,7 @@ public class CEnemy : CEntity
         if (!TryPlayAttack(ActionSkill)) return false;
         _movementSkill = ActionSkill;
         _selfTokenSkill = ActionSkill;
+        if (_denialLock != null && _denialLock.IsOpeningSkill(ActionSkill)) _denialLock.ConsumeOpeningSkill();
         if (ActionSkill == AvailableIgnition)
         {
             _executingIgnition = ActionSkill;
@@ -493,6 +506,9 @@ public class CEnemy : CEntity
     public bool CanRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
     {
         if (skill != null && skill == AvailableIgnition) return target == this && CanSendRequest(target);
+        if (skill != null && skill == AvailableDenialOpening)
+            return CEnemyTargetFilter.IsAvailable(target) && CanSendRequest(target)
+                && CSkillRankUtility.CanTargetSkill(skill, targetRank);
         return target != this && CanSendRequest(target)
             && skill != null
             && GetSkillCandidates(targetRank).Contains(skill)
@@ -582,13 +598,16 @@ public class CEnemy : CEntity
         }
 
         List<CSkillDataSO> candidates = GetSkillCandidates();
-        if (skill != AvailableIgnition && !candidates.Contains(skill))
+        if (skill != AvailableIgnition && skill != AvailableDenialOpening && !candidates.Contains(skill))
         {
             return false;
         }
 
         // 현재 열에 맞는 스킬 연출 요청
-        if (!_attackAnimation.TryPlayAttack(skill)) return false;
+        CSkillDataSO animationSkill = skill;
+        if (skill == AvailableDenialOpening && !_attackAnimation.CanPlayAttack(skill))
+            animationSkill = _denialLock.UniqueSkill;
+        if (!_attackAnimation.TryPlayAttack(animationSkill)) return false;
         _skillCooldowns.StartCooldown(skill);
         return true;
     }
@@ -612,12 +631,7 @@ public class CEnemy : CEntity
     }
 
 
-    public override void TakeDamage(int finalDamage)
-    {
-        ApplyDamage(finalDamage, true);
-    }
-
-    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
     {
         if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
         {
@@ -639,6 +653,7 @@ public class CEnemy : CEntity
             {
                 _remainingDeathArmor--;
                 _isDeathsDoor = true;
+                CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathArmorBreak);
                 return;
             }
             _isDead = true;
@@ -649,6 +664,7 @@ public class CEnemy : CEntity
             _activeStatusEffects.Clear();
 
             if (_denialLock != null) _denialLock.ApplyDeathEffect(_formationMovement.Members);
+            CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathBlow);
             _deathPresentation.TryPlayConfirmedDeath();
             return;
         }
@@ -669,6 +685,7 @@ public class CEnemy : CEntity
                 && !_activeStatusEffects.Contains(statusEffect))
             {
                 _activeStatusEffects.Add(statusEffect);
+                CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
             }
             return;
         }
@@ -745,7 +762,7 @@ public class CEnemy : CEntity
         if (criticalState != null) criticalState.ClearModifiers();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
-        if (_denialLock != null) _denialLock.ResetDeathEffects();
+        if (_denialLock != null) _denialLock.ResetBattleState();
     }
 
     // 턴 시작에만 한 번 호출함. 행동 재시도 때는 호출 안 함
@@ -793,7 +810,7 @@ public class CEnemy : CEntity
 
                 if (totalDamage > 0)
                 {
-                    ApplyDamage((int)Math.Min(int.MaxValue, totalDamage), false);
+                    ApplyPeriodicDamage((int)Math.Min(int.MaxValue, totalDamage));
                 }
             }
 

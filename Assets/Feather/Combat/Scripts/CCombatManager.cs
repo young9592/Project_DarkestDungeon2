@@ -88,6 +88,10 @@ public class CCombatManager : MonoBehaviour
     private CIndicator _myTurnIndicator = null;
     private bool _battleEnd = false;
 
+    // 1챕터 보스 id
+    private Dictionary<CEnemy, int> _chapterOneBossId = new Dictionary<CEnemy, int>();
+    private bool _firstTurnAction = false;
+
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -202,6 +206,12 @@ public class CCombatManager : MonoBehaviour
 
                     for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
                     {
+                        // 1챕터 보스전용
+                        if (CEnemyParty.IsDenialBoss)
+                        {
+                            _chapterOneBossId.Add(_enemyParty.EnemyList[i], id);
+                        }
+
                         _entityList.Add((id, _enemyParty.EnemyList[i]));
                         id++;
                     }
@@ -233,6 +243,9 @@ public class CCombatManager : MonoBehaviour
         }
 
         _currentTurnState = TurnState.Normal;
+
+        // entityDataSo의 잘못된 배치도 정렬
+        SortEntitiesPosition(true);
 
         for (int i = 0; i < _entityList.Count; i++)
         {
@@ -275,6 +288,21 @@ public class CCombatManager : MonoBehaviour
             (_turnList[i], _turnList[max.index]) = (_turnList[max.index], _turnList[i]);
         }
 
+        // 1챕터 보스의 특수패턴 : 선턴을 가져가는 상황이 있습니다.
+        if (CEnemyParty.IsDenialBoss)
+        {
+            CEnemyAI.EndDenialRound(_enemyParty.EnemyList, _heroParty.HeroList);
+
+            int randomBossTurn = Random.Range(0, _enemyParty.EnemyList.Count);
+
+            CEnemy enemy = _enemyParty.EnemyList[randomBossTurn];
+
+            _turnList.Insert(0, (_chapterOneBossId[enemy], enemy, 999));
+
+            _firstTurnAction = true;
+        }
+
+
         // 턴 이미지 세팅 및 생성
         _combatUI.CreateTurnOrderPortraitList(_turnList);
 
@@ -304,12 +332,30 @@ public class CCombatManager : MonoBehaviour
 
         for (int i = 0; i < _entityList.Count; i++)
         {
-            if (_entityList[i].entity is CEnemyCorpse)
+            if (_entityList[i].entity is CEnemy)
+            {
+                if ((_entityList[i].entity as CEnemy).Corpse.IsAvailable)
+                {
+                    continue;
+                }
+            }
+
+            if (_entityList[i].entity.ActionState != EEntityActionState.Idle)
+            {
+                allEntitiesIdle = false;
+                break;
+            }
+        }
+
+        // 적 피격모션이 끝났는지도 체크
+        for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+        {
+            if (_enemyParty.EnemyList[i].Corpse.IsAvailable)
             {
                 continue;
             }
 
-            if (_entityList[i].entity.ActionState != EEntityActionState.Idle)
+            if (_enemyParty.EnemyList[i].IsHitPresentationPlaying)
             {
                 allEntitiesIdle = false;
                 break;
@@ -338,7 +384,6 @@ public class CCombatManager : MonoBehaviour
 
         // 행동하기전 상태 체크
         EntityState entityState = CheckState();
-
         // 상태에 맞는 행동 실행
         switch (entityState)
         {
@@ -436,11 +481,13 @@ public class CCombatManager : MonoBehaviour
             enemy.OnTurnStart();
         }
 
-        int[] dotList = new int[] { total.bleed, total.blight, total.burn };
+        List<int> dotList = new List<int> { total.bleed, total.blight, total.burn };
 
         EEffectType[] dotType = new EEffectType[] { EEffectType.Bleed, EEffectType.Blight, EEffectType.Burn };
 
-        for (int i = 0, delay = 1; i < dotList.Length; i++)
+        // TODO : 재생 추가해야합니다.
+
+        for (int i = 0, delay = 1; i < dotList.Count; i++)
         {
             if (dotList[i] == 0)
             {
@@ -516,7 +563,13 @@ public class CCombatManager : MonoBehaviour
                 {
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
-                    if (enemy.Corpse.IsAvailable)
+                    // 일단 보스는 시체가 없습니다.
+                    if(CEnemyParty.IsDenialBoss)
+                    {
+                        RemoveDeathEntity(i);
+                        isDirty = true;
+                    }
+                    else if (enemy.Corpse.IsAvailable)
                     {
                         // 시체 상태로 변환 시 한번만 턴순서 제거 처리
                         if (_corpseCheck.Contains(enemy))
@@ -607,6 +660,7 @@ public class CCombatManager : MonoBehaviour
     // 기절 : 현재 라운드의 차례를 넘깁니다.
     private IEnumerator CoStun()
     {
+        CCombatFloatingMessageManager.ShowToken(MyTurn.gameObject, ETokenType.Consume, EEffectType.Stun);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);
         _combatUI.MoveTurnOrder();
@@ -616,6 +670,7 @@ public class CCombatManager : MonoBehaviour
     // 현기증 : 자신의 차례를 맨 뒤로 보냅니다. 2중첩시 기절로 변경됩니다.
     private IEnumerator CoDaze()
     {
+        CCombatFloatingMessageManager.ShowToken(MyTurn.gameObject, ETokenType.Consume, EEffectType.Daze);
         _turnList.Add(_turnList[0]);
         _turnList.RemoveAt(0);
         yield return new WaitForSeconds(_turnSkipDelay);
@@ -687,7 +742,22 @@ public class CCombatManager : MonoBehaviour
             // 적 액션
             else
             {
+
                 CEnemyAI actor = MyTurn.GetComponent<CEnemyAI>();
+
+                if (_firstTurnAction)
+                {
+                    CEnemyAI.TryQueueDenialOpening(MyTurn as CEnemy, _combatUI.Round);
+                    bool isOpeningSkill = (MyTurn as CEnemy).AvailableDenialOpening;
+
+                    if (isOpeningSkill)
+                    {
+                        _firstTurnAction = false;
+                    }
+                    yield return new WaitUntil(() => isOpeningSkill);
+                }
+
+
                 actor.TryRequestPlannedAction();
                 EEnemyActionRequestResult result = actor.RequestPlannedAction();
                 CEnemy enemy = MyTurn as CEnemy;
@@ -742,10 +812,11 @@ public class CCombatManager : MonoBehaviour
             yield return null;
         }
 
+
         MyTurn.OnActionRequested -= OnActionData;
 
         // 이동스킬 사용한 개체 정리
-        SortEntitiesPosition();
+        SortEntitiesPosition(true);
         yield return _sortCoroutine;
 
         yield return new WaitForSeconds(_actionDelay);

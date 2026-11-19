@@ -37,6 +37,8 @@ public class CPlayer : CEntity
     // 배틀 상태 변화 이벤트
     public event Action<CPlayer, int, int> OnHealthChanged;
     public event Action<CPlayer, int, int> OnStressChanged;
+    // 실제 증가량은 양수, 회복량은 음수. 마지막 값은 공포로 인한 변화 여부.
+    public event Action<CPlayer, int, bool> OnStressEffectResolved;
     public event Action<CPlayer, bool> OnDeathDoorChanged;
     public event Action<CPlayer> OnMeltdownTriggered;
     public event Action<CPlayer> OnResoluteTriggered;
@@ -87,7 +89,7 @@ public class CPlayer : CEntity
     {
         get { return _actionTargets; }
     }
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _currentHp; }
     }
@@ -173,10 +175,6 @@ public class CPlayer : CEntity
                 if (denialToken != EEffectType.None)
                 {
                     TokenManager.AddToken(denialToken, 1, Mathf.Max(1, duration));
-                    if (_statusMessage != null && TokenManager.HasToken(denialToken))
-                    {
-                        _statusMessage.ShowAdded(denialToken);
-                    }
                 }
             }
         }
@@ -847,12 +845,7 @@ public class CPlayer : CEntity
 
     #region CEntity Overrides, DOT, Stress & Death's Door Logic
     // Effect Core 파이프라인에서 최종 연산된 데미지를 받음
-    public override void TakeDamage(int finalDamage)
-    {
-        ApplyDamage(finalDamage, true);
-    }
-
-    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
     {
         if (!isActiveAndEnabled || _isDead || _heroData == null || finalDamage == 0)
         {
@@ -922,7 +915,7 @@ public class CPlayer : CEntity
                 || _activeStatusEffects.Contains(statusEffect)) return;
 
             _activeStatusEffects.Add(statusEffect);
-            if (_statusMessage != null) _statusMessage.ShowAdded(statusEffect.EffectType);
+            CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
 
             int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
             CPrint.Log($"[{_heroData.DefaultName}] 에게 [{statusEffect.EffectType}] 추가 부여 \n" +
@@ -958,7 +951,6 @@ public class CPlayer : CEntity
             case EEffectType.DenialOfFortitude:
             case EEffectType.DenialOfReason:
                 TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
-                if (_statusMessage != null && TokenManager.HasToken(tokenType)) _statusMessage.ShowAdded(tokenType);
                 break;
         }
     }
@@ -966,17 +958,26 @@ public class CPlayer : CEntity
     // 스트레스 수치 증감
     public override void ModifyStress(int stressAmount)
     {
+        ApplyStressChange(stressAmount, false);
+    }
+
+    private void ApplyStressChange(int stressAmount, bool isHorror)
+    {
         if (!isActiveAndEnabled || _isDead || _heroData == null || stressAmount == 0)
         {
             return;
         }
 
         int previousStress = _currentStress;
-        _currentStress = Mathf.Clamp(_currentStress + stressAmount, 0, MAX_STRESS);
+        _currentStress = (int)Math.Max(0L, Math.Min(MAX_STRESS, (long)previousStress + stressAmount));
+        int appliedAmount = _currentStress - previousStress;
 
-        if (_currentStress != previousStress)
+        if (appliedAmount != 0)
         {
             OnStressChanged?.Invoke(this, previousStress, _currentStress);
+            OnStressEffectResolved?.Invoke(this, appliedAmount, isHorror);
+            EDamageType type = appliedAmount > 0 ? EDamageType.Stress : EDamageType.Stress_Heal;
+            CCombatFloatingMessageManager.ShowDamage(gameObject, type, Mathf.Abs(appliedAmount));
             CPrint.Log($"[{_heroData.DefaultName}] 스트레스 변화: {previousStress} → {_currentStress}/{MAX_STRESS}");
         }
 
@@ -985,15 +986,16 @@ public class CPlayer : CEntity
 
     public bool HasHorror
     {
-        get { return GetTotalDotDamageByType(EEffectType.Stress) > 0; }
+        get { return GetTotalDotDamageByType(EEffectType.Horror) > 0; }
     }
 
     internal void ApplyHorror(CEffectSO effectData)
     {
         if (!isActiveAndEnabled || _isDead || IsDeathPresented || effectData == null
-            || effectData.EffectType != EEffectType.Stress || effectData.Damage <= 0 || effectData.Duration <= 0) return;
+            || effectData.EffectType != EEffectType.Horror || effectData.Damage <= 0 || effectData.Duration <= 0) return;
 
         _activeStatusEffects.Add(new CEffect(effectData));
+        CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, EEffectType.Horror, effectData.Damage);
     }
 
     public void OnTurnStart()
@@ -1034,7 +1036,7 @@ public class CPlayer : CEntity
                         case EEffectType.Bleed: bleedDamage += effect.Damage; break;
                         case EEffectType.Blight: blightDamage += effect.Damage; break;
                         case EEffectType.Burn: burnDamage += effect.Damage; break;
-                        case EEffectType.Stress:
+                        case EEffectType.Horror:
                             if (UnityEngine.Random.value < 0.5f)
                             {
                                 horrorStress += effect.Damage;
@@ -1057,7 +1059,7 @@ public class CPlayer : CEntity
                     CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
                         $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totalTickDamage}] 데미지");
 
-                    ApplyDamage(totalTickDamage, false);
+                    ApplyPeriodicDamage(totalTickDamage);
 
                     if (_isDead) return;
                 }
@@ -1065,7 +1067,7 @@ public class CPlayer : CEntity
                 // 공포는 일반 턴 시작에 스트레스로 적용함
                 if (horrorStress > 0)
                 {
-                    ModifyStress(horrorStress);
+                    ApplyStressChange(horrorStress, true);
                 }
             }
 
@@ -1136,6 +1138,7 @@ public class CPlayer : CEntity
 
         TokenManager.AddToken(EEffectType.Weak, 1);
 
+        CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
         OnDeathDoorChanged?.Invoke(this, true);
     }
 
@@ -1159,6 +1162,7 @@ public class CPlayer : CEntity
 
         if (randomRoll <= deathblowResist)
         {
+            CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
             CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격을 버텼습니다.");
         }
         else
@@ -1185,6 +1189,7 @@ public class CPlayer : CEntity
 
         CPrint.Log($"[{_heroData.DefaultName}] 사망.. 전투 불능 상태가 되었습니다.");
 
+        CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathBlow);
         OnPlayerDied?.Invoke(this);
     }
 
@@ -1238,7 +1243,7 @@ public class CPlayer : CEntity
         {
             EEffectType currentType = _activeStatusEffects[i].EffectType;
 
-            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Stress))
+            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Horror))
             {
                 _activeStatusEffects.RemoveAt(i);
                 removedCount++;

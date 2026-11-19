@@ -63,6 +63,11 @@ public class CEntityState : MonoBehaviour
     [SerializeField] private GameObject _stealth;
     [SerializeField] private GameObject _riposte;
     [SerializeField] private GameObject _crit;
+
+    [SerializeField] private GameObject _denialOfArms;
+    [SerializeField] private GameObject _denialOfReach;
+    [SerializeField] private GameObject _denialOfFortitude;
+    [SerializeField] private GameObject _denialOfReason;
     #endregion
 
     #region Field
@@ -136,6 +141,11 @@ public class CEntityState : MonoBehaviour
         _checkList.Add(_stealth);
         _checkList.Add(_riposte);
         _checkList.Add(_crit);
+
+        _checkList.Add(_denialOfArms);
+        _checkList.Add(_denialOfReach);
+        _checkList.Add(_denialOfFortitude);
+        _checkList.Add(_denialOfReason);
 
         _checkList.Add(_healthInfomation);
 
@@ -252,6 +262,10 @@ public class CEntityState : MonoBehaviour
         _effectDict.Add(EEffectType.Stealth, _stealth);
         _effectDict.Add(EEffectType.Riposte, _riposte);
         _effectDict.Add(EEffectType.Crit, _crit);
+        _effectDict.Add(EEffectType.DenialOfArms, _denialOfArms);
+        _effectDict.Add(EEffectType.DenialOfReach, _denialOfReach);
+        _effectDict.Add(EEffectType.DenialOfFortitude, _denialOfFortitude);
+        _effectDict.Add(EEffectType.DenialOfReason, _denialOfReason);
 
         MoveState();
 

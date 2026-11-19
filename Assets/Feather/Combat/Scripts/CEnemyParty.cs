@@ -19,14 +19,15 @@ public class CEnemyParty : MonoBehaviour
     private List<CEnemy> _enemyList = new List<CEnemy>();
 
     private static bool _isReady = false;
-
+    private static bool _isDenialBoss = false;
     #endregion
 
     #region Property
     public static bool IsReady => _isReady;
-    public List<CEnemy> EnemyList => _enemyList;
+    public IReadOnlyList<CEnemy> EnemyList => _enemyList;
     public IReadOnlyDictionary<ERank, CEnemy> RankList => _rankList;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
+    public static bool IsDenialBoss => _isDenialBoss;
     #endregion
     void Start()
     {
@@ -101,7 +102,7 @@ public class CEnemyParty : MonoBehaviour
             {
                 Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
                 enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
-                enemyPrefab.gameObject.GetComponentInChildren<Animator>().gameObject.transform.localScale = Vector3.one;
+                enemyPrefab.gameObject.GetComponentInChildren<Animator>().gameObject.transform.localScale = Vector3.one * 0.93f;
             }
 
             if (enemyPrefab.EnemyData.Id == "enemy_denial_health" || enemyPrefab.EnemyData.Id == "enemy_denial_melee" || enemyPrefab.EnemyData.Id == "enemy_denial_ranged" || enemyPrefab.EnemyData.Id == "enemy_denial_stress")
@@ -113,6 +114,16 @@ public class CEnemyParty : MonoBehaviour
                 enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, 90f, 0);
                 Vector3 localScale = enemyPrefab.gameObject.transform.localScale;
                 enemyPrefab.gameObject.transform.localScale = new Vector3(localScale.x, localScale.y, -localScale.z);
+                _isDenialBoss = true;
+            }
+
+            if(enemyPrefab.EnemyData.Id == "enemy_whipper" || enemyPrefab.EnemyData.Id == "enemy_flayer" || enemyPrefab.EnemyData.Id == "enemy_shaman")
+            {
+                foreach (Transform tr in enemyPrefab.GetComponentsInChildren<Transform>(true))
+                {
+                    tr.gameObject.layer = 0;
+                }
+                enemyPrefab.gameObject.transform.rotation = Quaternion.Euler(0, -160f, 0);
             }
 
             // 스크립트 잠시 중단

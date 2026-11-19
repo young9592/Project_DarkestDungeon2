@@ -128,6 +128,18 @@ PrefabInstance:
       value: FlayerVisual
       objectReference: {fileID: 0}
     - target: {fileID: 6645633107118905282, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0086
+      objectReference: {fileID: 0}
+    - target: {fileID: 6645633107118905282, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0086
+      objectReference: {fileID: 0}
+    - target: {fileID: 6645633107118905282, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0086
+      objectReference: {fileID: 0}
+    - target: {fileID: 6645633107118905282, guid: ea69ea55549fc7841b7a558ba5b0a05e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}

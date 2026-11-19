@@ -219,60 +219,32 @@ public class CCombatDebugMenu : MonoBehaviour
         {
             case EEffectType.Damage:
                 int rand = Random.Range(0, 10);
-                int damage = Random.Range(1, 5);
+                int damage = (int)(Random.Range(1, 5) * (rand >= 6 ? 1.5f : 1f));
 
-                if (rand < 6)
+                if (!selectEntity.IsDead)
                 {
-                    if (!selectEntity.IsDead)
-                    {
-                        selectEntity.TakeDamage(damage);
+                    selectEntity.TakeDamage(damage);
 
-                        if (selectEntity is CEnemy && selectEntity.IsDead)
-                        {
-                            if (entityStates.ContainsKey(selectEntity))
-                            {
-                                _combatUI.ReconnectStateUI(selectEntity);
-                            }
-                        }
-                    }
-                    else
+                    if (selectEntity is CEnemy && selectEntity.IsDead)
                     {
-                        if (selectEntity is CPlayer)
+                        if (entityStates.ContainsKey(selectEntity))
                         {
-                            return;
-                        }
-                        else
-                        {
-                            (selectEntity as CEnemy).Corpse.TakeDamage(damage);
+                            _combatUI.ReconnectStateUI(selectEntity);
                         }
                     }
                 }
                 else
                 {
-                    if (!selectEntity.IsDead)
+                    if (selectEntity is CPlayer)
                     {
-                        selectEntity.TakeDamage((int)(damage * 1.5f));
-
-                        if (selectEntity is CEnemy && selectEntity.IsDead)
-                        {
-                            if (_combatUI.EntitiesState.ContainsKey(selectEntity))
-                            {
-                                _combatUI.ReconnectStateUI(selectEntity);
-                            }
-                        }
+                        return;
                     }
                     else
                     {
-                        if (selectEntity is CPlayer)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            (selectEntity as CEnemy).Corpse.TakeDamage((int)(damage * 1.5f));
-                        }
+                        (selectEntity as CEnemy).Corpse.TakeDamage(damage);
                     }
                 }
+
                 break;
             case EEffectType.Heal:
                 rand = Random.Range(0, 10);

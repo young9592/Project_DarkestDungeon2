@@ -10,28 +10,66 @@ public class CStageCoach : MonoBehaviour
     }
 
     #region Inspector
-    [Header("StageCoach Connect")]
-    [SerializeField] private Rigidbody _horseRigid;
+    [Header("Horse Rigidbody")]
+    [SerializeField] private Rigidbody _leftHorse;
+    [SerializeField] private Rigidbody _rightHorse;
+
+    [Header("Body Rigidbody")]
+    [SerializeField] private Rigidbody _body;
+
+    [Header("Stair Rigidbody")]
+    [SerializeField] private Rigidbody _stair;
+
+    [Header("Horse Animator")]
+    [SerializeField] private Animator _leftAnimator;
+    [SerializeField] private Animator _rightAnimator;
+    [SerializeField] private string _speed = "fSpeed";
+    [SerializeField] private string _turnSpeed = "fTurnSpeed";
+
     [Header("StageCoach State")]
     [SerializeField] private ECoachState _coachState = ECoachState.None;
+    [SerializeField] private float _currentSpeed = 0f;
+
+    [Header("Option")]
+    [SerializeField] private float _maxSpeed = 10f;
+    [SerializeField] private float _rotatePower = 10f;
     #endregion
 
     #region Field
     private Vector2 _input = Vector2.zero;
-    private float _maxSpeed = 1f;
-    private float _currentSpeed = 0f; 
     private bool _connect = false;
+
+    private int _hashSpeed;
+    private int _hashTurnSpeed;
+
+    private Transform _leftTr;
+    private Transform _rightTr;
     #endregion
 
     private void Awake()
     {
+        // null check
+
+
         if (CInputDispatcher.Instance != null && !_connect)
         {
             CInputDispatcher.Instance.OnMove += OnMoveHandler;
             CPrint.Log("디스패쳐와 연결 완료");
             _connect = true;
         }
+
+        _hashSpeed = Animator.StringToHash(_speed);
+        _hashTurnSpeed = Animator.StringToHash(_turnSpeed);
+
+        _leftTr = _leftHorse.gameObject.transform;
+        _rightTr = _rightHorse.gameObject.transform;
     }
+
+    private void Start()
+    {
+        _coachState = ECoachState.Stop;
+    }
+
 
     private void OnEnable()
     {
@@ -45,25 +83,62 @@ public class CStageCoach : MonoBehaviour
 
     private void OnDisable()
     {
-        CInputDispatcher.Instance.OnMove -= OnMoveHandler;
+        if (CInputDispatcher.Instance != null)
+        {
+            CInputDispatcher.Instance.OnMove -= OnMoveHandler;
+        }
     }
+
 
     private void Update()
     {
-        Vector3 dir = new Vector3(_input.x, 0, 0);
+        Vector3 moveVec = Vector3.zero;
 
         if (_coachState == ECoachState.Auto)
         {
-            _currentSpeed = Mathf.Clamp(_currentSpeed + 0.1f, 0, _maxSpeed);
+            _currentSpeed = Mathf.Clamp(_currentSpeed + 0.05f, 0, _maxSpeed);
+
+            moveVec = new Vector3(0, 0, _currentSpeed);
+
+            _leftHorse.velocity = moveVec;
+            _rightHorse.velocity = moveVec;
         }
         else if (_coachState == ECoachState.Stop)
         {
-            _currentSpeed = Mathf.Clamp(_currentSpeed - 0.1f, 0, _maxSpeed);
+            _currentSpeed = Mathf.Clamp(_currentSpeed - 0.05f, 0, _maxSpeed);
+            //_leftHorse.velocity = moveVec;
+            //_rightHorse.velocity = moveVec;
+            //_body.velocity = _body.velocity * 0.9f;
         }
 
-        Vector3 moveVec = new Vector3(dir.x, 0, _currentSpeed);
+        float rot = _input.x * _rotatePower;
+
+        if (_currentSpeed / _maxSpeed >= 0.3f)
+        {
+            _leftTr.position += new Vector3(rot, 0, 0);
+            _rightTr.position += new Vector3(rot, 0, 0);
+        }
 
 
+
+        // Speed Animator
+        float speedFloat = Mathf.Clamp01(_currentSpeed / _maxSpeed);
+        _leftAnimator.SetFloat(_hashSpeed, speedFloat);
+        _rightAnimator.SetFloat(_hashSpeed, speedFloat);
+
+        // TurnSpeed Animator
+        float turnSpeedFloat = 0;
+        if (_input.x > 0)
+        {
+            turnSpeedFloat = 1;
+        }
+        else if (_input.x < 0)
+        {
+            turnSpeedFloat = -1;
+        }
+
+        _leftAnimator.SetFloat(_hashTurnSpeed, turnSpeedFloat);
+        _rightAnimator.SetFloat(_hashTurnSpeed, turnSpeedFloat);
     }
 
     // 마차 이동
@@ -76,13 +151,14 @@ public class CStageCoach : MonoBehaviour
                 _coachState = ECoachState.Stop;
             }
         }
-        else if(_coachState == ECoachState.Stop)
+        else if (_coachState == ECoachState.Stop)
         {
             if (vec.y > 0)
             {
                 _coachState = ECoachState.Auto;
             }
         }
+
 
         _input = vec;
     }

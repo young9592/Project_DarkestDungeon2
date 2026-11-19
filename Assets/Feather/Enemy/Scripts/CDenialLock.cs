@@ -17,12 +17,15 @@ public class CDenialLock : MonoBehaviour
     [Header("Denial")]
     [SerializeField] private EDenialRestriction _restriction;
     [SerializeField] private CSkillDataSO _uniqueSkill;
+    [SerializeField] private CSkillDataSO _roundOpeningSkill;
     [SerializeField] private CSkillDataSO _cripplingDoubt;
     [SerializeField] private CSkillDataSO _paralyzingFear;
     [Header("Despair Death Effect")]
     [SerializeField] private CEffectSO _blindOnHit;
     [SerializeField] private CEffectSO _weakOnHit;
 
+    private int _lastOpeningRound;
+    private bool _openingPending;
     private CEffectSO _inheritedBlind;
     private CEffectSO _inheritedWeak;
 
@@ -44,6 +47,36 @@ public class CDenialLock : MonoBehaviour
     public CSkillDataSO ParalyzingFear
     {
         get { return _paralyzingFear; }
+    }
+
+    internal int LastOpeningRound
+    {
+        get { return _lastOpeningRound; }
+    }
+
+    internal CSkillDataSO AvailableOpeningSkill
+    {
+        get { return _openingPending ? _roundOpeningSkill : null; }
+    }
+
+    internal bool IsOpeningSkill(CSkillDataSO skill)
+    {
+        return skill != null && skill == _roundOpeningSkill;
+    }
+
+    internal bool TryQueueOpeningSkill(int roundNumber)
+    {
+        if (_roundOpeningSkill == null || !_roundOpeningSkill.IsGroupTarget
+            || _restriction == EDenialRestriction.None || roundNumber <= _lastOpeningRound) return false;
+
+        _lastOpeningRound = roundNumber;
+        _openingPending = true;
+        return true;
+    }
+
+    internal void ConsumeOpeningSkill()
+    {
+        _openingPending = false;
     }
 
     internal bool PreferUniqueAttack { get; set; }
@@ -91,8 +124,10 @@ public class CDenialLock : MonoBehaviour
         if (effect != null && effect.Strategy != null) effect.Strategy.Apply(context, effect);
     }
 
-    internal void ResetDeathEffects()
+    internal void ResetBattleState()
     {
+        _lastOpeningRound = 0;
+        _openingPending = false;
         DamageBonusPercent = 0;
         CriticalChanceBonus = 0;
         _inheritedBlind = null;

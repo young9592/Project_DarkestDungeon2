@@ -43,6 +43,7 @@ public class CHeroPartyPresets : MonoBehaviour
     [SerializeField] private Button _dismiss;
     private CHeroPartySaveStore _store;
     private CHeroPartySaveData _data;
+    private CHeroSavedParty _pendingApplied;
     private readonly List<ScriptableObject> _restoredAssets = new List<ScriptableObject>();
     private Action _pending;
     private string _notice;
@@ -59,6 +60,10 @@ public class CHeroPartyPresets : MonoBehaviour
     public string Notice
     {
         get { return _notice; }
+    }
+    public bool HasPendingAppliedSave
+    {
+        get { return _pendingApplied != null; }
     }
 
     private void Awake()
@@ -264,8 +269,14 @@ public class CHeroPartyPresets : MonoBehaviour
     public CHeroPartySO RestoreLastApplied()
     {
         ReleaseRestoredAssets();
-        if (!Read() || _data.LastApplied == null) return null;
-        if (!TryResolve(_data.LastApplied, out List<CPlayer> prefabs, out List<ERank> ranks, out List<List<CSkillDataSO>> skills))
+        CHeroSavedParty saved = _pendingApplied;
+        if (saved == null)
+        {
+            if (!Read() || _data.LastApplied == null) return null;
+            saved = _data.LastApplied;
+        }
+
+        if (!TryResolve(saved, out List<CPlayer> prefabs, out List<ERank> ranks, out List<List<CSkillDataSO>> skills))
         {
             SetNotice("Saved Heroes or skills are unavailable. Default party loaded.");
             return null;
@@ -281,15 +292,45 @@ public class CHeroPartyPresets : MonoBehaviour
 
         CHeroPartySO party = CHeroPartySO.CreateRuntime(members);
         _restoredAssets.Add(party);
-        SetNotice("Saved party restored.");
+        if (_pendingApplied == null) SetNotice("Saved party restored.");
         return party;
     }
 
     public bool SaveApplied(CHeroSavedParty saved)
     {
-        if (!TryResolve(saved, out _, out _, out _) || !Read()) return false;
-        _data.LastApplied = saved;
-        if (!Commit(_data)) return false;
+        _pendingApplied = null;
+        if (!TryResolve(saved, out _, out _, out _))
+        {
+            SetNotice("Party applied for this session. Its setup could not be saved.");
+            return false;
+        }
+
+        _pendingApplied = saved;
+        return TryRetryAppliedSave();
+    }
+
+    public bool TryRetryAppliedSave()
+    {
+        if (_pendingApplied == null) return false;
+        if (!Read())
+        {
+            SetNotice("Party is still applied. " + _notice + " Retry when ready.");
+            return false;
+        }
+
+        var next = new CHeroPartySaveData
+        {
+            Version = _data.Version,
+            Presets = _data.Presets,
+            LastApplied = _pendingApplied
+        };
+        if (!Commit(next))
+        {
+            SetNotice("Party is still applied. " + _notice + " Retry when ready.");
+            return false;
+        }
+
+        _pendingApplied = null;
         SetNotice("Party applied and saved.");
         return true;
     }

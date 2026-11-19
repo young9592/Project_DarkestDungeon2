@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
-  m_Name: SkillSO_Boss_Common_CripplingDoubt
+  m_Name: SkillSO_Boss_DenialOfReach
   m_EditorClassIdentifier: 
-  _skillName: CripplingDoubt
+  _skillName: DenialOfReach
   _skillIcon: {fileID: 0}
   _useableRank: -1
   _targetableRank: -1
-  _isGroupTarget: 0
+  _isGroupTarget: 1
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
-  - {fileID: 11400000, guid: 169d9f0ca113d7842ac7cdb5d6a7bb3b, type: 2}
+  - {fileID: 11400000, guid: a11632e47188c2f44994b34d5f4f7952, type: 2}

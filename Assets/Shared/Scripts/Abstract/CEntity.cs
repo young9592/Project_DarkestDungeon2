@@ -29,6 +29,7 @@ public abstract class CEntity : MonoBehaviour
 
     public virtual CEntityDataSO EntityData { get { return null; } }
     public virtual EEntityType EntityType { get { return EEntityType.None; } }
+    public abstract int CurrentHp { get; }
     public virtual ERank CurrentRank { get { return ERank.None; } }
     public int BaseSpeed { get { return EntityData != null ? EntityData.Speed : 0; } }
     public int Speed { get { return BaseSpeed + _roundSpeedBonus; } }
@@ -65,11 +66,20 @@ public abstract class CEntity : MonoBehaviour
     {
         // 생성될 때 토큰 주머니 생성
         TokenManager = new CTokenManager();
+        TokenManager.OnTokenAdded += ShowAddedToken;
         _isDeathsDoor = false;
         _isDead = false;
+        OnHealthEffectResolved += CHealthEffectMessagePresenter.Show;
     }
 
 
+    private void ShowAddedToken(EEffectType type)
+    {
+        if (!isActiveAndEnabled || IsDead || this is CEnemyCorpse) return;
+        CCombatFloatingMessageManager.ShowToken(gameObject, ETokenType.Add, type);
+    }
+
+    public event Action<CHealthEffectResult> OnHealthEffectResolved;
     public event Action<CEntity> OnActionStarted;
     public event Action<CEntity, CEntity, CSkillDataSO> OnActionRequested;
     public event Action<CEntity> OnActionCompleted;
@@ -178,7 +188,40 @@ public abstract class CEntity : MonoBehaviour
     /// Effect Core 파이프라인 연산이 모두 끝난 최종 데미지만 받아 체력 조절시킴
     /// 힐링 스킬 같은 경우에 음수로 데미지 처리해서 처리할 생각하고 있음
     /// </summary>
-    public abstract void TakeDamage(int finalDamage);
+    public void TakeDamage(int finalDamage)
+    {
+        ResolveHealthEffect(null, finalDamage, finalDamage < 0, false, false);
+    }
+
+    protected abstract void ApplyDamage(int finalDamage, bool playHitAnimation);
+
+    protected void ApplyPeriodicDamage(int amount)
+    {
+        ResolveHealthEffect(null, amount, false, false, true);
+    }
+
+    internal void ApplyDamageEffect(CEntity source, int amount, bool isCritical)
+    {
+        ResolveHealthEffect(source, amount, false, isCritical, false);
+    }
+
+    internal void ApplyHealingEffect(CEntity source, int amount, bool isCritical)
+    {
+        ResolveHealthEffect(source, -amount, true, isCritical, false);
+    }
+
+    private void ResolveHealthEffect(CEntity source, int finalDamage, bool isHealing, bool isCritical, bool isPeriodic)
+    {
+        int previousHp = CurrentHp;
+        ApplyDamage(finalDamage, !isPeriodic);
+        int appliedAmount = isHealing ? CurrentHp - previousHp : previousHp - CurrentHp;
+        OnHealthEffectResolved?.Invoke(new CHealthEffectResult(source, this, appliedAmount, isHealing, isCritical, false, isPeriodic));
+    }
+
+    internal void ReportMissedDamage(CEntity source)
+    {
+        OnHealthEffectResolved?.Invoke(new CHealthEffectResult(source, this, 0, false, false, true));
+    }
 
     /// <summary>
     /// 출혈, 중독, 콤보 토큰 등 턴 기반의 상태이상 부분
