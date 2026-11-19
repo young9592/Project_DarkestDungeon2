@@ -114,8 +114,10 @@ public class CStore : MonoBehaviour
             return;
         if (!_inventory.RemoveCurrency(item._currencyType, price))
             return;
+
         _inventory.AddItem(item, 1);
         storeitem._quantity--;
+
         if(storeitem._quantity <= 0)
         {
             _storeItems.Remove(storeitem);
