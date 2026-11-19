@@ -3097,6 +3097,7 @@ GameObject:
   - component: {fileID: 516821660}
   - component: {fileID: 516821659}
   - component: {fileID: 516821661}
+  - component: {fileID: 516821662}
   m_Layer: 5
   m_Name: Inventory_Menu
   m_TagString: Untagged
@@ -3124,7 +3125,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -217, y: 2}
+  m_AnchoredPosition: {x: 226, y: 2}
   m_SizeDelta: {x: 445, y: 810}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &516821659
@@ -3209,6 +3210,22 @@ MonoBehaviour:
   - {fileID: 435868144}
   - {fileID: 1834593969}
   - {fileID: 920909676}
+--- !u!114 &516821662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516821657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad5325b2aa72ee4eb2db5373599de4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inventoryMenu: {fileID: 516821658}
+  _startX: 226
+  _targetX: -217
+  _moveDuration: 1
 --- !u!1 &552957191
 GameObject:
   m_ObjectHideFlags: 0
@@ -3868,8 +3885,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1807508573}
   m_HandleRect: {fileID: 1807508572}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.56789756
+  m_Value: 1.0000002
+  m_Size: 0.5679
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4725,7 +4742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -214.00046, y: 272.30807}
+  m_AnchoredPosition: {x: -214.00046, y: 272.30795}
   m_SizeDelta: {x: 428, y: 959}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &785541565

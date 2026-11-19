@@ -16,14 +16,13 @@ public class CTheCrossroadsUIHeroDescription : MonoBehaviour
     [SerializeField] private TMP_Text _characterNameText;
     [SerializeField] private TMP_Text _heroBonusListText;
     [SerializeField] private TMP_Text _heroQuoteText;
-    [SerializeField] private TMP_Text _heroGorlText;
 
     [SerializeField] private string[] _characterName;
     [TextArea(3, 5)]
     [SerializeField] private string[] _heroQuote;
     [TextArea(5, 5)]
     [SerializeField] private string[] _heroBonusList;
-    [SerializeField] private string[] _heroGorl;
+
     #endregion
 
     //클릭 한 것에 따라 텍스트 업데이트
@@ -32,7 +31,6 @@ public class CTheCrossroadsUIHeroDescription : MonoBehaviour
         _characterNameText.text = _characterName[index];
         _heroQuoteText.text = _heroQuote[index];
         _heroBonusListText.text = _heroBonusList[index];
-        _heroGorlText.text = _heroGorl[index];
         UpdateHeroScaleUI(index);
     }
 
