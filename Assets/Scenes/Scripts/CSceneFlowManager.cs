@@ -5,19 +5,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
-
-
-#region Build용 임시 SceneManager
-/*
-빌드용 임시 SceneManager입니다.
-
- */
-#endregion
 
 
 public class CSceneFlowManager : MonoBehaviour
 {
+    public enum EFadeType
+    {
+        Default,
+        Combat,
+        Combat_Return,
+    }
+
     #region Inspector
     [Header("Catalog")]
     [SerializeField] private CSceneCatalog _catalog;
@@ -33,13 +31,28 @@ public class CSceneFlowManager : MonoBehaviour
     [Header("Option")]
     [SerializeField] private bool _enableKey = true;
     [SerializeField] private bool _dontDestroyOnLoad = true;
-
+    [SerializeField] private List<Material> _fadeMaterials;
     #endregion
 
     #region Field
     private static CSceneFlowManager _instance;
     private int _cursorIndex = 0;
-    private bool _isLoading = false;
+    private Coroutine _fadeCoroutine;
+    private static bool _isLoading = false;
+    // 씬 로딩을 통해 전달해야하는 데이터
+    private ESceneId _returnFieldSceneId;
+    private GameObject _returnStageCoach;
+    private CEnemyGroupSO _encounterEnemyGroup = null;
+    private string _encounterObjectId = null;
+
+    #endregion
+
+    #region Property
+    public static CSceneFlowManager Instance => _instance;
+    public bool IsLoading => _isLoading;
+    public ESceneId ReturnFieldSceneId => _returnFieldSceneId;
+    public CEnemyGroupSO EncounterEnemyGroup => _encounterEnemyGroup;
+    public string EncounterObjectID => _encounterObjectId;
 
     #endregion
 
@@ -67,6 +80,8 @@ public class CSceneFlowManager : MonoBehaviour
         _catalog.BuildMaps();
 
         SyncCursorToCurrentScene();
+
+        _instance = this;
     }
 
     private void OnDestroy()
@@ -120,7 +135,7 @@ public class CSceneFlowManager : MonoBehaviour
         CPrint.Warn($"커서 싱크 실패 : {currentName}");
     }
 
-    public void LoadScene(ESceneId id)
+    public void LoadScene(ESceneId id, EFadeType fadeType = EFadeType.Default)
     {
         bool loadSuccess = _catalog.TryGetSceneName(id, out string sceneName);
 
@@ -136,10 +151,10 @@ public class CSceneFlowManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(CoLoadingScene(id, sceneName));
+        StartCoroutine(CoLoadingScene(id, sceneName, fadeType));
     }
 
-    private IEnumerator CoLoadingScene(ESceneId id, string sceneName)
+    private IEnumerator CoLoadingScene(ESceneId id, string sceneName, EFadeType fadeType)
     {
         if (_isLoading)
         {
@@ -152,6 +167,104 @@ public class CSceneFlowManager : MonoBehaviour
         yield return null;
 
         CPrint.Log($"id = {id} / sceneName = {sceneName}");
+
+        _fadeCoroutine = StartCoroutine(CoFadeOut(fadeType));
+        yield return _fadeCoroutine;
+
+        // 마차 정지
+        if (fadeType == EFadeType.Combat)
+        {
+            _returnStageCoach.SetActive(false);
+        }
+
+        _loadingText.text = "로딩중...";
+        _progressPanel.SetActive(true);
+
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+
+        while (op.progress < 0.9f)
+        {
+            _progressBar.fillAmount = op.progress;
+            yield return null;
+        }
+
+        _progressBar.fillAmount = op.progress;
+        _progressPanel.SetActive(false);
+        _loadingText.text = "";
+
+        yield return null;
+
+        SyncCursorToCurrentScene();
+
+        yield return new WaitUntil(() => op.isDone);
+
+        _fadeCoroutine = StartCoroutine(CoFadeIn(fadeType));
+        yield return _fadeCoroutine;
+
+        _loadPanel.SetActive(false);
+
+        // 마차 불러오기
+        if (fadeType == EFadeType.Combat_Return)
+        {
+            ReturnField();
+        }
+
+        // 게임오버
+        if (id == ESceneId.Title)
+        {
+            Destroy(_returnStageCoach);
+            _encounterEnemyGroup = null;
+            _encounterEnemyGroup = null;
+            _encounterObjectId = null;
+            CBaricadeEncounter.ResetDestroyBaricade();
+        }
+
+        _isLoading = false;
+
+    }
+
+    private void ReloadScene()
+    {
+        string current = SceneManager.GetActiveScene().name;
+
+        if (!_catalog.TryGetSceneId(current, out ESceneId id))
+        {
+            return;
+        }
+
+        CPrint.Log($"{current} Reload");
+        LoadScene(id);
+    }
+
+    private void HandleHotkeys()
+    {
+        if (!_enableKey)
+        {
+            return;
+        }
+
+        if (Keyboard.current.enterKey.isPressed)
+        {
+            ReloadScene();
+        }
+    }
+
+    private IEnumerator CoFadeOut(EFadeType fadeType)
+    {
+        switch (fadeType)
+        {
+            case EFadeType.Default:
+                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
+                break;
+            case EFadeType.Combat:
+                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
+                break;
+            case EFadeType.Combat_Return:
+                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
+                break;
+            default:
+                break;
+        }
 
 
         Material mat = _loadPanel.GetComponent<Image>().material;
@@ -169,100 +282,89 @@ public class CSceneFlowManager : MonoBehaviour
         }
 
         mat.SetFloat(percent, 1f);
+    }
 
-        _loadingText.text = "로딩중...";
-        _progressPanel.SetActive(true);
-        
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-
-        while (op.progress < 0.9f)
+    private IEnumerator CoFadeIn(EFadeType fadeType)
+    {
+        switch (fadeType)
         {
-            _progressBar.fillAmount = op.progress;
-            yield return null;
+            case EFadeType.Default:
+                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
+                break;
+            case EFadeType.Combat:
+                _loadPanel.GetComponent<Image>().material = _fadeMaterials[1];
+                break;
+            case EFadeType.Combat_Return:
+                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
+                break;
+            default:
+                break;
         }
 
-        _progressBar.fillAmount = op.progress;
-        _progressPanel.SetActive(false);
-        _loadingText.text = "";
+        Material mat = _loadPanel.GetComponent<Image>().material;
+        int percent = Shader.PropertyToID("_percent");
+        _loadPanel.SetActive(true);
 
-        delay = 2f;
-        nextTime = Time.time + delay;
+        float delay = 2f;
+        float nextTime = Time.time + delay;
 
         while (nextTime > Time.time)
         {
-            float t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
+            float t = 0;
+
+            switch (fadeType)
+            {
+                case EFadeType.Combat:
+                    t = Mathf.Clamp01((nextTime - Time.time) / delay);
+                    break;
+                default:
+                    t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
+                    break;
+            }
+
+
             mat.SetFloat(percent, 1f - t);
             yield return null;
         }
-
-        yield return null;
-
-        _loadPanel.SetActive(false);
-
-        SyncCursorToCurrentScene();
-
-
-        _isLoading = false;
     }
 
-    private void ReloadScene()
+    public void SetEncounterGroup(out CEnemyGroupSO enemyGroupSO)
     {
-        string current = SceneManager.GetActiveScene().name;
+        enemyGroupSO = _encounterEnemyGroup;
 
-        if (!_catalog.TryGetSceneId(current, out ESceneId id))
+        // 데이터 성공적 전달
+        if (enemyGroupSO != null)
         {
-            return;
+            _encounterEnemyGroup = null;
         }
-
-        CPrint.Log($"{current} Reload");
-        LoadScene(id);
     }
 
-    // 일균님이랑 키가 겹칠수 있기 때문에 qwertyu로 배정
-    private void HandleHotkeys()
+    public void GetBarigateData(ESceneId loadScene, string id, CEnemyGroupSO enemyGroupSO)
     {
-        if (Keyboard.current.qKey.isPressed)
+        _returnFieldSceneId = loadScene;
+        _encounterObjectId = id;
+        _encounterEnemyGroup = enemyGroupSO;
+
+        if (_encounterEnemyGroup == null)
         {
-            LoadScene(ESceneId.Title);
-        }
-        if (Keyboard.current.wKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Park);
-        }
-        if (Keyboard.current.eKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Park_Character_Information_Title);
-        }
-        if (Keyboard.current.rKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Sin_Chapter);
-        }
-        if (Keyboard.current.tKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Sin_TheCrossroads);
-        }
-        if (Keyboard.current.yKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Sin_TheInn);
-        }
-        if (Keyboard.current.uKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Go);
+            CPrint.Error("적 그룹 데이터 전달받기 실패.");
         }
 
-        if (Keyboard.current.iKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Lee);
-        }
-
-        if (Keyboard.current.oKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Jo);
-        }
-
-        if (Keyboard.current.enterKey.isPressed)
-        {
-            ReloadScene();
-        }
+        CBaricadeEncounter.AddDestroyBaricade(_encounterObjectId);
     }
+
+    public void GetStageCoach(Collider other)
+    {
+        _returnStageCoach = other.transform.root.gameObject;
+
+        DontDestroyOnLoad(_returnStageCoach);
+    }
+
+    public void ReturnField()
+    {
+        SceneManager.MoveGameObjectToScene(_returnStageCoach, SceneManager.GetActiveScene());
+        _returnStageCoach.SetActive(true);
+    }
+
+
 }

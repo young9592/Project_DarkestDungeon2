@@ -44,4 +44,10 @@ public class CChapterUIButton : MonoBehaviour
         _chapterMenu.ResetChapterProfile();
     }
 
+    // 26-11-20 게임시작 추가
+    public void GameStart()
+    {
+        CSceneFlowManager.Instance.LoadScene(ESceneId.Temp_Park, CSceneFlowManager.EFadeType.Default);
+    }
+
 }
