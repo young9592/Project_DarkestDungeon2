@@ -1,11 +1,10 @@
 using UnityEngine;
 
-public class CStageCoach : MonoBehaviour
+public class CStageCoachHandler : MonoBehaviour
 {
     public enum ECoachState
     {
         None,
-        Walk,
         Run,
         Stop
     }
@@ -34,16 +33,11 @@ public class CStageCoach : MonoBehaviour
     [Header("Option")]
     [SerializeField] private float _maxSpeed = 10f;
     [SerializeField] private float _rotatePower = 10f;
-
-    [Header("Runtime Check")]
-    [SerializeField] private int _pressCount;    // 걷기, 달리기 구분위한 함수
     #endregion
 
     #region Field
     private Vector2 _input = Vector2.zero;
     private bool _connect = false;
-    private bool _isPressed = false;
-    private float _nextTime = 0f;
 
     private int _hashSpeed;
     private int _hashTurnSpeed;
@@ -51,12 +45,23 @@ public class CStageCoach : MonoBehaviour
     private Transform _leftTr;
     private Transform _rightTr;
 
+    private static CStageCoachHandler _instance;
+    #endregion
+
+    #region Property
+    public static CStageCoachHandler Instance => _instance;
     #endregion
 
     private void Awake()
     {
         // null check
 
+
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         if (CInputDispatcher.Instance != null && !_connect)
         {
@@ -70,11 +75,27 @@ public class CStageCoach : MonoBehaviour
 
         _leftTr = _leftHorse.gameObject.transform;
         _rightTr = _rightHorse.gameObject.transform;
+
+        _instance = this;
     }
 
     private void Start()
     {
         _coachState = ECoachState.Stop;
+    }
+
+    private void OnDestroy()
+    {
+        if (CInputDispatcher.Instance != null)
+        {
+            CInputDispatcher.Instance.OnMove -= OnMoveHandler;
+        }
+
+        if (_instance == this)
+        {
+            _instance = null;
+            _connect = false;
+        }
     }
 
 
@@ -93,31 +114,16 @@ public class CStageCoach : MonoBehaviour
         if (CInputDispatcher.Instance != null)
         {
             CInputDispatcher.Instance.OnMove -= OnMoveHandler;
+            _connect = false;
         }
     }
 
-
     private void Update()
     {
-        // 꾹 누르면 자동으로 달리기로 전환
-        if (_isPressed && _nextTime < Time.time && _coachState == ECoachState.Walk)
-        {
-            _coachState = ECoachState.Run;
-        }
-
-
         Vector3 moveVec = Vector3.zero;
 
-        if (_coachState == ECoachState.Walk)
-        {
-            _currentSpeed = _maxSpeed * 0.6f;
 
-            moveVec = new Vector3(0, 0, _currentSpeed);
-
-            _leftHorse.velocity = moveVec;
-            _rightHorse.velocity = moveVec;
-        }
-        else if (_coachState == ECoachState.Run)
+        if (_coachState == ECoachState.Run)
         {
             _currentSpeed = Mathf.Clamp(_currentSpeed + 0.05f, 0, _maxSpeed);
 
@@ -129,7 +135,7 @@ public class CStageCoach : MonoBehaviour
         else if (_coachState == ECoachState.Stop)
         {
             _currentSpeed = 0;
-            
+
             _body.velocity = new Vector3(_body.velocity.x * 0.9f, _body.velocity.y, _body.velocity.z * 0.9f);
         }
 
@@ -164,53 +170,27 @@ public class CStageCoach : MonoBehaviour
     // 마차 이동
     private void OnMoveHandler(Vector2 vec)
     {
-        if (vec == Vector2.zero)
-        {
-            _isPressed = false;
-        }
-
-
-        if (_coachState == ECoachState.Walk || _coachState == ECoachState.Run)
+        if (_coachState == ECoachState.Run)
         {
             if (vec.y < 0)
             {
                 _coachState = ECoachState.Stop;
-                _pressCount = 0;
-            }
-            else if (vec.y > 0)
-            {
-                _pressCount++;
-
-                if (_pressCount == 1)
-                {
-                    _coachState = ECoachState.Walk;
-                }
-                else if (_pressCount > 1)
-                {
-                    _coachState = ECoachState.Run;
-                }
             }
         }
         else if (_coachState == ECoachState.Stop)
         {
             if (vec.y > 0)
             {
-                _pressCount++;
-                _isPressed = true;
-                _nextTime = Time.time + 1f;
-
-                if (_pressCount == 1)
-                {
-                    _coachState = ECoachState.Walk; 
-                }
-                else if(_pressCount > 1)
-                {
-                    _coachState = ECoachState.Run;
-                }
+                _coachState = ECoachState.Run;
             }
         }
 
 
-            _input = vec;
+        _input = vec;
+    }
+
+    public void CrashBaricade()
+    {
+        _coachState = ECoachState.Stop;
     }
 }

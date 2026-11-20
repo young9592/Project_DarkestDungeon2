@@ -410,7 +410,7 @@ public class CCombatFloatingText : MonoBehaviour
                 SetAlignment(ETextAlignType.Token, text);
                 break;
             case EMessageType.DenialOfReason:
-                _iconImage.sprite = _denialOfReachSprite;
+                _iconImage.sprite = _denialOfReasonSprite;
                 SetAlignment(ETextAlignType.Token, text);
                 break;
             case EMessageType.Cure:

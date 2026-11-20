@@ -1,20 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum ESceneId
-{
-    Temp_Bulid = 0,
-    Title,
+{ 
+    Title = 0,
     Temp_Park,
-    Temp_Park_Character_Information_Title,
-    Temp_Sin_Chapter,
-    Temp_Sin_TheCrossroads,
     Temp_Sin_TheInn,
-    Temp_Go,
-    Temp_Lee,
-    Temp_Jo
+    Temp_Sin_TheSprawl,
+    Battle,
 }
 
 [Serializable]
@@ -26,8 +20,6 @@ public class SceneEntry
 
 public class CSceneCatalog : MonoBehaviour
 {
-
-
     #region Inspector
     [Header("SceneEntry")]
     [SerializeField] private List<SceneEntry> _scenes = new List<SceneEntry>();
