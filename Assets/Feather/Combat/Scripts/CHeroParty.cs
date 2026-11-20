@@ -18,7 +18,7 @@ public class CHeroParty : MonoBehaviour
     private List<CPlayer> _heroList = new List<CPlayer>();
     private Dictionary<ERank, CPlayer> _rankList = new Dictionary<ERank, CPlayer>();
     // 영웅 생성이 완료되었는지 체크
-    private static bool _isReady = false;
+    private bool _isReady = false;
     // 전투 정보
     private CHeroExpeditionState _expeditionState = null;
     private string _runID;
@@ -26,7 +26,7 @@ public class CHeroParty : MonoBehaviour
     #endregion
 
     #region Property
-    public static bool IsReady => _isReady;
+    public bool IsReady => _isReady;
     public IReadOnlyList<CPlayer> HeroList => _heroList;
     public IReadOnlyDictionary<ERank, CPlayer> RankList => _rankList;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroRankPosition;
@@ -35,7 +35,7 @@ public class CHeroParty : MonoBehaviour
     public string BattleID => _battleID;
     #endregion
 
-    private void Start()
+    public void LoadParty()
     {
         if (_heroPartyPreset == null)
         {

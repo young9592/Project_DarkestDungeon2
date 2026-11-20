@@ -18,19 +18,26 @@ public class CEnemyParty : MonoBehaviour
     #region Field
     private List<CEnemy> _enemyList = new List<CEnemy>();
 
-    private static bool _isReady = false;
-    private static bool _isDenialBoss = false;
+    private bool _isReady = false;
+    private bool _isDenialBoss = false;
     #endregion
 
     #region Property
-    public static bool IsReady => _isReady;
+    public bool IsReady => _isReady;
     public IReadOnlyList<CEnemy> EnemyList => _enemyList;
     public IReadOnlyDictionary<ERank, CEnemy> RankList => _rankList;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyRankPosition;
-    public static bool IsDenialBoss => _isDenialBoss;
+    public bool IsDenialBoss => _isDenialBoss;
     #endregion
-    void Start()
+    public void LoadParty()
     {
+        if (CSceneFlowManager.Instance.IsLoading || CSceneFlowManager.Instance.EncounterEnemyGroup == null)
+        {
+            return;
+        }
+
+        CSceneFlowManager.Instance.SetEncounterGroup(out _enemyPartyPreset);
+
         if (_enemyPartyPreset == null)
         {
             CPrint.Warn($"{gameObject.name} Preset is null.");

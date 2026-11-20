@@ -24,5 +24,8 @@ public class CTheInnUIBiome : MonoBehaviour
         _navigationBar.SelectBiome();
 
         _selectBiomeUI.SetActive(true);
+
+        // 26-11-20 Ãß°¡µÊ
+        CSceneFlowManager.Instance.LoadScene(ESceneId.Temp_Sin_TheSprawl, CSceneFlowManager.EFadeType.Default);
     }
 }

@@ -52,8 +52,6 @@ public class CCombatManager : MonoBehaviour
     [SerializeField] private CCombatDebugMenu _debugMenu;
 
     [Header("CombatManager State")]
-    // 현재 필드에 서있는 엔티티 리스트
-    [SerializeField] private List<(int id, CEntity entity)> _entityList;
     // 현재 라운드 상태
     [SerializeField] private RoundState _roundState = RoundState.None;
 
@@ -68,10 +66,13 @@ public class CCombatManager : MonoBehaviour
     #region Field
 
 
+    private List<(int id, CEntity entity)> _entityList = new List<(int id, CEntity entity)>();
     // 순서 리스트
     private List<(int id, CEntity entity, int turnSpeed)> _turnList = new List<(int, CEntity, int)>();
     // 시체 상태인 적 체크
     private List<CEntity> _corpseCheck = new List<CEntity>();
+    // 턴넘김 회복효과 쿨타임
+    private Dictionary<CPlayer, int> _passHealCooldown = new Dictionary<CPlayer, int>();
     // 코루틴
     private Coroutine _actionCoroutine = null;
     private Coroutine _sortCoroutine = null;
@@ -158,12 +159,12 @@ public class CCombatManager : MonoBehaviour
     {
         if (_roundState == RoundState.None)
         {
-            _roundState = RoundState.Wait;
+            // None
         }
         // 히어로와 적들의 파티가 생성 완료 되었는가?
         else if (_roundState == RoundState.Wait)
         {
-            if (_entityList.Count == _combatUI.EntitiesState.Count)
+            if (_entityList.Count == _combatUI.EntitiesState.Count && _entityList.Count != 0)
             {
                 _roundState = RoundState.Ready;
             }
@@ -190,40 +191,11 @@ public class CCombatManager : MonoBehaviour
     {
         switch (_roundState)
         {
+            case RoundState.None:
+                WaitSceneLoad();
+                break;
             case RoundState.Wait:
-                if (CHeroParty.IsReady && CEnemyParty.IsReady)
-                {
-                    _entityList = new List<(int id, CEntity entity)>();
-
-                    int id = 0;
-
-                    for (int i = 0; i < _heroParty.HeroList.Count; i++)
-                    {
-                        _entityList.Add((id, _heroParty.HeroList[i]));
-                        id++;
-                    }
-
-                    for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
-                    {
-                        // 1챕터 보스전용
-                        if (CEnemyParty.IsDenialBoss)
-                        {
-                            _chapterOneBossId.Add(_enemyParty.EnemyList[i], id);
-                        }
-
-                        _entityList.Add((id, _enemyParty.EnemyList[i]));
-                        id++;
-                    }
-
-                    for (int i = 0; i < _entityList.Count; i++)
-                    {
-                        _combatUI.CreateStateUI(_entityList[i].entity);
-                        _combatUI.CreateIndicatorUI(_entityList[i].entity);
-                    }
-                }
-
-                _debugMenu.Initialize();
-
+                EntitiesReady();
                 break;
             case RoundState.Ready:
                 BuildTurnOrderList();
@@ -232,6 +204,62 @@ public class CCombatManager : MonoBehaviour
                 ActionEntity();
                 break;
         }
+    }
+    private void WaitSceneLoad()
+    {
+        if (!CSceneFlowManager.Instance.IsLoading)
+        {
+            _roundState = RoundState.Wait;
+        }
+    }
+    private void EntitiesReady()
+    {
+        if (_heroParty.IsReady && _enemyParty.IsReady)
+        {
+            _entityList = new List<(int id, CEntity entity)>();
+
+            int id = 0;
+
+            for (int i = 0; i < _heroParty.HeroList.Count; i++)
+            {
+                _entityList.Add((id, _heroParty.HeroList[i]));
+                id++;
+            }
+
+            for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+            {
+                // 1챕터 보스전용
+                if (_enemyParty.IsDenialBoss)
+                {
+                    _chapterOneBossId.Add(_enemyParty.EnemyList[i], id);
+                }
+
+                _entityList.Add((id, _enemyParty.EnemyList[i]));
+                id++;
+            }
+
+            for (int i = 0; i < _entityList.Count; i++)
+            {
+                _combatUI.CreateStateUI(_entityList[i].entity);
+                _combatUI.CreateIndicatorUI(_entityList[i].entity);
+            }
+
+            _debugMenu.Initialize();
+        }
+        else
+        {
+            if (!_heroParty.IsReady)
+            {
+                _heroParty.LoadParty();
+            }
+
+            if (!_enemyParty.IsReady)
+            {
+                _enemyParty.LoadParty();
+            }
+        }
+
+
     }
     private void BuildTurnOrderList()
     {
@@ -288,7 +316,7 @@ public class CCombatManager : MonoBehaviour
         }
 
         // 1챕터 보스의 특수패턴 : 선턴을 가져가는 상황이 있습니다.
-        if (CEnemyParty.IsDenialBoss)
+        if (_enemyParty.IsDenialBoss)
         {
             CEnemyAI.EndDenialRound(_enemyParty.EnemyList, _heroParty.HeroList);
 
@@ -379,6 +407,28 @@ public class CCombatManager : MonoBehaviour
         if (_combatUI.EntitiesIndicator.TryGetValue(MyTurn, out _myTurnIndicator))
         {
             _myTurnIndicator.ViewMyturnIndicator();
+        }
+
+        // 패스 회복 쿨타임 체크 후 넘기기
+        if (MyTurn is CPlayer)
+        {
+            CPlayer hero = MyTurn as CPlayer;
+            if (_passHealCooldown.ContainsKey(hero))
+            {
+                int cooldown = _passHealCooldown[hero] - 1;
+
+                // 쿨타임 갱신
+                if (cooldown > 0)
+                {
+                    _passHealCooldown.Remove(hero);
+                    _passHealCooldown.Add(hero, cooldown);
+                }
+                // 쿨타임 완료
+                else
+                {
+                    _passHealCooldown.Remove(hero);
+                }
+            }
         }
 
         // 행동하기전 상태 체크
@@ -516,7 +566,7 @@ public class CCombatManager : MonoBehaviour
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
                     // 일단 보스는 시체가 없습니다.
-                    if (CEnemyParty.IsDenialBoss)
+                    if (_enemyParty.IsDenialBoss)
                     {
                         RemoveDeathEntity(i);
                     }
@@ -568,7 +618,7 @@ public class CCombatManager : MonoBehaviour
                     CEnemy enemy = _entityList[i].entity as CEnemy;
 
                     // 일단 보스는 시체가 없습니다.
-                    if (CEnemyParty.IsDenialBoss)
+                    if (_enemyParty.IsDenialBoss)
                     {
                         RemoveDeathEntity(i);
                         isDirty = true;
@@ -715,6 +765,21 @@ public class CCombatManager : MonoBehaviour
                     doAction = true;
                     CCombatFloatingMessageManager.ShowDefault(MyTurn.gameObject, "턴넘김");
                     MyTurn.CancelAction();
+
+                    // 턴넘김 디버프
+                    MyTurn.ModifyStress(2);
+
+                    // 체력 25% 미만 영웅 턴넘김시 체력 20% 회복 [쿨타운 3라운드]
+                    CPlayer hero = MyTurn as CPlayer;
+                    float healthPercent = Mathf.Clamp01((float)hero.CurrentHp / (float)hero.HeroData.MaxHealth);
+
+                    if (healthPercent < 0.25f && !_passHealCooldown.ContainsKey(hero))
+                    {
+                        int passHealing = (int)(hero.HeroData.MaxHealth * 0.2f);
+                        hero.TakeDamage(-passHealing);
+                        _passHealCooldown.Add(hero, 3);
+                    }
+
                     _combatUI.Pass = false;
                     break;
                 }
@@ -1155,17 +1220,12 @@ public class CCombatManager : MonoBehaviour
     // 전투가 완료되었는지 확인
     private void CompletedBattle()
     {
-        if (true)
+        if (!_heroParty.IsReady)
         {
             return;
         }
 
-        if (!CHeroParty.IsReady)
-        {
-            return;
-        }
-
-        if (!CEnemyParty.IsReady)
+        if (!_enemyParty.IsReady)
         {
             return;
         }
@@ -1177,41 +1237,66 @@ public class CCombatManager : MonoBehaviour
 
         bool victory = false;
 
-        if (_enemyParty.EnemyList.Count == 0)
+        if (_heroParty.HeroList.Count == 0)
         {
-            victory = true;
+            victory = false;
+            CPrint.Warn("전투 패배!");
+            _battleEnd = true;
+            // 씬 로드
+            StartCoroutine(CoDefeat());
+            return;
         }
         else
         {
-            bool notAlive = true;
-
-            for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
-            {
-                CEnemy enemy = _enemyParty.EnemyList[i];
-
-                if (!enemy.IsDead)
-                {
-                    notAlive = false;
-                }
-            }
-
-            if (notAlive)
+            if (_enemyParty.EnemyList.Count == 0)
             {
                 victory = true;
             }
+            else
+            {
+                bool notAlive = true;
 
-        }
+                for (int i = 0; i < _enemyParty.EnemyList.Count; i++)
+                {
+                    CEnemy enemy = _enemyParty.EnemyList[i];
 
-        if (victory)
-        {
-            _heroParty.HeroExpeditionState.TryCompleteBattle(_heroParty.RunID, _heroParty.BattleID, _heroParty.HeroList);
-            CPrint.Warn("전투 승리!");
-            _battleEnd = true;
-            return;
+                    if (!enemy.IsDead)
+                    {
+                        notAlive = false;
+                    }
+                }
+
+                if (notAlive)
+                {
+                    victory = true;
+                }
+
+            }
+
+            if (victory)
+            {
+                _heroParty.HeroExpeditionState.TryCompleteBattle(_heroParty.RunID, _heroParty.BattleID, _heroParty.HeroList);
+                CPrint.Warn("전투 승리!");
+                _battleEnd = true;
+                StartCoroutine(CoVictory());
+                return;
+            }
         }
     }
-}
 
+    private IEnumerator CoVictory()
+    {
+        yield return new WaitForSeconds(2.0f);
+        CSceneFlowManager.Instance.LoadScene(CSceneFlowManager.Instance.ReturnFieldSceneId, CSceneFlowManager.EFadeType.Combat_Return);
+    }
+
+    private IEnumerator CoDefeat()
+    {
+        yield return new WaitForSeconds(2.0f);
+        CSceneFlowManager.Instance.LoadScene(ESceneId.Title, CSceneFlowManager.EFadeType.Combat_Return);
+
+    }
+}
 //Could 시스템
 #region ExtraActionJewelry
 /*
