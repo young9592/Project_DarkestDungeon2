@@ -626,6 +626,10 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        _cursorSkillName.text = "";
+        _heroSkillMainDesc.text = "";
+        _heroSkillSubDesc.text = "";
+
         RectTransform SkillSlot = _skillSlot[idx].GetComponent<RectTransform>();
         RectTransform cursorRectTr = _cursorSkill.GetComponent<RectTransform>();
         cursorRectTr.anchoredPosition = SkillSlot.anchoredPosition;
@@ -637,6 +641,8 @@ public class CCombatUI : MonoBehaviour
         ERank targetRank = skillSO.TargetableRank;
 
         _cursorSkillName.text = skillSO.SkillName;
+        _heroSkillMainDesc.text = (skillSO as CHeroSkillSO).MainDescription;
+        _heroSkillSubDesc.text = (skillSO as CHeroSkillSO).SubDescription;
 
         CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 

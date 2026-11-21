@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_highway_robbery
   m_EditorClassIdentifier: 
-  _skillName: Highway Robbery
+  _skillName: "\uB178\uC0C1 \uAC15\uB3C4\uC9C8"
   _skillIcon: {fileID: 21300000, guid: d2aca686604dbee4791be6d08eae28f8, type: 3}
   _useableRank: 7
   _targetableRank: 7
@@ -22,9 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: f36dcb01d0cc8b247af546f3b8334a62, type: 2}
   _critChance: 0
-  _mainDescription: "\uD53C\uD574 2-3 \uBC0F \uB300\uC0C1 \uAE0D\uC815 \uD1A0\uD070
-    2\uAC1C \uAC15\uD0C8"
-  _subDescription: 
+  _mainDescription: "\uD53C\uD574: 2-3\n\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04:
+    1"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color>2 <color=#2c4a75>\uAE0D\uC815\uC801</color>
+    \uD1A0\uD070 \uAC15\uD0C8"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
