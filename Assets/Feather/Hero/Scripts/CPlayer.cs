@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Security.Cryptography;
@@ -33,6 +33,10 @@ public class CPlayer : CEntity
     #region Events
     // 스킬 타케팅까지 완료되었을시 BattleCore에 '행동 실행' 요청 이벤트
     public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
+    public event Action<EEffectType> OnStatusEffectApplied;
+    public event Action OnStatusEffectsCured;
+    public event Action OnDeathblowResisted;
+    public event Action<EEffectType> OnStatusEffectTicked;
 
     // 배틀 상태 변화 이벤트
     public event Action<CPlayer, int, int> OnHealthChanged;
@@ -48,6 +52,7 @@ public class CPlayer : CEntity
 
     private bool _isRequesting;
     private bool _isStartingTurn;
+    public bool IsStartingTurn { get { return _isStartingTurn; } }
     private bool _isTurnSkipped;
     private EDenialRestriction _denialRestriction;
     private readonly CHeroSkillUseState _skillUses = new CHeroSkillUseState();
@@ -915,6 +920,7 @@ public class CPlayer : CEntity
                 || _activeStatusEffects.Contains(statusEffect)) return;
 
             _activeStatusEffects.Add(statusEffect);
+            OnStatusEffectApplied?.Invoke(statusEffect.EffectType);
             CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
 
             int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
@@ -995,6 +1001,7 @@ public class CPlayer : CEntity
             || effectData.EffectType != EEffectType.Horror || effectData.Damage <= 0 || effectData.Duration <= 0) return;
 
         _activeStatusEffects.Add(new CEffect(effectData));
+        OnStatusEffectApplied?.Invoke(EEffectType.Horror);
         CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, EEffectType.Horror, effectData.Damage);
     }
 
@@ -1059,6 +1066,9 @@ public class CPlayer : CEntity
                     CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
                         $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totalTickDamage}] 데미지");
 
+                    if (bleedDamage > 0) OnStatusEffectTicked?.Invoke(EEffectType.Bleed);
+                    if (blightDamage > 0) OnStatusEffectTicked?.Invoke(EEffectType.Blight);
+                    if (burnDamage > 0) OnStatusEffectTicked?.Invoke(EEffectType.Burn);
                     ApplyPeriodicDamage(totalTickDamage);
 
                     if (_isDead) return;
@@ -1162,6 +1172,7 @@ public class CPlayer : CEntity
 
         if (randomRoll <= deathblowResist)
         {
+            OnDeathblowResisted?.Invoke();
             CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
             CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격을 버텼습니다.");
         }
@@ -1252,6 +1263,7 @@ public class CPlayer : CEntity
 
         if (removedCount > 0)
         {
+            OnStatusEffectsCured?.Invoke();
             string targetName = targetType == EEffectType.None ? "모든 지속 피해" : targetType.ToString();
             CPrint.Log($"[{_heroData.DefaultName}] 상태이상 치료 성공" +
                 $"제거된 [{targetName}] 인스턴스 : {removedCount}개");
