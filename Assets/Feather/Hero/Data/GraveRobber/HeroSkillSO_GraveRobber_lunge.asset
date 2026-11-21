@@ -21,6 +21,10 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e309c7d6f1c7c0c42beb2e8c0c80c16b, type: 2}
   - {fileID: 11400000, guid: a94f7b65bcaee63418c4a77c0fd5fd6c, type: 2}
+  _critChance: 20
+  _mainDescription: "\uD53C\uD574 6-10, \uC804\uC9C4 2"
+  _subDescription: 
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_lunge
   _executionStartState: Base Layer.OriginalAction_GraveRobber_lunge
   _feedback: {fileID: 11400000, guid: 761fcc3ccb32f8340aa7d66df492446d, type: 2}
-  _denialCategories: 1

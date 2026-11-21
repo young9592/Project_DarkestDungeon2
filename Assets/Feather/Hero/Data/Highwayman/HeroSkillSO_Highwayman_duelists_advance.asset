@@ -22,6 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
   - {fileID: 11400000, guid: be719d7def38b5d4d985edd1b9c05261, type: 2}
   - {fileID: 11400000, guid: f2d658978ff1e3b418cb5c23416296e2, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 3-5"
+  _subDescription: "\uC804\uC9C4 1, \uC790\uC2E0 \uBC18\uACA9 2 \uBD80\uC5EC"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_advance
   _executionStartState: Base Layer.OriginalAction_Highwayman_duelists_advance
   _feedback: {fileID: 11400000, guid: 4f0b3a3a7513d78488e38d9a4c146245, type: 2}
-  _denialCategories: 1

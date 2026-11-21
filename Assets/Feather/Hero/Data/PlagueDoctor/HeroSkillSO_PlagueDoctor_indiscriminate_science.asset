@@ -20,6 +20,12 @@ MonoBehaviour:
   _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: c4682acc6b2a68749bb1ea266844911d, type: 2}
+  _critChance: 5
+  _mainDescription: "\uB300\uC0C1\uC758 \uBAA8\uB4E0 \uD1A0\uD070 \uC18C\uBAA8, \uC18C\uBAA8\uD55C
+    \uD1A0\uD070\uB2F9 \uCCB4\uB825 3 \uD68C\uBCF5"
+  _subDescription: "\uB300\uC0C1 \uCCB4\uB825 50% \uBBF8\uB9CC\uC77C \uB54C \uC0AC\uC6A9
+    \uAC00\uB2A5"
+  _denialCategories: 4
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -34,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_indiscriminate_science
   _feedback: {fileID: 11400000, guid: 1907f8dfcf44c4640a7e88ee9c7fee52, type: 2}
-  _denialCategories: 4

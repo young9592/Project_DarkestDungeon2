@@ -23,6 +23,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: be719d7def38b5d4d985edd1b9c05261, type: 2}
   - {fileID: 11400000, guid: 29df23ca04db09a4d856b7b767e9a75d, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 2-4, \uC804\uC9C4 1, \uB300\uC0C1 \uBC00\uCE58\uAE30
+    1"
+  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uAE30\uC808 \uBD80\uC5EC"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -37,4 +42,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_ram
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Rampart
   _feedback: {fileID: 11400000, guid: 94bb84939874be046b6ba95f63e2056b, type: 2}
-  _denialCategories: 1

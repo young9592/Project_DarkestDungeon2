@@ -20,6 +20,11 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 893c7c9239f18984ba9f31a2eaf5eef1, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574 4-6, \uB300\uC0C1 \uC740\uC2E0 \uC81C\uAC70"
+  _subDescription: "\uC790\uC2E0 \uC740\uC2E0 \uBCF4\uC720 \uC2DC \uC18C\uBAA8\uD558\uC5EC
+    \uD2B9\uACF5 \uBCF4\uB108\uC2A4 \uC801\uC6A9"
+  _denialCategories: 3
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -34,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_thrown_dagger
   _executionStartState: Base Layer.OriginalAction_GraveRobber_glint_in_the_dark
   _feedback: {fileID: 11400000, guid: 7b5618b1ea9ebe646bdd0c91cfe3c963, type: 2}
-  _denialCategories: 2

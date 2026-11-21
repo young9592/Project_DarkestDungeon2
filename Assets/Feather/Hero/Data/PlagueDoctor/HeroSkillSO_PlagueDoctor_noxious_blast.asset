@@ -22,6 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
   - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 1-3, \uC911\uB3C5 4, \uD1A0\uD070 \uBD80\uC5EC"
+  _subDescription: 
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_noxious_blast
   _feedback: {fileID: 11400000, guid: 0b702003d52908d458de8591b947d5f7, type: 2}
-  _denialCategories: 2

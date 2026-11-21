@@ -22,6 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 6666c9ff0bb2e024dbfbb0c685f4f0e1, type: 2}
   - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD6C4\uC5F4 \uAD11\uC5ED \uD53C\uD574 1-2, \uC911\uB3C5 3"
+  _subDescription: 
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_plague_grenade
   _feedback: {fileID: 11400000, guid: 2f66297d3896ddf41927f723b2065a44, type: 2}
-  _denialCategories: 2

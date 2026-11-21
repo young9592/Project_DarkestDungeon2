@@ -21,6 +21,10 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 9e814e2114cc11c4580c41514d107630, type: 2}
+  _critChance: 5
+  _mainDescription: "\uC911\uC5F4 \uAD11\uC5ED \uD53C\uD574 2-4"
+  _subDescription: 
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_flashing_daggers
   _executionStartState: Base Layer.OriginalAction_GraveRobber_flashing_daggers
   _feedback: {fileID: 11400000, guid: 2cca6687f0eb90a4f81fba84348d5eb1, type: 2}
-  _denialCategories: 2

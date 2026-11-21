@@ -21,7 +21,12 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 6666c9ff0bb2e024dbfbb0c685f4f0e1, type: 2}
-  - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
+  - {fileID: 11400000, guid: 6d21b364b69e97d43bb108744aa26722, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 2-3, \uC911\uB3C5 2"
+  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uCD94\uAC00 \uC911\uB3C5
+    2"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_dart
   _executionStartState: Base Layer.OriginalAction_GraveRobber_poison_dart
   _feedback: {fileID: 11400000, guid: 1ad418725bf6fe14c835550bc3ec5250, type: 2}
-  _denialCategories: 2

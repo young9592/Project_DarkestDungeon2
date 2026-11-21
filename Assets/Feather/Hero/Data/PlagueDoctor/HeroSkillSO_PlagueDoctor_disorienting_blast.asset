@@ -23,6 +23,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ee8723553ee971418e2f0c04e70b9bc, type: 2}
   - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 1-2, \uC704\uCE58 \uBB34\uC791\uC704 \uC774\uB3D9,
+    \uC57D\uD654 1 \uBD80\uC5EC"
+  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uAE30\uC808 \uBD80\uC5EC"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -37,4 +42,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_disorienting_blast
   _feedback: {fileID: 11400000, guid: f25a3179c1d7ecc4ea682ba104b13311, type: 2}
-  _denialCategories: 2
