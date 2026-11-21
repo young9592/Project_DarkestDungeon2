@@ -16,6 +16,33 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     [SerializeField] private AudioClip _launchSound;
     [SerializeField] private AudioClip _impactSound;
     [SerializeField, Range(0.0f, 1.0f)] private float _volume = 0.5f;
+    [Header("Skill Audio")]
+    [SerializeField] private AudioClip _preparationSound;
+    [SerializeField] private AudioClip _preparationLoopSound;
+    [SerializeField] private AudioClip _useSound;
+    [SerializeField] private AudioClip _missSound;
+    [SerializeField] private AudioClip _returnSound;
+
+    public AudioClip PreparationSound
+    {
+        get { return _preparationSound; }
+    }
+    public AudioClip PreparationLoopSound
+    {
+        get { return _preparationLoopSound; }
+    }
+    public AudioClip UseSound
+    {
+        get { return _useSound; }
+    }
+    public AudioClip MissSound
+    {
+        get { return _missSound; }
+    }
+    public AudioClip ReturnSound
+    {
+        get { return _returnSound; }
+    }
 
     public CHeroFeedbackVisual Launch
     {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +19,7 @@ public class CEnemy : CEntity
     private bool _isInitialized;
     private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
     private bool _isStartingTurn;
+    public bool IsStartingTurn { get { return _isStartingTurn; } }
     private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
     private readonly List<CEntity> _requestedTargets = new List<CEntity>();
     private CEnemyFormationMovement _formationMovement;
@@ -46,6 +47,9 @@ public class CEnemy : CEntity
         get { return _deathPresentation != null && _deathPresentation.IsConfirmed; }
     }
     private bool _isRequestingSkill;
+    public event Action<EEffectType> OnStatusEffectApplied;
+    public event Action OnStatusEffectsCured;
+    public event Action<EEffectType> OnStatusEffectTicked;
     public event Action<CEnemy, CEntity, CSkillDataSO> OnSkillActionRequested;
     public CEnemyDataSO EnemyData
     {
@@ -696,6 +700,7 @@ public class CEnemy : CEntity
                 && !_activeStatusEffects.Contains(statusEffect))
             {
                 _activeStatusEffects.Add(statusEffect);
+                OnStatusEffectApplied?.Invoke(statusEffect.EffectType);
                 CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
             }
             return;
@@ -732,6 +737,7 @@ public class CEnemy : CEntity
     {
         if (!_isInitialized || _isDead || IsDeathPresented) return;
 
+        int previousCount = _activeStatusEffects.Count;
         for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
         {
             CEffect effect = _activeStatusEffects[i];
@@ -741,6 +747,7 @@ public class CEnemy : CEntity
                 _activeStatusEffects.RemoveAt(i);
             }
         }
+        if (_activeStatusEffects.Count < previousCount) OnStatusEffectsCured?.Invoke();
     }
 
     public override void ResetEntityState()
@@ -803,6 +810,9 @@ public class CEnemy : CEntity
             if (!isExtraAction)
             {
                 long totalDamage = 0;
+                bool bleedTick = false;
+                bool blightTick = false;
+                bool burnTick = false;
                 for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
                 {
                     CEffect effect = _activeStatusEffects[i];
@@ -812,6 +822,12 @@ public class CEnemy : CEntity
                         continue;
                     }
 
+                    if (effect.Damage > 0)
+                    {
+                        if (effect.EffectType == EEffectType.Bleed) bleedTick = true;
+                        if (effect.EffectType == EEffectType.Blight) blightTick = true;
+                        if (effect.EffectType == EEffectType.Burn) burnTick = true;
+                    }
                     totalDamage += effect.Damage;
                     effect.DecreaseTurn();
                     if (effect.RemainingTurns <= 0)
@@ -822,6 +838,9 @@ public class CEnemy : CEntity
 
                 if (totalDamage > 0)
                 {
+                    if (bleedTick) OnStatusEffectTicked?.Invoke(EEffectType.Bleed);
+                    if (blightTick) OnStatusEffectTicked?.Invoke(EEffectType.Blight);
+                    if (burnTick) OnStatusEffectTicked?.Invoke(EEffectType.Burn);
                     ApplyPeriodicDamage((int)Math.Min(int.MaxValue, totalDamage));
                 }
             }

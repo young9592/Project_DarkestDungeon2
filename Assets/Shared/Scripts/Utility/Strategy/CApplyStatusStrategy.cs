@@ -7,6 +7,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Strategy/Effect/ApplyStatusStrategy", fileName = "ApplyStatusStrategy_")]
 public class CApplyStatusStrategy : CEffectStrategy
 {
+    public static event System.Action<CEntity, EEffectType> OnStatusEffectResisted;
+
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
         if (!context.IsHit)
@@ -37,6 +39,8 @@ public class CApplyStatusStrategy : CEffectStrategy
         {
             CPrint.Log($"[{effectData.Name}] 대상이 저항했습니다 \n" +
                 $"(주사위: {randomRoll} > 확률 : {finalChance})"); // 결과 확인용
+
+            OnStatusEffectResisted?.Invoke(context.Target, effectData.EffectType);
 
             // TODO : UI에서 저항함 텍스트 플로팅
         }
