@@ -14,6 +14,8 @@ public class CBattleAudio : MonoBehaviour
     [SerializeField] private AudioSource _musicSource;
     [SerializeField] private AudioSource _cueSource;
 
+    private CHeroParty _heroParty;
+    private CEnemyParty _enemyParty;
     private readonly List<CEntity> _actors = new List<CEntity>();
     private bool _battleStarted;
     private bool _battleFinished;
@@ -43,7 +45,10 @@ public class CBattleAudio : MonoBehaviour
 
     private void Awake()
     {
+        _heroParty = FindObjectOfType<CHeroParty>();
+        _enemyParty = FindObjectOfType<CEnemyParty>();
         if (_combatManager == null || _combatUI == null || _sounds == null
+            || _heroParty == null || _enemyParty == null
             || _musicSource == null || _cueSource == null)
         {
             Debug.LogWarning(name + ": 전투 사운드 연결 확인이 필요함", this);
@@ -57,7 +62,7 @@ public class CBattleAudio : MonoBehaviour
         BindActors();
         if (!_battleStarted)
         {
-            if (!CHeroParty.IsReady || !CEnemyParty.IsReady
+            if (!_heroParty.IsReady || !_enemyParty.IsReady
                 || _combatManager.HeroParty.Count == 0 || _combatManager.EnemyParty.Count == 0) return;
             BeginBattle();
         }
