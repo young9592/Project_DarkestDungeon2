@@ -1,0 +1,725 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd347ec741e31504384baaaafbcc92df, type: 3}
+  m_Name: CombatAudioSO
+  m_EditorClassIdentifier: 
+  _volume: 0.5
+  _actors:
+  - _data: {fileID: 11400000, guid: d2083d203ae670b4db3984ccf80c57de, type: 2}
+    _hurt: {fileID: 8300000, guid: b8425fdc159d0494693ca443a24d1158, type: 3}
+    _recovery: {fileID: 8300000, guid: 2a9bea8e83ac5164080a151f40c53676, type: 3}
+    _death: {fileID: 8300000, guid: 4bdaee94f1187c041866e3e165725d62, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 55ae2e39bb79aea4b8e1fda521111c9f, type: 2}
+      _preparation: {fileID: 8300000, guid: 1b1f1920b4c64484287e9bc2e2ca95b0, type: 3}
+      _use: {fileID: 8300000, guid: 782c6dd3674e90e4aa4a1c67e46fc53f, type: 3}
+      _miss: {fileID: 8300000, guid: 025c60825a82c224ab877cca02785af7, type: 3}
+      _return: {fileID: 8300000, guid: d5bfb8f34142dea4f86d007943f1bf9b, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
+      _preparation: {fileID: 8300000, guid: bf17c6fa8fcaa4b41b742495fe4f9a72, type: 3}
+      _use: {fileID: 8300000, guid: d577aeca32b64134da47b8affeb74a75, type: 3}
+      _miss: {fileID: 8300000, guid: 0b076635b0eea844ea5d6b0fcaf5613f, type: 3}
+      _return: {fileID: 8300000, guid: 690f222933852334d8b21ad752100537, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: 69ebaa157ae7eee459532e9d0a536cc5, type: 2}
+    _hurt: {fileID: 8300000, guid: 046d568ed80b3444eb0a09575246069c, type: 3}
+    _recovery: {fileID: 8300000, guid: a62478bbb7770594680870376e80cc7b, type: 3}
+    _death: {fileID: 8300000, guid: 239c40dc6ad2d9d43a8693d0ebfc74df, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
+      _preparation: {fileID: 8300000, guid: f060a31ebba635f44a992f97b0f88815, type: 3}
+      _use: {fileID: 8300000, guid: a8d6541dbdb37ea48af4c014c5dff7a6, type: 3}
+      _miss: {fileID: 8300000, guid: 3392bc9f2fc72494495ff379adeb9551, type: 3}
+      _return: {fileID: 8300000, guid: 9314c391e2531b340ba79b511aa5c582, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
+      _preparation: {fileID: 8300000, guid: bd42dc67e3bee69489c80efd76da2303, type: 3}
+      _use: {fileID: 8300000, guid: 89a00718fd822924f8da26f376901d68, type: 3}
+      _miss: {fileID: 8300000, guid: 3b7eacdc71413e94c98efa7b5a8a1d49, type: 3}
+      _return: {fileID: 8300000, guid: ada80ac0152e1354fba007853839dbfa, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: 859614b1e4ac806449c889082eda8e62, type: 2}
+    _hurt: {fileID: 8300000, guid: 4075efe79e6926a45b48d3e0a97d32e1, type: 3}
+    _recovery: {fileID: 8300000, guid: ebf2766ea26cf2444b71a1234cb30a8d, type: 3}
+    _death: {fileID: 8300000, guid: f044c40f0e63cb44088f72d3338336a7, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: df3bfebaf4ce4ffab46ec48a620fa6d5, type: 2}
+      _preparation: {fileID: 8300000, guid: d0d6abe69a1e4744780eed0757227f01, type: 3}
+      _use: {fileID: 8300000, guid: 40c9ef17e32dd3443b7b58712d4f1a36, type: 3}
+      _miss: {fileID: 8300000, guid: 4a0b5f5169cea5442879b2bbe66c1cc0, type: 3}
+      _return: {fileID: 8300000, guid: 896f26d22177b874cb50752519c427a8, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
+      _preparation: {fileID: 8300000, guid: bcfa6d136ce153648a5a2785c333c58f, type: 3}
+      _use: {fileID: 8300000, guid: 989a3b8ef6fef204baa1704cdb2d58ae, type: 3}
+      _miss: {fileID: 8300000, guid: 10e66a18b4b1d0f43a8b22b0bc762c5f, type: 3}
+      _return: {fileID: 8300000, guid: aab9bb792ab56f343a53ab5cf784b909, type: 3}
+      _comboPreparation: {fileID: 8300000, guid: fbcfa9d181447324db8b060d80c25284, type: 3}
+      _comboUse: {fileID: 8300000, guid: 5bddf6b7f75249b4ebe66ca793f05d1a, type: 3}
+      _comboMiss: {fileID: 8300000, guid: aec923f5919f054478f583e10ad8b289, type: 3}
+      _comboReturn: {fileID: 8300000, guid: c7929c8300c471c4dba206d45b9bc594, type: 3}
+  - _data: {fileID: 11400000, guid: 21f7b61e6ba22d547a99e204b26dc866, type: 2}
+    _hurt: {fileID: 8300000, guid: a949ad668ee70b3439b1155c083eb290, type: 3}
+    _recovery: {fileID: 8300000, guid: 691ce36e4f86ea34b94f06cbfd787b64, type: 3}
+    _death: {fileID: 8300000, guid: 3531fd71d6b3119499d1f56273110b3c, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 8300000, guid: f4abac41b59a0f0479de280bc3844240, type: 3}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
+      _preparation: {fileID: 8300000, guid: 4a2d2824cc7513044bd94bc754a54d20, type: 3}
+      _use: {fileID: 8300000, guid: ed6d7da1989d16140aca40cb2a722ea5, type: 3}
+      _miss: {fileID: 8300000, guid: 0084f39fa56cb8c4b905cee1f36c5719, type: 3}
+      _return: {fileID: 8300000, guid: e1d9e93e89b67c44cb924d426b3c038d, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 1ee58c041f184af198b64af2a6b04f62, type: 2}
+      _preparation: {fileID: 8300000, guid: 1234ec3e47a38f3449d226e2b2e7f9ed, type: 3}
+      _use: {fileID: 8300000, guid: 34455fcebf08b9948b40879ce3f128a7, type: 3}
+      _miss: {fileID: 8300000, guid: 51cf135fefdb85c47bb43b9a22650d5c, type: 3}
+      _return: {fileID: 8300000, guid: 36719a880c9738746837ce9721ced79b, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
+      _preparation: {fileID: 8300000, guid: 12c331c88cf4e2a4eb89ac7a51b68b92, type: 3}
+      _use: {fileID: 8300000, guid: 366ef5b7064cb5f438e032f714c527b2, type: 3}
+      _miss: {fileID: 8300000, guid: 93b42776a451dd4449560fa194320e12, type: 3}
+      _return: {fileID: 8300000, guid: ee23667fdbf03cb43bd8634515c1f528, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: 44920461d897616408b67bf852dfa0f8, type: 2}
+    _hurt: {fileID: 8300000, guid: a9e39ab5f8cc50d42ae89f3302251218, type: 3}
+    _recovery: {fileID: 8300000, guid: 7be055db41c206d46a329dcf96973de3, type: 3}
+    _death: {fileID: 8300000, guid: 3cc2958a270291d4ab3334eed4a9da53, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 428e1c5a3a197864da6ce9d60084fcd0, type: 2}
+      _preparation: {fileID: 8300000, guid: b1860aba4f30bb84898e0db4700bb734, type: 3}
+      _use: {fileID: 8300000, guid: 420d138f6481d5e40b0c906f3ed41abd, type: 3}
+      _miss: {fileID: 8300000, guid: 50d29812b58847e4a9cc9d8be187ff79, type: 3}
+      _return: {fileID: 8300000, guid: af34d03cc49175f4a87071b9f89bffd7, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 17c969bc27c678b4b8f3bc2d2ed87966, type: 2}
+      _preparation: {fileID: 8300000, guid: ea79a32cdcdd4e94db97f4c9dad12de1, type: 3}
+      _use: {fileID: 8300000, guid: 67092498f75a71a4fba5fe11de2579c4, type: 3}
+      _miss: {fileID: 8300000, guid: 6f73797a12632ff46ac3cb207164fcc4, type: 3}
+      _return: {fileID: 8300000, guid: 33d91d290453ca9459a07b9cf412965d, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 3997648d85372fb4ea0274b1173757a5, type: 2}
+      _preparation: {fileID: 8300000, guid: e5e39b3f949ff4a4db8ef03f49f3216a, type: 3}
+      _use: {fileID: 8300000, guid: e968e3566cf7f21418165699af7cb13c, type: 3}
+      _miss: {fileID: 8300000, guid: 51f8d5b556dcc0c4b8c308fd2430e65e, type: 3}
+      _return: {fileID: 8300000, guid: d88cf29af5d2b7d49be28c91631c7c63, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: a2d1cb46757be9f4f9a5ff13aa16f52c, type: 2}
+    _hurt: {fileID: 8300000, guid: c0ea3a7b765e0c1409b82b00e2b75083, type: 3}
+    _recovery: {fileID: 8300000, guid: 612d492239b63ce44a786f0ce6779100, type: 3}
+    _death: {fileID: 8300000, guid: d67ad09a591dd0e459a79d68ce88147f, type: 3}
+    _deathFoley: {fileID: 8300000, guid: 3788cf2d4ec1c8a41a515ca083fbb2d3, type: 3}
+    _deathDoor: {fileID: 8300000, guid: 6b2405c6dbf579a4bbee5bd4ba4a0811, type: 3}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 6d82fcc14984bb9478024c897d900379, type: 2}
+      _preparation: {fileID: 8300000, guid: 06a72bba222ee34409ed0038cef20cba, type: 3}
+      _use: {fileID: 8300000, guid: 62ba460ddaa65054f949b49ac8c24547, type: 3}
+      _miss: {fileID: 8300000, guid: 7b471c44b4256fa42b8d9d6b8e9f0bd5, type: 3}
+      _return: {fileID: 8300000, guid: b0d2a9c142222fe47b84cec75ba4f35e, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: d4c050c80fba48a889cce99492d56e0a, type: 2}
+      _preparation: {fileID: 8300000, guid: 0748c030593ca8f40900eeebdb909713, type: 3}
+      _use: {fileID: 8300000, guid: 12750f0551042954fb32c71debef6f15, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: 6142cf8e06bda6a4f8cdd0b6740efa14, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 3f0cd1dbb380fc249939b26cdb2fe53b, type: 2}
+      _preparation: {fileID: 0}
+      _use: {fileID: 8300000, guid: 8c365588d9c0d6d45a86326f581525c1, type: 3}
+      _miss: {fileID: 8300000, guid: 6ed9af59353a7a04eace3df5de86569b, type: 3}
+      _return: {fileID: 8300000, guid: de955256919c98c4aaddbda44cab81a8, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 6290779e7a040b84981d5981af507b8a, type: 2}
+      _preparation: {fileID: 8300000, guid: a3d117c8f68ca5e4e89f655e3581eb66, type: 3}
+      _use: {fileID: 8300000, guid: 37a27dfa0e85a5141ae9a9da79baa8ea, type: 3}
+      _miss: {fileID: 8300000, guid: 90efa175f4272e543b4a8932a47c87a4, type: 3}
+      _return: {fileID: 8300000, guid: c328c0644fe60d94a82e462a40e31738, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 1c14e50faf91a6f478b7d523f8a21da3, type: 2}
+      _preparation: {fileID: 8300000, guid: a30a15dcbf44e454897c38e31ad75b5a, type: 3}
+      _use: {fileID: 8300000, guid: 7fe0b6195a0e89748b316bbfcd4443c0, type: 3}
+      _miss: {fileID: 8300000, guid: 15144d68d46b04349b36f58c361428ee, type: 3}
+      _return: {fileID: 8300000, guid: 45f392a8320668341b0536ab8c7f1694, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: a423235bb1df4714809004646922c61e, type: 2}
+    _hurt: {fileID: 8300000, guid: 33b8637b106e5054383f771d3db63bc7, type: 3}
+    _recovery: {fileID: 8300000, guid: 5d5ead2507483bc4a808dc7b34e91df4, type: 3}
+    _death: {fileID: 8300000, guid: 0494a7c5bba3c904795ab196d1afacf2, type: 3}
+    _deathFoley: {fileID: 8300000, guid: fd2f68c8ac920884d8972a2cba3c62e0, type: 3}
+    _deathDoor: {fileID: 8300000, guid: d4217c6bf8f34ab479e1f2043e337c3c, type: 3}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 0ae461d93a6e4f269a6066b5949e2177, type: 2}
+      _preparation: {fileID: 8300000, guid: 9f7e6b974ccfa534483ebbe3336798e0, type: 3}
+      _use: {fileID: 8300000, guid: dba2478190e7157408832d99c1bc4794, type: 3}
+      _miss: {fileID: 8300000, guid: 6d1134bbc88b56940a9656772869831a, type: 3}
+      _return: {fileID: 8300000, guid: 554a46af8a959b6418d1352da7cd55ae, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 8aaeba952248420a8c7b1d81b11f66c2, type: 2}
+      _preparation: {fileID: 8300000, guid: f27e14549251338408276115c654876d, type: 3}
+      _use: {fileID: 8300000, guid: 9f217febf782e53469bd84796ff5b9d1, type: 3}
+      _miss: {fileID: 8300000, guid: 5a85b991e48dc044a877e0e2bf475e5b, type: 3}
+      _return: {fileID: 8300000, guid: 6c4113e4e25a3e44b9aad5118e9fbb01, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: f113147ff3a8468ab5e5360aaa63c562, type: 2}
+      _preparation: {fileID: 8300000, guid: 9c89fe2a42534994b95a99d898e98749, type: 3}
+      _use: {fileID: 8300000, guid: ebaa4cf4726e27a4f97bbc8673e920d3, type: 3}
+      _miss: {fileID: 8300000, guid: 2c149ba69a3a99f4bbf93c5f46057413, type: 3}
+      _return: {fileID: 8300000, guid: 507d9ec963ca39c44bd6e56960830941, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 2d077246549642c3a57e26f7ad806e12, type: 2}
+      _preparation: {fileID: 0}
+      _use: {fileID: 8300000, guid: 8051ed8c16ff0ca4f8c30f643c9fc9f7, type: 3}
+      _miss: {fileID: 8300000, guid: 40b5bd0ed61d53c44a8764f1aa4700a9, type: 3}
+      _return: {fileID: 8300000, guid: be2a8e74ab6df8a48a9e4218525267cc, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: eac14b521b2dc954d9b671aabd5b7d0a, type: 2}
+    _hurt: {fileID: 8300000, guid: ac4b68062414e5344b8923bec1caee45, type: 3}
+    _recovery: {fileID: 0}
+    _death: {fileID: 8300000, guid: c657cae8ff3c93e42900f5fceb5371ee, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: c512bed77ec235448a8298fd641fd767, type: 2}
+      _preparation: {fileID: 8300000, guid: f1521c9c9a93c64479f1cff25df504f9, type: 3}
+      _use: {fileID: 8300000, guid: e896702c03cbd644f974dd7cd4ad7088, type: 3}
+      _miss: {fileID: 8300000, guid: 1e355a88fbc2da040a3c9ab7668317a1, type: 3}
+      _return: {fileID: 8300000, guid: 97bf7827299e64d4cb8c26dd570784f1, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 834abc79843e8b74ba7da0f7f316d1df, type: 2}
+      _preparation: {fileID: 8300000, guid: b092bdd4a52ff92459c0ed76bcc83c68, type: 3}
+      _use: {fileID: 8300000, guid: 8915c369a1330f149943dffe310cd365, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 0}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 1f83fa63e1695ee40bfb2911e3996529, type: 2}
+      _preparation: {fileID: 8300000, guid: bded8d88278f6d54f87542272550e25d, type: 3}
+      _use: {fileID: 8300000, guid: 77c0d52997f095c42bf93e61334b343f, type: 3}
+      _miss: {fileID: 8300000, guid: 0d286619ed32a88409ed421b4f23250e, type: 3}
+      _return: {fileID: 8300000, guid: ed125976ba1e4de47bcfb0ccc91b79b9, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: e1fc873ca1215334095eb9a5031d47c1, type: 2}
+      _preparation: {fileID: 8300000, guid: b470c1d769fc95a4b85c6e907c4f0828, type: 3}
+      _use: {fileID: 8300000, guid: c08b55b079e4390479cf12f9830a2921, type: 3}
+      _miss: {fileID: 8300000, guid: 90a2f0ff9cc64244abcf2707905382d2, type: 3}
+      _return: {fileID: 8300000, guid: dce91fdd0fbe7bc42bff1b3cf7487bb7, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: d9ac2e7eae0511540bda5aee81f3c781, type: 2}
+    _hurt: {fileID: 8300000, guid: 5e4c9a91b0439674f8aaab3241eadbbd, type: 3}
+    _recovery: {fileID: 0}
+    _death: {fileID: 8300000, guid: 74810d57c51c16a4e8a1c585f2d320d6, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 8300000, guid: d70bb2cbcdb5ad540bc7c4a2f6d2c5a8, type: 3}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 82cdf55c2deed90458d1c4c6bb0bfd2b, type: 2}
+      _preparation: {fileID: 8300000, guid: de98a8749d37791469b9c576676ac947, type: 3}
+      _use: {fileID: 8300000, guid: 3915712bab0af014399647d3533ebe3a, type: 3}
+      _miss: {fileID: 8300000, guid: e6d5bed19e6b08e479cbd691c478c009, type: 3}
+      _return: {fileID: 8300000, guid: ea14f5d67a2ccd247bd9d1c4c2731c64, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 7627839ff9bbf024ca21dac79832df2e, type: 2}
+      _preparation: {fileID: 8300000, guid: 48a26761acce9854cb3746ec402fad0a, type: 3}
+      _use: {fileID: 8300000, guid: 0f64a3f1c62a94a4d9cb161a333d8804, type: 3}
+      _miss: {fileID: 8300000, guid: 64ae7098baa71954a9550c2d6ba84cab, type: 3}
+      _return: {fileID: 8300000, guid: f3211f330f231d94390fb12e78942899, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: a6c174c35b920fe409503bee7b490e4d, type: 2}
+      _preparation: {fileID: 0}
+      _use: {fileID: 8300000, guid: 3a51f5c09f9c18241b3bfc770b8bff26, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: c0cf51741e9874642b0010c583484bb1, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: b7fdd2fa90a75994a8b162681bc88e62, type: 2}
+    _hurt: {fileID: 8300000, guid: 46d70405d9d77354fbbe84cbcd8e5782, type: 3}
+    _recovery: {fileID: 0}
+    _death: {fileID: 8300000, guid: 1132bde684fbed64e8334b537c9dff58, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: e6c5d4310dcbfc945863b3a695c46c9f, type: 2}
+      _preparation: {fileID: 8300000, guid: c938c7374f1159740b881234db8c8fa8, type: 3}
+      _use: {fileID: 8300000, guid: edfc929ea108f7b41979e84c4997194b, type: 3}
+      _miss: {fileID: 8300000, guid: e4802d0ab3e885547b48ad934b2b2428, type: 3}
+      _return: {fileID: 0}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 5eb1001044fb5f742add9bd30ae9b589, type: 2}
+      _preparation: {fileID: 8300000, guid: cfa05013acebbe44482e5e63a474192c, type: 3}
+      _use: {fileID: 8300000, guid: 27da6926051846e4eb697c1760e5e754, type: 3}
+      _miss: {fileID: 8300000, guid: 4764154b9451918419b5c3a1e52f8642, type: 3}
+      _return: {fileID: 8300000, guid: 34b8c407dc1efb444b13b34c38f13853, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 5531012b236478741b1c0ea2ddf965aa, type: 2}
+      _preparation: {fileID: 8300000, guid: 0ebd79b92e30d964290d7254390800de, type: 3}
+      _use: {fileID: 8300000, guid: a96ff833454e7ab4bb99d09b41b1806a, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: 91405deaa992ea74b9f8f0a833741b7e, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: 4ad80ccd388127f4d9d8dc275c4c37bc, type: 2}
+    _hurt: {fileID: 8300000, guid: 02d73a13cc5dc834ca890d5e488dbe2a, type: 3}
+    _recovery: {fileID: 0}
+    _death: {fileID: 8300000, guid: e4efbf84813ce4b48a2dfd4350574cd0, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: c6c6ab30d845de44283f61a7403ec3aa, type: 2}
+      _preparation: {fileID: 8300000, guid: 370059feaa07e984ba2f5b0d294ff32c, type: 3}
+      _use: {fileID: 8300000, guid: a76c4410c775ed840b98db075c6be1a6, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: 22aed253915e9ae44a72cfaa23d3c819, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 67cb840bb387825448a635d7a107e64d, type: 2}
+      _preparation: {fileID: 8300000, guid: a06a69ab6b2156244b735c93bfb7944e, type: 3}
+      _use: {fileID: 8300000, guid: 24d5436b384e54e4997713737052ce37, type: 3}
+      _miss: {fileID: 8300000, guid: c2dc84215504c2846b4ef630002145a2, type: 3}
+      _return: {fileID: 0}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 0e94bfd0f6476b34bbeb7b0316cc66f9, type: 2}
+      _preparation: {fileID: 8300000, guid: 1e3796d3bb0847b418f7a95f7d94b4d6, type: 3}
+      _use: {fileID: 8300000, guid: 5f048014f0dcf9f4c81f5d1b358e9f49, type: 3}
+      _miss: {fileID: 8300000, guid: 35d8232cf8216534cb4cfd2d2dd038ed, type: 3}
+      _return: {fileID: 0}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: c794f0fd32eb554418e107b61372d838, type: 2}
+    _hurt: {fileID: 8300000, guid: e69814c6c5fa72b4c87b65e05e5ab989, type: 3}
+    _recovery: {fileID: 8300000, guid: e8fed9f28cff44e4ea010e87191f7c89, type: 3}
+    _death: {fileID: 8300000, guid: e578e6fae73c53f4aaf6e119cf3f6a8f, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 53074103aa31ab444a3b104326175141, type: 2}
+      _preparation: {fileID: 8300000, guid: 5a70b11f70838b145bc4c4769a67bdda, type: 3}
+      _use: {fileID: 8300000, guid: 36622f1c31ff6884894e71e635155f05, type: 3}
+      _miss: {fileID: 8300000, guid: 4fbb6cdfc48ab4a429b583965f6803d1, type: 3}
+      _return: {fileID: 8300000, guid: c3272b9b5a5d6ac4f8d9d4731938dd3f, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
+      _preparation: {fileID: 8300000, guid: ca3de0be696d3f645bc5acb997f8e94c, type: 3}
+      _use: {fileID: 8300000, guid: f31b43afafed430458d385bbba49338b, type: 3}
+      _miss: {fileID: 8300000, guid: 84e7e20a35e797947bfbd469fc5d136d, type: 3}
+      _return: {fileID: 8300000, guid: e67c07782f02c2848ad298f39ae0a3fc, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
+      _preparation: {fileID: 8300000, guid: 6f88a60f7d6c94b488858e4e7465725a, type: 3}
+      _use: {fileID: 8300000, guid: c610f8df9df48364d99fe85863a90fde, type: 3}
+      _miss: {fileID: 8300000, guid: 0f2fc3d6bca1b4b4686fb18608ca3e96, type: 3}
+      _return: {fileID: 8300000, guid: cd6e33380dd04284b8666ed452a84382, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: a6acfa827df52be48b243a631b4bbe46, type: 2}
+      _preparation: {fileID: 8300000, guid: 2a89f56e43522b64d8a9de4a7061d7a3, type: 3}
+      _use: {fileID: 8300000, guid: 5eb7df0ab88a59641bd299720dd64faa, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: ddabe8e6fd81a634c8c2973e43ae3c8f, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: 892a2b294e416dd4eb0f6c19b5434820, type: 2}
+    _hurt: {fileID: 8300000, guid: 24f188081ecd793458550e5a6d2b9044, type: 3}
+    _recovery: {fileID: 8300000, guid: 58bf4b064b9b67649832e04f8279d3ba, type: 3}
+    _death: {fileID: 8300000, guid: 7d3ed66a207377c44a577c6b9e66e4dd, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
+      _preparation: {fileID: 8300000, guid: 186fe7fe541c2c146b454b024757afde, type: 3}
+      _use: {fileID: 8300000, guid: 9fa680f04aa98db47af46f5c83694aca, type: 3}
+      _miss: {fileID: 8300000, guid: 4c54504751080a545a673e2dc4151617, type: 3}
+      _return: {fileID: 8300000, guid: 5ce800f8d72973648a69acf9dcaef783, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: a74b9084d86c8a1459e138329dedf490, type: 2}
+      _preparation: {fileID: 8300000, guid: 95971c85371b28742874bcb379e7f545, type: 3}
+      _use: {fileID: 8300000, guid: cb77d4203471cbe42b1aa4170c804d77, type: 3}
+      _miss: {fileID: 8300000, guid: e5536451976e350459496c3131b32a67, type: 3}
+      _return: {fileID: 8300000, guid: 4d8b81715c78a854caf35f4557e144d5, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
+      _preparation: {fileID: 8300000, guid: 8d8a173424595a740828db2013406375, type: 3}
+      _use: {fileID: 8300000, guid: 158bb4b0c4785334898ed6fffcd63f8f, type: 3}
+      _miss: {fileID: 8300000, guid: d0a16fcd5fc8b2d4fbc8cdedd3c047f4, type: 3}
+      _return: {fileID: 8300000, guid: 5f900ca6809be2c4a9d19d49722d5e97, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 663c105c7dfb5444aa60d4aab535202c, type: 2}
+      _preparation: {fileID: 8300000, guid: dc71359e98a454f45a2479be968d5944, type: 3}
+      _use: {fileID: 8300000, guid: 2676abadd11e83241b9a079699003516, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: 3a01228ae93c15045b9b11ad7b310146, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: dcd0f241e265c7141a2b658076fb84fd, type: 2}
+    _hurt: {fileID: 8300000, guid: 3746dbbd905c02f439e62f9f12a299a7, type: 3}
+    _recovery: {fileID: 8300000, guid: 43e943852bb1c4248aee16ffc9c3c5d5, type: 3}
+    _death: {fileID: 8300000, guid: 69e3d48f868ba96408940f738fc9dabe, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
+      _preparation: {fileID: 8300000, guid: 96c531b432dd7c748a6b2856921d53f4, type: 3}
+      _use: {fileID: 8300000, guid: 1469b067caf1d214682d6d28af7d9cdd, type: 3}
+      _miss: {fileID: 8300000, guid: e7fe626563fc87d43b9879fd622a852d, type: 3}
+      _return: {fileID: 8300000, guid: 4c9281ff5bfd3d043af2a4628476d29d, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
+      _preparation: {fileID: 8300000, guid: c5cf49395730aec44b3798e2fd2d5479, type: 3}
+      _use: {fileID: 8300000, guid: 6ecf2ef497e65d74680dffa0ca60bb91, type: 3}
+      _miss: {fileID: 8300000, guid: f2f91172ed165c149956d4f98726d3f3, type: 3}
+      _return: {fileID: 8300000, guid: 54a8a3e50a3c0124dac3417e5eeadfd3, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: d195339fcba0ad844912d02100b8dafc, type: 2}
+      _preparation: {fileID: 8300000, guid: 5f8208f31cc1a9d489184ee6c6780a65, type: 3}
+      _use: {fileID: 8300000, guid: c636b2e6b8be9a3459ebbb09ec29a90e, type: 3}
+      _miss: {fileID: 8300000, guid: 7fd83b2d017588742ba59206870f8951, type: 3}
+      _return: {fileID: 8300000, guid: df3ce66c8679f4d4eaca2fe4f074385e, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 8b4355a4b50f145449837cb69d12a1dd, type: 2}
+      _preparation: {fileID: 8300000, guid: 8c67382d112f3e8498a87c16467334c8, type: 3}
+      _use: {fileID: 8300000, guid: a70a90b18eee33a4cb8b93f3935b2e39, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: 8962b3b66474bd143916839ddbc961bf, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: 9fcb39191fee42344ad87146da7c1460, type: 2}
+    _hurt: {fileID: 8300000, guid: 40832951dbb5286438297ca49ef54bb7, type: 3}
+    _recovery: {fileID: 8300000, guid: edcb29802a1a3424ba43fd80368f1431, type: 3}
+    _death: {fileID: 8300000, guid: 70b113a08ce0b2b49a7a542c11a5ab85, type: 3}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills:
+    - _skill: {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
+      _preparation: {fileID: 8300000, guid: 04e26622763bc864cb50dc0e25abf680, type: 3}
+      _use: {fileID: 8300000, guid: cae31af4487ab4848b864f244af2c423, type: 3}
+      _miss: {fileID: 8300000, guid: e2e012eb3958f644b89773f58bb512a9, type: 3}
+      _return: {fileID: 8300000, guid: db9e20e291fc8504e974c4d0e67ddaed, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 5169c86137329484fb1b4ccab1cbc0eb, type: 2}
+      _preparation: {fileID: 8300000, guid: 6ebd60ad1c9df0f428b340a5af038ae6, type: 3}
+      _use: {fileID: 8300000, guid: 12362dffd1d47a54f9f5d996016a665e, type: 3}
+      _miss: {fileID: 8300000, guid: b84a7865c62f65d40b48445bfdb90631, type: 3}
+      _return: {fileID: 8300000, guid: c51c850b92437b944a6069ab7c93ab4b, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
+      _preparation: {fileID: 8300000, guid: 56c83c87fde081b4d888ccfe1b06dcdc, type: 3}
+      _use: {fileID: 8300000, guid: 765077f4e0996db42ac3e33deff77355, type: 3}
+      _miss: {fileID: 8300000, guid: 1404d0b71cc3e4947b61d9c52c4cddb5, type: 3}
+      _return: {fileID: 8300000, guid: 6bfd10efd9907fc4692383ac5523af4c, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+    - _skill: {fileID: 11400000, guid: e8a380921d9103243a3b9820ab7d12a8, type: 2}
+      _preparation: {fileID: 8300000, guid: de9c36f8add6c744fb13007aac8ad90b, type: 3}
+      _use: {fileID: 8300000, guid: 6b725d9f25072244092c2a37d5b76d83, type: 3}
+      _miss: {fileID: 0}
+      _return: {fileID: 8300000, guid: 139a1f538c1969343974b740218435d8, type: 3}
+      _comboPreparation: {fileID: 0}
+      _comboUse: {fileID: 0}
+      _comboMiss: {fileID: 0}
+      _comboReturn: {fileID: 0}
+  - _data: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
+    _hurt: {fileID: 0}
+    _recovery: {fileID: 8300000, guid: c87a71fad56d4e94fbeee10ef97bc813, type: 3}
+    _death: {fileID: 0}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 8300000, guid: ebb75a9334ba14c4e86254ec01cdff1f, type: 3}
+    _riposteReturn: {fileID: 0}
+    _skills: []
+  - _data: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
+    _hurt: {fileID: 0}
+    _recovery: {fileID: 8300000, guid: c155b6c4d87566043adfc6361f6a1c31, type: 3}
+    _death: {fileID: 0}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 8300000, guid: 063e0c2c8f3321d43b6d361a8f21c0e9, type: 3}
+    _riposteReturn: {fileID: 8300000, guid: 4a1f899fc14030948ac1212d6b1857e1, type: 3}
+    _skills: []
+  - _data: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
+    _hurt: {fileID: 0}
+    _recovery: {fileID: 8300000, guid: 5aa9c9ea72a44164b9f8e04556ae7423, type: 3}
+    _death: {fileID: 0}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 8300000, guid: 5edade8779824424bb95a323d126f349, type: 3}
+    _riposteReturn: {fileID: 8300000, guid: 8d487ffd559149644a2e621f8ac09097, type: 3}
+    _skills: []
+  - _data: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
+    _hurt: {fileID: 0}
+    _recovery: {fileID: 0}
+    _death: {fileID: 0}
+    _deathFoley: {fileID: 0}
+    _deathDoor: {fileID: 0}
+    _riposteReturn: {fileID: 0}
+    _skills: []
+  _sounds:
+  - _key: riposte_miss
+    _clip: {fileID: 8300000, guid: 99d425fa9997b514e91666a8a266620b, type: 3}
+  - _key: skill_return_whoosh
+    _clip: {fileID: 8300000, guid: 7c856c3d41cb5ab46b9dcc3048a7e86f, type: 3}
+  - _key: status/bleedonset
+    _clip: {fileID: 8300000, guid: 1c08feae55dd9a94484e570ebd3c9acd, type: 3}
+  - _key: status/blightonset
+    _clip: {fileID: 8300000, guid: 4c5accc781f3111488a755e60a2f2ed3, type: 3}
+  - _key: status/burnonset
+    _clip: {fileID: 8300000, guid: ca920d6042970464689c612b0641fc1d, type: 3}
+  - _key: status/horroronset
+    _clip: {fileID: 8300000, guid: 7b4971acf7ff260418bdeef20731854a, type: 3}
+  - _key: status/hotonset_ally
+    _clip: {fileID: 8300000, guid: 142d1663bd0cade408a84b7b4bc96c42, type: 3}
+  - _key: status/hotonset_enemy
+    _clip: {fileID: 8300000, guid: 1bf5bfa105be3e949a9b9e9e83c355bd, type: 3}
+  - _key: status/bleedDOT
+    _clip: {fileID: 8300000, guid: 4642b5e8f7533c943b24f4c9f1540dc0, type: 3}
+  - _key: status/blightDOT
+    _clip: {fileID: 8300000, guid: 42bf71468c4e00345901b5838f3134e2, type: 3}
+  - _key: status/burnDOT
+    _clip: {fileID: 8300000, guid: 6a17ed7e343b6254ca01cc527bfaed75, type: 3}
+  - _key: status/riposte
+    _clip: {fileID: 8300000, guid: e62315ea332a7c243ab667eaf3102f02, type: 3}
+  - _key: armorbreak
+    _clip: {fileID: 8300000, guid: 6c531fd80d560854a89a031801873678, type: 3}
+  - _key: deathblow
+    _clip: {fileID: 8300000, guid: 3f4f0d386ba887445ae5d4669c261ec1, type: 3}
+  - _key: deaths_door
+    _clip: {fileID: 8300000, guid: cb42c27be60123a4db76b02e6349ab41, type: 3}
+  - _key: riposte
+    _clip: {fileID: 8300000, guid: a72e82e38c0e864448d2be882f3b7561, type: 3}
+  - _key: crit_hero
+    _clip: {fileID: 8300000, guid: 1a45ceeb0cafcc344a52638d71d76a69, type: 3}
+  - _key: crit_enemy
+    _clip: {fileID: 8300000, guid: 1d5e25cfcd0e327499cc6782e01b9c88, type: 3}
+  - _key: status/heal_ally
+    _clip: {fileID: 8300000, guid: 5e4727025ec2df34d80cd1ebd767eb09, type: 3}
+  - _key: status/heal_ally_crit
+    _clip: {fileID: 8300000, guid: 4c985b24d8d62b640a17d6ab015a2910, type: 3}
+  - _key: status/heal_enemy
+    _clip: {fileID: 8300000, guid: 5ef8e0f5c6006394ba6e91001509c31e, type: 3}
+  - _key: status/heal_enemy_crit
+    _clip: {fileID: 8300000, guid: c5a66fe704b1eae40b1aeac7d897299b, type: 3}
+  - _key: status/hp_loss
+    _clip: {fileID: 8300000, guid: b8472d2aa19e72042bccc4efffeeeca3, type: 3}
+  - _key: status/stressup
+    _clip: {fileID: 8300000, guid: 2ed12499e9187ed4084f9347c87d9dc4, type: 3}
+  - _key: status/stressdown
+    _clip: {fileID: 8300000, guid: c305633f0179af3419dfda840a834b27, type: 3}
+  - _key: status/horrorDOT
+    _clip: {fileID: 8300000, guid: 06be05744a12ccf44bdd1da633aa79a9, type: 3}
+  - _key: status/meltdown
+    _clip: {fileID: 8300000, guid: bed852900cb7b4548b9825a48560d907, type: 3}
+  - _key: status/resolute
+    _clip: {fileID: 8300000, guid: b42fbe973e0a4a24e89c91a3919f5e23, type: 3}
+  - _key: token/block
+    _clip: {fileID: 8300000, guid: ed9b90a4b8a938b4a88092d76a1d040d, type: 3}
+  - _key: token/block_plus
+    _clip: {fileID: 8300000, guid: 8c1f54e47cd34d74987b57c31fcfefa6, type: 3}
+  - _key: token/dodge
+    _clip: {fileID: 8300000, guid: 1c89eff4705b48943bf8a24445cc81a6, type: 3}
+  - _key: token/dodge_plus
+    _clip: {fileID: 8300000, guid: 19100057e70a25a46a6617cce2c24022, type: 3}
+  - _key: token/crit
+    _clip: {fileID: 8300000, guid: 00187c922219ff34c82f92477392671d, type: 3}
+  - _key: token/guard
+    _clip: {fileID: 8300000, guid: a9a5f350e861a3644bf1d1a449531f87, type: 3}
+  - _key: token/blind
+    _clip: {fileID: 8300000, guid: dc5ee1e8f4c4db545a96050987cb77fe, type: 3}
+  - _key: token/speed
+    _clip: {fileID: 8300000, guid: f5a3e7a3aeb97244ba4d4141cc8561d4, type: 3}
+  - _key: token/strength
+    _clip: {fileID: 8300000, guid: f4b62f5427f3a1c4fafdc152640a67d6, type: 3}
+  - _key: token/stealth
+    _clip: {fileID: 8300000, guid: 17b79c94dfe8d7449a8187df8552f965, type: 3}
+  - _key: token/daze
+    _clip: {fileID: 8300000, guid: 879141a6708bd5741b421cc02875f8c0, type: 3}
+  - _key: token/stun
+    _clip: {fileID: 8300000, guid: 2bc99893d0f38f2439a9244450288817, type: 3}
+  - _key: token/taunt
+    _clip: {fileID: 8300000, guid: 4d1e564ee279c4d488e9a69713fb4217, type: 3}
+  - _key: token/immobilize
+    _clip: {fileID: 8300000, guid: 3fb7b13804a9d4c40839d1412b790fa5, type: 3}
+  - _key: token/combo
+    _clip: {fileID: 8300000, guid: a5319d4ceb73b1a4b8b3eb8d2625894d, type: 3}
+  - _key: token/deathsdoor_armor
+    _clip: {fileID: 8300000, guid: b6d2b434bbdafb34c915bd1262930caa, type: 3}
+  - _key: token/general_debuff
+    _clip: {fileID: 8300000, guid: cf9d457296c620945837b9050c0d9da7, type: 3}
+  - _key: token/healing_block
+    _clip: {fileID: 8300000, guid: 96bf2f0671444ec4bbd02015c29e1d1b, type: 3}
+  - _key: token/stun_consume
+    _clip: {fileID: 8300000, guid: e9402edb4eedbdc4c8889cf9a511ca2b, type: 3}
+  - _key: status/cure
+    _clip: {fileID: 8300000, guid: a03c08d0d235a9a4685fb78a7c06376c, type: 3}
+  - _key: status/resist
+    _clip: {fileID: 8300000, guid: e72924a0e277bff4b8ee80ca21f17815, type: 3}
+  - _key: status/hotDOT_ally
+    _clip: {fileID: 8300000, guid: 6e86e614ab638bf448d93be603aaa483, type: 3}
+  - _key: status/hotDOT_enemy
+    _clip: {fileID: 8300000, guid: d6c7867420083a944a60e6d72984829d, type: 3}
+  - _key: token/daze_consume
+    _clip: {fileID: 8300000, guid: 3d564d9f1d6de6c4e96f96ddd5afbba1, type: 3}
+  - _key: token/speed_consume
+    _clip: {fileID: 8300000, guid: a01f1399a9398884a88d9a919098d389, type: 3}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd59a4c3bc10a8e4abba0f347a00a676, type: 3}
+  m_Name: CombatUIAudioSO
+  m_EditorClassIdentifier: 
+  _select: {fileID: 8300000, guid: 705058c85a137f046bfb0b4e32686fa0, type: 3}
+  _cancel: {fileID: 8300000, guid: b24c3d43adeafd547955938619bb0a9d, type: 3}
+  _confirm: {fileID: 8300000, guid: d1130ba1763585d40a6b5123b3440888, type: 3}
+  _pass: {fileID: 8300000, guid: fb7cfaed91f7f2641b245afa66b81c79, type: 3}
+  _invalid: {fileID: 8300000, guid: c8bd85c2d146aeb4ca27ab68515442d7, type: 3}
+  _hover: {fileID: 8300000, guid: c97d3e1bb97ec2c4f9cf9a1076903447, type: 3}
+  _enemyHover: {fileID: 8300000, guid: 635371acaec939945b526e039247ce98, type: 3}
+  _volume: 0.45

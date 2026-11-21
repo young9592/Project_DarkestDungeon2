@@ -23,3 +23,8 @@ MonoBehaviour:
   _launchSound: {fileID: 0}
   _impactSound: {fileID: 0}
   _volume: 0.5
+  _preparationSound: {fileID: 8300000, guid: 3a4a4cbea75bc584783ba79ad16af200, type: 3}
+  _preparationLoopSound: {fileID: 0}
+  _useSound: {fileID: 8300000, guid: d47aef63afb4b4240b8647cb3f4e030d, type: 3}
+  _missSound: {fileID: 8300000, guid: b092bdfafb07f5140ba62ce956471e05, type: 3}
+  _returnSound: {fileID: 0}
