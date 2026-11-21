@@ -381,8 +381,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 41
-  orthographic: 0
-  orthographic size: 1
+  orthographic: 1
+  orthographic size: 0.02
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -406,8 +406,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1938744550}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 10, z: -20}
+  m_LocalRotation: {x: 0.00000006705522, y: 0.00000017881392, z: -0.000000014901159, w: 1}
+  m_LocalPosition: {x: -0.00049133506, y: 0.008757316, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -428,6 +428,10 @@ PrefabInstance:
     - target: {fileID: 2063047008847062090, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
       propertyPath: m_Name
       value: StageCoach
+      objectReference: {fileID: 0}
+    - target: {fileID: 2063047008847062090, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4164634278680277195, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
       propertyPath: m_LocalPosition.x
