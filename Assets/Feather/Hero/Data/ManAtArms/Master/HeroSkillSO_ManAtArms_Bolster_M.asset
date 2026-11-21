@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 295d8272b1bb2a04b94947f320457616, type: 2}
   - {fileID: 11400000, guid: 7ce6f6987fb92c048b48add81dbf0a32, type: 2}
   - {fileID: 11400000, guid: bf7d725b37b67d04ca304639f6315278, type: 2}
+  _critChance: 0
+  _mainDescription: "\uB300\uC0C1 \uC2A4\uD2B8\uB808\uC2A4 3 \uAC10\uC18C"
+  _subDescription: "\uC790\uC2E0 \uBC29\uC5B4+ 1 \uBD80\uC5EC \uBC0F \uC790\uC2E0
+    \uD1A0\uD070 \uC81C\uAC70"
+  _denialCategories: 0
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

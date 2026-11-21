@@ -21,6 +21,10 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 6dd3c64df2e93764fa25e83509462ddd, type: 2}
+  _critChance: 5
+  _mainDescription: "\uC804\uC5F4 \uAD11\uC5ED \uD53C\uD574 2-4"
+  _subDescription: "\uC790\uC2E0 \uD798 1 \uBD80\uC5EC"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_grapeshot_blast
   _feedback: {fileID: 11400000, guid: c5b834575daa3b541a173467c29e4e32, type: 2}
-  _denialCategories: 2

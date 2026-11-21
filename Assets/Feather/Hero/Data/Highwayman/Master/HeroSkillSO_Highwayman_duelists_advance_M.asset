@@ -23,6 +23,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: be719d7def38b5d4d985edd1b9c05261, type: 2}
   - {fileID: 11400000, guid: 0ee0b193d4a70f248a4aaac6ec7ff55e, type: 2}
   - {fileID: 11400000, guid: a9b71de3d11672f45bc46f90079eeef3, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574 4-7"
+  _subDescription: "\uC804\uC9C4 1, \uC790\uC2E0 \uBC18\uACA9 3 \uBC0F \uD68C\uD53C
+    1 \uBD80\uC5EC"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

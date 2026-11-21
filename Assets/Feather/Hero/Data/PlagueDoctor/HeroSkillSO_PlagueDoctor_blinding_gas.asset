@@ -21,6 +21,10 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: b33a27da6f6e14945b694fb9ff72c799, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _critChance: 0
+  _mainDescription: "\uD6C4\uC5F4 \uAD11\uC5ED \uC2E4\uBA85 1 \uBD80\uC5EC"
+  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uAE30\uC808 \uBD80\uC5EC"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_blinding_gas
   _feedback: {fileID: 11400000, guid: e554b015ffa02d34d829eece038d22fd, type: 2}
-  _denialCategories: 2

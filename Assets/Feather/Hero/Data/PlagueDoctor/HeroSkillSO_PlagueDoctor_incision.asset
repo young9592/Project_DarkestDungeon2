@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
   - {fileID: 11400000, guid: ed49da046106fbb458b1d349148d5d92, type: 2}
   - {fileID: 11400000, guid: 3fa5b1c9a4a12b64592bd36abaa243a0, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 3-6, \uCD9C\uD608 3"
+  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uCD94\uAC00 \uCD9C\uD608
+    \uBD80\uC5EC"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_knifeslash
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_incision
   _feedback: {fileID: 11400000, guid: 1d28a5469177c964484454010f3a4098, type: 2}
-  _denialCategories: 1

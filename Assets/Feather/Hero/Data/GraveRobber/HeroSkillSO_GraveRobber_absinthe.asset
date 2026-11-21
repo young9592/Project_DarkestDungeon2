@@ -22,6 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 05fe254eeea6be94783070dda0430ba3, type: 2}
   - {fileID: 11400000, guid: c36c278865085ed4da2e64f057a0534f, type: 2}
   - {fileID: 11400000, guid: c9bbff644308d6b40984f698b44b70c0, type: 2}
+  _critChance: 0
+  _mainDescription: "\uC790\uC2E0 \uCCB4\uB825 4-6 \uD68C\uBCF5"
+  _subDescription: "\uC790\uC2E0 \uD68C\uD53C 3 \uBC0F \uC18D\uB3C4 1 \uBD80\uC5EC"
+  _denialCategories: 4
   _usesPerBattle: 3
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_potion
   _executionStartState: Base Layer.OriginalAction_GraveRobber_artemisia
   _feedback: {fileID: 11400000, guid: 6935f6d402ab39d488c19d9bc9780308, type: 2}
-  _denialCategories: 4

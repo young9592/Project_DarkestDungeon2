@@ -22,6 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ed70399a118b22742aa14feda442c62a, type: 2}
   - {fileID: 11400000, guid: ed49da046106fbb458b1d349148d5d92, type: 2}
   - {fileID: 11400000, guid: 8006c2c7292a5124faf023d0c97fd017, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 4-7, \uCD9C\uD608 3"
+  _subDescription: "\uCF64\uBCF4 \uBCF4\uC720 \uC2DC \uCD94\uAC00 \uCD9C\uD608 3"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

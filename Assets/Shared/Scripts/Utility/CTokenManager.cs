@@ -208,8 +208,6 @@ public class CTokenManager
         EEffectType.Blind, EEffectType.Weak,
         EEffectType.Vulnerable, EEffectType.Stun,
         EEffectType.Combo, EEffectType.Immobilize,
-        EEffectType.DenialOfArms, EEffectType.DenialOfReach,
-        EEffectType.DenialOfFortitude, EEffectType.DenialOfReason
     };
 
     /// <summary>

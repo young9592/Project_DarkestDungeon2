@@ -21,6 +21,10 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 868337a8358a454893fe1f4a1883625c, type: 2}
   - {fileID: 11400000, guid: 0881931bdb5f4b94ba7a687d6f1a0683, type: 2}
+  _critChance: 5
+  _mainDescription: "\uC801 \uC804\uCCB4 \uD654\uC0C1 3, \uC2DC\uCCB4 \uC81C\uAC70"
+  _subDescription: 
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_explosion
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_magnesium_rain
   _feedback: {fileID: 11400000, guid: 9c913b3007d48ee4bba39252a385781f, type: 2}
-  _denialCategories: 2

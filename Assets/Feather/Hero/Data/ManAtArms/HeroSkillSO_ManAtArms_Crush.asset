@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
   - {fileID: 11400000, guid: 0a27bd191d020af4e8180f00aec446ad, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 4-6"
+  _subDescription: "\uB300\uC0C1 \uCF64\uBCF4 \uBCF4\uC720 \uC2DC \uCCB4\uB825 3-4
+    \uD68C\uBCF5"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_crush
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Crush
   _feedback: {fileID: 11400000, guid: 4586fe5c47c671345b8f01fdc3f68264, type: 2}
-  _denialCategories: 1
