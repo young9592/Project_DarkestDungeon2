@@ -20,6 +20,10 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: cbe7f1101d6bce24b8dc82d7b139dc92, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574 4-8"
+  _subDescription: "\uCC98\uD615 1"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -34,4 +38,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_wicked_slice
   _executionStartState: Base Layer.OriginalAction_Highwayman_wicked_slice
   _feedback: {fileID: 11400000, guid: 9bb5fd6515ea5c04dab7334c60b18238, type: 2}
-  _denialCategories: 1

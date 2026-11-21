@@ -23,6 +23,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a9b71de3d11672f45bc46f90079eeef3, type: 2}
   - {fileID: 11400000, guid: ad49fe8d3a9f1ec499baa22ca6744503, type: 2}
   - {fileID: 11400000, guid: 3af932bd0fac2af4ebec66ff174f82c6, type: 2}
+  _critChance: 15
+  _mainDescription: "\uC804\uC5F4 \uAD11\uC5ED \uD53C\uD574 6-9, \uD6C4\uD1F4 3"
+  _subDescription: "\uC790\uC2E0 \uD68C\uD53C 1 \uBC0F \uC57D\uD654 1 \uBD80\uC5EC"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -37,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_flashing_daggers
   _executionStartState: Base Layer.OriginalAction_GraveRobber_pirouette
   _feedback: {fileID: 11400000, guid: d23a0dbf09253c346ab2a0ea4704df5c, type: 2}
-  _denialCategories: 2

@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: f36dcb01d0cc8b247af546f3b8334a62, type: 2}
+  _critChance: 0
+  _mainDescription: "\uD53C\uD574 2-3 \uBC0F \uB300\uC0C1 \uAE0D\uC815 \uD1A0\uD070
+    2\uAC1C \uAC15\uD0C8"
+  _subDescription: 
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_advance
   _executionStartState: Base Layer.OriginalAction_Highwayman_highway_robbery
   _feedback: {fileID: 11400000, guid: 58a5c5246eb4bb64cacf4176e6ee6f9f, type: 2}
-  _denialCategories: 1

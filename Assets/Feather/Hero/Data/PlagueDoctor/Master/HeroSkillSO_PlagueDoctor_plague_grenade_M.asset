@@ -22,6 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c81b074ba52d02b43b2d64331caa7182, type: 2}
   - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
   - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD6C4\uC5F4 \uAD11\uC5ED \uD53C\uD574 2-3, \uC911\uB3C5 4"
+  _subDescription: 
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

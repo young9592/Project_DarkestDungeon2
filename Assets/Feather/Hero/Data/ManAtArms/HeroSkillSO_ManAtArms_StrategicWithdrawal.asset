@@ -23,6 +23,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0a27bd191d020af4e8180f00aec446ad, type: 2}
   - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
   - {fileID: 11400000, guid: c01bfa8131a22cf4899c3528a8061006, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574 3-5, \uD6C4\uD1F4 1, \uD1A0\uD070 \uBD80\uC5EC"
+  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uC790\uC2E0 \uD68C\uBCF5"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -37,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_bash
   _executionStartState: Base Layer.OriginalAction_ManAtArms_StrategicWithdrawal
   _feedback: {fileID: 11400000, guid: 64b391c3b95b2444ab2650315069bf67, type: 2}
-  _denialCategories: 1

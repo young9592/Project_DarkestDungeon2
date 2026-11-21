@@ -20,6 +20,11 @@ MonoBehaviour:
   _cooldown: 2
   _effectList:
   - {fileID: 11400000, guid: cd9de734b6f65ed4fba86ca58fe4aee0, type: 2}
+  _critChance: 0
+  _mainDescription: "\uB300\uC0C1\uC758 \uB0A8\uC740 \uC9C0\uC18D \uB370\uBBF8\uC9C0
+    \uC989\uC2DC \uD53C\uD574\uB85C \uC815\uC0B0 \uD6C4 \uC81C\uAC70"
+  _subDescription: 
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

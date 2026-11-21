@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: f090e1229fe8a0f44b5f045227a078d5, type: 2}
   - {fileID: 11400000, guid: 0d00428a28e39ab42997fc341d0ccfcd, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574 8-11, \uC790\uC2E0 \uBC29\uC5B4 \uC18C\uBAA8 \uC2DC
+    \uD53C\uD574\uB7C9 \uC99D\uD3ED"
+  _subDescription: "\uC790\uC2E0 \uCDE8\uC57D 1 \uBD80\uC5EC"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
