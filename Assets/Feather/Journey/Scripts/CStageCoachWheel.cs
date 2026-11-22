@@ -36,7 +36,6 @@ public class CStageCoachWheel : MonoBehaviour
             enabled = false;
             return;
         }
-
         if (CPrint.NullUnityObjectCheck(gameObject.name, _trFL))
         {
             enabled = false;
