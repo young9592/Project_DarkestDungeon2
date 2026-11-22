@@ -47,7 +47,7 @@ public class CChapterUIButton : MonoBehaviour
     // 26-11-20 게임시작 추가
     public void GameStart()
     {
-        CSceneFlowManager.Instance.LoadScene(ESceneId.Temp_Park, CSceneFlowManager.EFadeType.Default);
+        CSceneFlowManager.Instance.LoadScene(ESceneId.Valley, CSceneFlowManager.EFadeType.Default);
     }
 
 }
