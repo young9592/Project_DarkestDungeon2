@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_battlefield_medicine_M
   m_EditorClassIdentifier: 
-  _skillName: Battlefield Medicine
+  _skillName: "\uC57C\uC804 \uC758\uC220"
   _skillIcon: {fileID: 21300000, guid: 8d5718349f67fe140aed254cc6ad561e, type: 3}
   _useableRank: 12
   _targetableRank: -1
@@ -23,9 +23,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9522c7758b2fdf34c9932f404dc4c0c6, type: 2}
   - {fileID: 11400000, guid: 717100b60b793d1478317fa7598891bc, type: 2}
   _critChance: 5
-  _mainDescription: "\uB300\uC0C1 \uCCB4\uB825 4-6 \uD68C\uBCF5, \uC9C0\uC18D \uD53C\uD574
-    \uC81C\uAC70"
-  _subDescription: "\uC790\uC2E0 \uC9C0\uC18D \uD53C\uD574 \uC81C\uAC70"
+  _mainDescription: "\uCE58\uBA85\uD0C0: 5%\n\uD69F\uC218: 3\n\uC7AC\uC0AC\uC6A9
+    \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color>\uC81C\uAC70: <sprite=14>,
+    <sprite=13>, <sprite=18>\n<color=#816b44>\uB300\uC0C1: </color> <sprite=32><color=#2CEE17>6-9</color>,
+    \uC81C\uAC70: <sprite=14>, <sprite=13>, <sprite=18>"
   _denialCategories: 4
   _usesPerBattle: 3
   _moveForwardOneRank: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_plague_grenade_M
   m_EditorClassIdentifier: 
-  _skillName: Plague Grenade
+  _skillName: "\uC5ED\uBCD1 \uC218\uB958\uD0C4"
   _skillIcon: {fileID: 21300000, guid: 9a2b19cd205bd8244909f6b1f1ebe4b7, type: 3}
   _useableRank: 12
   _targetableRank: 12
@@ -23,8 +23,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
   - {fileID: 11400000, guid: 33b6b661453841d4883d650a86ca9c4f, type: 2}
   _critChance: 10
-  _mainDescription: "\uD6C4\uC5F4 \uAD11\uC5ED \uD53C\uD574 2-3, \uC911\uB3C5 4"
-  _subDescription: 
+  _mainDescription: "\uD53C\uD574: 2-3 \uCE58\uBA85\uD0C0: 10%"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=13><color=#FFFF00>4</color>"
   _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
