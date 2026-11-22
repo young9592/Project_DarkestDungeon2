@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeroSO_GraveRobber
   m_EditorClassIdentifier: 
   _id: hero_grave_robber
-  _name: GraveRobber
+  _name: "\uB3C4\uAD74\uAFBC"
   _maxHealth: 29
   _speed: 5
   _resistance:
@@ -39,7 +39,7 @@ MonoBehaviour:
   _portraitTurnOrder: {fileID: 21300000, guid: 54c817a61061174409ed52de1b67355d, type: 3}
   _portraitInfo: {fileID: 21300000, guid: a9ef21c8ef9216a4b8a9d916dc40d2d5, type: 3}
   _skillSlotBackground: {fileID: 21300000, guid: fab8d1c815e40c94abbbeb20787d32c3, type: 3}
-  _defaultName: GraveRobber
+  _defaultName: "\uC624\uB4DC\uB9AC"
   _diseaseResistance: 30
   _deathDoorResistance: 60
   _stressResistance: 0

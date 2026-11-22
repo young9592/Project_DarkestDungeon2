@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_StrategicWithdrawal
   m_EditorClassIdentifier: 
-  _skillName: Strategic Withdrawal
+  _skillName: "\uC804\uB7B5\uC801 \uD1F4\uAC01"
   _skillIcon: {fileID: 21300000, guid: b5e74b82607ac2940b5bb851ce5e0dbb, type: 3}
   _useableRank: 3
   _targetableRank: 3
@@ -24,8 +24,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
   - {fileID: 11400000, guid: c01bfa8131a22cf4899c3528a8061006, type: 2}
   _critChance: 5
-  _mainDescription: "\uD53C\uD574 3-5, \uD6C4\uD1F4 1, \uD1A0\uD070 \uBD80\uC5EC"
-  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uC790\uC2E0 \uD68C\uBCF5"
+  _mainDescription: "\uD53C\uD574: 3-5 \uCE58\uBA85\uD0C0: 5%\n\uC7AC\uC0AC\uC6A9
+    \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><color=#484166>\uD6C4\uD1F4</color>1,<sprite=21>\uC9C0\uC815
+    \uC2DC <sprite=32> <color=#2CEE17>4-6</color>\n<color=#2c4a75>\uB300\uC0C1: </color><sprite=21>"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_Crush_M
   m_EditorClassIdentifier: 
-  _skillName: Crush
+  _skillName: "\uBD84\uC1C4"
   _skillIcon: {fileID: 21300000, guid: d4da580b581325841b816fed8d5240d7, type: 3}
   _useableRank: 3
   _targetableRank: 7
@@ -22,9 +22,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0418dcf31e8055b468d5acb401ede4e2, type: 2}
   - {fileID: 11400000, guid: 8ea1a00776b4ef14c9cbc0571cba3301, type: 2}
   _critChance: 10
-  _mainDescription: "\uD53C\uD574 6-8"
-  _subDescription: "\uB300\uC0C1 \uCF64\uBCF4 \uBCF4\uC720 \uC2DC \uCCB4\uB825 5-7
-    \uD68C\uBCF5"
+  _mainDescription: "\uD53C\uD574: 6-8 \uCE58\uBA85\uD0C0: 10%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=21>\uC9C0\uC815
+    \uC2DC <sprite=32> <color=#2CEE17>5-7</color>"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

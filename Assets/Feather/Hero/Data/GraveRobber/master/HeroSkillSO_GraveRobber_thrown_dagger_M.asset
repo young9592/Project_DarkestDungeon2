@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_thrown_dagger_M
   m_EditorClassIdentifier: 
-  _skillName: Thrown Dagger
+  _skillName: "\uB2E8\uAC80 \uD22C\uCC99"
   _skillIcon: {fileID: 21300000, guid: 1ffe6b4d536bc404dbb867e52c2121d6, type: 3}
   _useableRank: 14
   _targetableRank: 14
@@ -22,9 +22,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7392ac0893f7c245978307de2a8bc84, type: 2}
   - {fileID: 11400000, guid: 74f2e70aeb8fc814dafb4d7a2df62113, type: 2}
   _critChance: 25
-  _mainDescription: "\uD53C\uD574 4-8, \uC218\uD638 \uBC0F \uD68C\uD53C \uBB34\uC2DC"
-  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uC790\uC2E0 \uCE58\uBA85\uD0C0
-    1 \uD76D\uB4DD"
+  _mainDescription: "\uD53C\uD574: 4-8 \uCE58\uBA85\uD0C0: 25%\n<sprite=3>, <sprite=9>
+    \uBB34\uC2DC\n<sprite=21>\uC9C0\uC815 \uC2DC <sprite=5>"
+  _subDescription: 
   _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
