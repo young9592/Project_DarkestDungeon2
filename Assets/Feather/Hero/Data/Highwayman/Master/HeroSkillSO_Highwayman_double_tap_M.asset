@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_double_tap_M
   m_EditorClassIdentifier: 
-  _skillName: Double Tap
+  _skillName: "\uB9C8\uBB34\uB9AC \uC18D\uC0AC"
   _skillIcon: {fileID: 21300000, guid: e4fa0f7e1d1606847aaf6cca63642d25, type: 3}
   _useableRank: 6
   _targetableRank: 6
@@ -20,6 +20,10 @@ MonoBehaviour:
   _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: 1d9ddb127d028734696c37238fcff6ad, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574 4-6 \uCE58\uBA85\uD0C0 10%\n"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1 :</color>2\uD68C \uD0C0\uACA9"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

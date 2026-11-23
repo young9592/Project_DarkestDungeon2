@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_wicked_slice
   m_EditorClassIdentifier: 
-  _skillName: Wicked Slice
+  _skillName: "\uC57C\uBE44\uD55C \uCE7C\uC9C8"
   _skillIcon: {fileID: 21300000, guid: 042f50d83c4f16248ae39adab582ecf0, type: 3}
   _useableRank: 7
   _targetableRank: 3
@@ -20,6 +20,11 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: cbe7f1101d6bce24b8dc82d7b139dc92, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574: 4-8, \uCE58\uBA85\uD0C0: 10%\n<color=#816b44>\uCC98\uD615</color>
+    1"
+  _subDescription: 
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -34,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_wicked_slice
   _executionStartState: Base Layer.OriginalAction_Highwayman_wicked_slice
   _feedback: {fileID: 11400000, guid: 9bb5fd6515ea5c04dab7334c60b18238, type: 2}
-  _denialCategories: 1

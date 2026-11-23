@@ -7,7 +7,7 @@ public class CInnEncounter : MonoBehaviour
     [SerializeField] private string _targetName = "StageCoach";
 
     [Header("Option")]
-    [SerializeField] private ESceneId _desireSceneId = ESceneId.Temp_Sin_TheInn;
+    [SerializeField] private ESceneId _desireSceneId = ESceneId.Inn;
     #endregion
 
     private void OnTriggerEnter(Collider other)

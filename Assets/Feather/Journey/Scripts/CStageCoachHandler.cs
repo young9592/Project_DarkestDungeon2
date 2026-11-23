@@ -30,6 +30,10 @@ public class CStageCoachHandler : MonoBehaviour
     [SerializeField] private ECoachState _coachState = ECoachState.None;
     [SerializeField] private float _currentSpeed = 0f;
 
+    [Header("StageCoach Audio")]
+    [SerializeField] private CHorseAudio _horseAudio;
+    [SerializeField] private CStageCoachBodyAudio _bodyAudio;
+
     [Header("Option")]
     [SerializeField] private float _maxSpeed = 10f;
     [SerializeField] private float _rotatePower = 10f;
@@ -45,6 +49,9 @@ public class CStageCoachHandler : MonoBehaviour
     private Transform _leftTr;
     private Transform _rightTr;
 
+    private float _nextTime = 0f;
+    private float _horseSoundDelay = 3f;
+
     private static CStageCoachHandler _instance;
     #endregion
 
@@ -54,8 +61,12 @@ public class CStageCoachHandler : MonoBehaviour
 
     private void Awake()
     {
-        // null check
-
+        if (_leftHorse == null || _rightHorse == null || _body == null || _stair == null || _leftAnimator == null || _rightAnimator == null || _bodyAudio == null || _horseAudio == null)
+        {
+            CPrint.Error($"{gameObject.name} : Null Find.");
+            enabled = false;
+            return;
+        }
 
         if (_instance != null && _instance != this)
         {
@@ -122,7 +133,6 @@ public class CStageCoachHandler : MonoBehaviour
     {
         Vector3 moveVec = Vector3.zero;
 
-
         if (_coachState == ECoachState.Run)
         {
             _currentSpeed = Mathf.Clamp(_currentSpeed + 0.05f, 0, _maxSpeed);
@@ -131,6 +141,8 @@ public class CStageCoachHandler : MonoBehaviour
 
             _leftHorse.velocity = moveVec;
             _rightHorse.velocity = moveVec;
+
+            HorseEmoteSoundPlay();
         }
         else if (_coachState == ECoachState.Stop)
         {
@@ -139,7 +151,7 @@ public class CStageCoachHandler : MonoBehaviour
             _body.velocity = new Vector3(_body.velocity.x * 0.9f, _body.velocity.y, _body.velocity.z * 0.9f);
         }
 
-        float rot = _input.x * _rotatePower * (_coachState == ECoachState.Run ? 1 : 0.3f);
+        float rot = _input.x * _rotatePower;
 
         if (_currentSpeed / _maxSpeed >= 0.3f)
         {
@@ -175,6 +187,7 @@ public class CStageCoachHandler : MonoBehaviour
             if (vec.y < 0)
             {
                 _coachState = ECoachState.Stop;
+                MoveStageCoachSoundStop();
             }
         }
         else if (_coachState == ECoachState.Stop)
@@ -182,6 +195,7 @@ public class CStageCoachHandler : MonoBehaviour
             if (vec.y > 0)
             {
                 _coachState = ECoachState.Run;
+                MoveStageCoachSoundPlay();
             }
         }
 
@@ -192,5 +206,28 @@ public class CStageCoachHandler : MonoBehaviour
     public void CrashBaricade()
     {
         _coachState = ECoachState.Stop;
+    }
+
+    private void MoveStageCoachSoundPlay()
+    {
+        _bodyAudio.Play();
+        _horseAudio.Play();
+        _nextTime = Time.time + Random.Range(_horseSoundDelay, _horseSoundDelay + 1f);
+    }
+
+    private void MoveStageCoachSoundStop()
+    {
+        _bodyAudio.Stop();
+    }
+
+    private void HorseEmoteSoundPlay()
+    {
+        if (_nextTime > Time.time)
+        {
+            return;
+        }
+
+        _horseAudio.Play();
+        _nextTime = Time.time + Random.Range(_horseSoundDelay, _horseSoundDelay + 1f);
     }
 }

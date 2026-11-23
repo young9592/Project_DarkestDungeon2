@@ -70,16 +70,32 @@ public class CCombatDebugMenu : MonoBehaviour
         _applyOptionList.Add("회복", EEffectType.Heal);
         _applyOptionList.Add("스트레스", EEffectType.None);
         _applyOptionList.Add("스트레스 회복", EEffectType.None);
+        
         _applyOptionList.Add("출혈", EEffectType.Bleed);
         _applyOptionList.Add("중독", EEffectType.Blight);
         _applyOptionList.Add("화상", EEffectType.Burn);
-        _applyOptionList.Add("현기증", EEffectType.Daze);
-        _applyOptionList.Add("기절", EEffectType.Stun);
-        _applyOptionList.Add("추가행동", EEffectType.None);
-        _applyOptionList.Add("속도", EEffectType.Speed);
-        _applyOptionList.Add("고정", EEffectType.Immobilize);
+        _applyOptionList.Add("재생", EEffectType.Regen);
+        _applyOptionList.Add("공포", EEffectType.Horror);
+
+        _applyOptionList.Add("방호", EEffectType.Block);
+        _applyOptionList.Add("방호+", EEffectType.BlockPlus);
+        _applyOptionList.Add("치명타", EEffectType.Crit);
+        _applyOptionList.Add("회피", EEffectType.Dodge);
+        _applyOptionList.Add("회피+", EEffectType.DodgePlus);
         _applyOptionList.Add("반격", EEffectType.Riposte);
+        _applyOptionList.Add("속도", EEffectType.Speed);
         _applyOptionList.Add("은신", EEffectType.Stealth);
+        _applyOptionList.Add("힘", EEffectType.Strength);
+
+        _applyOptionList.Add("실명", EEffectType.Blind);
+        _applyOptionList.Add("현기증", EEffectType.Daze);
+        _applyOptionList.Add("고정", EEffectType.Immobilize);
+        _applyOptionList.Add("기절", EEffectType.Stun);
+        _applyOptionList.Add("도발", EEffectType.Taunt);
+        _applyOptionList.Add("취약", EEffectType.Vulnerable);
+        _applyOptionList.Add("약화", EEffectType.Weak);
+
+        _applyOptionList.Add("추가행동", EEffectType.None);
         _applyOptionList.Add("콤보", EEffectType.Combo);
 
         for (int i = 0; i < _effectSOList.Count; i++)
@@ -259,19 +275,6 @@ public class CCombatDebugMenu : MonoBehaviour
                     selectEntity.TakeDamage(-heal * 2);
                 }
                 break;
-            case EEffectType.Bleed:
-            case EEffectType.Blight:
-            case EEffectType.Burn:
-            case EEffectType.Daze:
-            case EEffectType.Stun:
-            case EEffectType.Speed:
-            case EEffectType.Immobilize:
-            case EEffectType.Riposte:
-            case EEffectType.Stealth:
-            case EEffectType.Combo:
-                CEffect effect = new CEffect(_effectList[applyOption]);
-                selectEntity.ApplyStatusEffect(effect);
-                break;
             // 추가행동
             case EEffectType.None:
                 int stress = Random.Range(1, 4);
@@ -290,6 +293,19 @@ public class CCombatDebugMenu : MonoBehaviour
                     CCombatFloatingMessageManager.ShowDefault(selectEntity.gameObject, "추가 행동 부여");
                 }
 
+                break;
+            case EEffectType.Horror:
+                if(selectEntity is not CPlayer)
+                {
+                    break;
+                }
+
+                CEffect effect = new CEffect(_effectList[applyOption]);
+                (selectEntity as CPlayer).ApplyHorror(effect.Data);
+                break;
+            default:
+                effect = new CEffect(_effectList[applyOption]);
+                selectEntity.ApplyStatusEffect(effect);
                 break;
         }
 

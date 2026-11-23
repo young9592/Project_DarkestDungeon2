@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_Bellow_M
   m_EditorClassIdentifier: 
-  _skillName: Bellow
+  _skillName: "\uD3EC\uD6A8"
   _skillIcon: {fileID: 21300000, guid: 5b62467fbd9f51249aab73bbb18a5259, type: 3}
   _useableRank: -1
   _targetableRank: -1
@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
   - {fileID: 11400000, guid: dbcfea2229fe8ab409e4991d71d8df1d, type: 2}
   - {fileID: 11400000, guid: 64d034e5018e0cc4396285c475a6e366, type: 2}
+  _critChance: 0
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 2"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=25>, \uC81C\uAC70:
+    <sprite=5>,  <sprite=1>"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_indiscriminate_science
   m_EditorClassIdentifier: 
-  _skillName: Indiscriminate Science
+  _skillName: "\uB3C4\uB97C \uB118\uC740 \uACFC\uD559"
   _skillIcon: {fileID: 21300000, guid: c970e2a56c5cb5c48af01d5b98aae054, type: 3}
   _useableRank: 14
   _targetableRank: -1
@@ -20,6 +20,12 @@ MonoBehaviour:
   _cooldown: 1
   _effectList:
   - {fileID: 11400000, guid: c4682acc6b2a68749bb1ea266844911d, type: 2}
+  _critChance: 5
+  _mainDescription: "\uCE58\uBA85\uD0C0: 5%\n\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04:
+    1\n<color=#816b44>\uB300\uC0C1 \uCCB4\uB825 < 50% \uD544\uC694</color>"
+  _subDescription: "<color=#816b44>\uB300\uC0C1: </color> \uD1A0\uD070 \uD558\uB098\uB2F9
+    <sprite=32><color=#2CEE17>3</color>"
+  _denialCategories: 4
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -34,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_indiscriminate_science
   _feedback: {fileID: 11400000, guid: 1907f8dfcf44c4640a7e88ee9c7fee52, type: 2}
-  _denialCategories: 4

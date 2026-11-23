@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_blinding_gas
   m_EditorClassIdentifier: 
-  _skillName: Blinding Gas
+  _skillName: "\uC2E4\uBA85 \uAE30\uCCB4"
   _skillIcon: {fileID: 21300000, guid: f89330344ec7fed41a7a3d492d7bad8d, type: 3}
   _useableRank: 12
   _targetableRank: 12
@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: b33a27da6f6e14945b694fb9ff72c799, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _critChance: 0
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1\n<sprite=21>\uC9C0\uC815
+    \uC2DC <sprite=24>"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color> <sprite=28>"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_poison
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_blinding_gas
   _feedback: {fileID: 11400000, guid: e554b015ffa02d34d829eece038d22fd, type: 2}
-  _denialCategories: 2

@@ -28,7 +28,7 @@ public class CStageCoachFollowCamera : MonoBehaviour
     private Vector3 _innInit;
     private Vector3 _innDesire;
     private float _nextTime;
-    private ESceneId _nextCustomDesire = ESceneId.Temp_Sin_TheInn;
+    private ESceneId _nextCustomDesire = ESceneId.Inn;
     #endregion
     private void Awake()
     {
@@ -84,7 +84,7 @@ public class CStageCoachFollowCamera : MonoBehaviour
             return;
         }
 
-        if (id != ESceneId.Temp_Sin_TheInn)
+        if (id != ESceneId.Inn)
         {
             _nextCustomDesire = id;
         }

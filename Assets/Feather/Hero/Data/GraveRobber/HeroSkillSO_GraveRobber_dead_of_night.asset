@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_dead_of_night
   m_EditorClassIdentifier: 
-  _skillName: Dead of Night
+  _skillName: "\uBC24\uC758 \uB9DD\uC790"
   _skillIcon: {fileID: 21300000, guid: 112ef1a44ad1d06438b92da8770296b8, type: 3}
   _useableRank: -1
   _targetableRank: -1
@@ -22,6 +22,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 02cb61ee904e4a75a21042c5264d2bb7, type: 2}
   - {fileID: 11400000, guid: 1fc2313378f4bb147a81d0a17a109dc4, type: 2}
   - {fileID: 11400000, guid: e412d16fc1801e4409c1359de902d3e8, type: 2}
+  _critChance: 0
+  _mainDescription: "<color=#816b44>\uB300\uC0C1 \uC2DC\uCCB4 \uD544\uC694 </color>
+    \uD69F\uC218: 3\n\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1\n"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><color=#6c0618>\uC2DC\uCCB4
+    \uC81C\uAC70</color>\n<color=#816b44>\uBA85\uC911\uC2DC \uD68D\uB4DD: </color><sprite=32>
+    <color=#2CEE17>4-6</color>, <sprite=2>x2"
+  _denialCategories: 0
   _usesPerBattle: 3
   _moveForwardOneRank: 0
   _rankMovement: 0

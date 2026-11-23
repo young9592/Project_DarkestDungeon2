@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_HoldtheLine_M
   m_EditorClassIdentifier: 
-  _skillName: Hold the Line
+  _skillName: "\uC804\uC120 \uC720\uC9C0"
   _skillIcon: {fileID: 21300000, guid: bb350019259f5b24897c6e9c5e89e10d, type: 3}
   _useableRank: 14
   _targetableRank: 3
@@ -23,6 +23,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 00bb991afea4b2147a76da19cba29274, type: 2}
   - {fileID: 11400000, guid: a83bd9c2a96261e458b4d012f3077996, type: 2}
   - {fileID: 11400000, guid: 456d780d7c8557545a3c8fe6eee36ca4, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574: 4-7 \uCE58\uBA85\uD0C0: 10%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color> <color=#484166>\uC804\uC9C4</color>3,
+    <sprite=6>x2, <sprite=29>\n"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

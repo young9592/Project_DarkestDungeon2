@@ -9,13 +9,13 @@ EditorBuildSettings:
     path: Assets/Scenes/Main/Title.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Park.unity
+    path: Assets/Scenes/Main/Valley.unity
     guid: d31241fee07789346ae163c34546c8de
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Sin/Temp_Sin_TheSprawl.unity
+    path: Assets/Scenes/Main/Sprawl.unity
     guid: 0996e5c9f68282d40a61d98aae93560c
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Sin/Temp_Sin_TheInn.unity
+    path: Assets/Scenes/Main/Inn.unity
     guid: 2166bfb4de2f7da46b7a0c528cb9c2f6
   - enabled: 1
     path: Assets/Scenes/Main/Battle.unity

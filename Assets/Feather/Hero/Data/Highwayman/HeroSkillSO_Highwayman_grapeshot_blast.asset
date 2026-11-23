@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_grapeshot_blast
   m_EditorClassIdentifier: 
-  _skillName: Grapeshot Blast
+  _skillName: "\uD3EC\uB3C4\uD0C4 \uBC1C\uC0AC"
   _skillIcon: {fileID: 21300000, guid: dce3eb82630207f459e9ad16cac7ac92, type: 3}
   _useableRank: 6
   _targetableRank: 3
@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 6dd3c64df2e93764fa25e83509462ddd, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574: 3-5 \uCE58\uBA85\uD0C0: 5%"
+  _subDescription: "<color=#816b44>\uCE58\uBA85\uD0C0\uC5D0 \uD68D\uB4DD:</color>
+    <sprite=0>"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_grapeshot_blast
   _feedback: {fileID: 11400000, guid: c5b834575daa3b541a173467c29e4e32, type: 2}
-  _denialCategories: 2

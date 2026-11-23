@@ -61,6 +61,7 @@ public class CCombatManager : MonoBehaviour
     [SerializeField] private float _prevEnemyActionDelay = 2f;
     // 턴 시작 시 죽음 / 기절 / 현기증같은 처리 시 대기시간
     [SerializeField] private float _turnSkipDelay = 1.5f;
+    [SerializeField] private bool _testBattleScene = false;
     #endregion
 
     #region Field
@@ -109,6 +110,7 @@ public class CCombatManager : MonoBehaviour
     public IReadOnlyList<CPlayer> HeroParty => _heroParty.HeroList;
     public IReadOnlyList<CEnemy> EnemyParty => _enemyParty.EnemyList;
     public CHeroBattleInput BattleInput => _heroBattleInput;
+    public bool TestBattleOption => _testBattleScene;
     #endregion
 
     private void Awake()
@@ -207,6 +209,12 @@ public class CCombatManager : MonoBehaviour
     }
     private void WaitSceneLoad()
     {
+        if (_testBattleScene)
+        {
+            _roundState = RoundState.Wait;
+            return;
+        }
+
         if (!CSceneFlowManager.Instance.IsLoading)
         {
             _roundState = RoundState.Wait;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_Bolster
   m_EditorClassIdentifier: 
-  _skillName: Bolster
+  _skillName: "\uACE0\uC591"
   _skillIcon: {fileID: 21300000, guid: 9978a708a3d987848b50803757cfb005, type: 3}
   _useableRank: -1
   _targetableRank: -1
@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1fc2313378f4bb147a81d0a17a109dc4, type: 2}
   - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
   - {fileID: 11400000, guid: bf7d725b37b67d04ca304639f6315278, type: 2}
+  _critChance: 0
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=20>, \uC81C\uAC70: 
+    <sprite=21>\n<color=#816b44>\uB300\uC0C1: <sprite=8>-2</color>"
+  _denialCategories: 8
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_maa_buffA
   _executionStartState: Base Layer.OriginalAction_ManAtArms_Bolster
   _feedback: {fileID: 11400000, guid: ea5beef2f2e7b7f44a92959d40266818, type: 2}
-  _denialCategories: 8

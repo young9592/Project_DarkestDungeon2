@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_poison_dart
   m_EditorClassIdentifier: 
-  _skillName: Poison Dart
+  _skillName: "\uB9F9\uB3C5 \uB2E4\uD2B8"
   _skillIcon: {fileID: 21300000, guid: fd81623e80fa80b4bab5ea758b5733ad, type: 3}
   _useableRank: 14
   _targetableRank: -1
@@ -21,7 +21,12 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: 6666c9ff0bb2e024dbfbb0c685f4f0e1, type: 2}
-  - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
+  - {fileID: 11400000, guid: 6d21b364b69e97d43bb108744aa26722, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574: 2-3 \uCE58\uBA85\uD0C0: 5%\n\uB300\uC0C1\uC5D0
+    <sprite=21> \uC788\uC73C\uBA74 <sprite=13> <color=#FFFF00>2</color>\t"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=13><color=#FFFF00>3</color>"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_dart
   _executionStartState: Base Layer.OriginalAction_GraveRobber_poison_dart
   _feedback: {fileID: 11400000, guid: 1ad418725bf6fe14c835550bc3ec5250, type: 2}
-  _denialCategories: 2

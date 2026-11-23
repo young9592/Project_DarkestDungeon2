@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_incision_M
   m_EditorClassIdentifier: 
-  _skillName: Incision
+  _skillName: "\uC808\uAC1C"
   _skillIcon: {fileID: 21300000, guid: fd2979c17340b1447a7f4c15415d3e89, type: 3}
   _useableRank: 7
   _targetableRank: 3
@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b7f690d68be0f8f44acde9d74f158487, type: 2}
   - {fileID: 11400000, guid: 032659228e2a14a4b9e2559703430097, type: 2}
   - {fileID: 11400000, guid: 3fa5b1c9a4a12b64592bd36abaa243a0, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574: 4-8 \uCE58\uBA85\uD0C0: 10%\n\uB300\uC0C1\uC5D0
+    <sprite=21>\uC788\uC73C\uBA74 <sprite=14> <color=#6c0618>4</color>"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color> <sprite=14> <color=#6c0618>4</color>"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

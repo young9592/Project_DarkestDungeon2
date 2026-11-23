@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeroSO_PlagueDoctor
   m_EditorClassIdentifier: 
   _id: hero_plague_doctor
-  _name: PlagueDoctor
+  _name: "\uC5ED\uBCD1 \uC758\uC0AC"
   _maxHealth: 28
   _speed: 4
   _resistance:
@@ -39,7 +39,7 @@ MonoBehaviour:
   _portraitTurnOrder: {fileID: 21300000, guid: 9d621ddb49a23bb469dd6f143389b6a8, type: 3}
   _portraitInfo: {fileID: 21300000, guid: 417a70f1838bd64468a00c03d1ce86c0, type: 3}
   _skillSlotBackground: {fileID: 21300000, guid: 1e79ea85aba121f4b93995fdcf42bb18, type: 3}
-  _defaultName: PlagueDoctor
+  _defaultName: "\uD30C\uB77C\uCF08\uC218\uC2A4"
   _diseaseResistance: 40
   _deathDoorResistance: 60
   _stressResistance: 0

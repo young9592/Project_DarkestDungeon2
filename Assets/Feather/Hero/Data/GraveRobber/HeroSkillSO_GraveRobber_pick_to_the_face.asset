@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_pick_to_the_face
   m_EditorClassIdentifier: 
-  _skillName: Pick to the Face
+  _skillName: "\uACE1\uAD2D\uC774 \uCC0D\uAE30"
   _skillIcon: {fileID: 21300000, guid: bce21d76806e68d4fa12b15406a419d3, type: 3}
   _useableRank: 7
   _targetableRank: 3
@@ -20,6 +20,11 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: c40fecea3fdaac3449c49bf61110549e, type: 2}
+  _critChance: 15
+  _mainDescription: "\uD53C\uD574: 4-7 \uCE58\uBA85\uD0C0: 15%\n<sprite=20> \uBB34\uC2DC"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=21> \uC9C0\uC815
+    \uC2DC <sprite=5>"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -34,4 +39,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_pick_to_the_face
   _executionStartState: Base Layer.OriginalAction_GraveRobber_pick_to_the_face
   _feedback: {fileID: 11400000, guid: 18bd87bce3ee2e545a17960fe099c85c, type: 2}
-  _denialCategories: 1

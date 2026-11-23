@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_pistol_shot
   m_EditorClassIdentifier: 
-  _skillName: Pistol Shot
+  _skillName: "\uAD8C\uCD1D \uC0AC\uACA9"
   _skillIcon: {fileID: 21300000, guid: 1344bdc7ea21b9041856fb7ff9261415, type: 3}
   _useableRank: 14
   _targetableRank: 14
@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574: 3-6 \uCE58\uBA85\uD0C0: 10%\n\uB300\uC0C1\uC5D0
+    <sprite=21>\uC788\uC73C\uBA74  <sprite=24>"
+  _subDescription: 
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_pistol_shot
   _feedback: {fileID: 11400000, guid: b2432bda5093cb64e823b411810ebf71, type: 2}
-  _denialCategories: 2

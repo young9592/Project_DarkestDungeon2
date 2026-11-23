@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_tracking_shot
   m_EditorClassIdentifier: 
-  _skillName: Tracking Shot
+  _skillName: "\uAC00\uB2A0 \uC0AC\uACA9"
   _skillIcon: {fileID: 21300000, guid: 8b14773f52101d14a94f3ca2e1c2ff5d, type: 3}
   _useableRank: 14
   _targetableRank: 14
@@ -21,6 +21,11 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 9e814e2114cc11c4580c41514d107630, type: 2}
   - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
+  _critChance: 0
+  _mainDescription: 
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color> <sprite=21>, \uC81C\uAC70:
+    <sprite=9>"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -35,4 +40,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_point_blank_shot
   _executionStartState: Base Layer.OriginalAction_Highwayman_tracking_shot
   _feedback: {fileID: 11400000, guid: 15310f582ad94534ba66b403b4edcea7, type: 2}
-  _denialCategories: 2

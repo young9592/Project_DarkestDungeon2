@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_point_blank_shot_M
   m_EditorClassIdentifier: 
-  _skillName: Point Blank Shot
+  _skillName: "\uC601\uAC70\uB9AC \uC0AC\uACA9"
   _skillIcon: {fileID: 21300000, guid: f2551bfb4c5cac54a9d1774e970b85bc, type: 3}
   _useableRank: 1
   _targetableRank: 1
@@ -23,6 +23,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
   - {fileID: 11400000, guid: 29df23ca04db09a4d856b7b767e9a75d, type: 2}
   - {fileID: 11400000, guid: c01bfa8131a22cf4899c3528a8061006, type: 2}
+  _critChance: 15
+  _mainDescription: "\uD53C\uD574: 10-14 \uCE58\uBA85\uD0C0: 15%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><color=#484166>\uD6C4\uD1F4</color>
+    1\n<color=#2c4a75>\uB300\uC0C1: </color><color=#484166>\uBC00\uCE58\uAE30</color>
+    1, <sprite=21>"
+  _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

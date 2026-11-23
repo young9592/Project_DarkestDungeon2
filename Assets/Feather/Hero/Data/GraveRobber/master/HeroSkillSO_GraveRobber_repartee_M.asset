@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_repartee_M
   m_EditorClassIdentifier: 
-  _skillName: Repartee
+  _skillName: "\uC870\uB871"
   _skillIcon: {fileID: 21300000, guid: db334a29d859afb4ca0b6acba2fac79c, type: 3}
   _useableRank: -1
   _targetableRank: -1
@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 11c78c00932b3864697583cfa87e3447, type: 2}
   - {fileID: 11400000, guid: 6038d85edf3f5f24ab3308d459e00f61, type: 2}
   - {fileID: 11400000, guid: 3f0fe98c829adc34b90822258cc82c41, type: 2}
+  _critChance: 0
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=22>x2, <sprite=4>x3,\uC81C\uAC70
+    : <sprite=2>"
+  _denialCategories: 0
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

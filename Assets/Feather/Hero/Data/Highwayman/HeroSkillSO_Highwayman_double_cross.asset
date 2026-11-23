@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_double_cross
   m_EditorClassIdentifier: 
-  _skillName: Double Cross
+  _skillName: "\uB4A4\uD1B5\uC218 \uCE58\uAE30"
   _skillIcon: {fileID: 21300000, guid: dd5c992813af96a4c9dec25a956b068a, type: 3}
   _useableRank: 3
   _targetableRank: 3
@@ -22,6 +22,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 07986e64fbf9fb9498fb5a5da1fc90ac, type: 2}
   - {fileID: 11400000, guid: 05ccbedeca32273418b86e724a3b2c15, type: 2}
   - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
+  _critChance: 5
+  _mainDescription: "\uD53C\uD574: 2-3 \uCE58\uBA85\uD0C0: 5%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0</color> : <sprite=20>\n<color=#2c4a75>\uB300\uC0C1</color>
+    : \uC81C\uAC70 : <sprite=20>,  <sprite=23> \n"
+  _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
@@ -36,4 +41,3 @@ MonoBehaviour:
   _selectionHoldState: Base Layer.SourceReady_double
   _executionStartState: Base Layer.OriginalAction_Highwayman_double_cross
   _feedback: {fileID: 11400000, guid: 0a24657226b264149bb4c55036aa2788, type: 2}
-  _denialCategories: 1
