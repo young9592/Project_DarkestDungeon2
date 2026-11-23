@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +25,9 @@ public class CEnemySkillAudio : MonoBehaviour
     private bool _combo;
     private bool _useSourceTiming;
     private bool _expectsDamage;
+    private bool _useQueued;
+    private bool _returnRequested;
+    private readonly CSkillAudioPlayback _playback = new CSkillAudioPlayback();
 
     public event Action<CSkillDataSO, EHeroSkillSoundPhase, AudioClip> OnSoundPlayed;
     public bool IsWaitingForUse { get { return _skillSound != null && !_used; } }
@@ -54,11 +57,15 @@ public class CEnemySkillAudio : MonoBehaviour
         _enemy.OnAttackPresentationInterrupted += Interrupt;
         _enemy.OnActionCompleted += End;
         _enemy.OnActionInterrupted += Interrupt;
+        _enemy.OnHitPresentationStarted += Interrupt;
     }
 
     private void Begin(CEntity actor)
     {
         End(actor);
+        _playback.CancelAll();
+        _useQueued = false;
+        _returnRequested = false;
         _skill = _animation.ActiveSkill;
         if (_skill == null) _skill = _enemy.ActionSkill;
         CActorCombatSound actorSound = _sounds.GetActor(_enemy.EntityData);
@@ -118,7 +125,7 @@ public class CEnemySkillAudio : MonoBehaviour
         if (!_prepared)
         {
             _prepared = true;
-            Play(_preparationSource, EHeroSkillSoundPhase.Preparation,
+            PlayPreparation(
                 _combo && _skillSound.ComboPreparation != null ? _skillSound.ComboPreparation : _skillSound.Preparation);
         }
         CEnemySkillFeedbackSO feedback = _animation.GetFeedback(_skill);
@@ -131,27 +138,52 @@ public class CEnemySkillAudio : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!_useSourceTiming || _used || !_animation.IsAttacking) return;
-        // 여러 대상의 판정이 모인 뒤 같은 프레임에 명중음이나 빗나감음을 고름
-        PlayUse();
-        if (_used && _animation.TryGetAttackRecovery(out _, out _)) Recover(_enemy);
+        if (_enemy.IsDead) { Interrupt(_enemy); return; }
+        if (_useSourceTiming && !_used && _animation.IsAttacking && _animator.speed > 0.0f)
+        {
+            // 여러 대상의 판정이 모인 뒤 명중음이나 빗나감음을 고름
+            PlayUse();
+            if (_used && _animation.TryGetAttackRecovery(out _, out _)) Recover(_enemy);
+        }
+        _playback.Tick(Time.deltaTime);
+    }
+
+    private void PlayPreparation(AudioClip clip)
+    {
+        CEnemySkillSound sound = _skillSound;
+        CSkillDataSO skill = _skill;
+        float delay = sound.AudioTiming != null ? sound.AudioTiming.GetDelay(EHeroSkillSoundPhase.Preparation) : 0.0f;
+        _playback.Schedule(EHeroSkillSoundPhase.Preparation, delay,
+            () => Play(_preparationSource, skill, EHeroSkillSoundPhase.Preparation, clip, sound.Volume));
     }
 
     private void PlayUse()
     {
-        if (_used || _skillSound == null) return;
+        if (_used || _useQueued || _skillSound == null) return;
         if (_expectsDamage && !_hasHit && !_hasMiss) return;
-        _used = true;
-        _preparationSource.Stop();
         bool missed = _hasMiss && !_hasHit;
-        AudioClip clip = missed ? _skillSound.Miss : _skillSound.Use;
+        EHeroSkillSoundPhase phase = missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Use;
+        CEnemySkillSound sound = _skillSound;
+        CSkillDataSO skill = _skill;
+        AudioClip clip = missed ? sound.Miss : sound.Use;
         if (_combo)
         {
-            AudioClip comboClip = missed ? _skillSound.ComboMiss : _skillSound.ComboUse;
+            AudioClip comboClip = missed ? sound.ComboMiss : sound.ComboUse;
             if (comboClip != null) clip = comboClip;
         }
-        Play(_actionSource, missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Use, clip);
-        OnUseStarted?.Invoke();
+        float delay = sound.AudioTiming != null ? sound.AudioTiming.GetDelay(phase) : 0.0f;
+        _useQueued = true;
+        _playback.Cancel(EHeroSkillSoundPhase.Preparation);
+        _preparationSource.Stop();
+        _playback.Schedule(phase, delay, () =>
+        {
+            _useQueued = false;
+            if (_skillSound != sound || !isActiveAndEnabled || _enemy.IsDead) return;
+            _used = true;
+            Play(_actionSource, skill, phase, clip, sound.Volume);
+            OnUseStarted?.Invoke();
+            if (_returnRequested) Recover(_enemy);
+        });
     }
 
     private void RecoverFromAnimation()
@@ -176,25 +208,32 @@ public class CEnemySkillAudio : MonoBehaviour
     private void Recover(CEntity actor)
     {
         if (_skillSound == null || _recovered) return;
-        // 복귀가 바로 시작되는 스킬도 명중 결과를 받은 뒤 소리를 고름
+        _returnRequested = true;
         if (_useSourceTiming && _expectsDamage && !_hasMiss && !_hasHit) return;
+        if (!_used) { PlayUse(); return; }
         _recovered = true;
-        _preparationSource.Stop();
-        if (!_used) PlayUse();
-        AudioClip clip = _combo && _skillSound.ComboReturn != null ? _skillSound.ComboReturn : _skillSound.Return;
-        Play(_actionSource, EHeroSkillSoundPhase.Return, clip);
+        CEnemySkillSound sound = _skillSound;
+        CSkillDataSO skill = _skill;
+        AudioClip clip = _combo && sound.ComboReturn != null ? sound.ComboReturn : sound.Return;
+        float delay = sound.AudioTiming != null ? sound.AudioTiming.GetDelay(EHeroSkillSoundPhase.Return) : 0.0f;
+        _playback.Schedule(EHeroSkillSoundPhase.Return, delay,
+            () => Play(_actionSource, skill, EHeroSkillSoundPhase.Return, clip, sound.Volume));
     }
 
-    private void Play(AudioSource source, EHeroSkillSoundPhase phase, AudioClip clip)
+    private void Play(AudioSource source, CSkillDataSO skill, EHeroSkillSoundPhase phase, AudioClip clip, float volume)
     {
-        if (clip == null || source == null || !source.isActiveAndEnabled) return;
-        source.PlayOneShot(clip, _sounds.Volume);
-        OnSoundPlayed?.Invoke(_skill, phase, clip);
+        if (clip == null || source == null || !source.isActiveAndEnabled || _enemy.IsDead) return;
+        source.PlayOneShot(clip, _sounds.Volume * volume);
+        OnSoundPlayed?.Invoke(skill, phase, clip);
     }
 
     private void End(CEntity actor)
     {
         if (_skillSound != null && !_used) OnUseCancelled?.Invoke();
+        _playback.Cancel(EHeroSkillSoundPhase.Preparation);
+        _playback.Cancel(EHeroSkillSoundPhase.Use);
+        _playback.Cancel(EHeroSkillSoundPhase.Miss);
+        _useQueued = false;
         for (int i = 0; i < _targets.Count; i++)
         {
             if (_targets[i] != null) _targets[i].OnHealthEffectResolved -= HandleResult;
@@ -210,6 +249,7 @@ public class CEnemySkillAudio : MonoBehaviour
     private void Interrupt(CEntity actor)
     {
         End(actor);
+        _playback.CancelAll();
         if (_actionSource != null) _actionSource.Stop();
     }
 
@@ -223,6 +263,7 @@ public class CEnemySkillAudio : MonoBehaviour
             _enemy.OnAttackPresentationInterrupted -= Interrupt;
             _enemy.OnActionCompleted -= End;
             _enemy.OnActionInterrupted -= Interrupt;
+            _enemy.OnHitPresentationStarted -= Interrupt;
         }
         Interrupt(_enemy);
     }
