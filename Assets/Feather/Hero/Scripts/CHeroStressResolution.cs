@@ -32,6 +32,7 @@ public class CHeroStressResolution : MonoBehaviour
     }
 
     public event Action<CPlayer> OnRequested;
+    public event Action<CPlayer, EHeroStressResult> OnResultStarted;
     public event Action<CPlayer, EHeroStressResult> OnApplied;
 
     private void Awake()
@@ -80,6 +81,7 @@ public class CHeroStressResolution : MonoBehaviour
         _result = result;
         _hasResult = true;
         if (result == EHeroStressResult.Resolute && _animation != null) _animation.PlayResolute();
+        OnResultStarted?.Invoke(_hero, result);
         return true;
     }
 

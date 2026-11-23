@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -7,7 +8,7 @@ public class CEntityCombatAudio : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private CCombatAudioSO _sounds;
     [SerializeField] private AudioSource _source;
-    [SerializeField, Range(0.0f, 1.0f)] private float _volumeScale = 0.5f;
+    [SerializeField, Range(0.0f, 1.0f)] private float _volumeScale = 1.0f;
 
     private CEntity _entity;
     private CPlayer _hero;
@@ -20,6 +21,12 @@ public class CEntityCombatAudio : MonoBehaviour
     [SerializeField] private string _riposteActionState;
     [SerializeField] private string _riposteRecoveryState;
     private Animator _animator;
+    private CHeroAnimation _heroAnimation;
+    private CHeroStressResolution _stressResolution;
+    private readonly List<CEntity> _riposteTargets = new List<CEntity>();
+    private bool _riposteHasHit;
+    private bool _riposteHasMiss;
+    private bool _riposteSoundPlayed;
     private int _lastStateHash;
     private int _typedTickFrame = -1;
     private bool _pendingRecovery;
@@ -38,6 +45,8 @@ public class CEntityCombatAudio : MonoBehaviour
         _enemy = GetComponent<CEnemy>();
         _deathPresentation = GetComponent<CEntityDeathPresentation>();
         _animator = GetComponentInChildren<Animator>(true);
+        _heroAnimation = GetComponent<CHeroAnimation>();
+        _stressResolution = GetComponent<CHeroStressResolution>();
         if (_entity == null || _sounds == null || _source == null) enabled = false;
     }
 
@@ -61,14 +70,14 @@ public class CEntityCombatAudio : MonoBehaviour
         _entity.TokenManager.OnTokenAdded += TokenAdded;
         if (_hero != null)
         {
+            if (_heroAnimation != null) _heroAnimation.OnRiposteQueued += BeginRiposteAudio;
             _hero.OnStressEffectResolved += StressResolved;
             _hero.OnStatusEffectApplied += StatusApplied;
             _hero.OnStatusEffectsCured += StatusCured;
             _hero.OnDeathblowResisted += DeathblowResisted;
             _hero.OnStatusEffectTicked += StatusTicked;
             _hero.OnHitPresentationCompleted += HitCompleted;
-            _hero.OnMeltdownTriggered += Meltdown;
-            _hero.OnResoluteTriggered += Resolute;
+            if (_stressResolution != null) _stressResolution.OnResultStarted += StressResultStarted;
 
         }
         if (_enemy != null)
@@ -199,19 +208,62 @@ public class CEntityCombatAudio : MonoBehaviour
         }
     }
 
+    private void BeginRiposteAudio()
+    {
+        ClearRiposteAudio();
+        CEntity[] targets = FindObjectsOfType<CEntity>();
+        for (int i = 0; targets != null && i < targets.Length; i++)
+        {
+            if (targets[i] == null) continue;
+            _riposteTargets.Add(targets[i]);
+            targets[i].OnHealthEffectResolved += RiposteResolved;
+        }
+    }
+
+    private void RiposteResolved(CHealthEffectResult result)
+    {
+        if (_heroAnimation == null || !_heroAnimation.IsRiposting
+            || result.Source != _hero || result.IsPeriodic || result.IsHealing) return;
+        if (result.IsMiss) _riposteHasMiss = true;
+        else _riposteHasHit = true;
+    }
+
+    private void ClearRiposteAudio()
+    {
+        for (int i = 0; i < _riposteTargets.Count; i++)
+        {
+            if (_riposteTargets[i] != null) _riposteTargets[i].OnHealthEffectResolved -= RiposteResolved;
+        }
+        _riposteTargets.Clear();
+        _riposteHasHit = false;
+        _riposteHasMiss = false;
+        _riposteSoundPlayed = false;
+        _lastStateHash = 0;
+    }
+
     private void Update()
     {
-        if (_hero == null || _animator == null || _animator.speed <= 0.0f
-            || string.IsNullOrEmpty(_riposteActionState) || _animator.IsInTransition(0)) return;
+        if (_hero == null || _animator == null || _heroAnimation == null) return;
+        if (!_heroAnimation.IsRiposting)
+        {
+            if (_riposteTargets.Count > 0) ClearRiposteAudio();
+            return;
+        }
+        if (_animator.speed <= 0.0f || string.IsNullOrEmpty(_riposteActionState)
+            || _animator.IsInTransition(0)) return;
         int hash = _animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-        if (hash == _lastStateHash) return;
-        _lastStateHash = hash;
-        if (hash == Animator.StringToHash(_riposteActionState)) Play("riposte");
-        else if (hash == Animator.StringToHash(_riposteRecoveryState))
+        if (hash == Animator.StringToHash(_riposteActionState))
+        {
+            if (_riposteSoundPlayed || (!_riposteHasHit && !_riposteHasMiss)) return;
+            _riposteSoundPlayed = true;
+            Play(_riposteHasMiss && !_riposteHasHit ? "riposte_miss" : "riposte");
+        }
+        else if (hash == Animator.StringToHash(_riposteRecoveryState) && hash != _lastStateHash)
         {
             CActorCombatSound actor = GetActor();
             if (actor != null) PlayClip("riposte-return", actor.RiposteReturn);
         }
+        _lastStateHash = hash;
     }
 
     private void StatusResisted(CEntity target, EEffectType type)
@@ -331,8 +383,10 @@ public class CEntityCombatAudio : MonoBehaviour
         OnSoundPlayed?.Invoke(key, clip);
     }
 
-    private void Meltdown(CPlayer hero) { Play("status/meltdown"); }
-    private void Resolute(CPlayer hero) { Play("status/resolute"); }
+    private void StressResultStarted(CPlayer hero, EHeroStressResult result)
+    {
+        Play(result == EHeroStressResult.Meltdown ? "status/meltdown" : "status/resolute");
+    }
 
     private void Play(string key)
     {
@@ -349,6 +403,7 @@ public class CEntityCombatAudio : MonoBehaviour
     private void OnDisable()
     {
         ClearPendingHurt();
+        ClearRiposteAudio();
         if (_bound)
         {
             CApplyStatusStrategy.OnStatusEffectResisted -= StatusResisted;
@@ -356,14 +411,14 @@ public class CEntityCombatAudio : MonoBehaviour
             _entity.TokenManager.OnTokenAdded -= TokenAdded;
             if (_hero != null)
             {
+                if (_heroAnimation != null) _heroAnimation.OnRiposteQueued -= BeginRiposteAudio;
                 _hero.OnStressEffectResolved -= StressResolved;
                 _hero.OnStatusEffectApplied -= StatusApplied;
                 _hero.OnStatusEffectsCured -= StatusCured;
                 _hero.OnDeathblowResisted -= DeathblowResisted;
                 _hero.OnStatusEffectTicked -= StatusTicked;
                 _hero.OnHitPresentationCompleted -= HitCompleted;
-                _hero.OnMeltdownTriggered -= Meltdown;
-                _hero.OnResoluteTriggered -= Resolute;
+                if (_stressResolution != null) _stressResolution.OnResultStarted -= StressResultStarted;
 
             }
             if (_enemy != null)

@@ -566,7 +566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 8616172999952587513}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: Base Layer.RiposteAction
   _riposteRecoveryState: Base Layer.RiposteRecovery
 --- !u!1 &8498712366019430357
