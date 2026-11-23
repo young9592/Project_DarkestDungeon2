@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_StandFast
   m_EditorClassIdentifier: 
-  _skillName: Stand Fast
+  _skillName: "\uC0AC\uC218"
   _skillIcon: {fileID: 21300000, guid: a6631d09bf3c9a445b66739b97449982, type: 3}
   _useableRank: 7
   _targetableRank: 7
@@ -22,8 +22,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ce6f6987fb92c048b48add81dbf0a32, type: 2}
   - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
   _critChance: 0
-  _mainDescription: "\uC790\uC2E0 \uBC29\uC5B4 1, \uC790\uC2E0 \uBC29\uC5B4+ 1 \uBD80\uC5EC"
-  _subDescription: 
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 2"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=20>, <sprite=6>"
   _denialCategories: 0
   _usesPerBattle: 0
   _moveForwardOneRank: 0

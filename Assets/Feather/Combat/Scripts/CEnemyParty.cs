@@ -13,6 +13,7 @@ public class CEnemyParty : MonoBehaviour
     [SerializeField] private List<GameObject> _enemyRankPosition;
     private Dictionary<ERank, CEnemy> _rankList = new Dictionary<ERank, CEnemy>();
     [SerializeField] private float _entityScale = 150f;
+    [SerializeField] private CCombatManager _combatManager;
     #endregion
 
     #region Field
@@ -31,12 +32,17 @@ public class CEnemyParty : MonoBehaviour
     #endregion
     public void LoadParty()
     {
-        if (CSceneFlowManager.Instance.IsLoading || CSceneFlowManager.Instance.EncounterEnemyGroup == null)
+
+        if (!_combatManager.TestBattleOption)
         {
-            return;
+            if (CSceneFlowManager.Instance.IsLoading || CSceneFlowManager.Instance.EncounterEnemyGroup == null)
+            {
+                return;
+            }
+
+            CSceneFlowManager.Instance.SetEncounterGroup(out _enemyPartyPreset);
         }
 
-        CSceneFlowManager.Instance.SetEncounterGroup(out _enemyPartyPreset);
 
         if (_enemyPartyPreset == null)
         {
@@ -124,7 +130,7 @@ public class CEnemyParty : MonoBehaviour
                 _isDenialBoss = true;
             }
 
-            if(enemyPrefab.EnemyData.Id == "enemy_whipper" || enemyPrefab.EnemyData.Id == "enemy_flayer" || enemyPrefab.EnemyData.Id == "enemy_shaman")
+            if (enemyPrefab.EnemyData.Id == "enemy_whipper" || enemyPrefab.EnemyData.Id == "enemy_flayer" || enemyPrefab.EnemyData.Id == "enemy_shaman")
             {
                 foreach (Transform tr in enemyPrefab.GetComponentsInChildren<Transform>(true))
                 {

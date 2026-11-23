@@ -5,9 +5,9 @@ using UnityEngine;
 public enum ESceneId
 { 
     Title = 0,
-    Temp_Park,
-    Temp_Sin_TheInn,
-    Temp_Sin_TheSprawl,
+    Valley,
+    Inn,
+    Sprawl,
     Battle,
 }
 

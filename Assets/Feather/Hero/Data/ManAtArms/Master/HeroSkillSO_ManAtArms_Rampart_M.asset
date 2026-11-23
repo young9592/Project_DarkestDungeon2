@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_Rampart_M
   m_EditorClassIdentifier: 
-  _skillName: Rampart
+  _skillName: "\uC131\uCC44\uC758 \uC77C\uACA9"
   _skillIcon: {fileID: 21300000, guid: 841de70960d68354ca0199a6fcdf57d1, type: 3}
   _useableRank: 7
   _targetableRank: 3
@@ -24,9 +24,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 29df23ca04db09a4d856b7b767e9a75d, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
   _critChance: 5
-  _mainDescription: "\uD53C\uD574 3-6, \uC804\uC9C4 1, \uB300\uC0C1 \uBC00\uCE58\uAE30
-    1"
-  _subDescription: "\uB300\uC0C1 \uD1A0\uD070 \uBCF4\uC720 \uC2DC \uAE30\uC808 \uBD80\uC5EC"
+  _mainDescription: "\uD53C\uD574: 3-6, \uCE58\uBA85\uD0C0: 5%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><color=#484166>\uC804\uC9C4</color>1\n<color=#2c4a75>\uB300\uC0C1:
+    </color><color=#484166>\uBC00\uCE58\uAE30</color>1<sprite=21>\uC9C0\uC815 \uC2DC
+    <sprite=24>"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

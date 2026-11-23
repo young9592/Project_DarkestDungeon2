@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_glint_in_the_dark_M
   m_EditorClassIdentifier: 
-  _skillName: Glint in the Dark
+  _skillName: "\uC5B4\uB460 \uC18D\uC758 \uBC88\uB729\uC784"
   _skillIcon: {fileID: 21300000, guid: 0bd1198d2ade2374f8da57a6e0a1f1e7, type: 3}
   _useableRank: 7
   _targetableRank: 7
@@ -21,9 +21,10 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 85b11b83eecd927429cf55901a6aef6a, type: 2}
   _critChance: 15
-  _mainDescription: "\uD53C\uD574 5-9, \uB300\uC0C1 \uC740\uC2E0 \uC81C\uAC70"
-  _subDescription: "\uC790\uC2E0 \uC740\uC2E0 \uBCF4\uC720 \uC2DC \uC18C\uBAA8\uD558\uC5EC
-    \uD2B9\uACF5 \uBCF4\uB108\uC2A4 \uC801\uC6A9"
+  _mainDescription: "\uD53C\uD574: 5-9 \uCE58\uBA85\uD0C0: 15%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=2>\uBCF4\uC720\uC2DC 
+    <sprite=5>, <sprite=0>,\uC81C\uAC70: <sprite=2>\n<color=#2c4a75>\uB300\uC0C1:
+    </color>\uC81C\uAC70: <sprite=2>"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

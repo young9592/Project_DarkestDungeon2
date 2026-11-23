@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_duelists_advance
   m_EditorClassIdentifier: 
-  _skillName: Duelist's Advance
+  _skillName: "\uACB0\uD22C\uAC00\uC758 \uC9C4\uACA9"
   _skillIcon: {fileID: 21300000, guid: 4a12e353b66c8b14e88eb8fd2e473a29, type: 3}
   _useableRank: 14
   _targetableRank: 7
@@ -23,8 +23,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: be719d7def38b5d4d985edd1b9c05261, type: 2}
   - {fileID: 11400000, guid: f2d658978ff1e3b418cb5c23416296e2, type: 2}
   _critChance: 5
-  _mainDescription: "\uD53C\uD574 3-5"
-  _subDescription: "\uC804\uC9C4 1, \uC790\uC2E0 \uBC18\uACA9 2 \uBD80\uC5EC"
+  _mainDescription: "\uD53C\uD574: 3-5 \uCE58\uBA85\uD0C0: 5%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0</color> : <sprite=1>x2, <color=#484166>\uC804\uC9C4</color>
+    1"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

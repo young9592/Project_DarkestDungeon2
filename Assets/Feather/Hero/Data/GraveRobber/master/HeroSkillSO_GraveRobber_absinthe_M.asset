@@ -23,8 +23,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f0fe98c829adc34b90822258cc82c41, type: 2}
   - {fileID: 11400000, guid: c9bbff644308d6b40984f698b44b70c0, type: 2}
   _critChance: 0
-  _mainDescription: "\uC790\uC2E0 \uCCB4\uB825 6-9 \uD68C\uBCF5"
-  _subDescription: "\uC790\uC2E0 \uD68C\uD53C+ 3 \uBC0F \uC18D\uB3C4 1 \uBD80\uC5EC"
+  _mainDescription: "\uD69F\uC218: 3\n\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04:
+    2"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=32> <color=#2CEE17>6-9</color>,
+    <sprite=4>x3, <sprite=7>"
   _denialCategories: 4
   _usesPerBattle: 3
   _moveForwardOneRank: 0

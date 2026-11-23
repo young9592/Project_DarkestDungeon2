@@ -3811,11 +3811,11 @@ MonoBehaviour:
   - id: 0
     sceneName: Title
   - id: 1
-    sceneName: Temp_Park
+    sceneName: Valley
   - id: 2
-    sceneName: Temp_Sin_TheInn
+    sceneName: Inn
   - id: 3
-    sceneName: Temp_Sin_TheSprawl
+    sceneName: Sprawl
   - id: 4
     sceneName: Battle
 --- !u!114 &2120991958

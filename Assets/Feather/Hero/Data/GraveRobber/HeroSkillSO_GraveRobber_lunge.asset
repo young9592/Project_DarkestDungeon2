@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_lunge
   m_EditorClassIdentifier: 
-  _skillName: Lunge
+  _skillName: "\uB3CC\uC9C4"
   _skillIcon: {fileID: 21300000, guid: 833178409989f4f4ea20f36f834342bf, type: 3}
   _useableRank: 12
   _targetableRank: 7
@@ -22,8 +22,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e309c7d6f1c7c0c42beb2e8c0c80c16b, type: 2}
   - {fileID: 11400000, guid: a94f7b65bcaee63418c4a77c0fd5fd6c, type: 2}
   _critChance: 20
-  _mainDescription: "\uD53C\uD574 6-10, \uC804\uC9C4 2"
-  _subDescription: 
+  _mainDescription: "\uD53C\uD574: 6-10 \uCE58\uBA85\uD0C0: 20%\n\uC7AC\uC0AC\uC6A9
+    \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><color=#484166>\uC804\uC9C4</color>2"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

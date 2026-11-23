@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_take_aim_M
   m_EditorClassIdentifier: 
-  _skillName: Take Aim
+  _skillName: "\uC815\uC870\uC900"
   _skillIcon: {fileID: 21300000, guid: 64c36537fdee694498ab4cc3c7b46fdc, type: 3}
   _useableRank: -1
   _targetableRank: -1
@@ -24,9 +24,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a9b71de3d11672f45bc46f90079eeef3, type: 2}
   - {fileID: 11400000, guid: c9bbff644308d6b40984f698b44b70c0, type: 2}
   _critChance: 0
-  _mainDescription: "\uC790\uC2E0 \uC2E4\uBA85 \uC81C\uAC70, \uCE58\uBA85\uD0C0 2
-    \uBC0F \uD68C\uD53C 1 \uBC0F \uC18D\uB3C4 1 \uBD80\uC5EC"
-  _subDescription: 
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=5>x2, <sprite=7>,
+    <sprite=9>, \uC81C\uAC70:  <sprite=28>"
   _denialCategories: 0
   _usesPerBattle: 0
   _moveForwardOneRank: 0

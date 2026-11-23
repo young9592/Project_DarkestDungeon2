@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_wicked_slice_M
   m_EditorClassIdentifier: 
-  _skillName: Wicked Slice
+  _skillName: "\uC57C\uBE44\uD55C \uCE7C\uC9C8"
   _skillIcon: {fileID: 21300000, guid: 042f50d83c4f16248ae39adab582ecf0, type: 3}
   _useableRank: 7
   _targetableRank: 3
@@ -21,8 +21,9 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: a644f9f9c48a3774fb57d8577af78f64, type: 2}
   _critChance: 15
-  _mainDescription: "\uD53C\uD574 6-9"
-  _subDescription: "\uCC98\uD615 2"
+  _mainDescription: "\uD53C\uD574: 6-9, \uCE58\uBA85\uD0C0: 15%\n<color=#816b44>\uCC98\uD615</color>
+    2"
+  _subDescription: 
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0

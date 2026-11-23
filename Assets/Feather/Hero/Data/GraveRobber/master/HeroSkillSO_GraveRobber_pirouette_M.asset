@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_pirouette_M
   m_EditorClassIdentifier: 
-  _skillName: Pirouette
+  _skillName: "\uBC1C\uB180\uB9BC"
   _skillIcon: {fileID: 21300000, guid: f578b4fe81c158f488043db9d8319e2e, type: 3}
   _useableRank: 3
   _targetableRank: 3
@@ -24,8 +24,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0fa4f60ad5f0b1c4a9e5250d3bb96f2d, type: 2}
   - {fileID: 11400000, guid: ad49fe8d3a9f1ec499baa22ca6744503, type: 2}
   _critChance: 20
-  _mainDescription: "\uC804\uC5F4 \uAD11\uC5ED \uD53C\uD574 8-12, \uD6C4\uD1F4 3"
-  _subDescription: "\uC790\uC2E0 \uD68C\uD53C+ 1 \uBC0F \uC57D\uD654 1 \uBD80\uC5EC"
+  _mainDescription: "\uD53C\uD574: 8-12 \uCE58\uBA85\uD0C0: 20%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color><color=#484166>\uD6C4\uD1F4</color>3,
+    <sprite=9>, <sprite=25>"
   _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_open_vein_M
   m_EditorClassIdentifier: 
-  _skillName: Open Vein
+  _skillName: "\uC815\uB9E5 \uC808\uAC1C"
   _skillIcon: {fileID: 21300000, guid: f3f8ead65e17e4e4c97b626ee343a3e3, type: 3}
   _useableRank: 7
   _targetableRank: 3
@@ -22,9 +22,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ed70399a118b22742aa14feda442c62a, type: 2}
   - {fileID: 11400000, guid: ed49da046106fbb458b1d349148d5d92, type: 2}
   - {fileID: 11400000, guid: 8006c2c7292a5124faf023d0c97fd017, type: 2}
-  _critChance: 5
-  _mainDescription: "\uD53C\uD574 4-7, \uCD9C\uD608 3"
-  _subDescription: "\uCF64\uBCF4 \uBCF4\uC720 \uC2DC \uCD94\uAC00 \uCD9C\uD608 3"
+  _critChance: 10
+  _mainDescription: "\uD53C\uD574: 4-7 \uCE58\uBA85\uD0C0: 10%\n\uB300\uC0C1\uC5D0
+    <sprite=21>\uC788\uC73C\uBA74 <sprite=14> <color=#6c0618>3</color>"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=14> <color=#6c0618>3(3\uD134)</color>"
   _denialCategories: 1
   _usesPerBattle: 0
   _moveForwardOneRank: 0
