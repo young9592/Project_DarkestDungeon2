@@ -9,12 +9,6 @@ using UnityEngine.UI;
 
 public class CSceneFlowManager : MonoBehaviour
 {
-    public enum EFadeType
-    {
-        Default,
-        Combat,
-        Combat_Return,
-    }
 
     #region Inspector
     [Header("Catalog")]
@@ -28,10 +22,12 @@ public class CSceneFlowManager : MonoBehaviour
     [SerializeField] private Image _progressBar;
     [SerializeField] private TextMeshProUGUI _loadingText;
 
+    [Header("Transition")]
+    [SerializeField] private CSceneTransition _transition;
+
     [Header("Option")]
     [SerializeField] private bool _enableKey = true;
     [SerializeField] private bool _dontDestroyOnLoad = true;
-    [SerializeField] private List<Material> _fadeMaterials;
     #endregion
 
     #region Field
@@ -43,7 +39,9 @@ public class CSceneFlowManager : MonoBehaviour
     private ESceneId _returnFieldSceneId;
     private GameObject _returnStageCoach;
     private CEnemyGroupSO _encounterEnemyGroup = null;
+    private CBaricadeEncounter.EChapterBoss _chapterBoss;
     private string _encounterObjectId = null;
+    private ESceneId _addtiveSceneId = ESceneId.Combat_Valley;
 
     #endregion
 
@@ -135,7 +133,7 @@ public class CSceneFlowManager : MonoBehaviour
         CPrint.Warn($"커서 싱크 실패 : {currentName}");
     }
 
-    public void LoadScene(ESceneId id, EFadeType fadeType = EFadeType.Default)
+    public void LoadScene(ESceneId id)
     {
         bool loadSuccess = _catalog.TryGetSceneName(id, out string sceneName);
 
@@ -151,10 +149,10 @@ public class CSceneFlowManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(CoLoadingScene(id, sceneName, fadeType));
+        StartCoroutine(CoLoadingScene(id, sceneName));
     }
 
-    private IEnumerator CoLoadingScene(ESceneId id, string sceneName, EFadeType fadeType)
+    private IEnumerator CoLoadingScene(ESceneId id, string sceneName)
     {
         if (_isLoading)
         {
@@ -163,24 +161,24 @@ public class CSceneFlowManager : MonoBehaviour
 
         _isLoading = true;
 
+        _catalog.TryGetSceneId(SceneManager.GetActiveScene().name, out ESceneId prevId);
         _loadPanel.SetActive(true);
         yield return null;
 
         CPrint.Log($"id = {id} / sceneName = {sceneName}");
 
-        _fadeCoroutine = StartCoroutine(CoFadeOut(fadeType));
+        _fadeCoroutine = StartCoroutine(_transition.CoFadeOut(prevId, id, _loadPanel));
         yield return _fadeCoroutine;
 
-        // 마차 정지
-        if (fadeType == EFadeType.Combat)
-        {
-            _returnStageCoach.SetActive(false);
-        }
+        // 사전작업
+        PrevLoadSetting(prevId, id);
 
+        // TODO : 횃불 로딩창 변경필요
         _loadingText.text = "로딩중...";
         _progressPanel.SetActive(true);
 
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        CombatBackgroundLoad(prevId, out AsyncOperation op2);
 
         while (op.progress < 0.9f)
         {
@@ -188,29 +186,76 @@ public class CSceneFlowManager : MonoBehaviour
             yield return null;
         }
 
+        while (op2 != null && op2.progress < 0.9f)
+        {
+            yield return null;
+        }
+
+        // TODO : 횃불 로딩창 변경필요
         _progressBar.fillAmount = op.progress;
         _progressPanel.SetActive(false);
         _loadingText.text = "";
-
-        yield return null;
 
         SyncCursorToCurrentScene();
 
         yield return new WaitUntil(() => op.isDone);
 
-        _fadeCoroutine = StartCoroutine(CoFadeIn(fadeType));
+        _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
         yield return _fadeCoroutine;
 
         _loadPanel.SetActive(false);
 
-        // 마차 불러오기
-        if (fadeType == EFadeType.Combat_Return)
+        NextLoadSetting(prevId, id);
+
+        _isLoading = false;
+
+    }
+    private void CombatBackgroundLoad(ESceneId prevId, out AsyncOperation op)
+    {
+
+        if (prevId == ESceneId.Valley)
         {
-            ReturnField();
+            _catalog.TryGetSceneName(ESceneId.Combat_Valley, out string sceneName);
+            op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            _addtiveSceneId = ESceneId.Combat_Valley;
+            return;
+        }
+        else if (prevId == ESceneId.Sprawl && _chapterBoss == CBaricadeEncounter.EChapterBoss.None)
+        {
+            _catalog.TryGetSceneName(ESceneId.Combat_Sprawl, out string sceneName);
+            op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            _addtiveSceneId = ESceneId.Combat_Sprawl;
+            return;
+        }
+        else if (prevId == ESceneId.Sprawl && _chapterBoss == CBaricadeEncounter.EChapterBoss.Chapter01)
+        {
+            // TODO : 가능하면 보스 전투씬도 추가
+            _catalog.TryGetSceneName(ESceneId.Combat_Sprawl, out string sceneName);
+            op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            _addtiveSceneId = ESceneId.Combat_Sprawl;
+            return;
+        }
+        else if (prevId == ESceneId.Battle)
+        {
+            _catalog.TryGetSceneName(_addtiveSceneId, out string sceneName);
+            SceneManager.UnloadSceneAsync(sceneName);
         }
 
+        op = null;
+    }
+    private void PrevLoadSetting(ESceneId prevId, ESceneId nextId)
+    {
+        // 마차 정지
+        if (nextId == ESceneId.Battle)
+        {
+            _returnStageCoach.SetActive(false);
+        }
+    }
+
+    private void NextLoadSetting(ESceneId prevId, ESceneId nextId)
+    {
         // 게임오버
-        if (id == ESceneId.Title)
+        if (prevId == ESceneId.Battle && nextId == ESceneId.Title)
         {
             Destroy(_returnStageCoach);
             _encounterEnemyGroup = null;
@@ -219,7 +264,11 @@ public class CSceneFlowManager : MonoBehaviour
             CBaricadeEncounter.ResetDestroyBaricade();
         }
 
-        _isLoading = false;
+        // 마차 불러오기
+        if (prevId == ESceneId.Battle && (nextId == ESceneId.Valley || nextId == ESceneId.Sprawl))
+        {
+            ReturnField();
+        }
 
     }
 
@@ -249,84 +298,6 @@ public class CSceneFlowManager : MonoBehaviour
         }
     }
 
-    private IEnumerator CoFadeOut(EFadeType fadeType)
-    {
-        switch (fadeType)
-        {
-            case EFadeType.Default:
-                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
-                break;
-            case EFadeType.Combat:
-                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
-                break;
-            case EFadeType.Combat_Return:
-                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
-                break;
-            default:
-                break;
-        }
-
-
-        Material mat = _loadPanel.GetComponent<Image>().material;
-        int percent = Shader.PropertyToID("_percent");
-        _loadPanel.SetActive(true);
-
-        float delay = 2f;
-        float nextTime = Time.time + delay;
-
-        while (nextTime > Time.time)
-        {
-            float t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
-            mat.SetFloat(percent, t);
-            yield return null;
-        }
-
-        mat.SetFloat(percent, 1f);
-    }
-
-    private IEnumerator CoFadeIn(EFadeType fadeType)
-    {
-        switch (fadeType)
-        {
-            case EFadeType.Default:
-                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
-                break;
-            case EFadeType.Combat:
-                _loadPanel.GetComponent<Image>().material = _fadeMaterials[1];
-                break;
-            case EFadeType.Combat_Return:
-                _loadPanel.GetComponent<Image>().material = _fadeMaterials[0];
-                break;
-            default:
-                break;
-        }
-
-        Material mat = _loadPanel.GetComponent<Image>().material;
-        int percent = Shader.PropertyToID("_percent");
-        _loadPanel.SetActive(true);
-
-        float delay = 2f;
-        float nextTime = Time.time + delay;
-
-        while (nextTime > Time.time)
-        {
-            float t = 0;
-
-            switch (fadeType)
-            {
-                case EFadeType.Combat:
-                    t = Mathf.Clamp01((nextTime - Time.time) / delay);
-                    break;
-                default:
-                    t = Mathf.Clamp01(1f - (nextTime - Time.time) / delay);
-                    break;
-            }
-
-
-            mat.SetFloat(percent, 1f - t);
-            yield return null;
-        }
-    }
 
     public void SetEncounterGroup(out CEnemyGroupSO enemyGroupSO)
     {
@@ -339,11 +310,12 @@ public class CSceneFlowManager : MonoBehaviour
         }
     }
 
-    public void GetBarigateData(ESceneId loadScene, string id, CEnemyGroupSO enemyGroupSO)
+    public void GetBarigateData(ESceneId loadScene, string id, CEnemyGroupSO enemyGroupSO, CBaricadeEncounter.EChapterBoss isBoss)
     {
         _returnFieldSceneId = loadScene;
         _encounterObjectId = id;
         _encounterEnemyGroup = enemyGroupSO;
+        _chapterBoss = isBoss;
 
         if (_encounterEnemyGroup == null)
         {

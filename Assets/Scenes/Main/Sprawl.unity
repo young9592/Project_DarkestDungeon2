@@ -2277,6 +2277,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4580902401044320071, guid: c33b6238187c5ae4dad4b6ab71efe177, type: 3}
+      propertyPath: _chapterBoss
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4580902401044320071, guid: c33b6238187c5ae4dad4b6ab71efe177, type: 3}
       propertyPath: _enemyGroupSO
       value: 
       objectReference: {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
