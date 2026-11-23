@@ -396,41 +396,95 @@ MonoBehaviour:
   _animator: {fileID: 5828302665704093255}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: 6290779e7a040b84981d5981af507b8a, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Flayer_Slash_Action
+    _completionState: Base Layer.SkillSO_Flayer_Slash_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0.28333333
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.4000001
   - _skill: {fileID: 11400000, guid: 1c14e50faf91a6f478b7d523f8a21da3, type: 2}
-    _attackState: Base Layer.Stab
-    _completionState: Base Layer.StabRecover
+    _attackState: Base Layer.SkillSO_Flayer_Stab_Action
+    _completionState: Base Layer.SkillSO_Flayer_Stab_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 0.016666668
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0
+    _recoveryClipEndTime: 1.4
   - _skill: {fileID: 11400000, guid: 6d82fcc14984bb9478024c897d900379, type: 2}
-    _attackState: Base Layer.Advance
-    _completionState: Base Layer.AdvanceRecover
+    _attackState: Base Layer.SkillSO_Flayer_Advance_Action
+    _completionState: Base Layer.SkillSO_Flayer_Advance_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0.28333333
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.4000001
   - _skill: {fileID: 11400000, guid: 3f0cd1dbb380fc249939b26cdb2fe53b, type: 2}
-    _attackState: Base Layer.Riposte
-    _completionState: Base Layer.RiposteRecover
+    _attackState: Base Layer.SkillSO_Flayer_Riposte_Action
+    _completionState: Base Layer.SkillSO_Flayer_Riposte_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 0.5833333
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.083333336
+    _recoveryClipEndTime: 1.4
   - _skill: {fileID: 11400000, guid: d4c050c80fba48a889cce99492d56e0a, type: 2}
-    _attackState: Base Layer.Ignite
-    _completionState: Base Layer.IgniteRecover
+    _attackState: Base Layer.SkillSO_Flayer_Ignite_Action
+    _completionState: Base Layer.SkillSO_Flayer_Ignite_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.05
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.5
+    _recoveryClipEndTime: 1.2833333
   - _skill: {fileID: 11400000, guid: f113147ff3a8468ab5e5360aaa63c562, type: 2}
-    _attackState: Base Layer.IgnitedStab
-    _completionState: Base Layer.IgnitedStabRecover
+    _attackState: Base Layer.SkillSO_Flayer_IgnitedBurningSlash_Action
+    _completionState: Base Layer.SkillSO_Flayer_IgnitedBurningSlash_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.1833333
+    _recoveryClipStartTime: 0.05
+    _recoveryBlendTime: 0.15
+    _recoveryClipEndTime: 1.4
   - _skill: {fileID: 11400000, guid: 8aaeba952248420a8c7b1d81b11f66c2, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Flayer_IgnitedBladeTornado_Action
+    _completionState: Base Layer.SkillSO_Flayer_IgnitedBladeTornado_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1
+    _recoveryClipStartTime: 0.3
+    _recoveryBlendTime: 0.18333334
+    _recoveryClipEndTime: 1.4000001
   - _skill: {fileID: 11400000, guid: 0ae461d93a6e4f269a6066b5949e2177, type: 2}
-    _attackState: Base Layer.Advance
-    _completionState: Base Layer.AdvanceRecover
+    _attackState: Base Layer.SkillSO_Flayer_IgnitedAdvance_Action
+    _completionState: Base Layer.SkillSO_Flayer_IgnitedAdvance_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1
+    _recoveryClipStartTime: 0.28333333
+    _recoveryBlendTime: 0.3
+    _recoveryClipEndTime: 1.4000001
   - _skill: {fileID: 11400000, guid: 2d077246549642c3a57e26f7ad806e12, type: 2}
-    _attackState: Base Layer.IgnitedStab
-    _completionState: Base Layer.IgnitedStabRecover
+    _attackState: Base Layer.SkillSO_Flayer_IgnitedRiposte_Action
+    _completionState: Base Layer.SkillSO_Flayer_IgnitedRiposte_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 0.5833333
+    _recoveryClipStartTime: 0.28333333
+    _recoveryBlendTime: 0.3
+    _recoveryClipEndTime: 1.4000001
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &4738803201036245165
@@ -498,7 +552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 6782717383250160131}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &27279435090613530

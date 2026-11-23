@@ -19,4 +19,4 @@ MonoBehaviour:
   _invalid: {fileID: 8300000, guid: c8bd85c2d146aeb4ca27ab68515442d7, type: 3}
   _hover: {fileID: 8300000, guid: c97d3e1bb97ec2c4f9cf9a1076903447, type: 3}
   _enemyHover: {fileID: 8300000, guid: 635371acaec939945b526e039247ce98, type: 3}
-  _volume: 0.45
+  _volume: 0.5

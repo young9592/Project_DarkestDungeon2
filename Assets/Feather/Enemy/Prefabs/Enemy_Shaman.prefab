@@ -377,29 +377,65 @@ MonoBehaviour:
   _animator: {fileID: 1447670437944969695}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: e6c5d4310dcbfc945863b3a695c46c9f, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Shaman_BurningBeads_Action
+    _completionState: Base Layer.SkillSO_Shaman_BurningBeads_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0.11666667
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.8
   - _skill: {fileID: 11400000, guid: 5eb1001044fb5f742add9bd30ae9b589, type: 2}
-    _attackState: Base Layer.Skill1
-    _completionState: Base Layer.Recover1
+    _attackState: Base Layer.SkillSO_Shaman_EyesClosed_Action
+    _completionState: Base Layer.SkillSO_Shaman_EyesClosed_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0.033333335
+    _recoveryStartDelay: 1.0666667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.45
   - _skill: {fileID: 11400000, guid: 5531012b236478741b1c0ea2ddf965aa, type: 2}
-    _attackState: Base Layer.Ignite
-    _completionState: Base Layer.IgniteRecover
+    _attackState: Base Layer.SkillSO_Shaman_Ignite_Action
+    _completionState: Base Layer.SkillSO_Shaman_Ignite_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.05
+    _recoveryClipEndTime: 2
   - _skill: {fileID: 11400000, guid: 67cb840bb387825448a635d7a107e64d, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Shaman_IgnitedBurningBeads_Action
+    _completionState: Base Layer.SkillSO_Shaman_IgnitedBurningBeads_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0.11666667
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.8
   - _skill: {fileID: 11400000, guid: c6c6ab30d845de44283f61a7403ec3aa, type: 2}
-    _attackState: Base Layer.Ignite
-    _completionState: Base Layer.IgniteRecover
+    _attackState: Base Layer.SkillSO_Shaman_BlazingAegis_Action
+    _completionState: Base Layer.SkillSO_Shaman_BlazingAegis_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.05
+    _recoveryClipEndTime: 1.8
   - _skill: {fileID: 11400000, guid: 0e94bfd0f6476b34bbeb7b0316cc66f9, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Shaman_InfernalBlast_Action
+    _completionState: Base Layer.SkillSO_Shaman_InfernalBlast_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0833334
+    _recoveryStartDelay: 0.05
+    _recoveryClipStartTime: 0.23333333
+    _recoveryBlendTime: 0
+    _recoveryClipEndTime: 1.8000002
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &1441922339959718021
@@ -487,7 +523,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 8757945586378208125}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &8423516975036894558

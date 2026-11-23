@@ -74,17 +74,38 @@ MonoBehaviour:
   _animator: {fileID: 2327442339589541458}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: 428e1c5a3a197864da6ce9d60084fcd0, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Firemouth_FireBreath_Action
+    _completionState: Base Layer.SkillSO_Firemouth_FireBreath_Return
     _feedback: {fileID: 11400000, guid: e2cd3947d0dddcb4fbc3519166b635ca, type: 2}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.083333336
+    _recoveryClipEndTime: 2.8166666
+    _recoveryIdleBlendTime: 0.333333333
   - _skill: {fileID: 11400000, guid: 17c969bc27c678b4b8f3bc2d2ed87966, type: 2}
-    _attackState: Base Layer.Skill1
-    _completionState: Base Layer.Skill1Pose
+    _attackState: Base Layer.SkillSO_Firemouth_FlameJet_Action
+    _completionState: Base Layer.SkillSO_Firemouth_FlameJet_Return
     _feedback: {fileID: 11400000, guid: 2dec60608f5a38f40b7ef7f560035412, type: 2}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.7666667
+    _recoveryIdleBlendTime: 0.266666667
   - _skill: {fileID: 11400000, guid: 3997648d85372fb4ea0274b1173757a5, type: 2}
-    _attackState: Base Layer.Skill2
-    _completionState: Base Layer.Skill2Pose
+    _attackState: Base Layer.SkillSO_Firemouth_TorchStrike_Action
+    _completionState: Base Layer.SkillSO_Firemouth_TorchStrike_Return
     _feedback: {fileID: 11400000, guid: 5e4393765723ade4bae8d6898c7e5f09, type: 2}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 2.5833333
+    _recoveryIdleBlendTime: 0.5
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &7678892684482303095
@@ -142,7 +163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 677171915374438795}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &2866272920798720789
@@ -540,7 +561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7e2fe94178b1fd646b9c05e6b185cdac, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7e2fe94178b1fd646b9c05e6b185cdac, type: 3}
       propertyPath: m_LocalRotation.x
@@ -548,7 +569,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7e2fe94178b1fd646b9c05e6b185cdac, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7e2fe94178b1fd646b9c05e6b185cdac, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1686,7 +1707,7 @@ Animator:
   m_GameObject: {fileID: 6007711433506244211}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9416520051e845e4d87f2bc80ce77fb3, type: 2}
+  m_Controller: {fileID: 9100000, guid: 3290ed883301f704db1a75f87a27a905, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
