@@ -3705,7 +3705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _heroPartyPreset: {fileID: 11400000, guid: baff11290b25bde4998c91689225c4f6, type: 2}
+  _heroPartyPreset: {fileID: 11400000, guid: c4c059fbaaa05ef46aeaf90e2766e13b, type: 2}
   _heroRankPosition:
   - {fileID: 1592749159}
   - {fileID: 264886586}
@@ -3740,7 +3740,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: b4852ee76976c0e4d97148451c0fb1f8, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: 9fa4a031b91a7c44899010fc6e102b2b, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 612a553e2c1b4bb28f4421faa201258b, type: 3}
-  m_Name: HeroLoadoutSO_PlagueDoctor_SkillTest
+  m_Name: HeroLoadoutSO_PlagueDoctor_Rank01
   m_EditorClassIdentifier: 
   _heroData: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
   _skills:
-  - {fileID: 11400000, guid: 762b31a86cbd3e348a5bd46ab021f998, type: 2}
+  - {fileID: 11400000, guid: f9d0592b815650b4088afb4a80a9f165, type: 2}
   - {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}
   - {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}
   - {fileID: 11400000, guid: 04bc96820433e2b46993c138de9a0f12, type: 2}

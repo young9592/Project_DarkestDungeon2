@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec55831651844b40a5e9f1c4d9d6625, type: 3}
+  m_Name: HeroPartySO_grave
+  m_EditorClassIdentifier: 
+  _members:
+  - _prefab: {fileID: 3199307062103521739, guid: 009cadb742b2fdb4c931e2c82d13aec5, type: 3}
+    _rank: 1
+    _loadout: {fileID: 11400000, guid: e90be4faaf205144e840b0d3930939cc, type: 2}
+  - _prefab: {fileID: 3199307062103521739, guid: 009cadb742b2fdb4c931e2c82d13aec5, type: 3}
+    _rank: 2
+    _loadout: {fileID: 11400000, guid: 55435c55ecd885e4eb436192fed1fe59, type: 2}
+  - _prefab: {fileID: 3199307062103521739, guid: 009cadb742b2fdb4c931e2c82d13aec5, type: 3}
+    _rank: 4
+    _loadout: {fileID: 11400000, guid: df8f9921a4d23c548b744e67e9cded1b, type: 2}
+  - _prefab: {fileID: 3199307062103521739, guid: 009cadb742b2fdb4c931e2c82d13aec5, type: 3}
+    _rank: 8
+    _loadout: {fileID: 11400000, guid: edcaed749921d5945bcf56537f259a1f, type: 2}
