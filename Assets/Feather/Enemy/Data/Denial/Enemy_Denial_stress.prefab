@@ -459,7 +459,7 @@ Animator:
   m_GameObject: {fileID: 7727900577845516315}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 51862d81da9d74143a0f5fd119509dc0, type: 2}
+  m_Controller: {fileID: 9100000, guid: 845c26ff41bce474cb80fb019dd4251f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -506,19 +506,53 @@ MonoBehaviour:
   _animator: {fileID: 65467396330750470}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: a74b9084d86c8a1459e138329dedf490, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_OverwhelmingAnguish_Action
+    _completionState: Base Layer.SkillSO_OverwhelmingAnguish_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.23333333
+    _recoveryClipEndTime: 3.15
+    _recoveryIdleBlendTime: 0.333333333
   - _skill: {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_CripplingDoubt_Action
+    _completionState: Base Layer.SkillSO_CripplingDoubt_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.23333333
+    _recoveryClipEndTime: 3.15
+    _recoveryIdleBlendTime: 0.333333333
   - _skill: {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_ParalyzingFear_Action
+    _completionState: Base Layer.SkillSO_ParalyzingFear_Return
     _feedback: {fileID: 0}
-  _hitRecoveryExitTime: 0.77261025
-  _hitRecoveryBlendTime: 0.5928991
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.23333333
+    _recoveryClipEndTime: 3.15
+    _recoveryIdleBlendTime: 0.333333333
+  - _skill: {fileID: 11400000, guid: 663c105c7dfb5444aa60d4aab535202c, type: 2}
+    _attackState: Base Layer.SkillSO_Boss_DenialOfReason_Action
+    _completionState: Base Layer.SkillSO_Boss_DenialOfReason_Return
+    _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.23333333
+    _recoveryClipEndTime: 3.15
+    _recoveryIdleBlendTime: 0.333333333
+  _hitRecoveryExitTime: 0.850000024
+  _hitRecoveryBlendTime: 0.25
+  _useSourceHitRecovery: 1
+  _sourceHitRecoveryBlendTime: 0.0651618242
 --- !u!114 &719930750581638198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,7 +632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 3714002427146955436}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &1517053284418121436

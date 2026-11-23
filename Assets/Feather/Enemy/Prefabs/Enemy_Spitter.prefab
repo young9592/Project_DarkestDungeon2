@@ -396,13 +396,27 @@ MonoBehaviour:
   _animator: {fileID: 5921787776818135052}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: 077540d7efcf83a4d859856f86ac7bba, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Spitter_VenomSpit_Action
+    _completionState: Base Layer.SkillSO_Spitter_VenomSpit_Return
     _feedback: {fileID: 11400000, guid: c5e9a2434af52fd4da6cea18dc67ae27, type: 2}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.7833333
+    _recoveryIdleBlendTime: 0.266666667
   - _skill: {fileID: 11400000, guid: df3bfebaf4ce4ffab46ec48a620fa6d5, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Spitter_Bite_Action
+    _completionState: Base Layer.SkillSO_Spitter_Bite_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.05
+    _recoveryClipEndTime: 2.6333334
+    _recoveryIdleBlendTime: 0.333333333
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &2773864869183926169
@@ -460,7 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 6013807282300900760}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &6342609440188655141
@@ -1451,7 +1465,7 @@ Animator:
   m_GameObject: {fileID: 5461194095861891453}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3629b48a21ba65f469f2a93d071b51aa, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4a46897f5f726a249b407377847bd1a3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

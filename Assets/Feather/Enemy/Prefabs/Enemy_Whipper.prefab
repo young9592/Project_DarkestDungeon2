@@ -55,33 +55,75 @@ MonoBehaviour:
   _animator: {fileID: 8863230114206090964}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: 1f83fa63e1695ee40bfb2911e3996529, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Whipper_WhipCrack_Action
+    _completionState: Base Layer.SkillSO_Whipper_WhipCrack_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.16666667
+    _recoveryClipEndTime: 3.1333334
   - _skill: {fileID: 11400000, guid: e1fc873ca1215334095eb9a5031d47c1, type: 2}
-    _attackState: Base Layer.Skill1
-    _completionState: Base Layer.Recover1
+    _attackState: Base Layer.SkillSO_Whipper_WhipTrip_Action
+    _completionState: Base Layer.SkillSO_Whipper_WhipTrip_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 3.1333334
   - _skill: {fileID: 11400000, guid: c512bed77ec235448a8298fd641fd767, type: 2}
-    _attackState: Base Layer.Skill2
-    _completionState: Base Layer.Recover2
+    _attackState: Base Layer.SkillSO_Whipper_FieryHaze_Action
+    _completionState: Base Layer.SkillSO_Whipper_FieryHaze_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.1
+    _recoveryClipEndTime: 3.1333334
   - _skill: {fileID: 11400000, guid: 834abc79843e8b74ba7da0f7f316d1df, type: 2}
-    _attackState: Base Layer.Ignite
-    _completionState: Base Layer.IgniteRecover
+    _attackState: Base Layer.SkillSO_Whipper_Ignite_Action
+    _completionState: Base Layer.SkillSO_Whipper_Ignite_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.21666667
+    _recoveryClipEndTime: 1.4666667
   - _skill: {fileID: 11400000, guid: a6c174c35b920fe409503bee7b490e4d, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Whipper_InfernalTaskmaster_Action
+    _completionState: Base Layer.SkillSO_Whipper_InfernalTaskmaster_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.1
+    _recoveryClipEndTime: 3.1333334
   - _skill: {fileID: 11400000, guid: 82cdf55c2deed90458d1c4c6bb0bfd2b, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Whipper_IgnitedWhipCrack_Action
+    _completionState: Base Layer.SkillSO_Whipper_IgnitedWhipCrack_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.1
+    _recoveryClipEndTime: 3.1333334
   - _skill: {fileID: 11400000, guid: 7627839ff9bbf024ca21dac79832df2e, type: 2}
-    _attackState: Base Layer.Skill1
-    _completionState: Base Layer.Recover1
+    _attackState: Base Layer.SkillSO_Whipper_IgnitedWhipTrip_Action
+    _completionState: Base Layer.SkillSO_Whipper_IgnitedWhipTrip_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 1.0166667
+    _recoveryStartDelay: 0
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.1
+    _recoveryClipEndTime: 3.1333334
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &3519931681870001806
@@ -166,7 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 8615475372731390506}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &384962528583502893

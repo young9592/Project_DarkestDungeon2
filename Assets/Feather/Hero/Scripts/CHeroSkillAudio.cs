@@ -29,6 +29,7 @@ public class CHeroSkillAudio : MonoBehaviour
     private bool _recoveryPlayed;
     private bool _hasMiss;
     private bool _hasHit;
+    private bool _waitForHitResult;
 
     public event Action<CSkillDataSO, EHeroSkillSoundPhase, AudioClip> OnSoundPlayed;
     public bool IsWaitingForUse { get { return _activeSkill != null && !_usePlayed; } }
@@ -88,8 +89,7 @@ public class CHeroSkillAudio : MonoBehaviour
         int startHash = Animator.StringToHash(_activeSkill.StartState);
         if (!_preparationPlayed && state.fullPathHash == startHash) PlayPreparation();
 
-        if (!_usePlayed && _animation.TryGetAttackProgress(out float progress, out _)
-            && progress >= _activeSkill.Feedback.ReleaseTime)
+        if (!_usePlayed && _animation.TryGetAttackProgress(out _, out _))
         {
             PlayUse();
         }
@@ -147,9 +147,20 @@ public class CHeroSkillAudio : MonoBehaviour
             return;
         }
 
+        _waitForHitResult = false;
+        if (_activeSkill.EffectList != null)
+        {
+            for (int i = 0; i < _activeSkill.EffectList.Count; i++)
+            {
+                CEffectSO effect = _activeSkill.EffectList[i];
+                if (effect != null && effect.EffectType == EEffectType.Damage
+                    && effect.Strategy is CDamageStrategy && effect.EffectTarget != EEffectTarget.Self) _waitForHitResult = true;
+            }
+        }
         Prepare(_activeSkill);
-        IReadOnlyList<CEntity> targets = _hero.ActionTargets;
-        for (int i = 0; targets != null && i < targets.Count; i++)
+        // 보호자가 대신 맞아도 실제 피해 결과를 받음
+        CEntity[] targets = FindObjectsOfType<CEntity>();
+        for (int i = 0; targets != null && i < targets.Length; i++)
         {
             CEntity target = targets[i];
             if (target == null || _targets.Contains(target)) continue;
@@ -160,7 +171,7 @@ public class CHeroSkillAudio : MonoBehaviour
 
     private void HandleResult(CHealthEffectResult result)
     {
-        if (_activeSkill == null || result.Source != _hero || result.IsPeriodic) return;
+        if (_activeSkill == null || result.Source != _hero || result.IsPeriodic || result.IsHealing) return;
         if (result.IsMiss) _hasMiss = true;
         else _hasHit = true;
     }
@@ -168,9 +179,12 @@ public class CHeroSkillAudio : MonoBehaviour
     private void PlayUse()
     {
         if (_usePlayed || _activeSkill == null) return;
+        if (_waitForHitResult && !_hasHit && !_hasMiss) return;
         _usePlayed = true;
         StopPreparation();
-        Play(_actionSource, _activeSkill, EHeroSkillSoundPhase.Use, _activeSkill.Feedback.UseSound);
+        bool missed = _hasMiss && !_hasHit;
+        Play(_actionSource, _activeSkill, missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Use,
+            missed ? _activeSkill.Feedback.MissSound : _activeSkill.Feedback.UseSound);
         OnUseStarted?.Invoke();
     }
 
@@ -178,16 +192,14 @@ public class CHeroSkillAudio : MonoBehaviour
     {
         if (_recoveryPlayed || _activeSkill == null) return;
         _recoveryPlayed = true;
-        // 전부 빗나갔을 때는 일반 복귀음 대신 빗나감 복귀음을 씀
-        bool missed = _hasMiss && !_hasHit;
-        Play(_actionSource, _activeSkill,
-            missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Return,
-            missed ? _activeSkill.Feedback.MissSound : _activeSkill.Feedback.ReturnSound);
+        Play(_actionSource, _activeSkill, EHeroSkillSoundPhase.Return, _activeSkill.Feedback.ReturnSound);
     }
 
     private void FinishPresentation(CEntity actor)
     {
         if (_activeSkill == null) return;
+        _waitForHitResult = false;
+        if (!_usePlayed) PlayUse();
         // 그림자 은신처럼 별도 복귀 상태가 없으면 동작이 끝날 때 재생
         PlayRecovery();
     }
@@ -227,6 +239,7 @@ public class CHeroSkillAudio : MonoBehaviour
         ClearTargets();
         ClearPreparation();
         _activeSkill = null;
+        _waitForHitResult = false;
     }
 
     private void Interrupt(CEntity actor)

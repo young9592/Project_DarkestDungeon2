@@ -23,6 +23,8 @@ public class CEnemySkillAudio : MonoBehaviour
     private bool _hasMiss;
     private bool _hasHit;
     private bool _combo;
+    private bool _useSourceTiming;
+    private bool _expectsDamage;
 
     public event Action<CSkillDataSO, EHeroSkillSoundPhase, AudioClip> OnSoundPlayed;
     public bool IsWaitingForUse { get { return _skillSound != null && !_used; } }
@@ -47,7 +49,8 @@ public class CEnemySkillAudio : MonoBehaviour
     {
         if (_enemy == null) return;
         _enemy.OnAttackPresentationStarted += Begin;
-        _enemy.OnAttackPresentationCompleted += Recover;
+        _enemy.OnAttackPresentationCompleted += FinishPresentation;
+        _animation.OnAttackRecoveryStarted += RecoverFromAnimation;
         _enemy.OnAttackPresentationInterrupted += Interrupt;
         _enemy.OnActionCompleted += End;
         _enemy.OnActionInterrupted += Interrupt;
@@ -56,7 +59,8 @@ public class CEnemySkillAudio : MonoBehaviour
     private void Begin(CEntity actor)
     {
         End(actor);
-        _skill = _enemy.ActionSkill;
+        _skill = _animation.ActiveSkill;
+        if (_skill == null) _skill = _enemy.ActionSkill;
         CActorCombatSound actorSound = _sounds.GetActor(_enemy.EntityData);
         _skillSound = actorSound != null ? actorSound.GetSkill(_skill) : null;
         _prepared = false;
@@ -64,6 +68,17 @@ public class CEnemySkillAudio : MonoBehaviour
         _recovered = false;
         _hasMiss = false;
         _hasHit = false;
+        _useSourceTiming = _animation.UsesSourceTiming;
+        _expectsDamage = false;
+        if (_skill != null && _skill.EffectList != null)
+        {
+            for (int i = 0; i < _skill.EffectList.Count; i++)
+            {
+                CEffectSO effect = _skill.EffectList[i];
+                if (effect != null && effect.EffectType == EEffectType.Damage
+                    && effect.EffectTarget != EEffectTarget.Self) _expectsDamage = true;
+            }
+        }
         _combo = _enemy.ActionTarget != null && _enemy.ActionTarget.TokenManager != null
             && _enemy.ActionTarget.TokenManager.HasToken(EEffectType.Combo);
         IReadOnlyList<CEntity> targets = _battleTargets;
@@ -73,6 +88,13 @@ public class CEnemySkillAudio : MonoBehaviour
             if (target == null || _targets.Contains(target)) continue;
             _targets.Add(target);
             target.OnHealthEffectResolved += HandleResult;
+        }
+
+        if (_skillSound != null && _useSourceTiming)
+        {
+            _prepared = true;
+            PlayUse();
+            if (_animation.TryGetAttackRecovery(out _, out _)) Recover(actor);
         }
     }
 
@@ -86,6 +108,13 @@ public class CEnemySkillAudio : MonoBehaviour
             _skillSound = actor != null ? actor.GetSkill(_skill) : null;
         }
         if (_skillSound == null) return;
+        if (_useSourceTiming)
+        {
+            _prepared = true;
+            PlayUse();
+            if (_animation.TryGetAttackRecovery(out _, out _)) Recover(_enemy);
+            return;
+        }
         if (!_prepared)
         {
             _prepared = true;
@@ -96,17 +125,50 @@ public class CEnemySkillAudio : MonoBehaviour
         float releaseTime = feedback != null ? feedback.ReleaseTime : 0.0f;
         if (!_used && _animation.TryGetAttackRecovery(out float progress, out _) && progress >= releaseTime)
         {
-            _used = true;
-            _preparationSource.Stop();
-            Play(_actionSource, EHeroSkillSoundPhase.Use,
-                _combo && _skillSound.ComboUse != null ? _skillSound.ComboUse : _skillSound.Use);
-            OnUseStarted?.Invoke();
+            PlayUse();
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (!_useSourceTiming || _used || !_animation.IsAttacking) return;
+        // 여러 대상의 판정이 모인 뒤 같은 프레임에 명중음이나 빗나감음을 고름
+        PlayUse();
+        if (_used && _animation.TryGetAttackRecovery(out _, out _)) Recover(_enemy);
+    }
+
+    private void PlayUse()
+    {
+        if (_used || _skillSound == null) return;
+        if (_expectsDamage && !_hasHit && !_hasMiss) return;
+        _used = true;
+        _preparationSource.Stop();
+        bool missed = _hasMiss && !_hasHit;
+        AudioClip clip = missed ? _skillSound.Miss : _skillSound.Use;
+        if (_combo)
+        {
+            AudioClip comboClip = missed ? _skillSound.ComboMiss : _skillSound.ComboUse;
+            if (comboClip != null) clip = comboClip;
+        }
+        Play(_actionSource, missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Use, clip);
+        OnUseStarted?.Invoke();
+    }
+
+    private void RecoverFromAnimation()
+    {
+        if (_useSourceTiming) Recover(_enemy);
+    }
+
+    private void FinishPresentation(CEntity actor)
+    {
+        _expectsDamage = false;
+        Recover(actor);
+        if (!_enemy.IsActionActive) End(actor);
     }
 
     private void HandleResult(CHealthEffectResult result)
     {
-        if (result.Source != _enemy || result.IsPeriodic) return;
+        if (result.Source != _enemy || result.IsPeriodic || result.IsHealing) return;
         if (result.IsMiss) _hasMiss = true;
         else _hasHit = true;
     }
@@ -114,17 +176,13 @@ public class CEnemySkillAudio : MonoBehaviour
     private void Recover(CEntity actor)
     {
         if (_skillSound == null || _recovered) return;
+        // 복귀가 바로 시작되는 스킬도 명중 결과를 받은 뒤 소리를 고름
+        if (_useSourceTiming && _expectsDamage && !_hasMiss && !_hasHit) return;
         _recovered = true;
         _preparationSource.Stop();
-        bool missed = _hasMiss && !_hasHit;
-        AudioClip clip = missed ? _skillSound.Miss : _skillSound.Return;
-        if (_combo)
-        {
-            AudioClip comboClip = missed ? _skillSound.ComboMiss : _skillSound.ComboReturn;
-            if (comboClip != null) clip = comboClip;
-        }
-        Play(_actionSource, missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Return, clip);
-        if (!_enemy.IsActionActive) End(actor);
+        if (!_used) PlayUse();
+        AudioClip clip = _combo && _skillSound.ComboReturn != null ? _skillSound.ComboReturn : _skillSound.Return;
+        Play(_actionSource, EHeroSkillSoundPhase.Return, clip);
     }
 
     private void Play(AudioSource source, EHeroSkillSoundPhase phase, AudioClip clip)
@@ -145,6 +203,8 @@ public class CEnemySkillAudio : MonoBehaviour
         if (_preparationSource != null) _preparationSource.Stop();
         _skillSound = null;
         _skill = null;
+        _useSourceTiming = false;
+        _expectsDamage = false;
     }
 
     private void Interrupt(CEntity actor)
@@ -158,7 +218,8 @@ public class CEnemySkillAudio : MonoBehaviour
         if (_enemy != null)
         {
             _enemy.OnAttackPresentationStarted -= Begin;
-            _enemy.OnAttackPresentationCompleted -= Recover;
+            _enemy.OnAttackPresentationCompleted -= FinishPresentation;
+            if (_animation != null) _animation.OnAttackRecoveryStarted -= RecoverFromAnimation;
             _enemy.OnAttackPresentationInterrupted -= Interrupt;
             _enemy.OnActionCompleted -= End;
             _enemy.OnActionInterrupted -= Interrupt;

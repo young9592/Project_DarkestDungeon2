@@ -37,7 +37,7 @@ MonoBehaviour:
   _corpseSprite: {fileID: 21300000, guid: 76fa1ef3fef743f68a87ea47430129d0, type: 3}
   _corpseData: {fileID: 11400000, guid: a32cf4a9974647d8bc382aae34aa09bb, type: 2}
   _corpseHealth: 8
-  _corpseWidth: 0.014
+  _corpseWidth: 0.0125
   _skillRules: []
   _targetSelection: 0
   _comboPrioritySkill: {fileID: 0}

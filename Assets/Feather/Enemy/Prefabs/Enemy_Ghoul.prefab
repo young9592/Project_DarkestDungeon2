@@ -396,17 +396,38 @@ MonoBehaviour:
   _animator: {fileID: 2789578474188296488}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: 1873a69fa6956ba47b8ac738eac5a6db, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_Ghoul_Claw_Action
+    _completionState: Base Layer.SkillSO_Ghoul_Claw_Return
     _feedback: {fileID: 11400000, guid: eda54825f17e9fd4db1eddc55650736e, type: 2}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0333333
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0
+    _recoveryClipEndTime: 3.05
+    _recoveryIdleBlendTime: 0.466666667
   - _skill: {fileID: 11400000, guid: 4e482260cf9834c4fbd98a01b175032a, type: 2}
-    _attackState: Base Layer.Skill1
-    _completionState: Base Layer.Skill1Pose
+    _attackState: Base Layer.SkillSO_Ghoul_SkullToss_Action
+    _completionState: Base Layer.SkillSO_Ghoul_SkullToss_Return
     _feedback: {fileID: 11400000, guid: 168da7f6a841a9a48afebf46e1e3fecc, type: 2}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.05
+    _recoveryClipEndTime: 1.9833333
+    _recoveryIdleBlendTime: 0.4
   - _skill: {fileID: 11400000, guid: 1ee58c041f184af198b64af2a6b04f62, type: 2}
-    _attackState: Base Layer.Howl
-    _completionState: Base Layer.HowlPose
+    _attackState: Base Layer.SkillSO_Ghoul_Howl_Action
+    _completionState: Base Layer.SkillSO_Ghoul_Howl_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.15
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.06666667
+    _recoveryClipEndTime: 1.65
+    _recoveryIdleBlendTime: 0.4
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &9090354810496263966
@@ -464,7 +485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 4567803805228731344}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &3351509665625548305
@@ -1899,7 +1920,7 @@ Animator:
   m_GameObject: {fileID: 3398537757621330908}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: caaa2630a3e88d44e816227d40141f80, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5ef028823e6d5684782958aa59d2769b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
