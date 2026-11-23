@@ -9,6 +9,8 @@ public enum ESceneId
     Inn,
     Sprawl,
     Battle,
+    Combat_Valley,
+    Combat_Sprawl,
 }
 
 [Serializable]

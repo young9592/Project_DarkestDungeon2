@@ -3788,6 +3788,7 @@ GameObject:
   - component: {fileID: 2120991959}
   - component: {fileID: 2120991958}
   - component: {fileID: 2120991957}
+  - component: {fileID: 2120991960}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -3818,6 +3819,10 @@ MonoBehaviour:
     sceneName: Sprawl
   - id: 4
     sceneName: Battle
+  - id: 5
+    sceneName: Combat_Valley
+  - id: 6
+    sceneName: Combat_Sprawl
 --- !u!114 &2120991958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3835,11 +3840,9 @@ MonoBehaviour:
   _progressPanel: {fileID: 1568295628}
   _progressBar: {fileID: 2085699400}
   _loadingText: {fileID: 1937655596}
+  _transition: {fileID: 2120991960}
   _enableKey: 1
   _dontDestroyOnLoad: 1
-  _fadeMaterials:
-  - {fileID: 2100000, guid: c321568d72b05c149912fe3f3ba28e85, type: 2}
-  - {fileID: 2100000, guid: 9ca0ec6edb2b96048b157746281b63f0, type: 2}
 --- !u!4 &2120991959
 Transform:
   m_ObjectHideFlags: 0
@@ -3856,6 +3859,21 @@ Transform:
   - {fileID: 697209820}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2120991960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120991956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c5abbb1df1601149ab1b3c47c85dce9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fadeMaterials:
+  - {fileID: 2100000, guid: c321568d72b05c149912fe3f3ba28e85, type: 2}
+  - {fileID: 2100000, guid: 9ca0ec6edb2b96048b157746281b63f0, type: 2}
 --- !u!1 &2127317962
 GameObject:
   m_ObjectHideFlags: 0

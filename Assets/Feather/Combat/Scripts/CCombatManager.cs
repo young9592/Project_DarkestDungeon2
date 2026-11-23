@@ -1295,13 +1295,13 @@ public class CCombatManager : MonoBehaviour
     private IEnumerator CoVictory()
     {
         yield return new WaitForSeconds(2.0f);
-        CSceneFlowManager.Instance.LoadScene(CSceneFlowManager.Instance.ReturnFieldSceneId, CSceneFlowManager.EFadeType.Combat_Return);
+        CSceneFlowManager.Instance.LoadScene(CSceneFlowManager.Instance.ReturnFieldSceneId);
     }
 
     private IEnumerator CoDefeat()
     {
         yield return new WaitForSeconds(2.0f);
-        CSceneFlowManager.Instance.LoadScene(ESceneId.Title, CSceneFlowManager.EFadeType.Combat_Return);
+        CSceneFlowManager.Instance.LoadScene(ESceneId.Title);
 
     }
 }
