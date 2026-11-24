@@ -17,12 +17,12 @@ MonoBehaviour:
   _useableRank: 12
   _targetableRank: -1
   _isGroupTarget: 1
-  _cooldown: 3
+  _cooldown: 2
   _effectList:
   - {fileID: 11400000, guid: 1fc2313378f4bb147a81d0a17a109dc4, type: 2}
   - {fileID: 11400000, guid: 76b40915af8aa0b489085d48b3e55689, type: 2}
   _critChance: 0
-  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 3"
+  _mainDescription: "\uc7ac\uc0ac\uc6a9 \ub300\uae30\uc2dc\uac04: 2"
   _subDescription: "<color=#816b44>\uB300\uC0C1: </color><sprite=8>-2, <sprite=20>"
   _denialCategories: 8
   _usesPerBattle: 0

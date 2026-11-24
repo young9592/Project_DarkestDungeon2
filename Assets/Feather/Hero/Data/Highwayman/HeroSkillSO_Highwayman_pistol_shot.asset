@@ -19,7 +19,7 @@ MonoBehaviour:
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 408d6a86121745446808cea4fe7fe236, type: 2}
+  - {fileID: 11400000, guid: 8f42f12d820c43178872745de713a4e8, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
   _critChance: 10
   _mainDescription: "\uD53C\uD574: 3-6 \uCE58\uBA85\uD0C0: 10%\n\uB300\uC0C1\uC5D0

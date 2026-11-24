@@ -17,14 +17,12 @@ MonoBehaviour:
   _useableRank: 3
   _targetableRank: 3
   _isGroupTarget: 0
-  _cooldown: 1
+  _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: f4480241895173548b9646900d15f1b0, type: 2}
+  - {fileID: 11400000, guid: 8a1b16076bde4333851efd373a13ffe4, type: 2}
   - {fileID: 11400000, guid: 0d00428a28e39ab42997fc341d0ccfcd, type: 2}
-  _critChance: 5
-  _mainDescription: "\uD53C\uD574: 6-9 \uCE58\uBA85\uD0C0: 5%\n\uC7AC\uC0AC\uC6A9
-    \uB300\uAE30\uC2DC\uAC04: 1\n<sprite=20> \uC18C\uBAA8 \uC2DC \uD53C\uD574\uB7C9
-    +50%"
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 6-8 \uce58\uba85\ud0c0: 10%\n\n<sprite=20> \uc18c\ubaa8 \uc2dc \ud53c\ud574\ub7c9 +50%"
   _subDescription: "<color=#816b44>\uC790\uC2E0: </color> <sprite=23> , \uC81C\uAC70
     : <sprite=20>"
   _denialCategories: 1

@@ -21,7 +21,7 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: 7d155af3fd515d442b48f4630def7336, type: 2}
   _critChance: 20
-  _mainDescription: "\uD53C\uD574: 4-8 \uCE58\uBA85\uD0C0: 20%\n<sprite=20> \uBB34\uC2DC\n"
+  _mainDescription: "\ud53c\ud574: 5-9 \uce58\uba85\ud0c0: 20%\n<sprite=20> \ubb34\uc2dc"
   _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=21> \uC9C0\uC815
     \uC2DC <sprite=5>"
   _denialCategories: 1
