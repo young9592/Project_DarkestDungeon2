@@ -20,5 +20,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main/Battle.unity
     guid: 04cb103b579eb7546af2a7862a1933d2
+  - enabled: 1
+    path: Assets/Scenes/Main/Combat/Combat_Valley.unity
+    guid: 9d09dd26212716542aa10a3e6b38bd6d
+  - enabled: 1
+    path: Assets/Scenes/Main/Combat/Combat_Sprawl.unity
+    guid: 61ae3f5c743673b4f880d3d0c5569258
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 46c6450c7f4b47047a70b95cd25808bd, type: 2}

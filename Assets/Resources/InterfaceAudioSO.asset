@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd347ec741e31504384baaaafbcc92df, type: 3}
   m_Name: InterfaceAudioSO
   m_EditorClassIdentifier: 
-  _volume: 0.35
+  _volume: 0.5
   _actors: []
   _sounds:
   - _key: select

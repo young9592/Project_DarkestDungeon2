@@ -23,6 +23,11 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     [SerializeField] private AudioClip _missSound;
     [SerializeField] private AudioClip _returnSound;
 
+    [Header("Sound Timing (Seconds)")]
+    [SerializeField] private CSkillAudioTiming _audioTiming = new CSkillAudioTiming();
+
+    public CSkillAudioTiming AudioTiming { get { return _audioTiming; } }
+
     public AudioClip PreparationSound
     {
         get { return _preparationSound; }

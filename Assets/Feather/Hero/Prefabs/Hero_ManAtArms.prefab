@@ -244,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 3629769231026691092}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: Base Layer.OriginalAction_ManAtArms_Crush
   _riposteRecoveryState: Base Layer.OriginalRecover_ManAtArms_Crush
 --- !u!1 &4048974487442176639

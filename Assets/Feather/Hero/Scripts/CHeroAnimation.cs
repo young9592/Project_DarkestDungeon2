@@ -46,12 +46,18 @@ public class CHeroAnimation : MonoBehaviour
     public event Action OnMeltdownCompleted;
     public event Action OnMeltdownInterrupted;
 
+    public event Action OnRiposteQueued;
     public event Action OnAttackStarted;
     public event Action OnAttackCompleted;
     public event Action OnAttackInterrupted;
     public event Action OnHitStarted;
     public event Action OnHitCompleted;
     public event Action OnHitInterrupted;
+
+    public bool IsRiposting
+    {
+        get { return _riposteQueued || _state == EAnimationState.Riposte; }
+    }
 
     public bool IsBusy
     {
@@ -197,6 +203,7 @@ public class CHeroAnimation : MonoBehaviour
 
         if (IsSelecting) CancelSelection();
         _riposteQueued = true;
+        OnRiposteQueued?.Invoke();
         return true;
     }
 

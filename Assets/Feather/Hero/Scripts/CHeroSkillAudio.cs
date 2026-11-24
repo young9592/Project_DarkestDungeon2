@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +29,11 @@ public class CHeroSkillAudio : MonoBehaviour
     private bool _recoveryPlayed;
     private bool _hasMiss;
     private bool _hasHit;
+    private bool _waitForHitResult;
+    private bool _preparationQueued;
+    private bool _useQueued;
+    private bool _recoveryRequested;
+    private readonly CSkillAudioPlayback _playback = new CSkillAudioPlayback();
 
     public event Action<CSkillDataSO, EHeroSkillSoundPhase, AudioClip> OnSoundPlayed;
     public bool IsWaitingForUse { get { return _activeSkill != null && !_usePlayed; } }
@@ -70,7 +75,7 @@ public class CHeroSkillAudio : MonoBehaviour
         if (_activeSkill == null)
         {
             CHeroSkillSO selected = GetSoundSkill(_hero.SelectedSkill);
-            if (selected != null && selected.Feedback != null)
+            if (selected != null && selected.Feedback != null && _animation.IsSelecting)
             {
                 Prepare(selected);
                 if (_animation.IsSelecting && _animator.speed > 0.0f) PlayPreparation();
@@ -88,8 +93,7 @@ public class CHeroSkillAudio : MonoBehaviour
         int startHash = Animator.StringToHash(_activeSkill.StartState);
         if (!_preparationPlayed && state.fullPathHash == startHash) PlayPreparation();
 
-        if (!_usePlayed && _animation.TryGetAttackProgress(out float progress, out _)
-            && progress >= _activeSkill.Feedback.ReleaseTime)
+        if (!_usePlayed && _animation.TryGetAttackProgress(out _, out _))
         {
             PlayUse();
         }
@@ -102,38 +106,56 @@ public class CHeroSkillAudio : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (_hero.IsDead) { Interrupt(_hero); return; }
+        _playback.Tick(Time.deltaTime);
+    }
+
     private void Prepare(CHeroSkillSO skill)
     {
         if (_preparedSkill == skill) return;
+        if (_activeSkill == null) _playback.CancelAll();
         ClearPreparation();
         _preparedSkill = skill;
     }
 
     private void PlayPreparation()
     {
-        if (_preparationPlayed || _preparedSkill == null || _preparedSkill.Feedback == null) return;
-        _preparationPlayed = true;
-        CHeroSkillFeedbackSO feedback = _preparedSkill.Feedback;
+        if (_preparationPlayed || _preparationQueued || _preparedSkill == null || _preparedSkill.Feedback == null) return;
+        CHeroSkillSO skill = _preparedSkill;
+        CHeroSkillFeedbackSO feedback = skill.Feedback;
         AudioClip clip = feedback.PreparationSound;
         if (clip == null) return;
-
-        double start = AudioSettings.dspTime + 0.02;
-        _preparationSource.clip = clip;
-        _preparationSource.volume = feedback.Volume;
-        _preparationSource.loop = false;
-        _preparationSource.PlayScheduled(start);
-        if (feedback.PreparationLoopSound != null)
+        _preparationQueued = true;
+        float delay = feedback.AudioTiming != null ? feedback.AudioTiming.GetDelay(EHeroSkillSoundPhase.Preparation) : 0.0f;
+        _playback.Schedule(EHeroSkillSoundPhase.Preparation, delay, () =>
         {
-            _preparationLoopSource.clip = feedback.PreparationLoopSound;
-            _preparationLoopSource.volume = feedback.Volume;
-            _preparationLoopSource.loop = true;
-            _preparationLoopSource.PlayScheduled(start + clip.length);
-        }
-        OnSoundPlayed?.Invoke(_preparedSkill, EHeroSkillSoundPhase.Preparation, clip);
+            _preparationQueued = false;
+            if (_preparedSkill != skill || !isActiveAndEnabled || _hero.IsDead) return;
+            _preparationPlayed = true;
+            double start = AudioSettings.dspTime + 0.02;
+            _preparationSource.clip = clip;
+            _preparationSource.volume = feedback.Volume;
+            _preparationSource.loop = false;
+            _preparationSource.PlayScheduled(start);
+            if (feedback.PreparationLoopSound != null)
+            {
+                _preparationLoopSource.clip = feedback.PreparationLoopSound;
+                _preparationLoopSource.volume = feedback.Volume;
+                _preparationLoopSource.loop = true;
+                _preparationLoopSource.PlayScheduled(start + clip.length);
+            }
+            OnSoundPlayed?.Invoke(skill, EHeroSkillSoundPhase.Preparation, clip);
+        });
     }
 
     private void Begin(CEntity actor)
     {
+        _playback.CancelAll();
+        _preparationQueued = false;
+        _useQueued = false;
+        _recoveryRequested = false;
         ClearTargets();
         _activeSkill = GetSoundSkill(_hero.ActionSkill);
         _usePlayed = false;
@@ -147,9 +169,20 @@ public class CHeroSkillAudio : MonoBehaviour
             return;
         }
 
+        _waitForHitResult = false;
+        if (_activeSkill.EffectList != null)
+        {
+            for (int i = 0; i < _activeSkill.EffectList.Count; i++)
+            {
+                CEffectSO effect = _activeSkill.EffectList[i];
+                if (effect != null && effect.EffectType == EEffectType.Damage
+                    && effect.Strategy is CDamageStrategy && effect.EffectTarget != EEffectTarget.Self) _waitForHitResult = true;
+            }
+        }
         Prepare(_activeSkill);
-        IReadOnlyList<CEntity> targets = _hero.ActionTargets;
-        for (int i = 0; targets != null && i < targets.Count; i++)
+        // 보호자가 대신 맞아도 실제 피해 결과를 받음
+        CEntity[] targets = FindObjectsOfType<CEntity>();
+        for (int i = 0; targets != null && i < targets.Length; i++)
         {
             CEntity target = targets[i];
             if (target == null || _targets.Contains(target)) continue;
@@ -160,34 +193,53 @@ public class CHeroSkillAudio : MonoBehaviour
 
     private void HandleResult(CHealthEffectResult result)
     {
-        if (_activeSkill == null || result.Source != _hero || result.IsPeriodic) return;
+        if (_activeSkill == null || result.Source != _hero || result.IsPeriodic || result.IsHealing) return;
         if (result.IsMiss) _hasMiss = true;
         else _hasHit = true;
     }
 
     private void PlayUse()
     {
-        if (_usePlayed || _activeSkill == null) return;
-        _usePlayed = true;
+        if (_usePlayed || _useQueued || _activeSkill == null) return;
+        if (_waitForHitResult && !_hasHit && !_hasMiss) return;
+        CHeroSkillSO skill = _activeSkill;
+        bool missed = _hasMiss && !_hasHit;
+        EHeroSkillSoundPhase phase = missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Use;
+        AudioClip clip = missed ? skill.Feedback.MissSound : skill.Feedback.UseSound;
+        float delay = skill.Feedback.AudioTiming != null ? skill.Feedback.AudioTiming.GetDelay(phase) : 0.0f;
+        _useQueued = true;
         StopPreparation();
-        Play(_actionSource, _activeSkill, EHeroSkillSoundPhase.Use, _activeSkill.Feedback.UseSound);
-        OnUseStarted?.Invoke();
+        _playback.Schedule(phase, delay, () =>
+        {
+            _useQueued = false;
+            if (_activeSkill != skill || !isActiveAndEnabled || _hero.IsDead) return;
+            _usePlayed = true;
+            Play(_actionSource, skill, phase, clip);
+            OnUseStarted?.Invoke();
+            if (_recoveryRequested) PlayRecovery();
+        });
     }
 
     private void PlayRecovery()
     {
         if (_recoveryPlayed || _activeSkill == null) return;
+        _recoveryRequested = true;
+        if (!_usePlayed) return;
         _recoveryPlayed = true;
-        // 전부 빗나갔을 때는 일반 복귀음 대신 빗나감 복귀음을 씀
-        bool missed = _hasMiss && !_hasHit;
-        Play(_actionSource, _activeSkill,
-            missed ? EHeroSkillSoundPhase.Miss : EHeroSkillSoundPhase.Return,
-            missed ? _activeSkill.Feedback.MissSound : _activeSkill.Feedback.ReturnSound);
+        CHeroSkillSO skill = _activeSkill;
+        float delay = skill.Feedback.AudioTiming != null ? skill.Feedback.AudioTiming.GetDelay(EHeroSkillSoundPhase.Return) : 0.0f;
+        _playback.Schedule(EHeroSkillSoundPhase.Return, delay, () =>
+        {
+            if (!isActiveAndEnabled || _hero.IsDead) return;
+            Play(_actionSource, skill, EHeroSkillSoundPhase.Return, skill.Feedback.ReturnSound);
+        });
     }
 
     private void FinishPresentation(CEntity actor)
     {
         if (_activeSkill == null) return;
+        _waitForHitResult = false;
+        if (!_usePlayed) PlayUse();
         // 그림자 은신처럼 별도 복귀 상태가 없으면 동작이 끝날 때 재생
         PlayRecovery();
     }
@@ -217,6 +269,8 @@ public class CHeroSkillAudio : MonoBehaviour
 
     private void StopPreparation()
     {
+        _playback.Cancel(EHeroSkillSoundPhase.Preparation);
+        _preparationQueued = false;
         if (_preparationSource != null) _preparationSource.Stop();
         if (_preparationLoopSource != null) _preparationLoopSource.Stop();
     }
@@ -224,14 +278,19 @@ public class CHeroSkillAudio : MonoBehaviour
     private void End(CEntity actor)
     {
         if (_activeSkill != null && !_usePlayed) OnUseCancelled?.Invoke();
+        _playback.Cancel(EHeroSkillSoundPhase.Use);
+        _playback.Cancel(EHeroSkillSoundPhase.Miss);
+        _useQueued = false;
         ClearTargets();
         ClearPreparation();
         _activeSkill = null;
+        _waitForHitResult = false;
     }
 
     private void Interrupt(CEntity actor)
     {
         End(actor);
+        _playback.CancelAll();
         if (_actionSource != null) _actionSource.Stop();
     }
 

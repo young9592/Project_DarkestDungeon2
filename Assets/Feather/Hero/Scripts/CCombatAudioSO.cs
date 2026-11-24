@@ -24,6 +24,15 @@ public class CEnemySkillSound
     [SerializeField] private AudioClip _comboMiss;
     [SerializeField] private AudioClip _comboReturn;
 
+    [Header("Skill Volume Multiplier")]
+    [Tooltip("이 스킬의 볼륨 배율입니다. 1은 기존 크기, 0.5는 절반, 2는 두 배입니다.")]
+    [SerializeField, Range(0.0f, 2.0f)] private float _volume = 1.0f;
+    [Header("Sound Timing (Seconds)")]
+    [SerializeField] private CSkillAudioTiming _audioTiming = new CSkillAudioTiming();
+
+    public float Volume { get { return _volume; } }
+    public CSkillAudioTiming AudioTiming { get { return _audioTiming; } }
+
     public CSkillDataSO Skill { get { return _skill; } }
     public AudioClip Preparation { get { return _preparation; } }
     public AudioClip Use { get { return _use; } }

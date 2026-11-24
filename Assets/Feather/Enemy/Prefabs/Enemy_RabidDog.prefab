@@ -53,13 +53,27 @@ MonoBehaviour:
   _animator: {fileID: 6490489829312127798}
   _skillAnimations:
   - _skill: {fileID: 11400000, guid: 0b070587eb322b445acaf6e51cf1bbd0, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_RabidDog_Attack_Test_Action
+    _completionState: Base Layer.SkillSO_RabidDog_Attack_Test_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0333333
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.033333335
+    _recoveryClipEndTime: 2.75
+    _recoveryIdleBlendTime: 0.333333333
   - _skill: {fileID: 11400000, guid: 35f69bb882a14dc7a5785e7c66e7a1d7, type: 2}
-    _attackState: Base Layer.Attack
-    _completionState: Base Layer.AttackPose
+    _attackState: Base Layer.SkillSO_RabidDog_Alternate_Test_Action
+    _completionState: Base Layer.SkillSO_RabidDog_Alternate_Test_Return
     _feedback: {fileID: 0}
+    _useSourceTiming: 1
+    _attackClipStartTime: 0
+    _recoveryStartDelay: 1.0166667
+    _recoveryClipStartTime: 0
+    _recoveryBlendTime: 0.05
+    _recoveryClipEndTime: 3
+    _recoveryIdleBlendTime: 0.333333333
   _hitRecoveryExitTime: 1
   _hitRecoveryBlendTime: 0
 --- !u!114 &2481291059542486020
@@ -110,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sounds: {fileID: 11400000, guid: a26a410f12f183e4c994d14aed2ac75c, type: 2}
   _source: {fileID: 6623929757197941209}
-  _volumeScale: 0.5
+  _volumeScale: 1
   _riposteActionState: 
   _riposteRecoveryState: 
 --- !u!114 &3428186429178314292
@@ -541,7 +555,7 @@ Animator:
   m_GameObject: {fileID: 258621405328263191}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c9608f4183fd4794590df9dbc662bf2c, type: 2}
+  m_Controller: {fileID: 9100000, guid: d88824a9cadee5f4eb87449a2d44c69e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

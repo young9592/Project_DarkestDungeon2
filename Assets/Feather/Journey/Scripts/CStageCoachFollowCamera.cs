@@ -67,7 +67,7 @@ public class CStageCoachFollowCamera : MonoBehaviour
 
                 if (_nextTime > Time.time + 2f)
                 {
-                    CSceneFlowManager.Instance.LoadScene(_nextCustomDesire , CSceneFlowManager.EFadeType.Default);
+                    CSceneFlowManager.Instance.LoadScene(_nextCustomDesire);
                 }
                 break;
             case ECinematicType.Dungeon:

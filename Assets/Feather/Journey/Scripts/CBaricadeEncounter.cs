@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class CBaricadeEncounter : MonoBehaviour
 {
+    public enum EChapterBoss
+    {
+        None,
+        Chapter01,
+    }
+
     #region Inspector
     [Header("Encounter Object ID")]
     [SerializeField] private string _id;
@@ -12,6 +18,9 @@ public class CBaricadeEncounter : MonoBehaviour
 
     [Header("EncounterGroup")]
 	[SerializeField] private CEnemyGroupSO _enemyGroupSO;
+
+    [Header("IsChapterBoss")]
+    [SerializeField] private EChapterBoss _chapterBoss;
 
     [Header("Target")]
     [SerializeField] private string _targetName = "StageCoach";
@@ -39,9 +48,9 @@ public class CBaricadeEncounter : MonoBehaviour
         if(other.transform.root.name == _targetName)
         {
             CStageCoachHandler.Instance.CrashBaricade();
-            CSceneFlowManager.Instance.GetBarigateData(_loadScene, _id, _enemyGroupSO);
+            CSceneFlowManager.Instance.GetBarigateData(_loadScene, _id, _enemyGroupSO, _chapterBoss);
             CSceneFlowManager.Instance.GetStageCoach(other);
-            CSceneFlowManager.Instance.LoadScene(ESceneId.Battle, CSceneFlowManager.EFadeType.Combat);
+            CSceneFlowManager.Instance.LoadScene(ESceneId.Battle);
         }
     }
 
