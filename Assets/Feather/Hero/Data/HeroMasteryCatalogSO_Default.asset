@@ -16,7 +16,7 @@ MonoBehaviour:
   - _id: maa.crush
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 8146b6833e2446840957d746a4d6e4f8, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3c532f4079c445d5a3f7e2971f28a3a2, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 40e2de71e948f58468ca86e815138077, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -26,7 +26,7 @@ MonoBehaviour:
   - _id: maa.rampart
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 59dc5dcfae1a0684cb60502b2f8c65bd, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 7e20f4af98054d07939050aaf0072ed7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 8f9eed7849f5e854b8ece4d49c35a790, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -36,7 +36,7 @@ MonoBehaviour:
   - _id: maa.defender
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5aa77621179604c41bdd91c3fa4a008b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 9db459c9d8a5417ba3e31da47a85ed5b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 39fdb00cec5d384478ca727acf39a11a, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -46,7 +46,7 @@ MonoBehaviour:
   - _id: maa.bolster
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 9a3b4507d7cf16e4b9084b45a2e58ee4, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 74b21d047cb949a69ad223c831ca8f8e, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 5e6316214a05d3d4bb37f64c21e46f50, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -56,7 +56,7 @@ MonoBehaviour:
   - _id: maa.holdtheline
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 6a9d61d2019098e4f89485594724e3e0, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 4aeee3d15020423f9c8fde6fc99f2e6b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 45c332a42878f5f4d9520270bb579fb0, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -66,7 +66,7 @@ MonoBehaviour:
   - _id: maa.bellow
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: a7ded087f0764e44f8a5db11e69b1e9b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 95c2a8e0ba064a49a537db9430d0ccd6, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3b9d78c3c063e6c46a3a3b87db9a840a, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -76,7 +76,7 @@ MonoBehaviour:
   - _id: maa.retribution
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: a9624f22000e32f45bdae798895dcd72, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: fa333717200c4c9990660712f8272354, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 1806306c2be0f774eae6db502dec4b76, type: 2}
     _cost: 1
     _isAvailable: 0
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -86,7 +86,7 @@ MonoBehaviour:
   - _id: maa.command
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: fa5c3667fd9ed3248ae639f6543ba978, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 674691a96d644e328886e40a6c6f0dd7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f6133fc02dbad8147aed7c269721a261, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -96,7 +96,7 @@ MonoBehaviour:
   - _id: maa.standfast
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: b8ca58b9258e74942931991c1f1e4764, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 5892ce6c28d84512ada5a8bd5741fbe4, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cca22f81bd5328a49bba5932baa7e4fc, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -106,7 +106,7 @@ MonoBehaviour:
   - _id: maa.courageousabandon
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 921ac2e2eb4dc1349afc9b76785b9019, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 092d77050da74f87981d67920dce0b97, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 542b462ce60a79349b711d9ed4ff4a68, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -116,7 +116,7 @@ MonoBehaviour:
   - _id: maa.strategicwithdrawal
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
     _baseSkill: {fileID: 11400000, guid: 380be3d38ce60f140b45327e8cdb6c91, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: ea13016a8d1e4dde97bc1bae62dadb43, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 938c885f227d5e24b9f998628abfb285, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
@@ -126,7 +126,7 @@ MonoBehaviour:
   - _id: hwm.wicked_slice
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 42297f9ce4e12b04ea3aba5e192a2fcd, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 6055691643f0414fbd3e792b54f1ce68, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 68fae4f61adffc84aab1f9234b060d62, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -136,7 +136,7 @@ MonoBehaviour:
   - _id: hwm.pistol_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5014933490c21d14e8e06d3df48d5448, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: cacf58696a04433aa180397911efae1a, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e51e7dc7aedf9654fb0e5b2abbd71db7, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -146,7 +146,7 @@ MonoBehaviour:
   - _id: hwm.duelists_advance
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 55e552ab72f9039429cf816d2c5e838b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: cb58d2c2e6a34be6ba2882cfb4843559, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: a1110e04730b0d341961550749be1ede, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -156,7 +156,7 @@ MonoBehaviour:
   - _id: hwm.tracking_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 654f47d4128f4dc8ae7a1498fbd01b8b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: c697ef4ca0cbe22458bb9869d00f823c, type: 2}
     _cost: 1
     _isAvailable: 0
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -166,7 +166,7 @@ MonoBehaviour:
   - _id: hwm.take_aim
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 4aa2c7c4a443f234795f0b0fab7ec27b, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3cfaedc40fa041628b700424656a18e5, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 8b7bdc911933e264280ccefa1dca8034, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -176,7 +176,7 @@ MonoBehaviour:
   - _id: hwm.point_blank_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0ddba46bdfb0e0448892f6dae642d4a7, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 7f3b46406c274489836b8a27075ef6ec, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: b0c785c0e7ee90f47b1f46db00b78275, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -186,7 +186,7 @@ MonoBehaviour:
   - _id: hwm.grapeshot_blast
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: fb09b267957424f498adae37a6db9da9, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 484e9eb9338c475eb3006beb2bf7d77b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 0fe502ae3ba3da043a3a82c4e9763066, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -196,7 +196,7 @@ MonoBehaviour:
   - _id: hwm.open_vein
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 6d45ddd1737e39d4e8a0669d89dc427d, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: e3494374faf84dd2a4ddcd9a4816958e, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: b3544436108da5a44b4b0525674a921b, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -206,7 +206,7 @@ MonoBehaviour:
   - _id: hwm.double_tap
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: 3f960cf2b2d5ff640b28298db76dfda0, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: db27055b291b478c9ca3713d417c4e03, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 11511d6bbf1b79144adc57b03e285073, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -216,7 +216,7 @@ MonoBehaviour:
   - _id: hwm.highway_robbery
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: af5e52047c5321d4092f18e10a909225, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 74431e70b6fc482e87d07266c9930ff3, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: d948a46cac8807141aed2dd75992cdf8, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -226,7 +226,7 @@ MonoBehaviour:
   - _id: hwm.double_cross
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
     _baseSkill: {fileID: 11400000, guid: dd6390ecccfd675489699d68ec7ac740, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: ece359c7aa6c4f65b5a2574da9a8ea71, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: d354d33ca83a4e541a1652ada59b3b19, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
@@ -236,7 +236,7 @@ MonoBehaviour:
   - _id: gr.pick_to_the_face
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: b643f1de7f9cfe944871afeb5ec44d86, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 458c992fe31d401bbcac095c202fbfa6, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: cb66db4663a283944bdcd8fece081b49, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -246,7 +246,7 @@ MonoBehaviour:
   - _id: gr.thrown_dagger
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: a808e3b236e695f41a4a16f32e606218, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3661fadc4181469a9ab2269ebb8b1730, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 362762652a607b74bbc9e9d1a531a3d3, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -256,7 +256,7 @@ MonoBehaviour:
   - _id: gr.flashing_daggers
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 6a38b5c54da4a094abf966160a111573, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 7263c9476274442f949d619de4bc19df, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 6f7c10f0fe6edd2449d0dd19a685e8f2, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -266,7 +266,7 @@ MonoBehaviour:
   - _id: gr.poison_dart
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 2157bec6dae0d1149b5a5cbb9e0a9f31, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: cc8561b9fb6e43838b19434b3023fd27, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f5b6464096e6e5b4d9dd0a66ed8e4e7a, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -276,7 +276,7 @@ MonoBehaviour:
   - _id: gr.artemisia
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0e912bca270b98646aeba9a3e4529409, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: f9fed01ed667467d960dfce3eb8de211, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 84c6ec37b27310f4e92dc07c45296145, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -286,7 +286,7 @@ MonoBehaviour:
   - _id: gr.dead_of_night
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 2cef150618dbd024298265fc65c52af6, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: ffaf481d095c4fb8ac9914af508f7555, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: bd20fb14ec0f4dc4ca5a997342a7623f, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -296,7 +296,7 @@ MonoBehaviour:
   - _id: gr.glint_in_the_dark
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: fa04fd01907f2934bb5de0f93497b447, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 606a078c813a49b99f11dabbbb33edcb, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: fed8e0030eb215545aa1864d6c9b6fcd, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -306,7 +306,7 @@ MonoBehaviour:
   - _id: gr.lunge
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: b7db3cd899fc5cb4aa31893126fdc649, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 94e5e34d2b4b446d9300fde9c8f44da1, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 1db7a49ee1396a549add8b13ddd67f92, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -316,7 +316,7 @@ MonoBehaviour:
   - _id: gr.pirouette
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 7e14355942de5694ca9377ae89055bdb, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: e94fbf30ba7c4466abd8cba519444d10, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 5902ade4a6d07ec41bbe72d21a4130eb, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -326,7 +326,7 @@ MonoBehaviour:
   - _id: gr.repartee
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 9f4e744f78fd0a84e81b4d9baa8ea205, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: d3f84164001347b19d80ec2234f47825, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 307c56f8af4c94f49b5f93dec57e6f3e, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -336,7 +336,7 @@ MonoBehaviour:
   - _id: gr.shadow_fade
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5eaf1ab69225dbf4d8bac9a3c58198a0, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 512374d096544f8298eaf3e54a4bd7d7, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 96aac671c8dd9ed4fa0ad3f1d5a94368, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
@@ -346,7 +346,7 @@ MonoBehaviour:
   - _id: pd.noxious_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0a559ca5dc2faa74ea3030581c4e517f, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 73b5722e43a945db9fbcf3ca66a55962, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 02a5a8ed1f1186948a285eb08591108c, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -356,7 +356,7 @@ MonoBehaviour:
   - _id: pd.blinding_gas
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 7d1e70cea4481c749b02e131f9f5c357, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: a44125ca8f914f11bbcdbd66ec6c52eb, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 3672071c309dfdf43a4786e990dbd387, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -366,7 +366,7 @@ MonoBehaviour:
   - _id: pd.incision
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 0c9c9a62427899848b3182c1cd8cc8a3, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 59d5474bfe82484b849a28a13793651c, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 54f258c9400a02c4b85f30802a36a231, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -376,7 +376,7 @@ MonoBehaviour:
   - _id: pd.battlefield_medicine
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 04bc96820433e2b46993c138de9a0f12, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: f1ffe72e5ec940d8b9512af12967c565, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 11bb9d51b686dfa4aa8cfca7cfca71a2, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -386,7 +386,7 @@ MonoBehaviour:
   - _id: pd.ounce_of_prevention
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3bf921940a374164a3a077ccb349e4c4, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 5bc1dc0a553ec1240b4fabb35a57e21a, type: 2}
     _cost: 1
     _isAvailable: 0
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -396,7 +396,7 @@ MonoBehaviour:
   - _id: pd.plague_grenade
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: ea4adf269c67c5549adad2a559a8cda7, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 3e823df8fbe84d46959001a60d05db32, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 762b31a86cbd3e348a5bd46ab021f998, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -406,7 +406,7 @@ MonoBehaviour:
   - _id: pd.emboldening_vapours
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 31a2ca9b6b988da4a8c0cb99b1478647, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: fe3dd76d92ae4d30a2f7183e036ce5e9, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: f9d0592b815650b4088afb4a80a9f165, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -416,7 +416,7 @@ MonoBehaviour:
   - _id: pd.disorienting_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: fc255f61bf463f7428a5cbfb08cb82bf, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 74e620b933f640f5b5e3f3f0c9800cdd, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 643cfe4caa498374db6e4df6139d7ab5, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -426,7 +426,7 @@ MonoBehaviour:
   - _id: pd.indiscriminate_science
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 5196424b279b3b2429ffba996940adeb, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 26d1421c6a134fb7ab68d5ad2efd559b, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: e1d6ed33b5695ab4a8bfdce7d414a55b, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -436,7 +436,7 @@ MonoBehaviour:
   - _id: pd.cause_of_death
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: ee8e939fb2e07bf40a8d10280fac0047, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 36c1608e5d434ebcb0d329c55d7614b5, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 021bba2b84c2bc54ea14226a743a9e88, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
@@ -446,7 +446,7 @@ MonoBehaviour:
   - _id: pd.magnesium_rain
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
     _baseSkill: {fileID: 11400000, guid: 79243ec0da0303b47acf8edbfa4e6393, type: 2}
-    _masteredSkill: {fileID: 11400000, guid: 0c9f56b5db4342dda525d85154e07fdd, type: 2}
+    _masteredSkill: {fileID: 11400000, guid: 137dedac67fabfe4f91610835d3783db, type: 2}
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
