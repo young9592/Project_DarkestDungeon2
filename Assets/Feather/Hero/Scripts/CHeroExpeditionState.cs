@@ -46,7 +46,23 @@ public class CHeroExpeditionState : MonoBehaviour
 
     private void Awake()
     {
-        if (_masteryCatalog != null) Initialize(_masteryCatalog);
+        InitializeDefaultCatalog();
+    }
+
+    public bool InitializeDefaultCatalog()
+    {
+        if (_masteryCatalog == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("HeroInnMastery");
+            if (prefab != null && prefab.TryGetComponent(out CHeroExpeditionState settings))
+                _masteryCatalog = settings._masteryCatalog;
+        }
+        return _masteryCatalog != null && Initialize(_masteryCatalog);
+    }
+
+    public bool TryConfirmInnTraining(string innId, IReadOnlyList<CPlayer> heroes)
+    {
+        return _service != null && _service.TryConfirmInnTraining(innId, heroes, out _notice);
     }
 
     public bool Initialize(CHeroMasteryCatalogSO catalog)
@@ -87,7 +103,10 @@ public class CHeroExpeditionState : MonoBehaviour
     // 전투 밖에서 세팅을 확정한 파티는 현재 열과 장착 목록을 넘김
     public bool TryPrepareNextBattle(IReadOnlyList<CPlayer> heroes, bool useCurrentPartySetup = false)
     {
-        return _service != null && _service.TryPrepareNextBattle(RunId,
+        if (!InitializeDefaultCatalog() || _service == null) return false;
+        if (string.IsNullOrEmpty(RunId)) return TryStartExpedition(heroes);
+        if (!_service.IsBattleFinished) return TryRestoreBattle(heroes);
+        return _service.TryPrepareNextBattle(RunId,
             Guid.NewGuid().ToString("N"), heroes, out _notice, useCurrentPartySetup);
     }
 

@@ -159,6 +159,56 @@ public class CHeroBattleStateService
         return true;
     }
 
+    public string[] GetLivingHeroIds()
+    {
+        List<string> ids = new List<string>();
+        if (_data == null || _data.Heroes == null || _data.Heroes.Members == null) return ids.ToArray();
+        for (int i = 0; i < _data.Heroes.Members.Length; i++)
+        {
+            CHeroRunMemberState member = _data.Heroes.Members[i];
+            if (!member.IsDead) ids.Add(member.HeroId);
+        }
+        return ids.ToArray();
+    }
+
+    public bool TryConfirmInnTraining(string innId, IReadOnlyList<CPlayer> heroes, out string message)
+    {
+        message = "Finish the battle before confirming inn training.";
+        if (_isRestoring || !IsBattleFinished || _mastery == null) return false;
+        if (!_mastery.TryCaptureTraining(innId, out CHeroMasterySaveData mastery, out message)) return false;
+        if (mastery.RunId != RunId) return false;
+        if (heroes != null && heroes.Count > 0)
+        {
+            message = "The current party cannot apply these upgrades.";
+            if (!TryMatchParty(_data.Heroes.Members, heroes, out _)) return false;
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                CPlayer hero = heroes[i];
+                if (!hero.isActiveAndEnabled || hero.IsDead
+                    || (hero.IsActionActive && hero.ActionState != EEntityActionState.Selecting)
+                    || !_mastery.CanApplyTraining(hero, mastery)) return false;
+            }
+        }
+
+        CHeroBattleSaveData next = Copy();
+        next.SaveId = Guid.NewGuid().ToString("N");
+        next.Mastery = mastery;
+        // 다음 전투에서 예전 강화 상태를 읽지 않게 원정 저장에 같이 반영
+        if (!_store.TryWrite(next, _data.SaveId, out message)) return false;
+        _data = next;
+        _mastery.AcceptTraining(mastery);
+        bool applied = true;
+        if (heroes != null)
+        {
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                if (!_mastery.TryApply(heroes[i])) applied = false;
+            }
+        }
+        message = applied ? string.Empty : "Upgrades saved. They will apply when the party is ready.";
+        return true;
+    }
+
     public bool TryPrepareNextBattle(string runId, string nextBattleId, IReadOnlyList<CPlayer> heroes,
         out string message, bool useCurrentPartySetup = false)
     {
