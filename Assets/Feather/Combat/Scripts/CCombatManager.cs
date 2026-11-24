@@ -94,6 +94,9 @@ public class CCombatManager : MonoBehaviour
     private Dictionary<CEnemy, int> _chapterOneBossId = new Dictionary<CEnemy, int>();
     private bool _firstTurnAction = false;
 
+    // 노상강도 더블 탭 대상자
+    private CEnemy _doubleTapTarget = null;
+
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -799,13 +802,38 @@ public class CCombatManager : MonoBehaviour
                 // 전투 화면연출
                 if (_doingAction)
                 {
-                    _combatUI.CloseHeroInfomation();
+                    // 노상강도 더블탭 후처리
+                    if (_combatUI.IsDoubleTapAfter)
+                    {
+                        _combatUI.CloseHeroInfomation(MyTurn as CPlayer);
+                    }
+                    // 그외 스킬들 후처리
+                    else
+                    {
+                        _combatUI.CloseHeroInfomation();
+                    }
+
                     MyTurn.TryStartRequestedAction();
                     SnapMoveSkill();
                     _combatUI.UseSkill(_currentActionSkillData);
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
+                    CEntity doubleTapTarget = null;
+
+                    if (_currentActionSkillData.SkillName == "마무리 속사")
+                    {
+                        doubleTapTarget = targets[0];
+                    }
+
                     _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                     yield return _combatCoroutine;
+
+                    // 마무리 속사 스킬은 적을 공격했을때 생존시 추가 행동 가능
+                    if (_currentTurnState == TurnState.Normal && _currentActionSkillData.SkillName == "마무리 속사" && !doubleTapTarget.IsDead)
+                    {
+                        MyTurn.SetExtraAction(true);
+                        _doubleTapTarget = doubleTapTarget as CEnemy;
+                        _combatUI.DoubleTapSetTarget(MyTurn as CPlayer, doubleTapTarget.CurrentRank);
+                    }
 
                     _combatCoroutine = null;
                     _doingAction = false;

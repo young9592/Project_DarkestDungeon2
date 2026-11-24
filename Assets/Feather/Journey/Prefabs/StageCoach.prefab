@@ -691,10 +691,10 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 3500
-    damper: 3000
+    spring: 15000
+    damper: 4500
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -940,7 +940,7 @@ MonoBehaviour:
   _currentSpeed: 0
   _horseAudio: {fileID: 6485082598362749744}
   _bodyAudio: {fileID: 338808428114978208}
-  _maxSpeed: 5
+  _maxSpeed: 15
   _rotatePower: 0.01
 --- !u!114 &2516266164439703360
 MonoBehaviour:
@@ -1233,10 +1233,10 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.65
   m_SuspensionSpring:
-    spring: 3500
-    damper: 3000
+    spring: 15000
+    damper: 4500
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -2320,10 +2320,10 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.65
   m_SuspensionSpring:
-    spring: 3500
-    damper: 3000
+    spring: 15000
+    damper: 4500
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -3130,10 +3130,10 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 3500
-    damper: 3000
+    spring: 15000
+    damper: 4500
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25

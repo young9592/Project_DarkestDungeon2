@@ -23,6 +23,7 @@ public class CHeroParty : MonoBehaviour
     private CHeroExpeditionState _expeditionState = null;
     private string _runID;
     private string _battleID;
+    private static CHeroSkillLoadoutSO _highwaymanCurrentLoadoutSO;
     #endregion
 
     #region Property
@@ -33,6 +34,7 @@ public class CHeroParty : MonoBehaviour
     public CHeroExpeditionState HeroExpeditionState => _expeditionState;
     public string RunID => _runID;
     public string BattleID => _battleID;
+    public static CHeroSkillLoadoutSO HighwaymanCurrentLoadoutSO => _highwaymanCurrentLoadoutSO; 
     #endregion
 
     public void LoadParty()
@@ -85,6 +87,12 @@ public class CHeroParty : MonoBehaviour
             CPlayer hero = heroPrefab.GetComponent<CPlayer>();
 
             hero.TryEquipLoadout(_heroPartyPreset.Members[i].Loadout);
+
+            // 오로지 노상강도 마무리사격을 위한 데이터
+            if (hero.HeroData.Id == "hero_highwayman")
+            {
+                _highwaymanCurrentLoadoutSO = _heroPartyPreset.Members[i].Loadout;
+            }
 
             // 리스트 추가
             _heroList.Add(hero);
