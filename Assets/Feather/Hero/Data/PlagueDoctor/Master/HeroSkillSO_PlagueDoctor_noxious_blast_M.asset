@@ -19,14 +19,13 @@ MonoBehaviour:
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 380ad97e037cfbe4bbc6fc109aed3743, type: 2}
-  - {fileID: 11400000, guid: 17210258499a0e84f95f0227f7ef15b9, type: 2}
+  - {fileID: 11400000, guid: 29865383f6f74a24b4c236cac2a4b7a4, type: 2}
+  - {fileID: 11400000, guid: b10700ae44a4479ca20653b46b96c492, type: 2}
   - {fileID: 11400000, guid: 56c9e2ae4be82a74f911d20139e8a5c2, type: 2}
   - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
-  _critChance: 5
-  _mainDescription: "\uD53C\uD574: 2-4 \uCE58\uBA85\uD0C0: 5%"
-  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=13><color=#FFFF00>6</color>,
-    <sprite=21>, <sprite=25>"
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 3-4 \uce58\uba85\ud0c0: 10%"
+  _subDescription: "<color=#2c4a75>\ub300\uc0c1: </color><sprite=13><color=#FFFF00>5</color>, <sprite=21>, <sprite=25>"
   _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0

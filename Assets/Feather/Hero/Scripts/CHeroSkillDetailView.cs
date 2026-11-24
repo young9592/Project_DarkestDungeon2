@@ -122,6 +122,15 @@ public class CHeroSkillDetailView : MonoBehaviour
         bool hasDamage = false;
         bool hasCriticalChance = false;
         int criticalChance = 0;
+        bool hasDotDetonation = false;
+        if (skill.EffectList != null)
+        {
+            for (int i = 0; i < skill.EffectList.Count; i++)
+            {
+                CEffectSO effect = skill.EffectList[i];
+                if (effect != null && effect.Strategy is CDotDetonateStrategy) hasDotDetonation = true;
+            }
+        }
         if (skill.EffectList != null)
         {
             for (int i = 0; i < skill.EffectList.Count; i++)
@@ -145,19 +154,30 @@ public class CHeroSkillDetailView : MonoBehaviour
                 }
                 if (effect.EffectType == EEffectType.Damage)
                 {
-                    if (effect.Strategy is CHeroDotConversionStrategy)
+                    if (effect.Strategy is CDotDetonateStrategy)
+                    {
+                        text.Append("Deal 100% of remaining Bleed, Blight and Burn damage immediately\nRemove Bleed, Blight and Burn\n");
+                    }
+                    else if (effect.Strategy is CHeroDotConversionStrategy)
                     {
                         text.Append("Deal ").Append(effect.Damage).Append("% of remaining damage over time\nRemove damage over time\n");
                     }
                     else
                     {
-                        text.Append("Base damage: ").Append(EffectValueText(effect)).Append(" per target\n");
+                        text.Append(hasDotDetonation ? "Additional damage: " : "Base damage: ")
+                            .Append(EffectValueText(effect)).Append(" per target\n");
                     }
-                    hasDamage = hasDamage || !(effect.Strategy is CHeroDotConversionStrategy);
+                    hasDamage = hasDamage || (!(effect.Strategy is CHeroDotConversionStrategy)
+                        && !(effect.Strategy is CDotDetonateStrategy));
                 }
                 else if (effect.EffectType == EEffectType.Heal)
                 {
-                    if (effect.Strategy is CHeroScienceHealStrategy)
+                    if (effect.Strategy is CTokenConsumeHealStrategy)
+                    {
+                        text.Append("Below 50% HP: restore ").Append(Mathf.Max(1, effect.Damage))
+                            .Append(" HP per token consumed\nConsume all positive and negative tokens\nNo healing without tokens\n");
+                    }
+                    else if (effect.Strategy is CHeroScienceHealStrategy)
                     {
                         text.Append("Below 50% HP: restore 10% +10% per positive token\n");
                         if (heroSkill != null && heroSkill.BaseSkill != heroSkill)

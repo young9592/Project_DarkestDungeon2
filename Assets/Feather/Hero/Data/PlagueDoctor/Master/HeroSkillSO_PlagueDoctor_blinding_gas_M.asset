@@ -22,9 +22,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b33a27da6f6e14945b694fb9ff72c799, type: 2}
   - {fileID: 11400000, guid: 28d4d28ffa518664db7aa0504c3f8917, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
-  _critChance: 0
-  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1\n<sprite=21>\uC9C0\uC815
-    \uC2DC <sprite=24>\n"
+  _critChance: 15
+  _mainDescription: "\uc7ac\uc0ac\uc6a9 \ub300\uae30\uc2dc\uac04: 1\n<sprite=21>\uc9c0\uc815 \uc2dc <sprite=24>\n\uce58\uba85\ud0c0: 15%"
   _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color> <sprite=28>, <sprite=25>"
   _denialCategories: 2
   _usesPerBattle: 0
