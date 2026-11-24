@@ -11,7 +11,7 @@ public class CTheInnUIBiome : MonoBehaviour
     [SerializeField] GameObject _biome;
     #endregion
 
-    private string _titleText = "Select Route";
+    private string _titleText = "경로 선택";
 
     public void BiomeUIOpen()
     {
