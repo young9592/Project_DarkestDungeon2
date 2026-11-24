@@ -5,7 +5,7 @@ public class CTheCrossroadsUICustomName : MonoBehaviour
     #region Inspector
     [SerializeField] private CTheCrossroadsUIHeroDescription _heroDescription;
     [SerializeField] private string[] _customNames;
-    [SerializeField] private string[] _randomNames;
+
     #endregion
 
     private int _selectedHeroIndex = -1;
@@ -31,23 +31,6 @@ public class CTheCrossroadsUICustomName : MonoBehaviour
         _heroDescription.UpdateCustomNameText(_customNames[heroIndex]);
     }
 
-    public void RandomCustomName(int heroIndex)
-    {
-        if (heroIndex < 0 || heroIndex >= _customNames.Length)
-        {
-            return;
-        }
-
-        if (_randomNames == null || _randomNames.Length == 0)
-        {
-            return;
-        }
-
-        int randomIndex = Random.Range(0, _randomNames.Length);
-
-        SetCustomName(heroIndex, _randomNames[randomIndex]);
-    }
-
     public void SelectHero(int heroIndex)
     {
 
@@ -58,16 +41,6 @@ public class CTheCrossroadsUICustomName : MonoBehaviour
 
         _selectedHeroIndex = heroIndex;
         UpdateCustomName(_selectedHeroIndex);
-    }
-
-    public void RandomSelectedCustomName()
-    {
-        if (_selectedHeroIndex < 0)
-        {
-            return;
-        }
-
-        RandomCustomName(_selectedHeroIndex);
     }
 
     public void SetCustomNameForSelectedHero(string customName)
