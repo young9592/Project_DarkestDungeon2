@@ -19,9 +19,9 @@ MonoBehaviour:
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 85b11b83eecd927429cf55901a6aef6a, type: 2}
-  _critChance: 15
-  _mainDescription: "\uD53C\uD574: 5-9 \uCE58\uBA85\uD0C0: 15%"
+  - {fileID: 11400000, guid: 257d9e629ad646689a850999209e3f71, type: 2}
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 6-9 \uce58\uba85\ud0c0: 10%"
   _subDescription: "<color=#816b44>\uC790\uC2E0: </color><sprite=2>\uBCF4\uC720\uC2DC 
     <sprite=5>, <sprite=0>,\uC81C\uAC70: <sprite=2>\n<color=#2c4a75>\uB300\uC0C1:
     </color>\uC81C\uAC70: <sprite=2>"

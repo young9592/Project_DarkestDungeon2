@@ -21,9 +21,8 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: f7392ac0893f7c245978307de2a8bc84, type: 2}
   - {fileID: 11400000, guid: 74f2e70aeb8fc814dafb4d7a2df62113, type: 2}
-  _critChance: 25
-  _mainDescription: "\uD53C\uD574: 4-8 \uCE58\uBA85\uD0C0: 25%\n<sprite=3>, <sprite=9>
-    \uBB34\uC2DC\n<sprite=21>\uC9C0\uC815 \uC2DC <sprite=5>"
+  _critChance: 30
+  _mainDescription: "\ud53c\ud574: 4-8 \uce58\uba85\ud0c0: 30%\n<sprite=3>, <sprite=9> \ubb34\uc2dc\n<sprite=21>\uc9c0\uc815 \uc2dc <sprite=5>"
   _subDescription: 
   _denialCategories: 2
   _usesPerBattle: 0

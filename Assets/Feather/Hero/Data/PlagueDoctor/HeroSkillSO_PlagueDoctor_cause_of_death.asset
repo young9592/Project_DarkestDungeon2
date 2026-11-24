@@ -21,8 +21,7 @@ MonoBehaviour:
   _effectList:
   - {fileID: 11400000, guid: cd9de734b6f65ed4fba86ca58fe4aee0, type: 2}
   _critChance: 0
-  _mainDescription: "\uD53C\uD574 : \uB300\uC0C1 <color=#816b44>\uBCC0\uC218 </color>\n\uC7AC\uC0AC\uC6A9
-    \uB300\uAE30\uC2DC\uAC04: 2\n"
+  _mainDescription: "\ud53c\ud574 : \ub300\uc0c1 <color=#816b44>\ubcc0\uc218 </color>\n\uc7ac\uc0ac\uc6a9 \ub300\uae30\uc2dc\uac04: 2"
   _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color> \uB0A8\uC740 <sprite=14>,
     <sprite=13>, <sprite=18>\uC758 100% \uD53C\uD574\uB97C \uC989\uC2DC \uD53C\uD574\uB85C
     \uC785\uD798\n<color=#2c4a75>\uB300\uC0C1: </color> \uC81C\uAC70: <sprite=14>,
