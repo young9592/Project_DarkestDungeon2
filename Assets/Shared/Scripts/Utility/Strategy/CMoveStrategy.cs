@@ -9,11 +9,17 @@ public class CMoveStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
-        if (context == null || context.Target == null) return;
+        if (context == null || context.Target == null || effectData == null) return;
 
         if (!context.IsHit && context.Target != context.Caster)
         {
             CPrint.Log($"[{effectData.Name}] : 공격이 빗나가 실패했습니다.");
+            return;
+        }
+
+        if (context.Target is CEnemyCorpse)
+        {
+            CPrint.Log($"[{context.Target.name}] 시체는 해당 열을 점유하는 장애물이므로 강제 이동할 수 없습니다.");
             return;
         }
 
@@ -73,11 +79,22 @@ public class CMoveStrategy : CEffectStrategy
 
             if (occupant != null)
             {
+                if (occupant is CEnemyCorpse)
+                {
+                    CPrint.Log($"[열 이동 중단] {nextStepIndex}열에 시체([{occupant.name}])가 가로막고 있어 이동할 수 없습니다.");
+                    break;
+                }
+
                 if (occupant.TokenManager != null &&
                     occupant.TokenManager.ConsumeToken(EEffectType.Immobilize))
                 {
                     CPrint.Log($"[열 이동 중단] {nextStepIndex}열에 있는 [{occupant.name}]가 이동 불가 상태라 밀어낼 수 없습니다.");
                     break;
+                }
+
+                if (!TryChangeEntityRank(occupant, currentRankEnum))
+                {
+                    CPrint.Log($"[열 이동 중단] {nextStepIndex}열의 [{occupant.name}]가 이동할 수 없어 중단합니다.");
                 }
 
                 TryChangeEntityRank(occupant, currentRankEnum);
@@ -91,6 +108,7 @@ public class CMoveStrategy : CEffectStrategy
             }
             else
             {
+                if (occupant != null) TryChangeEntityRank(occupant, nextRankEnum);
                 break;
             }
         }
