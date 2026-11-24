@@ -189,7 +189,8 @@ public class CHeroSkillSO : CSkillDataSO
             for (int i = 0; i < EffectList.Count; i++)
             {
                 CEffectSO effect = EffectList[i];
-                if (effect == null || !(effect.Strategy is CHeroScienceHealStrategy)) continue;
+                if (effect == null || !(effect.Strategy is CHeroScienceHealStrategy)
+                    && !(effect.Strategy is CTokenConsumeHealStrategy)) continue;
                 if (!(target is CPlayer scienceTarget) || scienceTarget.HeroData == null
                     || (long)scienceTarget.CurrentHp * 2 >= scienceTarget.HeroData.MaxHealth) return false;
             }
