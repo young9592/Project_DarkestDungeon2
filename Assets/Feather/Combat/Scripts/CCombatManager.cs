@@ -218,6 +218,7 @@ public class CCombatManager : MonoBehaviour
         if (!CSceneFlowManager.Instance.IsLoading)
         {
             _roundState = RoundState.Wait;
+            _combatUI.OnEnterEffect();
         }
     }
     private void EntitiesReady()

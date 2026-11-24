@@ -110,6 +110,9 @@ public class CCombatUI : MonoBehaviour
     [SerializeField] private GameObject _tokenTooltip;
     [SerializeField] private GameObject _healthTooltip;
 
+    [Header("EnterEffect")]
+    [SerializeField] private GameObject _enterEffect;
+
 
     [Header("Option")]
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
@@ -265,6 +268,8 @@ public class CCombatUI : MonoBehaviour
         _checkList.Add(_tokenTooltip);
         _checkList.Add(_healthTooltip);
 
+        _checkList.Add(_enterEffect);
+
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
         {
             enabled = false;
@@ -294,6 +299,12 @@ public class CCombatUI : MonoBehaviour
 
         EnemyInfoDetect();
     }
+    // 전투씬 진입 이펙트 켜기
+    public void OnEnterEffect()
+    {
+        _enterEffect.SetActive(true);
+    }
+
     // 마우스를 통해서 적 정보 확인
     private void EnemyInfoDetect()
     {

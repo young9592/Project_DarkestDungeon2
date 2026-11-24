@@ -68,6 +68,14 @@ public class CHeroMasteryService
         return true;
     }
 
+    internal bool CanApplyTraining(CPlayer hero, CHeroMasterySaveData data)
+    {
+        CHeroSkillLoadoutSO loadout = CreateCheckpointLoadout(hero, data, null, true);
+        if (loadout == null) return false;
+        Object.Destroy(loadout);
+        return true;
+    }
+
     internal bool TryApplyCheckpointLoadout(CPlayer hero, string[] skillIds)
     {
         ReleaseUnusedLoadouts();
@@ -86,9 +94,9 @@ public class CHeroMasteryService
         return true;
     }
 
-    private CHeroSkillLoadoutSO CreateCheckpointLoadout(CPlayer hero, CHeroMasterySaveData data, string[] skillIds)
+    private CHeroSkillLoadoutSO CreateCheckpointLoadout(CPlayer hero, CHeroMasterySaveData data, string[] skillIds, bool allowTraining = false)
     {
-        if (!CanRestoreCheckpoint(data) || hero == null || hero.HeroData == null
+        if ((allowTraining ? !IsValid(data) : !CanRestoreCheckpoint(data)) || hero == null || hero.HeroData == null
             || hero.EquippedSkills == null) return null;
         List<CSkillDataSO> skills = new List<CSkillDataSO>();
         int count = skillIds != null ? skillIds.Length : hero.EquippedSkills.Count;
@@ -244,6 +252,23 @@ public class CHeroMasteryService
         _innId = innId;
         _pending = Copy();
         return true;
+    }
+
+    internal bool TryCaptureTraining(string innId, out CHeroMasterySaveData data, out string message)
+    {
+        data = null;
+        message = "This inn training session is unavailable.";
+        if (!IsTraining || _innId != innId || !IsValid(_pending)) return false;
+        data = Copy(_pending);
+        message = string.Empty;
+        return true;
+    }
+
+    internal void AcceptTraining(CHeroMasterySaveData data)
+    {
+        _data = Copy(data);
+        _isLoaded = true;
+        CancelTraining();
     }
 
     public bool TryResetTraining(out string message)
