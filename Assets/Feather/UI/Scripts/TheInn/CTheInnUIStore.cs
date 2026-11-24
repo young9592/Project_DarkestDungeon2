@@ -8,7 +8,7 @@ public class CTheInnUIStore : MonoBehaviour
     [SerializeField] GameObject _storeUI;
     #endregion
 
-    private string _titleText = "The Provisioner";
+    private string _titleText = "물자 관리인";
  
     public void StoreUIOpen()
     {

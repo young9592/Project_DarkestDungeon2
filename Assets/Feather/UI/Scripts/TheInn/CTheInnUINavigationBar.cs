@@ -26,7 +26,7 @@ public class CTheInnUINavigationBar : MonoBehaviour
     private CInventoryAnimation _inventoryAni;
     private GameObject _currentOpenObject;
    
-    private string _originalTitleText = "Torch and Crown";
+    private string _originalTitleText = "È¶ºÒ°ú ¿Õ°ü";
 
     private bool _isBiomeSelected = false;
     private bool _isUIOpen;
