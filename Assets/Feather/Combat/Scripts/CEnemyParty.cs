@@ -35,7 +35,7 @@ public class CEnemyParty : MonoBehaviour
 
         if (!_combatManager.TestBattleOption)
         {
-            if (CSceneFlowManager.Instance.IsLoading || CSceneFlowManager.Instance.EncounterEnemyGroup == null)
+            if (CSceneFlowManager.Instance.EncounterEnemyGroup == null)
             {
                 return;
             }

@@ -188,11 +188,12 @@ public class CSceneFlowManager : MonoBehaviour
 
         while (op2 != null && op2.progress < 0.9f)
         {
+            _progressBar.fillAmount = op2.progress;
             yield return null;
         }
 
         // TODO : 횃불 로딩창 변경필요
-        _progressBar.fillAmount = op.progress;
+        _progressBar.fillAmount = (op2 == null) ? op.progress : op2.progress;
         _progressPanel.SetActive(false);
         _loadingText.text = "";
 
@@ -200,16 +201,26 @@ public class CSceneFlowManager : MonoBehaviour
 
         yield return new WaitUntil(() => op.isDone);
 
-        _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
-        yield return _fadeCoroutine;
+        if (id == ESceneId.Battle)
+        {
+            CCombatManager combatManager = FindObjectOfType<CCombatManager>();
+
+            yield return new WaitUntil(() => combatManager.BattleReady);
+            _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
+            yield return _fadeCoroutine;
+        }
+        else
+        {
+            _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
+            yield return _fadeCoroutine;
+        }
 
         _loadPanel.SetActive(false);
-
         NextLoadSetting(prevId, id);
-
         _isLoading = false;
-
     }
+
+
     private void CombatBackgroundLoad(ESceneId prevId, out AsyncOperation op)
     {
 

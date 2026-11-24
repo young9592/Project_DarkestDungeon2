@@ -111,6 +111,7 @@ public class CCombatManager : MonoBehaviour
     public IReadOnlyList<CEnemy> EnemyParty => _enemyParty.EnemyList;
     public CHeroBattleInput BattleInput => _heroBattleInput;
     public bool TestBattleOption => _testBattleScene;
+    public bool BattleReady => _roundState == RoundState.Ready;
     #endregion
 
     private void Awake()
@@ -209,17 +210,7 @@ public class CCombatManager : MonoBehaviour
     }
     private void WaitSceneLoad()
     {
-        if (_testBattleScene)
-        {
-            _roundState = RoundState.Wait;
-            return;
-        }
-
-        if (!CSceneFlowManager.Instance.IsLoading)
-        {
-            _roundState = RoundState.Wait;
-            _combatUI.OnEnterEffect();
-        }
+        _roundState = RoundState.Wait;
     }
     private void EntitiesReady()
     {
@@ -254,6 +245,8 @@ public class CCombatManager : MonoBehaviour
             }
 
             _debugMenu.Initialize();
+            _combatUI.OnEnterEffect();
+            StartCoroutine(_combatCameraManager.CoCameraZoomIn());
         }
         else
         {

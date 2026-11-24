@@ -15676,6 +15676,7 @@ MonoBehaviour:
   _dotTooltip: {fileID: 1190776916}
   _tokenTooltip: {fileID: 2082373101}
   _healthTooltip: {fileID: 1182419356}
+  _enterEffect: {fileID: 1943416833}
   _portraitRemoveDelay: 0.05
 --- !u!1 &1701490707
 GameObject:
@@ -16726,6 +16727,11 @@ CanvasRenderer:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3d790cf534ac8414ab74757d9f14c46d, type: 3}
   m_PrefabInstance: {fileID: 636091843}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1943416833 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4832341508066927456, guid: 3a2aecc31f927574d955f46a72d538d2, type: 3}
+  m_PrefabInstance: {fileID: 4328484889771706971}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1944139019
 GameObject:

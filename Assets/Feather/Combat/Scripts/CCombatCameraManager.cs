@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CCombatCameraManager : MonoBehaviour
@@ -93,6 +94,27 @@ public class CCombatCameraManager : MonoBehaviour
         }
 
         _highlightCamTr = _highlightCamera.transform;
+    }
+
+    public IEnumerator CoCameraZoomIn()
+    {
+        if (_mainCamera.orthographicSize == 5)
+        {
+            yield break;
+        }
+
+        float delay = 1f;
+        float nextTime = Time.time + delay;
+
+        while (nextTime > Time.time)
+        {
+            float t = 1f - Mathf.Exp(-3f * Time.deltaTime);
+
+            _mainCamera.orthographicSize = Mathf.Lerp(_mainCamera.orthographicSize, 5, t);
+            yield return null;
+        }
+
+        _mainCamera.orthographicSize = 5;
     }
 
     // 행동 시 카메라 연출
