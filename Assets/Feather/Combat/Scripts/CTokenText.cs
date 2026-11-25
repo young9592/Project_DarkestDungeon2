@@ -1,4 +1,3 @@
-using System.Drawing;
 using TMPro;
 using UnityEngine;
 
@@ -49,6 +48,14 @@ public class CTokenText : MonoBehaviour
             desc = $"({remain}): {SetTokenDesc(type)} ({duration}턴)";
         }
 
+        _tokenText.text = name + desc;
+    }
+
+    // 수호 토큰 보호대상 이름 가져오기
+    public void SetTokenInfomation(EEffectType type, int duration, int remain, string defender)
+    {
+        string name = $"<color=#C98200>{SetTokenName(type)}</color> ";
+        string desc = $"({remain}): {SetTokenDesc(type, defender)} ({duration}턴)";
         _tokenText.text = name + desc;
     }
 
@@ -136,7 +143,19 @@ public class CTokenText : MonoBehaviour
 
         return name;
     }
+    // 보호 토큰 전용
+    private string SetTokenDesc(EEffectType type, string defender)
+    {
+        string text = "";
+        switch (type)
+        {
+            case EEffectType.Guard:
+                text = $"{defender}의 보호 받는중";
+                break;
+        }
 
+        return text;
+    }
     private string SetTokenDesc(EEffectType type)
     {
         string text = "";
@@ -220,7 +239,7 @@ public class CTokenText : MonoBehaviour
                 break;
             default:
                 break;
-                
+
         }
 
         return text;

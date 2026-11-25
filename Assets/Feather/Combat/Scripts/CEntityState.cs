@@ -444,7 +444,7 @@ public class CEntityState : MonoBehaviour
 
                     if (!tokenInfomation.IsInitialize)
                     {
-                        tokenInfomation.Initialize(_tokenTooltip);
+                        tokenInfomation.Initialize(_target.GetComponent<CEntity>(), _tokenTooltip);
                     }
 
                     if (_entityType == EEntityState.Enemy_Corpse)

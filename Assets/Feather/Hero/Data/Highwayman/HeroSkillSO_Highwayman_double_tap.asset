@@ -22,7 +22,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 454f43aef5787764aa65e7d6ebc9a4c6, type: 2}
   _critChance: 5
   _mainDescription: "\uD53C\uD574 4-8 \uCE58\uBA85\uD0C0 5%\n"
-  _subDescription: "<color=#2c4a75>\uB300\uC0C1 :</color>2\uD68C \uD0C0\uACA9"
+  _subDescription: "<color=#816b44>\uB300\uC0C1 \uC0DD\uC874 \uC2DC:</color>\uCD94\uAC00
+    \uC0AC\uACA9"
   _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0

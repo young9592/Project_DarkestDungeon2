@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 public class CTokenInfomation : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     #region Inspector
+    [Header("Token Connect Entity")]
+    [SerializeField] private CEntity _entity;
+
     [Header("Token Infomation Box")]
     [SerializeField] private GameObject _tooltip;
 
@@ -19,8 +22,9 @@ public class CTokenInfomation : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public bool IsInitialize => _tooltip != null;
     #endregion
 
-    public void Initialize(GameObject tooltip)
+    public void Initialize(CEntity entity, GameObject tooltip)
     {
+        _entity = entity;
         _tooltip = tooltip;
     }
 
@@ -81,9 +85,35 @@ public class CTokenInfomation : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         tr.position = moveTr.position;
         rectTr.anchoredPosition += Vector2.up * 50f;
-       
+
         CTokenText tokenText = _tooltip.GetComponent<CTokenText>();
-        tokenText.SetTokenInfomation(_connectEffectType, _duration, _stack);
+
+        if (_connectEffectType == EEffectType.Guard)
+        {
+            if (_entity == null)
+            {
+                return;
+            }
+
+            CEntity defender = _entity.GuardProtector;
+            string defenderName = "";
+
+            if (defender is CPlayer)
+            {
+                defenderName = (defender as CPlayer).HeroData.DefaultName;
+            }
+            else if (defender is CEnemy)
+            {
+                defenderName = (defender as CEnemy).EnemyData.Name;
+            }
+
+            tokenText.SetTokenInfomation(_connectEffectType, _duration, _stack, defenderName);
+        }
+        else
+        {
+            tokenText.SetTokenInfomation(_connectEffectType, _duration, _stack);
+        }
+
     }
 
     public void OnPointerExit(PointerEventData eventData)

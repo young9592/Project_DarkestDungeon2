@@ -94,6 +94,9 @@ public class CCombatManager : MonoBehaviour
     private Dictionary<CEnemy, int> _chapterOneBossId = new Dictionary<CEnemy, int>();
     private bool _firstTurnAction = false;
 
+    // 노상강도 더블 탭 대상자
+    private CEnemy _doubleTapTarget = null;
+
     // 인스펙터 널 체크
     private List<Object> _checkList = new List<Object>();
     #endregion
@@ -799,13 +802,30 @@ public class CCombatManager : MonoBehaviour
                 // 전투 화면연출
                 if (_doingAction)
                 {
+
                     _combatUI.CloseHeroInfomation();
                     MyTurn.TryStartRequestedAction();
                     SnapMoveSkill();
                     _combatUI.UseSkill(_currentActionSkillData);
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
+                    CEntity doubleTapTarget = null;
+
+                    // 마무리 속사 타겟 가져오기
+                    if (_currentActionSkillData.SkillName == "마무리 속사")
+                    {
+                        doubleTapTarget = targets[0];
+                    }
+
                     _combatCoroutine = _combatCameraManager.CombatAction(MyTurn, targets);
                     yield return _combatCoroutine;
+
+                    // 마무리 속사 스킬은 적을 공격했을때 생존시 추가 행동 가능
+                    if (_currentTurnState == TurnState.Normal && _currentActionSkillData.SkillName == "마무리 속사" && !doubleTapTarget.IsDead && doubleTapTarget is not CEnemyCorpse)
+                    {
+                        MyTurn.SetExtraAction(true);
+                        _doubleTapTarget = doubleTapTarget as CEnemy;
+                        _combatUI.DoubleTapSetTarget(MyTurn as CPlayer, doubleTapTarget.CurrentRank);
+                    }
 
                     _combatCoroutine = null;
                     _doingAction = false;
@@ -886,6 +906,12 @@ public class CCombatManager : MonoBehaviour
 
 
         MyTurn.OnActionRequested -= OnActionData;
+
+        // 마무리속사 확인사살까지 마무리 후처리
+        if (_currentTurnState == TurnState.Extra)
+        {
+            _combatUI.ResetSkillLoadoutSO(MyTurn as CPlayer);
+        }
 
         // 이동스킬 사용한 개체 정리
         SortEntitiesPosition(true);
@@ -991,12 +1017,12 @@ public class CCombatManager : MonoBehaviour
 
         if (isHero)
         {
-            _heroBattleInput.SetHero(MyTurn as CPlayer);
+            CPlayer hero = MyTurn as CPlayer;
+            _heroBattleInput.SetHero(hero);
             _heroBattleInput.SetTargets(_enemyParty.EnemyList, Vector3.zero);
             _heroBattleInput.AddAllyTargets(_heroParty.HeroList, Vector3.zero);
-            _combatUI.OpenHeroInfomation((CPlayer)MyTurn, _heroBattleInput);
+            _combatUI.OpenHeroInfomation(hero);
             MyTurn.TryBeginAction();
-            CPlayer hero = MyTurn as CPlayer;
         }
         // 적의 턴인 경우
         else
