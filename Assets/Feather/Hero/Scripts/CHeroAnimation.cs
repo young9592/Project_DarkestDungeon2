@@ -139,13 +139,14 @@ public class CHeroAnimation : MonoBehaviour
     public bool TryPlaySelection(CSkillDataSO skill)
     {
         if (!CanPlayAttack(skill)) return false;
+        if (IsTemporarySkill(skill) && (!IsReady || !HasAttackStates(skill))) return true;
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         if (heroSkill == null || string.IsNullOrEmpty(heroSkill.SelectionStartState)
             || string.IsNullOrEmpty(heroSkill.SelectionHoldState)) return true;
 
         int startHash = Animator.StringToHash(heroSkill.SelectionStartState);
         int holdHash = Animator.StringToHash(heroSkill.SelectionHoldState);
-        if (!_animator.HasState(0, startHash) || !_animator.HasState(0, holdHash)) return false;
+        if (!_animator.HasState(0, startHash) || !_animator.HasState(0, holdHash)) return IsTemporarySkill(skill);
         if (IsSelecting && _selectionSkill == skill) return true;
 
         UpdateSkillWeapons(skill);
@@ -167,6 +168,15 @@ public class CHeroAnimation : MonoBehaviour
     public bool TryPlayAttack(CSkillDataSO skill)
     {
         if (!CanPlayAttack(skill)) return false;
+        if (IsTemporarySkill(skill) && (!IsReady || !HasAttackStates(skill)))
+        {
+            PlayIdle();
+            _waitForSelection = false;
+            _selectionSkill = null;
+            OnAttackStarted?.Invoke();
+            OnAttackCompleted?.Invoke();
+            return true;
+        }
         bool prepared = IsSelecting && _selectionSkill == skill;
         UpdateSkillWeapons(skill);
         _needsIdle = false;
@@ -222,8 +232,14 @@ public class CHeroAnimation : MonoBehaviour
 
     public bool CanPlayAttack(CSkillDataSO skill)
     {
-        if (!IsReady || IsBusy || skill == null || _attackSkills == null
-            || !_attackSkills.Contains(CHeroSkillSO.GetBaseSkill(skill))) return false;
+        if (IsBusy || skill == null) return false;
+        if (IsTemporarySkill(skill)) return true;
+        return IsReady && _attackSkills != null && _attackSkills.Contains(CHeroSkillSO.GetBaseSkill(skill))
+            && HasAttackStates(skill);
+    }
+
+    private bool HasAttackStates(CSkillDataSO skill)
+    {
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         if (heroSkill == null) return _animator.HasState(0, _attackHash) && _animator.HasState(0, _attackEndHash);
         if (string.IsNullOrEmpty(heroSkill.StartState) || string.IsNullOrEmpty(heroSkill.EndState)) return false;
@@ -234,6 +250,17 @@ public class CHeroAnimation : MonoBehaviour
         return startHash != _idleHash && startHash != _hitHash && endHash != _idleHash && endHash != _hitEndHash
             && executionHash != _idleHash && executionHash != _hitHash && executionHash != _hitEndHash
             && _animator.HasState(0, startHash) && _animator.HasState(0, endHash) && _animator.HasState(0, executionHash);
+    }
+
+    private bool IsTemporarySkill(CSkillDataSO skill)
+    {
+        if (_hero == null || !_hero.HasTemporarySkillLoadout || _hero.EquippedSkills == null) return false;
+
+        for (int i = 0; i < _hero.EquippedSkills.Count; i++)
+        {
+            if (_hero.EquippedSkills[i] == skill) return true;
+        }
+        return false;
     }
 
     public bool CanPlayHit()
