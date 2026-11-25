@@ -48,11 +48,11 @@ public class CHeroMasteryService
     {
         ids = null;
         if (_catalog == null || hero == null || hero.HeroData == null
-            || hero.EquippedSkills == null || hero.EquippedSkills.Count > 5) return false;
-        string[] captured = new string[hero.EquippedSkills.Count];
+            || hero.PersistentEquippedSkills == null || hero.PersistentEquippedSkills.Count > 5) return false;
+        string[] captured = new string[hero.PersistentEquippedSkills.Count];
         for (int i = 0; i < captured.Length; i++)
         {
-            CHeroMasterySkill entry = _catalog.Find(hero.HeroData.Id, hero.EquippedSkills[i]);
+            CHeroMasterySkill entry = _catalog.Find(hero.HeroData.Id, hero.PersistentEquippedSkills[i]);
             if (entry == null) return false;
             captured[i] = entry.Id;
         }
