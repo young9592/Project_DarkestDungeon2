@@ -29,8 +29,8 @@ MonoBehaviour:
   _rankMovement: 0
   _baseSkill: {fileID: 0}
   _target: 0
-  _startState: Base Layer.OriginalAntic_Highwayman_double_tap
-  _endState: Base Layer.OriginalRecover_Highwayman_double_tap
+  _startState: Base Layer.OriginalAntic_Highwayman_pistol_shot
+  _endState: Base Layer.OriginalRecover_Highwayman_pistol_shot
   _presentationNote: 
   _requiresCorpse: 0
   _clearsCorpses: 0

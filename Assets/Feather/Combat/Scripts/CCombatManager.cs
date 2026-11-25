@@ -1019,12 +1019,12 @@ public class CCombatManager : MonoBehaviour
 
         if (isHero)
         {
-            _heroBattleInput.SetHero(MyTurn as CPlayer);
+            CPlayer hero = MyTurn as CPlayer;
+            _heroBattleInput.SetHero(hero);
             _heroBattleInput.SetTargets(_enemyParty.EnemyList, Vector3.zero);
             _heroBattleInput.AddAllyTargets(_heroParty.HeroList, Vector3.zero);
-            _combatUI.OpenHeroInfomation((CPlayer)MyTurn, _heroBattleInput);
+            _combatUI.OpenHeroInfomation(hero);
             MyTurn.TryBeginAction();
-            CPlayer hero = MyTurn as CPlayer;
         }
         // 적의 턴인 경우
         else

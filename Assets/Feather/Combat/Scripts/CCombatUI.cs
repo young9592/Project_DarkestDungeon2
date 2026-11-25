@@ -115,7 +115,6 @@ public class CCombatUI : MonoBehaviour
     [SerializeField] private GameObject _enterEffect;
 
     [Header("Highwayman DoubleTap")]
-    [SerializeField] private CHeroSkillLoadoutSO _returnSkillLoadoutSO;
     [SerializeField] private List<CHeroSkillLoadoutSO> _doubleTapAfterSkillLoadoutSOList;
     [SerializeField] private List<CHeroSkillSO> _doubleTapAfterSkillSOList;
     [SerializeField] private int _doubleTapTargetRank;
@@ -647,6 +646,7 @@ public class CCombatUI : MonoBehaviour
 
         CPlayer hero = TurnEntity as CPlayer;
 
+
         // 히어로가 장착한 스킬보다 높은 인덱스 가져오려고 하면 return
         if (idx > hero.EquippedSkills.Count)
         {
@@ -668,8 +668,6 @@ public class CCombatUI : MonoBehaviour
         cursorRectTr.position = SkillSlot.position;
 
         CSkillDataSO skillSO = hero.EquippedSkills[idx];
-
-        
 
         ERank usableRank = skillSO.UsableRank;
         ERank targetRank = skillSO.TargetableRank;
@@ -805,7 +803,7 @@ public class CCombatUI : MonoBehaviour
     }
 
     // 영웅 정보 및 스킬 인터페이스 활성화
-    public void OpenHeroInfomation(CPlayer hero, CHeroBattleInput battleInput)
+    public void OpenHeroInfomation(CPlayer hero)
     {
         if (hero == null)
         {
@@ -823,7 +821,6 @@ public class CCombatUI : MonoBehaviour
             }
             _skillSlot[i].GetComponent<Image>().sprite = heroSO.SkillSlotBackground;
             _skillImage[i].sprite = hero.EquippedSkills[i].SkillIcon;
-            battleInput.SelectSkill(i);
             _skillSlot[i].SetActive(true);
         }
 
@@ -849,10 +846,9 @@ public class CCombatUI : MonoBehaviour
     public void DoubleTapSetTarget(CPlayer hero, ERank rank)
     {
         _doubleTapTargetRank = (int)System.MathF.Log((float)rank, 2);
-        _returnSkillLoadoutSO = CHeroParty.HighwaymanCurrentLoadoutSO;
 
         // 확인사살만 장착하도록
-        hero.TryEquipLoadout(_doubleTapAfterSkillLoadoutSOList[_doubleTapTargetRank]);
+        hero.TrySetTemporarySkillLoadout(_doubleTapAfterSkillLoadoutSOList[_doubleTapTargetRank]);
 
         _isDoubleTapAfter = true;
     }
@@ -874,7 +870,7 @@ public class CCombatUI : MonoBehaviour
 
         if (_isDoubleTapAfter)
         {
-            hero.TryEquipLoadout(_returnSkillLoadoutSO);
+            hero.TryRestoreTemporarySkillLoadout();
             _isDoubleTapAfter = false;
         }
     }

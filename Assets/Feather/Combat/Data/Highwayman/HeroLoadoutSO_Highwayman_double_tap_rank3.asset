@@ -15,7 +15,3 @@ MonoBehaviour:
   _heroData: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
   _skills:
   - {fileID: 11400000, guid: dcb3101a328c400449354fdce6a1b6e7, type: 2}
-  - {fileID: 11400000, guid: dcb3101a328c400449354fdce6a1b6e7, type: 2}
-  - {fileID: 11400000, guid: dcb3101a328c400449354fdce6a1b6e7, type: 2}
-  - {fileID: 11400000, guid: dcb3101a328c400449354fdce6a1b6e7, type: 2}
-  - {fileID: 11400000, guid: dcb3101a328c400449354fdce6a1b6e7, type: 2}
