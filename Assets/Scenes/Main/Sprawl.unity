@@ -2250,13 +2250,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 862016973835130838, guid: 8490f737139078d4f89c368d4cd66c51, type: 3}
-      propertyPath: _desireSceneId
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2976232991640786617, guid: f7fc19659642a52439c9fecb3aea568f, type: 3}
       propertyPath: m_Name
       value: InnEncounterArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 862016973835130838, guid: 8490f737139078d4f89c368d4cd66c51, type: 3}
+      propertyPath: _desireSceneId
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6636,41 +6636,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
-      propertyPath: _rotX
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
-      propertyPath: _camera
-      value: 
-      objectReference: {fileID: 21355905}
-    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
-      propertyPath: _target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
-      propertyPath: _thirdOffset.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+    - target: {fileID: 1568912144214604406, guid: 147dcc7ac5e2a6d4e846de5ec0b6ea20, type: 3}
       propertyPath: _thirdOffset.y
-      value: -1
+      value: -2
       objectReference: {fileID: 0}
-    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+    - target: {fileID: 1568912144214604406, guid: 147dcc7ac5e2a6d4e846de5ec0b6ea20, type: 3}
       propertyPath: _thirdOffset.z
-      value: -12
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 2063047008847062090, guid: 147dcc7ac5e2a6d4e846de5ec0b6ea20, type: 3}
       propertyPath: m_Name
       value: StageCoach
       objectReference: {fileID: 0}
-    - target: {fileID: 2865185908527853409, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
-      propertyPath: _maxSpeed
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 4164634278680277195, guid: 147dcc7ac5e2a6d4e846de5ec0b6ea20, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4164634278680277195, guid: 147dcc7ac5e2a6d4e846de5ec0b6ea20, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6707,6 +6687,34 @@ PrefabInstance:
     - target: {fileID: 4164634278680277195, guid: 147dcc7ac5e2a6d4e846de5ec0b6ea20, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _rotX
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _camera
+      value: 
+      objectReference: {fileID: 21355905}
+    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _thirdOffset.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _thirdOffset.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568912144214604406, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _thirdOffset.z
+      value: -12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2865185908527853409, guid: c9aec4a752ffe4a44b27b33985bb4734, type: 3}
+      propertyPath: _maxSpeed
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

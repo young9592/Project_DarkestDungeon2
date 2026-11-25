@@ -864,15 +864,21 @@ public class CCombatUI : MonoBehaviour
 
     }
 
-    public void CloseHeroInfomation(CPlayer hero)
+    public void ResetSkillLoadoutSO(CPlayer hero)
     {
-        CloseHeroInfomation();
-
-        if (_isDoubleTapAfter)
+        if (!_isDoubleTapAfter)
         {
-            hero.TryRestoreTemporarySkillLoadout();
-            _isDoubleTapAfter = false;
+            return;
         }
+
+        CPrint.Warn("Return SKILL");
+        CPrint.Error("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
+
+        for (int i = 0; i < hero.EquippedSkills.Count; i++)
+        {
+            CPrint.Warn($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
+        }
+        _isDoubleTapAfter = false;
     }
 
     // 적 정보 탭 활성화

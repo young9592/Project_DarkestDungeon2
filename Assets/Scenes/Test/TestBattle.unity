@@ -15548,8 +15548,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -16462,7 +16462,6 @@ MonoBehaviour:
   _tokenTooltip: {fileID: 2082373101}
   _healthTooltip: {fileID: 1182419356}
   _enterEffect: {fileID: 1943416833}
-  _returnSkillLoadoutSO: {fileID: 0}
   _doubleTapAfterSkillLoadoutSOList:
   - {fileID: 11400000, guid: 9115c143a52895a4b8a4109b4dbdc2fd, type: 2}
   - {fileID: 11400000, guid: 9926fd7576d47a448ba1b45b63c78da0, type: 2}

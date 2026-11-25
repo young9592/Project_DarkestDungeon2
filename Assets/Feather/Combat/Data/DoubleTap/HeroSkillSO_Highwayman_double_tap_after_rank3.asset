@@ -22,15 +22,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 454f43aef5787764aa65e7d6ebc9a4c6, type: 2}
   _critChance: 5
   _mainDescription: "\uD53C\uD574 4-8 \uCE58\uBA85\uD0C0 5%\n"
-  _subDescription: "<color=#2c4a75>\uB300\uC0C1 :</color>\uCD94\uAC00 \uD0C0\uACA9"
+  _subDescription: 
   _denialCategories: 2
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0
   _baseSkill: {fileID: 0}
   _target: 0
-  _startState: Base Layer.OriginalAntic_Highwayman_pistol_shot
-  _endState: Base Layer.OriginalRecover_Highwayman_pistol_shot
+  _startState: Base Layer.OriginalAntic_Highwayman_double_tap
+  _endState: Base Layer.OriginalRecover_Highwayman_double_tap
   _presentationNote: 
   _requiresCorpse: 0
   _clearsCorpses: 0

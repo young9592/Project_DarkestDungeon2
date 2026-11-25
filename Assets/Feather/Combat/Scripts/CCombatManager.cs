@@ -802,23 +802,15 @@ public class CCombatManager : MonoBehaviour
                 // 전투 화면연출
                 if (_doingAction)
                 {
-                    // 노상강도 더블탭 후처리
-                    if (_combatUI.IsDoubleTapAfter)
-                    {
-                        _combatUI.CloseHeroInfomation(MyTurn as CPlayer);
-                    }
-                    // 그외 스킬들 후처리
-                    else
-                    {
-                        _combatUI.CloseHeroInfomation();
-                    }
 
+                    _combatUI.CloseHeroInfomation();
                     MyTurn.TryStartRequestedAction();
                     SnapMoveSkill();
                     _combatUI.UseSkill(_currentActionSkillData);
                     IReadOnlyList<CEntity> targets = ((CPlayer)MyTurn).ActionTargets;
                     CEntity doubleTapTarget = null;
 
+                    // 마무리 속사 타겟 가져오기
                     if (_currentActionSkillData.SkillName == "마무리 속사")
                     {
                         doubleTapTarget = targets[0];
@@ -828,7 +820,7 @@ public class CCombatManager : MonoBehaviour
                     yield return _combatCoroutine;
 
                     // 마무리 속사 스킬은 적을 공격했을때 생존시 추가 행동 가능
-                    if (_currentTurnState == TurnState.Normal && _currentActionSkillData.SkillName == "마무리 속사" && !doubleTapTarget.IsDead)
+                    if (_currentTurnState == TurnState.Normal && _currentActionSkillData.SkillName == "마무리 속사" && !doubleTapTarget.IsDead && doubleTapTarget is not CEnemyCorpse)
                     {
                         MyTurn.SetExtraAction(true);
                         _doubleTapTarget = doubleTapTarget as CEnemy;
@@ -914,6 +906,12 @@ public class CCombatManager : MonoBehaviour
 
 
         MyTurn.OnActionRequested -= OnActionData;
+
+        // 마무리속사 확인사살까지 마무리 후처리
+        if (_currentTurnState == TurnState.Extra)
+        {
+            _combatUI.ResetSkillLoadoutSO(MyTurn as CPlayer);
+        }
 
         // 이동스킬 사용한 개체 정리
         SortEntitiesPosition(true);
