@@ -114,6 +114,9 @@ public class CCombatUI : MonoBehaviour
     [Header("EnterEffect")]
     [SerializeField] private GameObject _enterEffect;
 
+    [Header("Skill Effect Draw Manager")]
+    [SerializeField] private CSkillEffectDrawManager _skillEffectDrawManager;
+
     [Header("Highwayman DoubleTap")]
     [SerializeField] private List<CHeroSkillLoadoutSO> _doubleTapAfterSkillLoadoutSOList;
     [SerializeField] private List<CHeroSkillSO> _doubleTapAfterSkillSOList;
@@ -1027,5 +1030,15 @@ public class CCombatUI : MonoBehaviour
     {
         _tokenTooltip.SetActive(false);
         _dotTooltip.SetActive(false);
+    }
+    // 스킬 이펙트 그리기
+    public void DrawSkillEffect(string skillName, List<Transform> transforms, bool isRiposte)
+    {
+        _skillEffectDrawManager.DrawEffect(skillName, transforms, isRiposte);
+    }
+    // 이펙트 즉시 가리기
+    public void DisableDrawSkillEffect()
+    {
+        _skillEffectDrawManager.DisableAllEffect();
     }
 }

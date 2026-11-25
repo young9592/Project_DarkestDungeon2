@@ -1,7 +1,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CCombatCameraManager : MonoBehaviour
@@ -215,7 +214,6 @@ public class CCombatCameraManager : MonoBehaviour
 
                 moveDir = ECameraMoveDirection.Right;
 
-                // TODO : 상대에게 반격 토큰 있는지 체크 필요
                 ERank minRank = ERank.None;
 
                 for (int i = 0; i < entities.Count; i++)
@@ -275,9 +273,6 @@ public class CCombatCameraManager : MonoBehaviour
 
                 moveDir = ECameraMoveDirection.Left;
 
-                // TODO : 상대에게 반격 토큰 있는지 체크 필요
-
-                // TODO : 상대에게 반격 토큰 있는지 체크 필요
                 minRank = ERank.None;
 
                 for (int i = 0; i < entities.Count; i++)
@@ -387,6 +382,8 @@ public class CCombatCameraManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         // 재생
+        _combatUI.DrawSkillEffect(_combatManager.CurrentActionSkillName, entitiesTr, riposteEntity != null);
+
         while (nextTime > Time.time)
         {
             float t = 1f - (nextTime - Time.time) / delay;
@@ -434,6 +431,9 @@ public class CCombatCameraManager : MonoBehaviour
                 _combatUI.AttackRight();
             }
 
+            // Skill Effect Disable
+            _combatUI.DisableDrawSkillEffect();
+
             // 데미지 처리
             bool isHero = riposteEntity is CPlayer;
             if (isHero)
@@ -454,7 +454,9 @@ public class CCombatCameraManager : MonoBehaviour
                 riposteEntity.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 (riposteEntity as CEnemy).TryExecuteConfiguredRiposte(actor);
+
             }
+
 
             yield return new WaitForSeconds(0.1f);
 

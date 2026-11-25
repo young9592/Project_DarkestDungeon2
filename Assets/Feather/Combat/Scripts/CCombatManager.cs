@@ -107,7 +107,6 @@ public class CCombatManager : MonoBehaviour
     public CIndicator MyTurnIndicator => _myTurnIndicator;
     public IReadOnlyList<GameObject> HeroRankPosition => _heroParty.HeroRankPosition;
     public IReadOnlyList<GameObject> EnemyRankPosition => _enemyParty.EnemyRankPosition;
-
     public IReadOnlyDictionary<ERank, CPlayer> HeroRank => _heroParty.RankList;
     public IReadOnlyDictionary<ERank, CEnemy> EnemyRank => _enemyParty.RankList;
     public IReadOnlyList<CPlayer> HeroParty => _heroParty.HeroList;
@@ -115,6 +114,7 @@ public class CCombatManager : MonoBehaviour
     public CHeroBattleInput BattleInput => _heroBattleInput;
     public bool TestBattleOption => _testBattleScene;
     public bool BattleReady => _roundState == RoundState.Ready;
+    public string CurrentActionSkillName => _currentActionSkillData.SkillName;
     #endregion
 
     private void Awake()
