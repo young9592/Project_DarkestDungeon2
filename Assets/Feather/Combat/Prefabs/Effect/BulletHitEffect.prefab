@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 653608856434663783}
   - component: {fileID: 223382049227686951}
   m_Layer: 5
-  m_Name: CBulletHitEffect
+  m_Name: BulletHitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -431,7 +431,7 @@ public class CCombatCameraManager : MonoBehaviour
                 _combatUI.AttackRight();
             }
 
-            // Skill Effect Disable
+            // 활성화된 스킬 이펙트 끄기
             _combatUI.DisableDrawSkillEffect();
 
             // 데미지 처리
@@ -445,6 +445,11 @@ public class CCombatCameraManager : MonoBehaviour
                 actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 (riposteEntity as CPlayer).TryQueueRipostePresentation();
                 CDamageStrategy.TryExecuteRiposte(riposteEntity, actor);
+
+                if (riposteEntity.EntityData.Id == "hero_highwayman")
+                {
+                    _combatUI.DrawRiposteSkillEffect("노상강도", actor, riposteEntity);
+                }
             }
             else
             {
@@ -455,8 +460,13 @@ public class CCombatCameraManager : MonoBehaviour
                 actor.gameObject.GetComponentInChildren<Animator>().speed = 0f;
                 (riposteEntity as CEnemy).TryExecuteConfiguredRiposte(actor);
 
-            }
+                CSkillDataSO skillDataSO = riposteEntity.RiposteSkill;
 
+                if (skillDataSO != null)
+                {
+                    _combatUI.DrawRiposteSkillEffect(skillDataSO.SkillName, actor, riposteEntity);
+                }
+            }
 
             yield return new WaitForSeconds(0.1f);
 

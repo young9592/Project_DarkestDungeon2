@@ -1036,6 +1036,10 @@ public class CCombatUI : MonoBehaviour
     {
         _skillEffectDrawManager.DrawEffect(skillName, transforms, isRiposte);
     }
+    public void DrawRiposteSkillEffect(string skillName, CEntity actor, CEntity riposteEntity)
+    {
+        _skillEffectDrawManager.DrawEffect(skillName, actor, riposteEntity);
+    }
     // 이펙트 즉시 가리기
     public void DisableDrawSkillEffect()
     {
