@@ -1356,6 +1356,8 @@ public class CPlayer : CEntity
 
         CancelAction();
         CancelSkillSelection();
+        RestoreTemporarySkills();
+        SetExtraAction(false);
         if (_actionAnimation != null) _actionAnimation.CancelPlayback();
         if (_deathPresentation != null) _deathPresentation.ResetPresentation();
 

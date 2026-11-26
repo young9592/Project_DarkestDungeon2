@@ -761,12 +761,12 @@ public class CEnemy : CEntity
         if (_corpse != null) _corpse.ResetEntityState();
 
         CancelAction();
+        SetExtraAction(false);
         if (_ignition != null)
         {
             _ignition.ResetIgnition();
             SetRiposteSkill(_configuredRiposteSkill);
             _enemyData = _initialEnemyData;
-            SetExtraAction(false);
         }
         if (_attackAnimation != null) _attackAnimation.CancelPlayback();
         if (_deathPresentation != null) _deathPresentation.ResetPresentation();
