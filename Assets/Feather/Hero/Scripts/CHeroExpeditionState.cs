@@ -14,6 +14,11 @@ public class CHeroExpeditionState : MonoBehaviour
     private string _notice;
     private bool _isInitialized;
 
+    public CHeroMasteryCatalogSO MasteryCatalog
+    {
+        get { return _masteryCatalog; }
+    }
+
     public CHeroMasteryService Mastery
     {
         get { return _mastery; }
