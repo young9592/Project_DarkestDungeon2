@@ -760,6 +760,7 @@ public class CEnemy : CEntity
 
         if (_corpse != null) _corpse.ResetEntityState();
 
+        if (TryGetComponent(out CEnemyAI ai)) ai.CancelPlan();
         CancelAction();
         SetExtraAction(false);
         if (_ignition != null)
