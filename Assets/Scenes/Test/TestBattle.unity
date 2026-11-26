@@ -11750,7 +11750,7 @@ MonoBehaviour:
   _backTakeAim: {fileID: 8133640755427728328, guid: 413077fb42038ad46ac8d4f7db06f336, type: 3}
   _frontRobbery: {fileID: 1413845021685505565, guid: 5e2aace338fb9794a8b7f69b2683e7fa, type: 3}
   _backRobbery: {fileID: 7510229323537890965, guid: 48f25cb6658b05d4cb76975512a6a509, type: 3}
-  _frontCross: {fileID: 0}
+  _frontCross: {fileID: 3493222493740449326, guid: 656b9572da71c6641a894fa49bfedaf7, type: 3}
   _hitPrefab: {fileID: 2186004924098664712, guid: 19722bbf323dfb94dac4bf8e3a7d04b2, type: 3}
 --- !u!1 &1304939398
 GameObject:
@@ -18313,7 +18313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2051307775
 Transform:
   m_ObjectHideFlags: 0
@@ -20297,7 +20297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4832341508066927456, guid: 3a2aecc31f927574d955f46a72d538d2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

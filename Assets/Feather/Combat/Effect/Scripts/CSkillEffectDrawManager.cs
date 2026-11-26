@@ -234,7 +234,14 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "뒤통수 치기")
         {
+            GameObject front = Instantiate(_frontCross, _frontEffect.transform);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+            draws.Add(front);
 
+            if(isRiposte)
+            {
+                SetRiposteSetting(draws);
+            }
         }
 
 
