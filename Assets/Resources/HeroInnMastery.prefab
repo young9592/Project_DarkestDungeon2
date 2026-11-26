@@ -55,3 +55,4 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   _expeditionState: {fileID: 11400000}
+  _testPartyPreset: {fileID: 11400000, guid: baff11290b25bde4998c91689225c4f6, type: 2}
