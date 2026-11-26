@@ -41,7 +41,7 @@ public class CBloodSplatEffect : CSkillEffectPart
         if (t > 0.7f)
         {
             // 투명을 거의 끝나감과 동시에 사라지게 하기 위함
-            float speedTime = Mathf.Clamp01(1f - (t - 0.7f) / 0.3f);
+            float speedTime = Mathf.Clamp01((t - 0.7f) / 0.3f);
             _image.color = new Color(_initColor.r, _initColor.g, _initColor.b, Mathf.Lerp(_initColor.a, 0, speedTime));
         }
 

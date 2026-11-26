@@ -25,6 +25,16 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [Header("Pistol Shot")]
     [SerializeField] private GameObject _frontPistol;
     [SerializeField] private GameObject _hitBullet;
+
+    [Header("WickedSlice")]
+    [SerializeField] private GameObject _frontSlice;
+
+    [Header("PointBlankShot")]
+    [SerializeField] private GameObject _frontPorint;
+
+
+
+
     // 중보병
 
     // 도굴꾼
@@ -67,7 +77,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
             draws.Add(front);
             draws.Add(back);
-            
+
             DrawBloodEffect(draws, entitiesTr[1], false);
 
             // 반격시 속도가 2배 빠르기 때문에 속도 보정 해줘야합니다.
@@ -80,6 +90,24 @@ public class CSkillEffectDrawManager : MonoBehaviour
         else if (skillName == "권총 사격" || skillName == "마무리 속사" || skillName == "확인 사살")
         {
             GameObject front = Instantiate(_frontPistol, _frontEffect.transform);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+            DrawBulletHitffect(draws, entitiesTr[1]);
+
+            draws.Add(front);
+
+            if (isRiposte)
+            {
+                SetRiposteSetting(draws);
+            }
+        }
+        else if (skillName == "야비한 칼질")
+        {
+            GameObject front = Instantiate(_frontSlice, _frontEffect.transform);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+        }
+        else if (skillName == "영거리 사격")
+        {
+            GameObject front = Instantiate(_frontPorint, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
             DrawBulletHitffect(draws, entitiesTr[1]);
 

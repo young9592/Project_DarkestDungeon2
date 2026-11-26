@@ -875,11 +875,11 @@ public class CCombatUI : MonoBehaviour
         }
 
         CPrint.Warn("Return SKILL");
-        CPrint.Error("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
+        CPrint.Log("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
 
         for (int i = 0; i < hero.EquippedSkills.Count; i++)
         {
-            CPrint.Warn($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
+            CPrint.Log($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
         }
         _isDoubleTapAfter = false;
     }

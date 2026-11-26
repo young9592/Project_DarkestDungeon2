@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _heroData: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
   _skills:
-  - {fileID: 11400000, guid: 3f960cf2b2d5ff640b28298db76dfda0, type: 2}
+  - {fileID: 11400000, guid: 0ddba46bdfb0e0448892f6dae642d4a7, type: 2}
   - {fileID: 11400000, guid: 6d45ddd1737e39d4e8a0669d89dc427d, type: 2}
-  - {fileID: 11400000, guid: 55e552ab72f9039429cf816d2c5e838b, type: 2}
+  - {fileID: 11400000, guid: 42297f9ce4e12b04ea3aba5e192a2fcd, type: 2}
   - {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
   - {fileID: 11400000, guid: 4aa2c7c4a443f234795f0b0fab7ec27b, type: 2}

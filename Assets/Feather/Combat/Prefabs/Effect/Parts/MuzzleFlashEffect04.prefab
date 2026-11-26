@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dcc86d727eb79443bce11c14073406e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 0.3
+  _moveSpeed: 0.6
   _image: {fileID: 3234361728289435768}
   _tr: {fileID: 6778186041258735496}
   _delay: 2
