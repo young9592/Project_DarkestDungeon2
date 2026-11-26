@@ -34556,9 +34556,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'region: 1/3
-
-    19 leagues to the inn'
+  m_text: "\uC9C0\uC5ED: 1/3\n\uC5EC\uAD00\uAE4C\uC9C0 19 \uB9AC\uADF8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 91e00658b8420a8428fdc7fe7a156715, type: 2}
   m_sharedMaterial: {fileID: -6074535975408312259, guid: 91e00658b8420a8428fdc7fe7a156715, type: 2}
