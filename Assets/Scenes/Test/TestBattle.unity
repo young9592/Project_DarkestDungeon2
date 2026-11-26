@@ -11747,6 +11747,9 @@ MonoBehaviour:
   _frontGrape: {fileID: 8621210616260770151, guid: 3584e9fe25b05754b92b0f096a820b0a, type: 3}
   _frontVein: {fileID: 6524857251746460334, guid: 88cf3b2126d0c834294dd850e6e7fab0, type: 3}
   _tracking: {fileID: 5264834567879882276, guid: 6ea73c305518f4141b872737cbf36bba, type: 3}
+  _backTakeAim: {fileID: 8133640755427728328, guid: 413077fb42038ad46ac8d4f7db06f336, type: 3}
+  _frontRobbery: {fileID: 0}
+  _frontCross: {fileID: 0}
   _hitPrefab: {fileID: 2186004924098664712, guid: 19722bbf323dfb94dac4bf8e3a7d04b2, type: 3}
 --- !u!1 &1304939398
 GameObject:

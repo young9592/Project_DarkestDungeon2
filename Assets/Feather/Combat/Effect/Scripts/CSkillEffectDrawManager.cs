@@ -52,6 +52,15 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [Header("TrackingShot")]
     [SerializeField] private GameObject _tracking;
 
+    [Header("TakeAim")]
+    [SerializeField] private GameObject _backTakeAim;
+
+    [Header("HighwayRobbery")]
+    [SerializeField] private GameObject _frontRobbery;
+
+    [Header("DoubleCross")]
+    [SerializeField] private GameObject _frontCross;
+
     // 중보병
 
     // 도굴꾼
@@ -85,7 +94,18 @@ public class CSkillEffectDrawManager : MonoBehaviour
     {
         List<GameObject> draws = new List<GameObject>();
 
+        HighWayManEffect(draws, skillName, entitiesTr, isRiposte);
 
+        _draws.AddRange(draws);
+    }
+
+
+    private void HighWayManEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    {
+        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_highwayman")
+        {
+            return;
+        }
 
         if (skillName == "결투가의 진격")
         {
@@ -141,7 +161,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         {
             GameObject front = Instantiate(_frontPorint, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
-            DrawBulletHitEffect(draws, entitiesTr[1], EBulletHitPosition.Default);
+            DrawBulletHitEffect(draws, entitiesTr[1], EBulletHitPosition.Center);
 
             draws.Add(front);
 
@@ -165,7 +185,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
                 DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.Center);
             }
 
-            // 대상이 3명이면 머즐 플래시 위치조정 필요
+            // 대상이 3명[나, 적2명]이면 머즐 플래시 위치조정 필요
             if (entitiesTr.Count >= 3)
             {
                 RectTransform rectTr = front.GetComponent<RectTransform>();
@@ -187,10 +207,21 @@ public class CSkillEffectDrawManager : MonoBehaviour
             DrawBulletHitEffect(draws, entitiesTr[1], EBulletHitPosition.Default);
             DrawTrakingMarkEffect(draws, entitiesTr[1]);
             draws.Add(front);
+
+            if (isRiposte)
+            {
+                SetRiposteSetting(draws);
+            }
+        }
+        else if (skillName == "정조준")
+        {
+            GameObject back = Instantiate(_backTakeAim, _backEffect.transform);
+            draws.Add(back);
         }
 
-        _draws.AddRange(draws);
     }
+
+    // 반격 관련 엔티티 이펙트 처리
     public void DrawEffect(string skillName, CEntity actor, CEntity riposteEntity)
     {
         List<GameObject> draws = new List<GameObject>();
@@ -208,6 +239,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         _draws.AddRange(draws);
     }
 
+    // 피격 이펙트 처리
     private void DrawBloodEffect(List<GameObject> draws, Transform tr, bool _moveLeft)
     {
         GameObject hitEnemy = Instantiate(_hitPrefab, _backEffect.transform);
@@ -226,6 +258,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
         draws.Add(hitEnemy);
     }
+
+    // 총알 피격 이펙트 처리
     private void DrawBulletHitEffect(List<GameObject> draws, Transform tr, EBulletHitPosition positionOption)
     {
         GameObject hitEnemy = Instantiate(_hitBullet, _frontEffect.transform);
@@ -240,6 +274,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
         draws.Add(hitEnemy);
     }
+
+    // 트래킹 샷 피격 이펙트 처리
     private void DrawTrakingMarkEffect(List<GameObject> draws, Transform tr)
     {
         GameObject hitEnemy = Instantiate(_tracking, _frontEffect.transform);
@@ -259,15 +295,15 @@ public class CSkillEffectDrawManager : MonoBehaviour
         switch (positionOption)
         {
             case EBulletHitPosition.Default:
-                return Vector3.up * (renderer.bounds.extents.y * 0.3f);
+                return Vector3.up * (renderer.bounds.extents.y * 0.4f);
             case EBulletHitPosition.LeftUp:
-                return Vector3.up * (renderer.bounds.extents.y * 0.3f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+                return Vector3.up * (renderer.bounds.extents.y * 0.4f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
             case EBulletHitPosition.RightUp:
-                return Vector3.up * (renderer.bounds.extents.y * 0.3f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+                return Vector3.up * (renderer.bounds.extents.y * 0.4f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
             case EBulletHitPosition.LeftDown:
-                return Vector3.down * (renderer.bounds.extents.y * 0.3f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+                return Vector3.down * (renderer.bounds.extents.y * 0.4f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
             case EBulletHitPosition.RightDown:
-                return Vector3.down * (renderer.bounds.extents.y * 0.3f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+                return Vector3.down * (renderer.bounds.extents.y * 0.4f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
             case EBulletHitPosition.Center:
                 return Vector3.zero;
         }
