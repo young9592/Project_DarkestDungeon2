@@ -11748,7 +11748,8 @@ MonoBehaviour:
   _frontVein: {fileID: 6524857251746460334, guid: 88cf3b2126d0c834294dd850e6e7fab0, type: 3}
   _tracking: {fileID: 5264834567879882276, guid: 6ea73c305518f4141b872737cbf36bba, type: 3}
   _backTakeAim: {fileID: 8133640755427728328, guid: 413077fb42038ad46ac8d4f7db06f336, type: 3}
-  _frontRobbery: {fileID: 0}
+  _frontRobbery: {fileID: 1413845021685505565, guid: 5e2aace338fb9794a8b7f69b2683e7fa, type: 3}
+  _backRobbery: {fileID: 7510229323537890965, guid: 48f25cb6658b05d4cb76975512a6a509, type: 3}
   _frontCross: {fileID: 0}
   _hitPrefab: {fileID: 2186004924098664712, guid: 19722bbf323dfb94dac4bf8e3a7d04b2, type: 3}
 --- !u!1 &1304939398

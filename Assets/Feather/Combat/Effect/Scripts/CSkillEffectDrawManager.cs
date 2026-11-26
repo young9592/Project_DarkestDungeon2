@@ -57,6 +57,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
     [Header("HighwayRobbery")]
     [SerializeField] private GameObject _frontRobbery;
+    [SerializeField] private GameObject _backRobbery;
 
     [Header("DoubleCross")]
     [SerializeField] private GameObject _frontCross;
@@ -218,6 +219,24 @@ public class CSkillEffectDrawManager : MonoBehaviour
             GameObject back = Instantiate(_backTakeAim, _backEffect.transform);
             draws.Add(back);
         }
+        else if (skillName == "노상 강도질")
+        {
+            GameObject front = Instantiate(_frontRobbery, _frontEffect.transform);
+            GameObject back = Instantiate(_backRobbery, _backEffect.transform);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+            draws.Add(front);
+            draws.Add(back);
+
+            if (isRiposte)
+            {
+                SetRiposteSetting(draws);
+            }
+        }
+        else if (skillName == "뒤통수 치기")
+        {
+
+        }
+
 
     }
 
