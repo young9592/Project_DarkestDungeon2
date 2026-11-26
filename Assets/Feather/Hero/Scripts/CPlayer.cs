@@ -824,6 +824,11 @@ public class CPlayer : CEntity
         }
 
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        if (HasTemporarySkillLoadout && target is CEnemyCorpse
+            && (heroSkill == null || !heroSkill.RequiresCorpse && !heroSkill.ClearsCorpses))
+        {
+            return false;
+        }
         return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
     }
 
@@ -1351,6 +1356,8 @@ public class CPlayer : CEntity
 
         CancelAction();
         CancelSkillSelection();
+        RestoreTemporarySkills();
+        SetExtraAction(false);
         if (_actionAnimation != null) _actionAnimation.CancelPlayback();
         if (_deathPresentation != null) _deathPresentation.ResetPresentation();
 
