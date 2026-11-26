@@ -10,6 +10,7 @@ public class CFlareHorizontalEffect : CSkillEffectPart
     
     [Header("Option")]
     [SerializeField] private float _delay = 1.5f;
+    [SerializeField] private Space _space = Space.Self;
     #endregion
 
     #region Field
@@ -35,6 +36,6 @@ public class CFlareHorizontalEffect : CSkillEffectPart
         float t = Mathf.Clamp01(1f - (_nextTime - Time.time) / _delay);
         _image.color = new Color(_initColor.r, _initColor.g, _initColor.b, Mathf.Lerp(_initColor.a, 0, t));
 
-        _tr.Translate(Vector3.right * _moveSpeed * Time.deltaTime, Space.Self);
+        _tr.Translate(Vector3.right * _moveSpeed * Time.deltaTime, _space);
     }
 }

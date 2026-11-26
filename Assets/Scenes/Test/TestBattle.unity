@@ -3889,7 +3889,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityRoot: {fileID: 977538913}
-  _enemyPartyPreset: {fileID: 11400000, guid: 9fa4a031b91a7c44899010fc6e102b2b, type: 2}
+  _enemyPartyPreset: {fileID: 11400000, guid: 13c623348b0a8ab46852d53e12daf48a, type: 2}
   _enemyRankPosition:
   - {fileID: 262786187}
   - {fileID: 494506457}
@@ -11744,6 +11744,7 @@ MonoBehaviour:
   _hitBullet: {fileID: 8442414269493063163, guid: 059ae7ca1f94c6943ae112832c525bdd, type: 3}
   _frontSlice: {fileID: 6524857251746460334, guid: 3b933cc6e32b0a5478a88a951b5db05e, type: 3}
   _frontPorint: {fileID: 8432754664913647591, guid: cf6026db54a019c4c80a23d0c1d254ab, type: 3}
+  _frontGrape: {fileID: 8621210616260770151, guid: 3584e9fe25b05754b92b0f096a820b0a, type: 3}
   _hitPrefab: {fileID: 2186004924098664712, guid: 19722bbf323dfb94dac4bf8e3a7d04b2, type: 3}
 --- !u!1 &1304939398
 GameObject:
