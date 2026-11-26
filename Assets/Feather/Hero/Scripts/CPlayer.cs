@@ -24,6 +24,7 @@ public class CPlayer : CEntity
 
     // 전투에 들고 온 장착할 스킬 리스트
     private List<CSkillDataSO> _equippedSkills = new List<CSkillDataSO>();
+    private List<CSkillDataSO> _originalEquippedSkills;
     // 유저가 클릭해서 실행 대기 중인 스킬
     private CSkillDataSO _selectedSkill;
     // 몸에 걸리는 상태이상 인스턴스 목록
@@ -119,6 +120,16 @@ public class CPlayer : CEntity
     public IReadOnlyList<CSkillDataSO> EquippedSkills
     {
         get { return _equippedSkills; }
+    }
+
+    public bool HasTemporarySkillLoadout
+    {
+        get { return _originalEquippedSkills != null; }
+    }
+
+    public IReadOnlyList<CSkillDataSO> PersistentEquippedSkills
+    {
+        get { return _originalEquippedSkills != null ? _originalEquippedSkills : _equippedSkills; }
     }
 
     public override CEntityDataSO EntityData
@@ -294,6 +305,60 @@ public class CPlayer : CEntity
         return true;
     }
 
+    public bool TrySetTemporarySkillLoadout(CHeroSkillLoadoutSO loadout)
+    {
+        return loadout != null && TrySetTemporarySkills(loadout.Skills);
+    }
+
+    public bool TrySetTemporarySkills(IReadOnlyList<CSkillDataSO> skills)
+    {
+        if (!CanChangeTemporarySkills() || skills == null || skills.Count == 0 || skills.Count > 5)
+            return false;
+
+        List<CSkillDataSO> temporarySkills = new List<CSkillDataSO>();
+        for (int i = 0; i < skills.Count; i++)
+        {
+            CSkillDataSO skill = skills[i];
+            if (skill == null) return false;
+            for (int j = 0; j < temporarySkills.Count; j++)
+            {
+                if (CHeroSkillSO.GetBaseSkill(temporarySkills[j]) == CHeroSkillSO.GetBaseSkill(skill))
+                    return false;
+            }
+            temporarySkills.Add(skill);
+        }
+
+        // 여러 번 교체해도 처음 장착 목록을 복구할 수 있게 보관함
+        if (_originalEquippedSkills == null)
+            _originalEquippedSkills = new List<CSkillDataSO>(_equippedSkills);
+        CancelSkillSelection();
+        _equippedSkills.Clear();
+        _equippedSkills.AddRange(temporarySkills);
+        return true;
+    }
+
+    public bool TryRestoreTemporarySkillLoadout()
+    {
+        if (!CanChangeTemporarySkills() || _originalEquippedSkills == null) return false;
+        CancelSkillSelection();
+        RestoreTemporarySkills();
+        return true;
+    }
+
+    private bool CanChangeTemporarySkills()
+    {
+        return isActiveAndEnabled && !IsDead && !IsDeathPresented && !_isRequesting
+            && (ActionState == EEntityActionState.Idle || ActionState == EEntityActionState.Selecting);
+    }
+
+    private void RestoreTemporarySkills()
+    {
+        if (_originalEquippedSkills == null) return;
+        _equippedSkills.Clear();
+        _equippedSkills.AddRange(_originalEquippedSkills);
+        _originalEquippedSkills = null;
+    }
+
     private void SetEquippedLoadout(CHeroSkillLoadoutSO loadout)
     {
         _equippedSkills.Clear();
@@ -303,6 +368,7 @@ public class CPlayer : CEntity
         }
 
         _skillLoadout = loadout;
+        _originalEquippedSkills = null;
         CancelSkillSelection();
     }
 
@@ -465,6 +531,7 @@ public class CPlayer : CEntity
 
     protected override void OnDisable()
     {
+        RestoreTemporarySkills();
         SetDenialRestriction(EDenialRestriction.None);
         if (_stressResolution != null) _stressResolution.ResetState();
         base.OnDisable();
@@ -757,6 +824,11 @@ public class CPlayer : CEntity
         }
 
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        if (HasTemporarySkillLoadout && target is CEnemyCorpse
+            && (heroSkill == null || !heroSkill.RequiresCorpse && !heroSkill.ClearsCorpses))
+        {
+            return false;
+        }
         return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
     }
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -113,6 +114,10 @@ public class CCombatUI : MonoBehaviour
     [Header("EnterEffect")]
     [SerializeField] private GameObject _enterEffect;
 
+    [Header("Highwayman DoubleTap")]
+    [SerializeField] private List<CHeroSkillLoadoutSO> _doubleTapAfterSkillLoadoutSOList;
+    [SerializeField] private List<CHeroSkillSO> _doubleTapAfterSkillSOList;
+    [SerializeField] private int _doubleTapTargetRank;
 
     [Header("Option")]
     [SerializeField] private float _portraitRemoveDelay = 0.05f;
@@ -131,12 +136,13 @@ public class CCombatUI : MonoBehaviour
     private bool _rankChange = false;
     private bool _cursorRank = false;
     private Coroutine _indicatorCoroutine = null;
+    // 더블탭 후속타인가?
+    private bool _isDoubleTapAfter = false;
     private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
     public CEntity TurnEntity => _combatManager.MyTurn;
-
     public bool Pass
     {
         get { return _pass; }
@@ -153,6 +159,7 @@ public class CCombatUI : MonoBehaviour
     public IReadOnlyDictionary<CEntity, CIndicator> EntitiesIndicator => _entitiesIndicator;
     public float PortraitRemoveDelay => _portraitRemoveDelay;
     public int Round => _round;
+    public bool IsDoubleTapAfter => _isDoubleTapAfter;
     #endregion
 
     private void Awake()
@@ -517,7 +524,7 @@ public class CCombatUI : MonoBehaviour
         // 커서 이동
         RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
-        cursorTr.anchoredPosition = rectTr.anchoredPosition;
+        cursorTr.position = rectTr.position;
 
         _cursorRank = false;
         _cursorDiamond.SetActive(true);
@@ -612,7 +619,7 @@ public class CCombatUI : MonoBehaviour
         // 커서 이동
         RectTransform rectTr = _rankChangeBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
-        cursorTr.anchoredPosition = rectTr.anchoredPosition;
+        cursorTr.position = rectTr.position;
 
         _cursorRank = true;
         _cursorDiamond.SetActive(true);
@@ -637,17 +644,31 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        CPlayer hero = TurnEntity as CPlayer;
+
+
+        // 히어로가 장착한 스킬보다 높은 인덱스 가져오려고 하면 return
+        if (idx > hero.EquippedSkills.Count)
+        {
+            return;
+        }
+
         _cursorSkillName.text = "";
         _heroSkillMainDesc.text = "";
         _heroSkillSubDesc.text = "";
 
+        // 더블탭일시 모든 스킬슬롯 및 자리이동이 닫히고 오로지 해당 스킬만 On
+        if (_isDoubleTapAfter)
+        {
+            idx = 0;
+        }
+
         RectTransform SkillSlot = _skillSlot[idx].GetComponent<RectTransform>();
         RectTransform cursorRectTr = _cursorSkill.GetComponent<RectTransform>();
-        cursorRectTr.anchoredPosition = SkillSlot.anchoredPosition;
-
-        CPlayer hero = TurnEntity as CPlayer;
+        cursorRectTr.position = SkillSlot.position;
 
         CSkillDataSO skillSO = hero.EquippedSkills[idx];
+
         ERank usableRank = skillSO.UsableRank;
         ERank targetRank = skillSO.TargetableRank;
 
@@ -782,7 +803,7 @@ public class CCombatUI : MonoBehaviour
     }
 
     // 영웅 정보 및 스킬 인터페이스 활성화
-    public void OpenHeroInfomation(CPlayer hero, CHeroBattleInput battleInput)
+    public void OpenHeroInfomation(CPlayer hero)
     {
         if (hero == null)
         {
@@ -793,9 +814,14 @@ public class CCombatUI : MonoBehaviour
 
         for (int i = 0; i < _skillSlot.Count; i++)
         {
+            if (_isDoubleTapAfter && i >= 1)
+            {
+                _skillSlot[i].SetActive(false);
+                continue;
+            }
             _skillSlot[i].GetComponent<Image>().sprite = heroSO.SkillSlotBackground;
             _skillImage[i].sprite = hero.EquippedSkills[i].SkillIcon;
-            battleInput.SelectSkill(i);
+            _skillSlot[i].SetActive(true);
         }
 
         _heroName.text = heroSO.DefaultName;
@@ -804,6 +830,27 @@ public class CCombatUI : MonoBehaviour
         _heroInfo.SetActive(true);
         _skillListPanel.SetActive(true);
         _infoTriangle.SetActive(true);
+
+        if (!_isDoubleTapAfter)
+        {
+            _rankChangeBtn.SetActive(true);
+            _passBtn.SetActive(true);
+        }
+        else
+        {
+            _rankChangeBtn.SetActive(false);
+            _passBtn.SetActive(false);
+        }
+    }
+    // 살아남은 적만 노려야하기 때문에 so의 타겟을 변경해줘야합니다.
+    public void DoubleTapSetTarget(CPlayer hero, ERank rank)
+    {
+        _doubleTapTargetRank = (int)System.MathF.Log((float)rank, 2);
+
+        // 확인사살만 장착하도록
+        hero.TrySetTemporarySkillLoadout(_doubleTapAfterSkillLoadoutSOList[_doubleTapTargetRank]);
+
+        _isDoubleTapAfter = true;
     }
     public void CloseHeroInfomation()
     {
@@ -814,6 +861,24 @@ public class CCombatUI : MonoBehaviour
         _cursorSkill.SetActive(false);
         _cursorDiamond.SetActive(false);
         _currentSkillName.gameObject.SetActive(false);
+
+    }
+
+    public void ResetSkillLoadoutSO(CPlayer hero)
+    {
+        if (!_isDoubleTapAfter)
+        {
+            return;
+        }
+
+        CPrint.Warn("Return SKILL");
+        CPrint.Error("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
+
+        for (int i = 0; i < hero.EquippedSkills.Count; i++)
+        {
+            CPrint.Warn($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
+        }
+        _isDoubleTapAfter = false;
     }
 
     // 적 정보 탭 활성화

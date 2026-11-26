@@ -19,11 +19,10 @@ MonoBehaviour:
   _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: f6508fa1390e3c946b7a920d7401a877, type: 2}
+  - {fileID: 11400000, guid: 66122660ac354435a8fc8358a9653bbb, type: 2}
   - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
   _critChance: 15
-  _mainDescription: "\uD53C\uD574: 4-8 \uCE58\uBA85\uD0C0: 15%\n\uB300\uC0C1\uC5D0
-    <sprite=21>\uC788\uC73C\uBA74 <sprite=24>"
+  _mainDescription: "\ud53c\ud574: 5-8 \uce58\uba85\ud0c0: 15%\n\ub300\uc0c1\uc5d0 <sprite=21>\uc788\uc73c\uba74 <sprite=24>"
   _subDescription: 
   _denialCategories: 2
   _usesPerBattle: 0

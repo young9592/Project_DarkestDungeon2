@@ -22,7 +22,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0257f1c29c3daaf4db75a5f7d63be2ab, type: 2}
   - {fileID: 11400000, guid: 76b40915af8aa0b489085d48b3e55689, type: 2}
   _critChance: 0
-  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 3\n"
+  _mainDescription: "\uc7ac\uc0ac\uc6a9 \ub300\uae30\uc2dc\uac04: 3"
   _subDescription: "<color=#816b44>\uB300\uC0C1: </color><sprite=8>-1, <sprite=20>\n"
   _denialCategories: 8
   _usesPerBattle: 0

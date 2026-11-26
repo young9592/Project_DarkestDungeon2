@@ -17,14 +17,13 @@ MonoBehaviour:
   _useableRank: -1
   _targetableRank: -1
   _isGroupTarget: 0
-  _cooldown: 1
+  _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: 02cb61ee904e4a75a21042c5264d2bb7, type: 2}
   - {fileID: 11400000, guid: 1fc2313378f4bb147a81d0a17a109dc4, type: 2}
   - {fileID: 11400000, guid: e412d16fc1801e4409c1359de902d3e8, type: 2}
   _critChance: 0
-  _mainDescription: "<color=#816b44>\uB300\uC0C1 \uC2DC\uCCB4 \uD544\uC694 </color>
-    \uD69F\uC218: 3\n\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1\n"
+  _mainDescription: "<color=#816b44>\ub300\uc0c1 \uc2dc\uccb4 \ud544\uc694 </color> \ud69f\uc218: 3"
   _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><color=#6c0618>\uC2DC\uCCB4
     \uC81C\uAC70</color>\n<color=#816b44>\uBA85\uC911\uC2DC \uD68D\uB4DD: </color><sprite=32>
     <color=#2CEE17>4-6</color>, <sprite=2>x2"

@@ -20,9 +20,8 @@ MonoBehaviour:
   _cooldown: 0
   _effectList:
   - {fileID: 11400000, guid: cbe7f1101d6bce24b8dc82d7b139dc92, type: 2}
-  _critChance: 10
-  _mainDescription: "\uD53C\uD574: 4-8, \uCE58\uBA85\uD0C0: 10%\n<color=#816b44>\uCC98\uD615</color>
-    1"
+  _critChance: 15
+  _mainDescription: "\ud53c\ud574: 4-8, \uce58\uba85\ud0c0: 15%\n<color=#816b44>\ucc98\ud615</color> 1"
   _subDescription: 
   _denialCategories: 1
   _usesPerBattle: 0

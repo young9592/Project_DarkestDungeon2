@@ -19,11 +19,9 @@ MonoBehaviour:
   _isGroupTarget: 0
   _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
   - {fileID: 11400000, guid: f36dcb01d0cc8b247af546f3b8334a62, type: 2}
-  _critChance: 0
-  _mainDescription: "\uD53C\uD574: 2-3\n\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04:
-    1"
+  _critChance: 5
+  _mainDescription: "\uc7ac\uc0ac\uc6a9 \ub300\uae30\uc2dc\uac04: 1\n\uce58\uba85\ud0c0: 5%"
   _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color>2 <color=#2c4a75>\uAE0D\uC815\uC801</color>
     \uD1A0\uD070 \uAC15\uD0C8"
   _denialCategories: 1
