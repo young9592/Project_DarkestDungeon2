@@ -69,6 +69,10 @@ public class CSkillEffectDrawManager : MonoBehaviour
     #region ManAtArms
     [Header("Crash")]
     [SerializeField] private GameObject _frontCrash;
+
+    [Header("Rampart")]
+    [SerializeField] private GameObject _frontRampart;
+    [SerializeField] private GameObject _backRampart;
     #endregion
     // 도굴꾼
     #region GraveRobber
@@ -144,6 +148,54 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
             SetRiposteSetting(isRiposte, draws);
         }
+        else if (skillName == "포효")
+        {
+
+        }
+        else if (skillName == "고양")
+        {
+
+        }
+        else if (skillName == "지시")
+        {
+
+        }
+        else if (skillName == "과감한 맹공")
+        {
+
+        }
+        else if (skillName == "수호자")
+        {
+
+        }
+        else if (skillName == "전선 유지")
+        {
+
+        }
+        else if (skillName == "성채의 일격")
+        {
+            GameObject front = Instantiate(_frontRampart, _frontEffect.transform);
+            GameObject back = Instantiate(_backRampart, _frontEffect.transform);
+
+            draws.Add(front);
+            draws.Add(back);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+
+            SetRiposteSetting(isRiposte, draws);
+        }
+        else if (skillName == "응징")
+        {
+
+        }
+        else if (skillName == "사수")
+        {
+
+        }
+        else if (skillName == "전략적 퇴각")
+        {
+
+        }
+
 
     }
 
@@ -183,12 +235,16 @@ public class CSkillEffectDrawManager : MonoBehaviour
             GameObject front = Instantiate(_frontSlice, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
 
+            draws.Add(front);
+
             SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "정맥 절개")
         {
             GameObject front = Instantiate(_frontVein, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
+
+            draws.Add(front);
 
             SetRiposteSetting(isRiposte, draws);
         }
@@ -275,6 +331,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
         {
             GameObject front = Instantiate(_frontSlice, _frontEffect.transform);
             DrawBloodEffect(draws, actor.gameObject.transform, false);
+
+            draws.Add(front);
         }
         else if (skillName == "중보병")
         {

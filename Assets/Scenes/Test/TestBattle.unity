@@ -11754,6 +11754,8 @@ MonoBehaviour:
   _backRobbery: {fileID: 7510229323537890965, guid: 48f25cb6658b05d4cb76975512a6a509, type: 3}
   _frontCross: {fileID: 3493222493740449326, guid: 656b9572da71c6641a894fa49bfedaf7, type: 3}
   _frontCrash: {fileID: 4593703643658296084, guid: 0f2f009223755e04a99755abea06e0b9, type: 3}
+  _frontRampart: {fileID: 2928665030928818165, guid: b571dac6cfd074c4bb926231b70ec0f3, type: 3}
+  _backRampart: {fileID: 9108844849082672324, guid: 2264641b778a5714fae1494a59657433, type: 3}
 --- !u!1 &1304939398
 GameObject:
   m_ObjectHideFlags: 0
