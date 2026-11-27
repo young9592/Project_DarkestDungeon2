@@ -21,4 +21,4 @@ MonoBehaviour:
   _baseChance: 100
   _tokenType: 0
   _condition: 0
-  _strategy: {fileID: 11400000, guid: dc2af75fc4ca46e08428038858451a24, type: 2}
+  _strategy: {fileID: 11400000, guid: a34b690c79814f2b8a74c624bd552652, type: 2}

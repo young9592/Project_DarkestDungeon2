@@ -12,9 +12,11 @@ public class CPierceDamageStrategy : CDamageStrategy
     [Header("시전자 은신 시 특공 보너스")]
     [SerializeField] private bool _empowerOnCasterStealth = false;
 
+    [SerializeField, Min(0)] private int _stealthExecution = 0;
+
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
-        if (context == null || context.Caster == null || context.Target == null) return;
+        if (context == null || context.Caster == null || context.Target == null || effectData == null) return;
 
         CEntity caster = context.Caster;
         CEntity target = context.Target;
@@ -52,13 +54,25 @@ public class CPierceDamageStrategy : CDamageStrategy
             }
         }
 
-        if (_empowerOnCasterStealth && caster.TokenManager.ConsumeToken(EEffectType.Stealth))
+        int execution = effectData.Execution;
+
+        bool needsStealth = _empowerOnCasterStealth || _stealthExecution > 0;
+        if (needsStealth && caster.TokenManager.ConsumeToken(EEffectType.Stealth))
         {
-            CPrint.Log($"[{caster.name}] [은신 기습] 은신 토큰을 소모하여 확정 치명타 및 공격력 증가가 적용됩니다.");
-            caster.TokenManager.AddToken(EEffectType.Strength, 1);
-            caster.TokenManager.AddToken(EEffectType.Crit, 1);
+            if (_empowerOnCasterStealth)
+            {
+                CPrint.Log($"[{caster.name}] [은신 기습] 은신 토큰을 소모하여 확정 치명타 및 공격력 증가가 적용됩니다.");
+                caster.TokenManager.AddToken(EEffectType.Strength, 1);
+                caster.TokenManager.AddToken(EEffectType.Crit, 1);
+            }
+
+            if (_stealthExecution > 0)
+            {
+                execution = Mathf.Max(execution, _stealthExecution);
+                CPrint.Log($"[{caster.name}] [은신 처형] 은신 소모로 처형 {execution}이 적용됩니다.");
+            }
         }
 
-        base.Apply(context, effectData);
+        ApplyDamageInternal(context, effectData, execution);
     }
 }

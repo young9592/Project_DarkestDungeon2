@@ -645,8 +645,12 @@ public class CEnemy : CEntity
         return CDamageStrategy.TryExecuteRiposte(this, attacker);
     }
 
-
     protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
+    {
+        base.ApplyDamage(finalDamage, playHitAnimation, 0);
+    }
+
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation, int execution)
     {
         if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
         {
@@ -664,13 +668,23 @@ public class CEnemy : CEntity
 
         if (_currentHp == 0)
         {
-            if (_remainingDeathArmor > 0)
+            bool isExecuted = finalDamage > 0 && execution > 0
+                && _remainingDeathArmor > 0 && _remainingDeathArmor <= execution;
+
+            if (_remainingDeathArmor > 0 && !isExecuted)
             {
                 _remainingDeathArmor--;
                 _isDeathsDoor = true;
                 CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathArmorBreak);
                 return;
             }
+            
+            if (isExecuted)
+            {
+                CPrint.Log($"[처형 {execution} 발동] [{name}]의 죽음의 값옷({_remainingDeathArmor})을 무시하고 즉시 처치했습니다.");
+                _remainingDeathArmor = 0;
+            }
+
             _isDead = true;
             if (_ignition != null) _ignition.HideEffects();
             _isDeathsDoor = false;
@@ -760,6 +774,7 @@ public class CEnemy : CEntity
 
         if (_corpse != null) _corpse.ResetEntityState();
 
+        if (TryGetComponent(out CEnemyAI ai)) ai.CancelPlan();
         CancelAction();
         SetExtraAction(false);
         if (_ignition != null)

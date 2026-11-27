@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -66,6 +66,7 @@ public class CEntityCombatAudio : MonoBehaviour
         _bound = true;
         _lastDeathArmor = _enemy != null ? _enemy.RemainingDeathArmor : 0;
         CApplyStatusStrategy.OnStatusEffectResisted += StatusResisted;
+        CEnemyStatusStrategy.OnStatusEffectResisted += StatusResisted;
         _entity.OnHealthEffectResolved += HealthResolved;
         _entity.TokenManager.OnTokenAdded += TokenAdded;
         if (_hero != null)
@@ -407,6 +408,7 @@ public class CEntityCombatAudio : MonoBehaviour
         if (_bound)
         {
             CApplyStatusStrategy.OnStatusEffectResisted -= StatusResisted;
+            CEnemyStatusStrategy.OnStatusEffectResisted -= StatusResisted;
             _entity.OnHealthEffectResolved -= HealthResolved;
             _entity.TokenManager.OnTokenAdded -= TokenAdded;
             if (_hero != null)

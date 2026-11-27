@@ -48,7 +48,7 @@ MonoBehaviour:
     _baseSkill: {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
     _masteredSkill: {fileID: 11400000, guid: c697ef4ca0cbe22458bb9869d00f823c, type: 2}
     _cost: 1
-    _isAvailable: 0
+    _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
     _baseReference: Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge
     _masteredReference: Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus

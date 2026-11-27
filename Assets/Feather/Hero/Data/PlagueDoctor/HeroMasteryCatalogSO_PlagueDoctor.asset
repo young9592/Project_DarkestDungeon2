@@ -58,7 +58,7 @@ MonoBehaviour:
     _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
     _masteredSkill: {fileID: 11400000, guid: 5bc1dc0a553ec1240b4fabb35a57e21a, type: 2}
     _cost: 1
-    _isAvailable: 0
+    _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
     _baseReference: DOT resistance 20%; disease resistance 15%
     _masteredReference: DOT/disease resistance 30%; additional resistance 10% (type
