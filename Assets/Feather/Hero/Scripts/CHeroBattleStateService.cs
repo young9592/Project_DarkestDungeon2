@@ -74,7 +74,15 @@ public class CHeroBattleStateService
     public bool TryStartExpedition(string runId, string battleId, IReadOnlyList<CPlayer> heroes,
         int masteryPoints, out string message)
     {
+        return TryStartExpedition(runId, battleId, heroes, masteryPoints, 100, 0, out message);
+    }
+
+    public bool TryStartExpedition(string runId, string battleId, IReadOnlyList<CPlayer> heroes,
+        int masteryPoints, int startingHealthPercent, int startingStress, out string message)
+    {
         message = "Expedition cannot start.";
+        if (startingHealthPercent < 1 || startingHealthPercent > 100
+            || startingStress < 0 || startingStress > 9) return false;
         if (!CanUseHeroes(heroes) || string.IsNullOrWhiteSpace(runId) || runId.Length > 128
             || runId == RunId || masteryPoints < 0) return false;
         CHeroBattleSaveData next = new CHeroBattleSaveData
@@ -90,7 +98,9 @@ public class CHeroBattleStateService
             next.Heroes.Members[i] = new CHeroRunMemberState
             {
                 MemberId = Guid.NewGuid().ToString("N"), HeroId = heroes[i].HeroData.Id,
-                Health = heroes[i].HeroData.MaxHealth,
+                Health = Math.Max(1, UnityEngine.Mathf.RoundToInt(
+                    heroes[i].HeroData.MaxHealth * (startingHealthPercent / 100.0f))),
+                Stress = startingStress,
                 Rank = heroes[i].CurrentRank, SkillIds = skillIds
             };
         }
