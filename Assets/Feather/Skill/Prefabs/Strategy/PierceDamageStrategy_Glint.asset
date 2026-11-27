@@ -17,3 +17,4 @@ MonoBehaviour:
   _ignoreGuard: 0
   _removeTargetStealth: 1
   _empowerOnCasterStealth: 1
+  _stealthExecution: 3

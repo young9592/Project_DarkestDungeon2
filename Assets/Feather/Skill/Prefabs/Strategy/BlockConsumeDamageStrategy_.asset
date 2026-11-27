@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0687d347fa1a3f40b5ab3d4d65d04bb, type: 3}
   m_Name: BlockConsumeDamageStrategy_
   m_EditorClassIdentifier: 
+  _executionBlockThreshold: 3
+  _thresholdExecution: 2
