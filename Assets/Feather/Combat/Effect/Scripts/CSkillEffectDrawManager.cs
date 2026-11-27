@@ -140,21 +140,21 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
     private void PlagueDoctorEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
-        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_plague_doctor")
+        if (actor.gameObject.GetComponent<CEntity>().EntityData.Id != "hero_plague_doctor")
         {
             return;
         }
     }
     private void GraveRobberEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
-        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_grave_robber")
+        if (actor.gameObject.GetComponent<CEntity>().EntityData.Id != "hero_grave_robber")
         {
             return;
         }
     }
     private void ManAtArmsEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
-        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_man_at_arms")
+        if (actor.gameObject.GetComponent<CEntity>().EntityData.Id != "hero_man_at_arms")
         {
             return;
         }
@@ -187,7 +187,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         else if (skillName == "수호자")
         {
             DrawTargetEffect(draws, _frontDefender, ESelectRoot.Front, actor, ERendererPositionOption.Center);
-            DrawTargetEffect(draws, _backDefender, ESelectRoot.Front, actor, ERendererPositionOption.Center);
+            DrawTargetEffect(draws, _backDefender, ESelectRoot.Back, actor, ERendererPositionOption.Center);
         }
         else if (skillName == "전선 유지")
         {
@@ -229,8 +229,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
     private void HighWayManEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
-        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_highwayman")
-        {
+        if (actor.gameObject.GetComponent<CEntity>().EntityData.Id != "hero_highwayman")
+        {   
             return;
         }
 
