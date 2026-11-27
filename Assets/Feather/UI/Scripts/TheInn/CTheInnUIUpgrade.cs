@@ -7,6 +7,7 @@ public class CTheInnUIUpgrade : MonoBehaviour
 {
     #region Inspector
     [SerializeField] CTheInnUINavigationBar _navigationBar;
+    [SerializeField] CTheInnUpgrade _theInnUpgrade;
     [SerializeField] GameObject _upgradeUI;
 
     [SerializeField] GameObject[] _heroPor = new GameObject[4];
@@ -21,10 +22,22 @@ public class CTheInnUIUpgrade : MonoBehaviour
     {
         UpdateHeroProfile();
     }
+
     public void UpgradeUIOpen()
     {
-        _navigationBar.ToggleUI(_upgradeUI, _titleText);
+        if (_upgradeUI.activeSelf)
+        {
+            _theInnUpgrade.OnCloseUpgradeUI();
+            _navigationBar.ToggleUI(_upgradeUI, _titleText);
+            return;
+        }
+
+        if (_theInnUpgrade.TryOpenTraining())
+        {
+            _navigationBar.ToggleUI(_upgradeUI, _titleText);
+        }
     }
+
 
     public void LiftClick()
     {
@@ -54,5 +67,6 @@ public class CTheInnUIUpgrade : MonoBehaviour
             _heroPor[i].SetActive(i == _currentheroPorIndex);
         }
         _heroNameText.text = _heroName[_currentheroPorIndex];
+        _theInnUpgrade.UpdateHeroSkill(_currentheroPorIndex);
     }
 }

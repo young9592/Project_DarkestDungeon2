@@ -1032,9 +1032,9 @@ public class CCombatUI : MonoBehaviour
         _dotTooltip.SetActive(false);
     }
     // 스킬 이펙트 그리기
-    public void DrawSkillEffect(string skillName, List<Transform> transforms, bool isRiposte)
+    public void DrawSkillEffect(string skillName, CEntity actor,  List<Transform> transforms, bool isRiposte)
     {
-        _skillEffectDrawManager.DrawEffect(skillName, transforms, isRiposte);
+        _skillEffectDrawManager.DrawEffect(skillName, actor.gameObject.transform, transforms, isRiposte);
     }
     public void DrawRiposteSkillEffect(string skillName, CEntity actor, CEntity riposteEntity)
     {

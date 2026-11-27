@@ -382,7 +382,7 @@ public class CCombatCameraManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         // Àç»ý
-        _combatUI.DrawSkillEffect(_combatManager.CurrentActionSkillName, entitiesTr, riposteEntity != null);
+        _combatUI.DrawSkillEffect(_combatManager.CurrentActionSkillName, actor, entitiesTr, riposteEntity != null);
 
         while (nextTime > Time.time)
         {
