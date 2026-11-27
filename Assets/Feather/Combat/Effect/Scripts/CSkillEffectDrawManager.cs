@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class CSkillEffectDrawManager : MonoBehaviour
 {
-    private enum EBulletHitPosition
+    private enum ERendererPositionOption
     {
-        Default,
+        CenterUp,
         LeftUp,
         RightUp,
         LeftDown,
         RightDown,
+        CenterDown,
         Center,
+    }
+
+    private enum ESelectRoot
+    {
+        Front,
+        Back,
     }
 
     #region Inspector 
@@ -73,6 +80,14 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [Header("Rampart")]
     [SerializeField] private GameObject _frontRampart;
     [SerializeField] private GameObject _backRampart;
+
+    [Header("Bolster")]
+    [SerializeField] private GameObject _backBolster;
+
+    [Header("")]
+    [Header("")]
+
+
     #endregion
     // 도굴꾼
     #region GraveRobber
@@ -104,35 +119,35 @@ public class CSkillEffectDrawManager : MonoBehaviour
     private List<GameObject> _draws = new List<GameObject>();
     #endregion
 
-    public void DrawEffect(string skillName, List<Transform> entitiesTr, bool isRiposte)
+    public void DrawEffect(string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         List<GameObject> draws = new List<GameObject>();
 
-        HighWayManEffect(draws, skillName, entitiesTr, isRiposte);
-        ManAtArmsEffect(draws, skillName, entitiesTr, isRiposte);
-        GraveRobberEffect(draws, skillName, entitiesTr, isRiposte);
-        PlagueDoctorEffect(draws, skillName, entitiesTr, isRiposte);
+        HighWayManEffect(draws, skillName, actor, entitiesTr, isRiposte);
+        ManAtArmsEffect(draws, skillName, actor, entitiesTr, isRiposte);
+        GraveRobberEffect(draws, skillName, actor, entitiesTr, isRiposte);
+        PlagueDoctorEffect(draws, skillName, actor, entitiesTr, isRiposte);
 
         // Monster
 
         _draws.AddRange(draws);
     }
 
-    private void PlagueDoctorEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    private void PlagueDoctorEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_plague_doctor")
         {
             return;
         }
     }
-    private void GraveRobberEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    private void GraveRobberEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_grave_robber")
         {
             return;
         }
     }
-    private void ManAtArmsEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    private void ManAtArmsEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_man_at_arms")
         {
@@ -154,7 +169,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "고양")
         {
-
+            DrawTargetEffect(draws, _backBolster, ESelectRoot.Back, actor, ERendererPositionOption.CenterUp);
         }
         else if (skillName == "지시")
         {
@@ -199,7 +214,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
     }
 
-    private void HighWayManEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    private void HighWayManEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_highwayman")
         {
@@ -224,7 +239,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         {
             GameObject front = Instantiate(_frontPistol, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
-            DrawBulletHitEffect(draws, entitiesTr[1], EBulletHitPosition.Default);
+            DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterUp);
 
             draws.Add(front);
 
@@ -252,7 +267,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         {
             GameObject front = Instantiate(_frontPorint, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
-            DrawBulletHitEffect(draws, entitiesTr[1], EBulletHitPosition.Center);
+            DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.Center);
 
             draws.Add(front);
 
@@ -265,12 +280,12 @@ public class CSkillEffectDrawManager : MonoBehaviour
             for (int i = 1; i < entitiesTr.Count; i++)
             {
                 DrawBloodEffect(draws, entitiesTr[i], false);
-                DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.Default);
-                DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.LeftUp);
-                DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.RightUp);
-                DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.LeftDown);
-                DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.RightDown);
-                DrawBulletHitEffect(draws, entitiesTr[i], EBulletHitPosition.Center);
+                DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterUp);
+                DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.LeftUp);
+                DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.LeftDown);
+                DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.RightUp);
+                DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.RightDown);
+                DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.Center);
             }
 
             // 대상이 3명[나, 적2명]이면 머즐 플래시 위치조정 필요
@@ -289,8 +304,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
         {
             GameObject front = Instantiate(_frontPistol, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
-            DrawBulletHitEffect(draws, entitiesTr[1], EBulletHitPosition.Default);
-            DrawTrakingMarkEffect(draws, entitiesTr[1]);
+            DrawTargetEffect(draws, _hitBullet, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterUp);
+            DrawTargetEffect(draws, _tracking, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterUp);
             draws.Add(front);
 
             SetRiposteSetting(isRiposte, draws);
@@ -366,15 +381,14 @@ public class CSkillEffectDrawManager : MonoBehaviour
         draws.Add(hitEnemy);
     }
 
-    // 총알 피격 이펙트 처리
-    private void DrawBulletHitEffect(List<GameObject> draws, Transform tr, EBulletHitPosition positionOption)
+    // 타겟 이펙트 처리
+    private void DrawTargetEffect(List<GameObject> draws, GameObject prefab, ESelectRoot root, Transform tr, ERendererPositionOption positionOption)
     {
-        GameObject hitEnemy = Instantiate(_hitBullet, _frontEffect.transform);
+        GameObject hitEnemy = Instantiate(prefab, SelectRoot(root));
 
         SkinnedMeshRenderer renderer = tr.GetComponentInChildren<SkinnedMeshRenderer>();
 
-
-        Vector3 vec = renderer != null ? renderer.bounds.center + BulletHitPosition(renderer, positionOption) : tr.position;
+        Vector3 vec = renderer != null ? renderer.bounds.center + RendererPosition(renderer, positionOption) : tr.position;
         Vector3 screenPos = _highlightCamera.WorldToScreenPoint(vec);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_backCanvas.GetComponent<RectTransform>(), screenPos, _backCanvas.worldCamera, out Vector2 uiLocalPos);
         hitEnemy.GetComponent<RectTransform>().anchoredPosition = uiLocalPos;
@@ -382,42 +396,41 @@ public class CSkillEffectDrawManager : MonoBehaviour
         draws.Add(hitEnemy);
     }
 
-    // 트래킹 샷 피격 이펙트 처리
-    private void DrawTrakingMarkEffect(List<GameObject> draws, Transform tr)
-    {
-        GameObject hitEnemy = Instantiate(_tracking, _frontEffect.transform);
-
-        SkinnedMeshRenderer renderer = tr.GetComponentInChildren<SkinnedMeshRenderer>();
-
-        Vector3 vec = renderer != null ? renderer.bounds.center + BulletHitPosition(renderer, EBulletHitPosition.Default) : tr.position;
-        Vector3 screenPos = _highlightCamera.WorldToScreenPoint(vec);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(_backCanvas.GetComponent<RectTransform>(), screenPos, _backCanvas.worldCamera, out Vector2 uiLocalPos);
-        hitEnemy.GetComponent<RectTransform>().anchoredPosition = uiLocalPos;
-
-        draws.Add(hitEnemy);
-    }
-
-    private Vector3 BulletHitPosition(SkinnedMeshRenderer renderer, EBulletHitPosition positionOption)
+    private Vector3 RendererPosition(SkinnedMeshRenderer renderer, ERendererPositionOption positionOption)
     {
         switch (positionOption)
         {
-            case EBulletHitPosition.Default:
-                return Vector3.up * (renderer.bounds.extents.y * 0.4f);
-            case EBulletHitPosition.LeftUp:
-                return Vector3.up * (renderer.bounds.extents.y * 0.4f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
-            case EBulletHitPosition.RightUp:
-                return Vector3.up * (renderer.bounds.extents.y * 0.4f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
-            case EBulletHitPosition.LeftDown:
-                return Vector3.down * (renderer.bounds.extents.y * 0.4f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
-            case EBulletHitPosition.RightDown:
-                return Vector3.down * (renderer.bounds.extents.y * 0.4f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
-            case EBulletHitPosition.Center:
+            case ERendererPositionOption.Center:
                 return Vector3.zero;
+            case ERendererPositionOption.CenterUp:
+                return Vector3.up * (renderer.bounds.extents.y * 0.4f);
+            case ERendererPositionOption.LeftUp:
+                return Vector3.up * (renderer.bounds.extents.y * 0.4f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+            case ERendererPositionOption.RightUp:
+                return Vector3.up * (renderer.bounds.extents.y * 0.4f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+            case ERendererPositionOption.LeftDown:
+                return Vector3.down * (renderer.bounds.extents.y * 0.4f) + Vector3.left * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+            case ERendererPositionOption.RightDown:
+                return Vector3.down * (renderer.bounds.extents.y * 0.4f) + Vector3.right * (renderer.bounds.extents.x * Random.Range(0, 0.2f));
+            case ERendererPositionOption.CenterDown:
+                return Vector3.down * (renderer.bounds.extents.y * 0.4f);
         }
 
         return Vector3.zero;
     }
+    private Transform SelectRoot(ESelectRoot root)
+    {
+        switch (root)
+        {
+            case ESelectRoot.Front:
+                return _frontEffect.transform;
+            case ESelectRoot.Back:
+                return _backEffect.transform;
+        }
 
+        CPrint.Error($"{gameObject.name} : 잘못된 설정값 입력됨.");
+        return _frontEffect.transform;
+    }
     private void SetRiposteSetting(bool isRiposte, List<GameObject> draws)
     {
         if (!isRiposte)

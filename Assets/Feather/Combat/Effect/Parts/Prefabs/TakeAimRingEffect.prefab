@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5032484028863178941}
   - component: {fileID: 9000909015325085591}
   - component: {fileID: 8104373609162565865}
-  - component: {fileID: 7264161737298000677}
+  - component: {fileID: 3640565537409597673}
   m_Layer: 5
   m_Name: TakeAimRingEffect
   m_TagString: Untagged
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7264161737298000677
+--- !u!114 &3640565537409597673
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,12 +85,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2321676616239057061}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c384882500f6cf848a0c1a6337fb1ada, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e9719f6dbddc4942bc0564de0fa472d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 0.6
   _image: {fileID: 8104373609162565865}
   _tr: {fileID: 5032484028863178941}
   _delay: 1.5
-  _cameraSpace: 0
-  _scale: 1.5
+  _desireScale: 1.5
