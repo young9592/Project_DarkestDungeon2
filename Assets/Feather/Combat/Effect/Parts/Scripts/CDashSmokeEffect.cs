@@ -38,6 +38,7 @@ public class CDashSmokeEffect : CSkillEffectPart
     {
         float t = Mathf.Clamp01(1f - (_nextTime - Time.time) / _delay);
         _image.color = new Color(_initColor.r, _initColor.g, _initColor.b, Mathf.Lerp(_initColor.a, 0, t));
+        _image.material.SetFloat("_Prograss", t);
 
         _tr.Translate(Vector3.right * _moveSpeed * Time.deltaTime, _cameraSpace);
     }

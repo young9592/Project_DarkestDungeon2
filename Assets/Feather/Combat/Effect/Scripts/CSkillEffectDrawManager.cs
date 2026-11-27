@@ -1,6 +1,5 @@
 
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class CSkillEffectDrawManager : MonoBehaviour
@@ -15,7 +14,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
         Center,
     }
 
-    #region Inspector
+    #region Inspector 
     // 캐릭터의 앞/뒤에 그리기
     [Header("Draw Root")]
     [SerializeField] private GameObject _frontEffect;
@@ -28,7 +27,10 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [SerializeField] private Canvas _frontCanvas;
     [SerializeField] private Canvas _backCanvas;
 
-    // 노상강도
+    [Header("Hit")]
+    [SerializeField] private GameObject _hitPrefab;
+
+    #region Highwayman
     [Header("Duelists Advence")]
     [SerializeField] private GameObject _frontDuel;
     [SerializeField] private GameObject _backDuel;
@@ -61,12 +63,21 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
     [Header("DoubleCross")]
     [SerializeField] private GameObject _frontCross;
+    #endregion
 
     // 중보병
-
+    #region ManAtArms
+    [Header("Crash")]
+    [SerializeField] private GameObject _frontCrash;
+    #endregion
     // 도굴꾼
+    #region GraveRobber
 
+    #endregion
     // 역병의사
+    #region PlagueDoctor
+
+    #endregion
 
     // 잃은 영혼
 
@@ -83,8 +94,6 @@ public class CSkillEffectDrawManager : MonoBehaviour
     // 스트레스 자물쇠
 
 
-    [Header("Hit")]
-    [SerializeField] private GameObject _hitPrefab;
     #endregion
 
     #region Field
@@ -96,10 +105,47 @@ public class CSkillEffectDrawManager : MonoBehaviour
         List<GameObject> draws = new List<GameObject>();
 
         HighWayManEffect(draws, skillName, entitiesTr, isRiposte);
+        ManAtArmsEffect(draws, skillName, entitiesTr, isRiposte);
+        GraveRobberEffect(draws, skillName, entitiesTr, isRiposte);
+        PlagueDoctorEffect(draws, skillName, entitiesTr, isRiposte);
+
+        // Monster
 
         _draws.AddRange(draws);
     }
 
+    private void PlagueDoctorEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    {
+        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_plague_doctor")
+        {
+            return;
+        }
+    }
+    private void GraveRobberEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    {
+        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_grave_robber")
+        {
+            return;
+        }
+    }
+    private void ManAtArmsEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
+    {
+        if (entitiesTr[0].gameObject.GetComponent<CEntity>().EntityData.Id != "hero_man_at_arms")
+        {
+            return;
+        }
+
+        if (skillName == "분쇄")
+        {
+            GameObject front = Instantiate(_frontCrash, _frontEffect.transform);
+
+            draws.Add(front);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+
+            SetRiposteSetting(isRiposte, draws);
+        }
+
+    }
 
     private void HighWayManEffect(List<GameObject> draws, string skillName, List<Transform> entitiesTr, bool isRiposte)
     {
@@ -119,10 +165,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
             DrawBloodEffect(draws, entitiesTr[1], false);
 
             // 반격시 속도가 2배 빠르기 때문에 속도 보정 해줘야합니다.
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         // 권총사격, 마무리 사격
         else if (skillName == "권총 사격" || skillName == "마무리 속사" || skillName == "확인 사살")
@@ -133,30 +176,21 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
             draws.Add(front);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "야비한 칼질")
         {
             GameObject front = Instantiate(_frontSlice, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "정맥 절개")
         {
             GameObject front = Instantiate(_frontVein, _frontEffect.transform);
             DrawBloodEffect(draws, entitiesTr[1], false);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "영거리 사격")
         {
@@ -166,10 +200,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
             draws.Add(front);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "포도탄 발사")
         {
@@ -196,10 +227,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
             draws.Add(front);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "가늠 사격")
         {
@@ -209,10 +237,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
             DrawTrakingMarkEffect(draws, entitiesTr[1]);
             draws.Add(front);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "정조준")
         {
@@ -227,10 +252,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
             draws.Add(front);
             draws.Add(back);
 
-            if (isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "뒤통수 치기")
         {
@@ -238,10 +260,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
             DrawBloodEffect(draws, entitiesTr[1], false);
             draws.Add(front);
 
-            if(isRiposte)
-            {
-                SetRiposteSetting(draws);
-            }
+            SetRiposteSetting(isRiposte, draws);
         }
 
 
@@ -258,6 +277,10 @@ public class CSkillEffectDrawManager : MonoBehaviour
             DrawBloodEffect(draws, actor.gameObject.transform, false);
         }
         else if (skillName == "중보병")
+        {
+
+        }
+        else if (skillName == "적 반격01")
         {
 
         }
@@ -337,8 +360,13 @@ public class CSkillEffectDrawManager : MonoBehaviour
         return Vector3.zero;
     }
 
-    private void SetRiposteSetting(List<GameObject> draws)
+    private void SetRiposteSetting(bool isRiposte, List<GameObject> draws)
     {
+        if (!isRiposte)
+        {
+            return;
+        }
+
         for (int i = 0; i < draws.Count; i++)
         {
             CSkillEffectDraw drawEffect = draws[i].GetComponent<CSkillEffectDraw>();
