@@ -46,7 +46,6 @@ public class CTrackingShardEffect : CSkillEffectPart
             float nextT = Mathf.Clamp01((t - _customWaitDelay) / (0.5f - _customWaitDelay));
 
             _image.color = _initColor;
-            CPrint.Log(_initColor.a.ToString());
             _tr.localScale = Vector3.Lerp(new Vector3(0.1f, 1f, 1f), Vector3.one, nextT);
             _tr.Translate(Vector3.left * 0.2f * Time.deltaTime, Space.Self);
         }
