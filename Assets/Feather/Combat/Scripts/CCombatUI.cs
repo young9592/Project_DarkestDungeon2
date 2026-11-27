@@ -114,6 +114,9 @@ public class CCombatUI : MonoBehaviour
     [Header("EnterEffect")]
     [SerializeField] private GameObject _enterEffect;
 
+    [Header("Skill Effect Draw Manager")]
+    [SerializeField] private CSkillEffectDrawManager _skillEffectDrawManager;
+
     [Header("Highwayman DoubleTap")]
     [SerializeField] private List<CHeroSkillLoadoutSO> _doubleTapAfterSkillLoadoutSOList;
     [SerializeField] private List<CHeroSkillSO> _doubleTapAfterSkillSOList;
@@ -872,11 +875,11 @@ public class CCombatUI : MonoBehaviour
         }
 
         CPrint.Warn("Return SKILL");
-        CPrint.Error("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
+        CPrint.Log("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
 
         for (int i = 0; i < hero.EquippedSkills.Count; i++)
         {
-            CPrint.Warn($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
+            CPrint.Log($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
         }
         _isDoubleTapAfter = false;
     }
@@ -1027,5 +1030,19 @@ public class CCombatUI : MonoBehaviour
     {
         _tokenTooltip.SetActive(false);
         _dotTooltip.SetActive(false);
+    }
+    // 스킬 이펙트 그리기
+    public void DrawSkillEffect(string skillName, List<Transform> transforms, bool isRiposte)
+    {
+        _skillEffectDrawManager.DrawEffect(skillName, transforms, isRiposte);
+    }
+    public void DrawRiposteSkillEffect(string skillName, CEntity actor, CEntity riposteEntity)
+    {
+        _skillEffectDrawManager.DrawEffect(skillName, actor, riposteEntity);
+    }
+    // 이펙트 즉시 가리기
+    public void DisableDrawSkillEffect()
+    {
+        _skillEffectDrawManager.DisableAllEffect();
     }
 }
