@@ -78,7 +78,7 @@ MonoBehaviour:
     _baseSkill: {fileID: 11400000, guid: a9624f22000e32f45bdae798895dcd72, type: 2}
     _masteredSkill: {fileID: 11400000, guid: 1806306c2be0f774eae6db502dec4b76, type: 2}
     _cost: 1
-    _isAvailable: 0
+    _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
     _baseReference: "Riposte 2, Taunt 2; cooldown 2"
     _masteredReference: "Riposte 2, Taunt 2; cooldown 1"
@@ -158,7 +158,7 @@ MonoBehaviour:
     _baseSkill: {fileID: 11400000, guid: 8d143528b0f1313468fbdbe94c60db84, type: 2}
     _masteredSkill: {fileID: 11400000, guid: c697ef4ca0cbe22458bb9869d00f823c, type: 2}
     _cost: 1
-    _isAvailable: 0
+    _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
     _baseReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge"
     _masteredReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus for 2 rounds; ignores Dodge"
@@ -388,7 +388,7 @@ MonoBehaviour:
     _baseSkill: {fileID: 11400000, guid: 97516bda173e61649a1c1520dc36452c, type: 2}
     _masteredSkill: {fileID: 11400000, guid: 5bc1dc0a553ec1240b4fabb35a57e21a, type: 2}
     _cost: 1
-    _isAvailable: 0
+    _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
     _baseReference: "DOT resistance 20%; disease resistance 15%"
     _masteredReference: "DOT/disease resistance 30%; additional resistance 10% (type unverified)"
