@@ -16,6 +16,7 @@ public class CTheInnUINavigationBar : MonoBehaviour
     }
 
     #region Inspector
+
     [SerializeField] private TMP_Text _navigationTitleText;
 
     [SerializeField] private GameObject _charactorStateUI;
@@ -55,7 +56,6 @@ public class CTheInnUINavigationBar : MonoBehaviour
         }
         Debug.Log("여정 시작");
     }
-
     public void SelectBiome()
     {
         _isBiomeSelected = true;
@@ -95,6 +95,32 @@ public class CTheInnUINavigationBar : MonoBehaviour
         _charactorStateUI.SetActive(false);
         UpdateNavigationTitleText(titleText);
 
+    }
+    public void ToggleUpgradeUI(GameObject targetUI, string titleText)
+    {
+        if (_currentOpenObject == targetUI)
+        {
+            targetUI.SetActive(false);
+            _currentOpenObject = null;
+
+            SetUIOpen(false);
+            _charactorStateUI.SetActive(true);
+            RestoreNavigationTitleText();
+
+            return;
+        }
+
+        if (_currentOpenObject != null)
+        {
+            _currentOpenObject.SetActive(false);
+        }
+
+        targetUI.SetActive(true);
+        _currentOpenObject = targetUI;
+
+        SetUIOpen(true);
+        _charactorStateUI.SetActive(false);
+        UpdateNavigationTitleText(titleText);
     }
 
     public void UpdateNavigationTitleText(string text)
