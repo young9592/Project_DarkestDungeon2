@@ -9,6 +9,10 @@ public class CHeroExpeditionState : MonoBehaviour
     [Header("Expedition")]
     [SerializeField] private CHeroMasteryCatalogSO _masteryCatalog;
 
+    [Header("New Expedition")]
+    [SerializeField, Range(1, 100)] private int _startingHealthPercent = 100;
+    [SerializeField, Range(0, 9)] private int _startingStress = 0;
+
     private CHeroMasteryService _mastery;
     private CHeroBattleStateService _service;
     private string _notice;
@@ -60,7 +64,11 @@ public class CHeroExpeditionState : MonoBehaviour
         {
             GameObject prefab = Resources.Load<GameObject>("HeroInnMastery");
             if (prefab != null && prefab.TryGetComponent(out CHeroExpeditionState settings))
+            {
                 _masteryCatalog = settings._masteryCatalog;
+                _startingHealthPercent = settings._startingHealthPercent;
+                _startingStress = settings._startingStress;
+            }
         }
         return _masteryCatalog != null && Initialize(_masteryCatalog);
     }
@@ -85,7 +93,8 @@ public class CHeroExpeditionState : MonoBehaviour
     public bool TryStartExpedition(IReadOnlyList<CPlayer> heroes, int masteryPoints = 0)
     {
         if (_service == null || !_service.TryStartExpedition(Guid.NewGuid().ToString("N"),
-            Guid.NewGuid().ToString("N"), heroes, masteryPoints, out _notice)) return false;
+            Guid.NewGuid().ToString("N"), heroes, masteryPoints,
+            _startingHealthPercent, _startingStress, out _notice)) return false;
         _isInitialized = true;
         return true;
     }

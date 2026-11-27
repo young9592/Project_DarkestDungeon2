@@ -42,6 +42,8 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   _masteryCatalog: {fileID: 11400000, guid: 291a46d1be474dc99c96191d197eef76, type: 2}
+  _startingHealthPercent: 100
+  _startingStress: 0
 --- !u!114 &11400001
 MonoBehaviour:
   m_ObjectHideFlags: 0
