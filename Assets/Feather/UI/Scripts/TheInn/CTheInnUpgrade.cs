@@ -39,7 +39,7 @@ public class CTheInnUpgrade : MonoBehaviour
     {
         UpdateHeroSkill(_currentHeroIndex);
     }
- 
+  
     public bool TryOpenTraining()
     {
         if (_heroInnMastery == null)
@@ -167,6 +167,7 @@ public class CTheInnUpgrade : MonoBehaviour
             UpdateMasteryPoint();
 
             Debug.Log("강화 확정 성공");
+            TryOpenTraining();
         }
         else
         {
