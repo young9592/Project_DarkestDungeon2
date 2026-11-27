@@ -144,12 +144,102 @@ public class CSkillEffectDrawManager : MonoBehaviour
         {
             return;
         }
+
+        if (skillName == "야전 의술")
+        {
+
+        }
+        else if (skillName == "실명 기체")
+        {
+
+        }
+        else if (skillName == "사인")
+        {
+
+        }
+        else if (skillName == "혼란 기체 폭발")
+        {
+
+        }
+        else if (skillName == "강화 작용제")
+        {
+
+        }
+        else if (skillName == "절개")
+        {
+
+        }
+        else if (skillName == "도를 넘은 과학")
+        {
+
+        }
+        else if (skillName == "마그네슘 포화")
+        {
+
+        }
+        else if (skillName == "유독기체 폭발")
+        {
+
+        }
+        else if (skillName == "예방 조치")
+        {
+
+        }
+        else if (skillName == "역병 수류탄")
+        {
+
+        }
     }
     private void GraveRobberEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         if (actor.gameObject.GetComponent<CEntity>().EntityData.Id != "hero_grave_robber")
         {
             return;
+        }
+
+        if (skillName == "압생트")
+        {
+
+        }
+        else if (skillName == "밤의 망자")
+        {
+
+        }
+        else if (skillName == "번뜩이는 비도")
+        {
+
+        }
+        else if (skillName == "어둠 속의 번뜩임")
+        {
+
+        }
+        else if (skillName == "돌진")
+        {
+
+        }
+        else if (skillName == "곡괭이 찍기")
+        {
+
+        }
+        else if (skillName == "발놀림")
+        {
+
+        }
+        else if (skillName == "맹독 다트")
+        {
+
+        }
+        else if (skillName == "조롱")
+        {
+
+        }
+        else if (skillName == "그림자 은신")
+        {
+
+        }
+        else if (skillName == "단검 투척")
+        {
+
         }
     }
     private void ManAtArmsEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
@@ -230,7 +320,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
     private void HighWayManEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
     {
         if (actor.gameObject.GetComponent<CEntity>().EntityData.Id != "hero_highwayman")
-        {   
+        {
             return;
         }
 
