@@ -88,8 +88,9 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [SerializeField] private GameObject _frontHoldLine;
     [SerializeField] private GameObject _backHoldLine;
 
-
-    [Header("")]
+    [Header("Defender")]
+    [SerializeField] private GameObject _frontDefender;
+    [SerializeField] private GameObject _backDefender;
 
 
     #endregion
@@ -185,7 +186,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "수호자")
         {
-
+            DrawTargetEffect(draws, _frontDefender, ESelectRoot.Front, actor, ERendererPositionOption.Center);
+            DrawTargetEffect(draws, _backDefender, ESelectRoot.Front, actor, ERendererPositionOption.Center);
         }
         else if (skillName == "전선 유지")
         {

@@ -11759,6 +11759,8 @@ MonoBehaviour:
   _backBolster: {fileID: 5934137386312800717, guid: 5a0ebf534d84f4f499f8cb421834b340, type: 3}
   _frontHoldLine: {fileID: 7610869317918598224, guid: 3e8e1cdc6df76384cae37986994ab3f1, type: 3}
   _backHoldLine: {fileID: 5295209646528483796, guid: 5f7212ab91175a741bd190157c69a53a, type: 3}
+  _frontDefender: {fileID: 1384520688084823209, guid: 7c8c6fb7826d9ed47bc41a55e82fcbe3, type: 3}
+  _backDefender: {fileID: 8530552397968558534, guid: b1cf7f8a7d88a6742bde8e1dc3aa2ac9, type: 3}
 --- !u!1 &1304939398
 GameObject:
   m_ObjectHideFlags: 0
@@ -20354,7 +20356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4832341508066927456, guid: 3a2aecc31f927574d955f46a72d538d2, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

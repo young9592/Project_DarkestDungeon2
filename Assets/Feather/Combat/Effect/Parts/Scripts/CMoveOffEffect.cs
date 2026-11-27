@@ -1,22 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CRockEffect : CSkillEffectPart
+public class CMoveOffEffect : CSkillEffectPart
 {
     #region Inspector
     [Header("Connect")]
     [SerializeField] private Image _image;
-    [SerializeField] private Transform _tr;
+    [SerializeField] private RectTransform _tr;
 
     [Header("Option")]
     [SerializeField] private float _delay = 1.5f;
-    [SerializeField] private Vector3 _moveDir = Vector3.zero;
     #endregion
 
     #region Field
-    private float _nextTime;
     private Color _initColor;
-
+    private float _nextTime;
     #endregion
 
     private void Awake()
@@ -28,15 +26,15 @@ public class CRockEffect : CSkillEffectPart
             return;
         }
 
-        _nextTime = Time.time + _delay;
         _initColor = _image.color;
+        _nextTime = Time.time + _delay;
     }
 
     private void Update()
     {
         float t = Mathf.Clamp01(1f - (_nextTime - Time.time) / _delay);
-
-        _tr.Translate(_moveDir * _moveSpeed * Time.deltaTime, Space.Self);
         _image.color = new Color(_initColor.r, _initColor.g, _initColor.b, Mathf.Lerp(_initColor.a, 0, t));
+
+        _tr.Translate(Vector3.right * _moveSpeed * Time.deltaTime, Space.World);
     }
 }
