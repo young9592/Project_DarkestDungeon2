@@ -13688,6 +13688,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _navigationTitleText: {fileID: 1827962190}
+  _theInnUpgrade: {fileID: 1681541575}
+  _upgradeUI: {fileID: 622021196}
   _charactorStateUI: {fileID: 1658732753}
   _selectRestText: {fileID: 149804115}
   _restText: {fileID: 695787073}

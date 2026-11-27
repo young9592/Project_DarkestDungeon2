@@ -18,6 +18,9 @@ public class CTheInnUINavigationBar : MonoBehaviour
     #region Inspector
 
     [SerializeField] private TMP_Text _navigationTitleText;
+    [Header("Upgrade")]
+    [SerializeField] private CTheInnUpgrade _theInnUpgrade;
+    [SerializeField] private GameObject _upgradeUI;
 
     [SerializeField] private GameObject _charactorStateUI;
     [SerializeField] private GameObject _selectRestText;
@@ -85,6 +88,11 @@ public class CTheInnUINavigationBar : MonoBehaviour
 
         if (_currentOpenObject != null)
         {
+            if (_currentOpenObject == _upgradeUI)
+            {
+                _theInnUpgrade.OnCloseUpgradeUI();
+                Debug.Log("¾÷±ÛUI ´Ý±â");
+            }
             _currentOpenObject.SetActive(false);
         }
 
@@ -95,32 +103,6 @@ public class CTheInnUINavigationBar : MonoBehaviour
         _charactorStateUI.SetActive(false);
         UpdateNavigationTitleText(titleText);
 
-    }
-    public void ToggleUpgradeUI(GameObject targetUI, string titleText)
-    {
-        if (_currentOpenObject == targetUI)
-        {
-            targetUI.SetActive(false);
-            _currentOpenObject = null;
-
-            SetUIOpen(false);
-            _charactorStateUI.SetActive(true);
-            RestoreNavigationTitleText();
-
-            return;
-        }
-
-        if (_currentOpenObject != null)
-        {
-            _currentOpenObject.SetActive(false);
-        }
-
-        targetUI.SetActive(true);
-        _currentOpenObject = targetUI;
-
-        SetUIOpen(true);
-        _charactorStateUI.SetActive(false);
-        UpdateNavigationTitleText(titleText);
     }
 
     public void UpdateNavigationTitleText(string text)
