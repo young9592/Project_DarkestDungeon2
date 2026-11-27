@@ -1,4 +1,5 @@
 
+using TMPro;
 using UnityEngine;
 
 
@@ -6,26 +7,45 @@ public class CTheInnUIUpgrade : MonoBehaviour
 {
     #region Inspector
     [SerializeField] CTheInnUINavigationBar _navigationBar;
+    [SerializeField] CTheInnUpgrade _theInnUpgrade;
     [SerializeField] GameObject _upgradeUI;
 
     [SerializeField] GameObject[] _heroPor = new GameObject[4];
+    [SerializeField] TMP_Text _heroNameText;
+    [SerializeField] string[] _heroName = new string[4];
     #endregion
 
     private int _currentheroPorIndex = 0;
-    private string _titleText = "Mastery Trainer";
+    private string _titleText = "¼÷·Ã ±³°ü";
+
+    private void Start()
+    {
+        UpdateHeroProfile();
+    }
 
     public void UpgradeUIOpen()
     {
-        _navigationBar.ToggleUI(_upgradeUI, _titleText);
+        if (_upgradeUI.activeSelf)
+        {
+            _theInnUpgrade.OnCloseUpgradeUI();
+            _navigationBar.ToggleUI(_upgradeUI, _titleText);
+            return;
+        }
+
+        if (_theInnUpgrade.TryOpenTraining())
+        {
+            _navigationBar.ToggleUI(_upgradeUI, _titleText);
+        }
     }
+
 
     public void LiftClick()
     {
         _currentheroPorIndex--;
 
-        if(_currentheroPorIndex < 0)
+        if (_currentheroPorIndex < 0)
         {
-            _currentheroPorIndex = _heroPor.Length -1;
+            _currentheroPorIndex = _heroPor.Length - 1;
         }
         UpdateHeroProfile();
     }
@@ -33,7 +53,7 @@ public class CTheInnUIUpgrade : MonoBehaviour
     {
         _currentheroPorIndex++;
 
-        if(_currentheroPorIndex >= _heroPor.Length)
+        if (_currentheroPorIndex >= _heroPor.Length)
         {
             _currentheroPorIndex = 0;
         }
@@ -46,5 +66,7 @@ public class CTheInnUIUpgrade : MonoBehaviour
         {
             _heroPor[i].SetActive(i == _currentheroPorIndex);
         }
+        _heroNameText.text = _heroName[_currentheroPorIndex];
+        _theInnUpgrade.UpdateHeroSkill(_currentheroPorIndex);
     }
 }

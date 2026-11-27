@@ -15,6 +15,9 @@ public class CEnemyFormationMovement : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _destination;
     private float _elapsed;
+    private float _duration;
+    private Vector3 _lastMovementPosition;
+    private bool _yieldToExternalPosition;
     private bool _isMoving;
     private bool _hasPendingRank;
     private readonly List<RankRequest> _rankRequests = new List<RankRequest>();
@@ -31,6 +34,11 @@ public class CEnemyFormationMovement : MonoBehaviour
     public bool IsConfigured
     {
         get { return _members != null && HasValidSlots(); }
+    }
+
+    internal IReadOnlyList<CEnemy> Members
+    {
+        get { return _members; }
     }
 
     private void Awake()
@@ -86,7 +94,8 @@ public class CEnemyFormationMovement : MonoBehaviour
             RankRequest request = _rankRequests[i];
             if (request.Enemy == null || processed.Contains(request.Enemy)) continue;
             CEnemyFormationMovement movement = request.Enemy.FormationMovement;
-            if (movement == null || !movement.TryMoveToRank(request.Rank)) break;
+            CEnemy largeNeighbor = GetLargeSwapNeighbor(i, processed);
+            if (movement == null || !movement.TryMoveToRank(request.Rank, largeNeighbor)) break;
             processed.Add(request.Enemy);
             for (int j = 0; j < movement._movedMembers.Count; j++)
             {
@@ -94,6 +103,19 @@ public class CEnemyFormationMovement : MonoBehaviour
             }
         }
         ClearRankRequests();
+    }
+
+    private CEnemy GetLargeSwapNeighbor(int requestIndex, HashSet<CEnemy> processed)
+    {
+        if (requestIndex == 0) return null;
+        RankRequest request = _rankRequests[requestIndex];
+        RankRequest neighbor = _rankRequests[requestIndex - 1];
+        if (neighbor.Enemy == null || neighbor.Enemy == request.Enemy || processed.Contains(neighbor.Enemy)
+            || neighbor.Rank != request.Enemy.CurrentRank || request.Rank != neighbor.Enemy.CurrentRank
+            || Mathf.Abs(GetIndex(request.Rank) - GetIndex(neighbor.Rank)) != 1
+            || neighbor.Enemy.EnemyData == null || neighbor.Enemy.EnemyData.FormationSize <= 1) return null;
+
+        return neighbor.Enemy;
     }
 
     public void CancelPendingRequests()
@@ -152,21 +174,37 @@ public class CEnemyFormationMovement : MonoBehaviour
             SnapToRank();
             return;
         }
+        if (_yieldToExternalPosition && (transform.position - _lastMovementPosition).sqrMagnitude > 0.00000001f)
+        {
+            // 전투 연출에서 좌표를 잡으면 진형 이동 보간을 멈춤
+            _isMoving = false;
+            _enemy.TryCompleteAction();
+            return;
+        }
+
         _elapsed += Time.deltaTime;
-        float progress = Mathf.SmoothStep(0.0f, 1.0f, Mathf.Clamp01(_elapsed / 0.18f));
-        transform.position = Vector3.Lerp(_startPosition, _destination, progress);
-        if (_elapsed >= 0.18f) SnapToRank();
+        float progress = Mathf.SmoothStep(0.0f, 1.0f, Mathf.Clamp01(_elapsed / _duration));
+        _lastMovementPosition = Vector3.Lerp(_startPosition, _destination, progress);
+        transform.position = _lastMovementPosition;
+        if (_elapsed >= _duration)
+        {
+            SnapToRank();
+            if (_yieldToExternalPosition) _enemy.TryCompleteAction();
+        }
     }
 
-    private void MoveToRank()
+    private void MoveToRank(float duration, bool yieldToExternalPosition)
     {
         if (!HasValidSlots()) return;
         int start = GetIndex(_enemy.CurrentRank);
         int end = start + _enemy.EnemyData.FormationSize - 1;
         if (start < 0 || end >= 4) return;
         _startPosition = transform.position;
+        _lastMovementPosition = _startPosition;
         _destination = (_slots[start].position + _slots[end].position) * 0.5f;
         _elapsed = 0.0f;
+        _duration = duration;
+        _yieldToExternalPosition = yieldToExternalPosition;
         _isMoving = true;
     }
 
@@ -180,30 +218,87 @@ public class CEnemyFormationMovement : MonoBehaviour
         transform.position = (_slots[start].position + _slots[end].position) * 0.5f;
     }
 
+    public bool TryCompactFormation()
+    {
+        if (!IsConfigured) return false;
+
+        CEnemy[] membersByRank = new CEnemy[_slots.Length];
+        int occupied = 0;
+        for (int i = 0; i < _members.Count; i++)
+        {
+            CEnemy member = _members[i];
+            if (member == null || !member.isActiveAndEnabled) continue;
+            if (member.IsDead && (member.Corpse == null || member.Corpse.IsRemoved)) continue;
+            if (member.EnemyData == null || member.IsPresentationBusy
+                || member.FormationMovement == null || member.FormationMovement._slots != _slots) return false;
+
+            int start = GetIndex(member.CurrentRank);
+            int size = member.EnemyData.FormationSize;
+            if (start < 0 || size < 1 || start + size > _slots.Length) return false;
+            int mask = ((1 << size) - 1) << start;
+            if ((occupied & mask) != 0) return false;
+            occupied |= mask;
+            membersByRank[start] = member;
+        }
+
+        int[] destinations = new int[_slots.Length];
+        int nextRank = 0;
+        for (int i = 0; i < membersByRank.Length; i++)
+        {
+            CEnemy member = membersByRank[i];
+            if (member == null) continue;
+
+            // 시체나 이동 불가 적이 차지한 칸은 유지함
+            bool stays = member.IsDead || member.TokenManager.HasToken(EEffectType.Immobilize);
+            destinations[i] = stays ? i : nextRank;
+            nextRank = destinations[i] + member.EnemyData.FormationSize;
+        }
+
+        // 최종 열을 전부 반영한 뒤 모델 위치를 맞춤
+        for (int i = 0; i < membersByRank.Length; i++)
+        {
+            CEnemy member = membersByRank[i];
+            if (member == null || member.IsDead) continue;
+            member.SetRankImmediate((ERank)(1 << destinations[i]));
+        }
+        for (int i = 0; i < membersByRank.Length; i++)
+        {
+            CEnemy member = membersByRank[i];
+            if (member != null && !member.IsDead) member.FormationMovement.SnapToRank();
+        }
+        return true;
+    }
+
     private void OnDisable()
     {
         CancelPendingRequests();
         if (_isMoving) SnapToRank();
     }
 
-    public bool TryMove(CSkillDataSO skill)
+    public bool TryMove(CSkillDataSO skill, float duration = 0.0f)
     {
         if (_enemy == null || skill == null || _enemy.IsDead || !_enemy.isActiveAndEnabled
             || _enemy.ActionState != EEntityActionState.Executing || _enemy.TokenManager.HasToken(EEffectType.Immobilize)
             || _members == null || _slots == null || _slots.Length != 4) return false;
         CEnemySkillRule rule = _enemy.EnemyData.GetSkillRule(skill);
         if (rule == null || rule.RankMovement == 0) return false;
-        return TryMoveOffset(rule.RankMovement, -1);
+        return TryMoveOffset(rule.RankMovement, -1, duration, duration > 0.0f, countActors: true);
     }
 
-    private bool TryMoveToRank(ERank rank)
+    private bool TryMoveToRank(ERank rank, CEnemy largeNeighbor)
     {
         _movedMembers.Clear();
         if (_enemy == null || _enemy.IsDead || !_enemy.isActiveAndEnabled) return false;
         if (_enemy.CurrentRank == rank) return true;
         int destination = GetIndex(rank);
         if (destination < 0 || destination + _enemy.EnemyData.FormationSize > 4) return false;
-        return TryMoveOffset(destination - GetIndex(_enemy.CurrentRank), destination);
+        int movement = destination - GetIndex(_enemy.CurrentRank);
+        if (largeNeighbor != null)
+        {
+            // 넉백 한 칸으로 대형 적 한 마리를 넘긴 뒤 실제 열을 맞춤
+            destination += movement * (largeNeighbor.EnemyData.FormationSize - 1);
+        }
+        return TryMoveOffset(movement, destination, 0.18f, false, countActors: largeNeighbor != null);
     }
 
     private bool HasValidSlots()
@@ -216,14 +311,35 @@ public class CEnemyFormationMovement : MonoBehaviour
         return true;
     }
 
-    private bool TryMoveOffset(int movement, int requiredDestination)
+    private bool TryMoveOffset(int movement, int requiredDestination, float duration, bool yieldToExternalPosition,
+        bool countActors)
     {
         _movedMembers.Clear();
+        if (!TryPlanMove(movement, countActors, out Dictionary<CEnemy, int> positions)
+            || (requiredDestination >= 0 && positions[_enemy] != requiredDestination)) return false;
+        foreach (KeyValuePair<CEnemy, int> pair in positions)
+        {
+            if (GetIndex(pair.Key.CurrentRank) == pair.Value) continue;
+            pair.Key.SetRankImmediate((ERank)(1 << pair.Value));
+            if (duration > 0.0f) pair.Key.FormationMovement.MoveToRank(duration, yieldToExternalPosition);
+            _movedMembers.Add(pair.Key);
+        }
+        return true;
+    }
+
+    public bool CanMoveOffset(int movement)
+    {
+        return TryPlanMove(movement, true, out _);
+    }
+
+    private bool TryPlanMove(int movement, bool countActors, out Dictionary<CEnemy, int> positions)
+    {
+        positions = null;
         if (!IsConfigured || movement == 0 || _enemy == null || _enemy.EnemyData == null
             || _enemy.IsDead || !_enemy.isActiveAndEnabled
             || _enemy.TokenManager.HasToken(EEffectType.Immobilize)) return false;
 
-        Dictionary<CEnemy, int> positions = new Dictionary<CEnemy, int>();
+        positions = new Dictionary<CEnemy, int>();
         CEnemy[] occupied = new CEnemy[4];
         for (int i = 0; i < _members.Count; i++)
         {
@@ -254,7 +370,8 @@ public class CEnemyFormationMovement : MonoBehaviour
             if (next < 0 || next >= 4) break;
             CEnemy displaced = occupied[next];
             int distance = displaced != null ? displaced.EnemyData.FormationSize : 1;
-            if (distance > remaining) break;
+            int movementCost = countActors ? 1 : distance;
+            if (movementCost > remaining) break;
             if (displaced != null && (displaced.IsDead || displaced.IsCharacterPresentationBusy || displaced.IsActionActive
                 || displaced.FormationMovement == null || displaced.FormationMovement.IsAnimating
                 || displaced.TokenManager.HasToken(EEffectType.Immobilize))) break;
@@ -281,18 +398,9 @@ public class CEnemyFormationMovement : MonoBehaviour
             {
                 occupied[rank] = _enemy;
             }
-            remaining -= distance;
+            remaining -= movementCost;
         }
-        if (positions[_enemy] == original) return false;
-        if (requiredDestination >= 0 && positions[_enemy] != requiredDestination) return false;
-        foreach (KeyValuePair<CEnemy, int> pair in positions)
-        {
-            if (GetIndex(pair.Key.CurrentRank) == pair.Value) continue;
-            pair.Key.SetRankImmediate((ERank)(1 << pair.Value));
-            pair.Key.FormationMovement.MoveToRank();
-            _movedMembers.Add(pair.Key);
-        }
-        return true;
+        return positions[_enemy] != original;
     }
 
     private int GetIndex(ERank rank)

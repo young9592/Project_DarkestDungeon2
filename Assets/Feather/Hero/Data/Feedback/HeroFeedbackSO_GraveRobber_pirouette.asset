@@ -15,6 +15,7 @@ MonoBehaviour:
   _launch: {fileID: 5534466609785973959, guid: 8b806cd5e4730d6449f4c7bccd874482, type: 3}
   _projectile: {fileID: 0}
   _impact: {fileID: 5534466609785973959, guid: 8b806cd5e4730d6449f4c7bccd874482, type: 3}
+  _playGroupImpactOnRelease: 0
   _releaseTime: 0.1
   _shotCount: 1
   _shotSpacing: 0.15
@@ -22,3 +23,8 @@ MonoBehaviour:
   _launchSound: {fileID: 0}
   _impactSound: {fileID: 0}
   _volume: 0.5
+  _preparationSound: {fileID: 8300000, guid: 3198c6b76d6bec34b94c87df69abe8b0, type: 3}
+  _preparationLoopSound: {fileID: 0}
+  _useSound: {fileID: 8300000, guid: 2232f87ee4e226342963fe964c264e4f, type: 3}
+  _missSound: {fileID: 8300000, guid: 1d9069243a60e354987d6f8859858368, type: 3}
+  _returnSound: {fileID: 8300000, guid: 5e68ba77a73b381409b30dca15b4c106, type: 3}

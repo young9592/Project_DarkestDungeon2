@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_ManAtArms_CourageousAbandon_M
+  m_EditorClassIdentifier: 
+  _skillName: "\uACFC\uAC10\uD55C \uB9F9\uACF5"
+  _skillIcon: {fileID: 21300000, guid: 04ee4ccec23976c4c94ad5cfa6aba2d0, type: 3}
+  _useableRank: 3
+  _targetableRank: 3
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 54b71be46070494eb776c3f7f6b1298c, type: 2}
+  - {fileID: 11400000, guid: 0d00428a28e39ab42997fc341d0ccfcd, type: 2}
+  _critChance: 20
+  _mainDescription: "\ud53c\ud574: 8-10 \uce58\uba85\ud0c0: 20%\n\n<sprite=20> \uc18c\ubaa8 \uc2dc \ud53c\ud574\ub7c9 +50%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color> <sprite=23> , \uC81C\uAC70
+    : <sprite=20>"
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 921ac2e2eb4dc1349afc9b76785b9019, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_ManAtArms_CourageousAbandon
+  _endState: Base Layer.OriginalRecover_ManAtArms_CourageousAbandon
+  _presentationNote: 
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_bash
+  _selectionHoldState: Base Layer.SourceReady_bash
+  _executionStartState: Base Layer.OriginalAction_ManAtArms_CourageousAbandon
+  _feedback: {fileID: 11400000, guid: fed0aef3142320b458c2bcbd6e1028e1, type: 2}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CHeroAnimation : MonoBehaviour
 {
-    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown }
+    private enum EAnimationState { Idle, Selecting, Attack, Hit, Meltdown, Resolute, Riposte }
 
     [Header("Animation")]
     [SerializeField] private Animator _animator;
@@ -12,6 +12,13 @@ public class CHeroAnimation : MonoBehaviour
 
     [SerializeField, Range(0.0f, 0.3f)] private float _returnBlendDuration = 0.12f;
 
+    [Header("Riposte")]
+    [SerializeField] private string _riposteActionState;
+    [SerializeField] private string _riposteRecoveryState;
+
+    private bool _riposteQueued;
+    private int _riposteActionHash;
+    private int _riposteRecoveryHash;
     private Renderer[] _skillWeapons;
     private bool[] _previousWeaponVisibility;
     private bool _skillWeaponsChanged;
@@ -19,6 +26,7 @@ public class CHeroAnimation : MonoBehaviour
     private CPlayer _hero;
     private CHeroSkillFeedback _feedback;
     private static readonly int _meltdownHash = Animator.StringToHash("Base Layer.Meltdown");
+    private static readonly int _resoluteHash = Animator.StringToHash("Base Layer.Resolute");
     private bool _returningToIdle;
     private EAnimationState _state;
     private bool _needsIdle;
@@ -38,6 +46,7 @@ public class CHeroAnimation : MonoBehaviour
     public event Action OnMeltdownCompleted;
     public event Action OnMeltdownInterrupted;
 
+    public event Action OnRiposteQueued;
     public event Action OnAttackStarted;
     public event Action OnAttackCompleted;
     public event Action OnAttackInterrupted;
@@ -45,9 +54,15 @@ public class CHeroAnimation : MonoBehaviour
     public event Action OnHitCompleted;
     public event Action OnHitInterrupted;
 
+    public bool IsRiposting
+    {
+        get { return _riposteQueued || _state == EAnimationState.Riposte; }
+    }
+
     public bool IsBusy
     {
-        get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued; }
+        get { return IsAttacking || IsHitReacting || IsMeltingDown || _meltdownQueued
+            || _state == EAnimationState.Resolute || _state == EAnimationState.Riposte || _riposteQueued; }
     }
     public bool IsMeltingDown
     {
@@ -107,16 +122,31 @@ public class CHeroAnimation : MonoBehaviour
         if (interrupted) OnMeltdownInterrupted?.Invoke();
     }
 
+    internal void PlayResolute()
+    {
+        if (!IsReady || IsBusy || !_animator.HasState(0, _resoluteHash)) return;
+        if (IsSelecting) CancelSelection();
+        _needsIdle = false;
+        _state = EAnimationState.Resolute;
+        _animator.Play(_resoluteHash, 0, 0.0f);
+    }
+
+    internal void EndResolute()
+    {
+        if (_state == EAnimationState.Resolute) PlayIdle();
+    }
+
     public bool TryPlaySelection(CSkillDataSO skill)
     {
         if (!CanPlayAttack(skill)) return false;
+        if (IsTemporarySkill(skill) && (!IsReady || !HasAttackStates(skill))) return true;
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         if (heroSkill == null || string.IsNullOrEmpty(heroSkill.SelectionStartState)
             || string.IsNullOrEmpty(heroSkill.SelectionHoldState)) return true;
 
         int startHash = Animator.StringToHash(heroSkill.SelectionStartState);
         int holdHash = Animator.StringToHash(heroSkill.SelectionHoldState);
-        if (!_animator.HasState(0, startHash) || !_animator.HasState(0, holdHash)) return false;
+        if (!_animator.HasState(0, startHash) || !_animator.HasState(0, holdHash)) return IsTemporarySkill(skill);
         if (IsSelecting && _selectionSkill == skill) return true;
 
         UpdateSkillWeapons(skill);
@@ -138,6 +168,15 @@ public class CHeroAnimation : MonoBehaviour
     public bool TryPlayAttack(CSkillDataSO skill)
     {
         if (!CanPlayAttack(skill)) return false;
+        if (IsTemporarySkill(skill) && (!IsReady || !HasAttackStates(skill)))
+        {
+            PlayIdle();
+            _waitForSelection = false;
+            _selectionSkill = null;
+            OnAttackStarted?.Invoke();
+            OnAttackCompleted?.Invoke();
+            return true;
+        }
         bool prepared = IsSelecting && _selectionSkill == skill;
         UpdateSkillWeapons(skill);
         _needsIdle = false;
@@ -162,6 +201,22 @@ public class CHeroAnimation : MonoBehaviour
         return true;
     }
 
+    public bool TryQueueRiposte()
+    {
+        if (!IsReady || _riposteQueued || _hero == null || _hero.IsDead || _hero.IsDeathPresented
+            || (IsBusy && !IsHitReacting) || string.IsNullOrEmpty(_riposteActionState)
+            || string.IsNullOrEmpty(_riposteRecoveryState)) return false;
+
+        _riposteActionHash = Animator.StringToHash(_riposteActionState);
+        _riposteRecoveryHash = Animator.StringToHash(_riposteRecoveryState);
+        if (!_animator.HasState(0, _riposteActionHash) || !_animator.HasState(0, _riposteRecoveryHash)) return false;
+
+        if (IsSelecting) CancelSelection();
+        _riposteQueued = true;
+        OnRiposteQueued?.Invoke();
+        return true;
+    }
+
     public bool TryPlayHit()
     {
         if (!CanPlayHit()) return false;
@@ -177,8 +232,14 @@ public class CHeroAnimation : MonoBehaviour
 
     public bool CanPlayAttack(CSkillDataSO skill)
     {
-        if (!IsReady || IsBusy || skill == null || _attackSkills == null
-            || !_attackSkills.Contains(CHeroSkillSO.GetBaseSkill(skill))) return false;
+        if (IsBusy || skill == null) return false;
+        if (IsTemporarySkill(skill)) return true;
+        return IsReady && _attackSkills != null && _attackSkills.Contains(CHeroSkillSO.GetBaseSkill(skill))
+            && HasAttackStates(skill);
+    }
+
+    private bool HasAttackStates(CSkillDataSO skill)
+    {
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
         if (heroSkill == null) return _animator.HasState(0, _attackHash) && _animator.HasState(0, _attackEndHash);
         if (string.IsNullOrEmpty(heroSkill.StartState) || string.IsNullOrEmpty(heroSkill.EndState)) return false;
@@ -189,6 +250,17 @@ public class CHeroAnimation : MonoBehaviour
         return startHash != _idleHash && startHash != _hitHash && endHash != _idleHash && endHash != _hitEndHash
             && executionHash != _idleHash && executionHash != _hitHash && executionHash != _hitEndHash
             && _animator.HasState(0, startHash) && _animator.HasState(0, endHash) && _animator.HasState(0, executionHash);
+    }
+
+    private bool IsTemporarySkill(CSkillDataSO skill)
+    {
+        if (_hero == null || !_hero.HasTemporarySkillLoadout || _hero.EquippedSkills == null) return false;
+
+        for (int i = 0; i < _hero.EquippedSkills.Count; i++)
+        {
+            if (_hero.EquippedSkills[i] == skill) return true;
+        }
+        return false;
     }
 
     public bool CanPlayHit()
@@ -227,6 +299,14 @@ public class CHeroAnimation : MonoBehaviour
         if (_needsIdle && IsReady) PlayIdle();
         if (_state == EAnimationState.Idle)
         {
+            if (_riposteQueued && !_meltdownQueued)
+            {
+                _riposteQueued = false;
+                if (!IsReady || _hero == null || _hero.IsDead || _hero.IsDeathPresented) return;
+                _state = EAnimationState.Riposte;
+                _animator.Play(_riposteActionHash, 0, 0.0f);
+                return;
+            }
             if (!_meltdownQueued) return;
             if (!IsReady || _hero == null || _hero.IsDead || _hero.IsDeathPresented)
             {
@@ -248,6 +328,15 @@ public class CHeroAnimation : MonoBehaviour
             return;
         }
         AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+        if (_state == EAnimationState.Riposte)
+        {
+            if (_animator.IsInTransition(0)) return;
+            if (info.fullPathHash == _riposteActionHash && info.normalizedTime >= 1.0f)
+                _animator.Play(_riposteRecoveryHash, 0, 0.0f);
+            else if (info.fullPathHash == _idleHash
+                || (info.fullPathHash == _riposteRecoveryHash && info.normalizedTime >= 1.0f)) PlayIdle();
+            return;
+        }
         if (IsMeltingDown)
         {
             if (info.fullPathHash == _idleHash && !_animator.IsInTransition(0))
@@ -255,6 +344,14 @@ public class CHeroAnimation : MonoBehaviour
                 _state = EAnimationState.Idle;
                 _needsIdle = false;
                 OnMeltdownCompleted?.Invoke();
+            }
+            return;
+        }
+        if (_state == EAnimationState.Resolute)
+        {
+            if (info.fullPathHash == _idleHash && !_animator.IsInTransition(0))
+            {
+                _state = EAnimationState.Idle;
             }
             return;
         }
@@ -305,6 +402,7 @@ public class CHeroAnimation : MonoBehaviour
 
     public void CancelPlayback()
     {
+        _riposteQueued = false;
         EAnimationState interrupted = _state;
         bool meltdownInterrupted = _meltdownQueued || IsMeltingDown;
         _meltdownQueued = false;
@@ -316,6 +414,7 @@ public class CHeroAnimation : MonoBehaviour
 
     public void CompleteHitForDeath()
     {
+        _riposteQueued = false;
         if (!IsHitReacting)
         {
             return;

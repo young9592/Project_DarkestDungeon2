@@ -1,22 +1,15 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
-#region Build용 임시 SceneManager
-/*
-빌드용 임시 SceneManager입니다.
-
- */
-#endregion
-
-
 public class CSceneFlowManager : MonoBehaviour
 {
+
     #region Inspector
     [Header("Catalog")]
     [SerializeField] private CSceneCatalog _catalog;
@@ -25,7 +18,12 @@ public class CSceneFlowManager : MonoBehaviour
     [SerializeField] private GameObject _loadPanel;
 
     [Header("Progress Bar")]
+    [SerializeField] private GameObject _progressPanel;
     [SerializeField] private Image _progressBar;
+    [SerializeField] private TextMeshProUGUI _loadingText;
+
+    [Header("Transition")]
+    [SerializeField] private CSceneTransition _transition;
 
     [Header("Option")]
     [SerializeField] private bool _enableKey = true;
@@ -35,7 +33,24 @@ public class CSceneFlowManager : MonoBehaviour
     #region Field
     private static CSceneFlowManager _instance;
     private int _cursorIndex = 0;
-    private bool _isLoading = false;
+    private Coroutine _fadeCoroutine;
+    private static bool _isLoading = false;
+    // 씬 로딩을 통해 전달해야하는 데이터
+    private ESceneId _returnFieldSceneId;
+    private GameObject _returnStageCoach;
+    private CEnemyGroupSO _encounterEnemyGroup = null;
+    private CBaricadeEncounter.EChapterBoss _chapterBoss;
+    private string _encounterObjectId = null;
+    private ESceneId _addtiveSceneId = ESceneId.Combat_Valley;
+
+    #endregion
+
+    #region Property
+    public static CSceneFlowManager Instance => _instance;
+    public bool IsLoading => _isLoading;
+    public ESceneId ReturnFieldSceneId => _returnFieldSceneId;
+    public CEnemyGroupSO EncounterEnemyGroup => _encounterEnemyGroup;
+    public string EncounterObjectID => _encounterObjectId;
 
     #endregion
 
@@ -63,6 +78,8 @@ public class CSceneFlowManager : MonoBehaviour
         _catalog.BuildMaps();
 
         SyncCursorToCurrentScene();
+
+        _instance = this;
     }
 
     private void OnDestroy()
@@ -144,12 +161,24 @@ public class CSceneFlowManager : MonoBehaviour
 
         _isLoading = true;
 
+        _catalog.TryGetSceneId(SceneManager.GetActiveScene().name, out ESceneId prevId);
         _loadPanel.SetActive(true);
         yield return null;
 
         CPrint.Log($"id = {id} / sceneName = {sceneName}");
 
+        _fadeCoroutine = StartCoroutine(_transition.CoFadeOut(prevId, id, _loadPanel));
+        yield return _fadeCoroutine;
+
+        // 사전작업
+        PrevLoadSetting(prevId, id);
+
+        // TODO : 횃불 로딩창 변경필요
+        _loadingText.text = "로딩중...";
+        _progressPanel.SetActive(true);
+
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        CombatBackgroundLoad(prevId, out AsyncOperation op2);
 
         while (op.progress < 0.9f)
         {
@@ -157,12 +186,101 @@ public class CSceneFlowManager : MonoBehaviour
             yield return null;
         }
 
-        _progressBar.fillAmount = op.progress;
-        _loadPanel.SetActive(false);
+        while (op2 != null && op2.progress < 0.9f)
+        {
+            _progressBar.fillAmount = op2.progress;
+            yield return null;
+        }
+
+        // TODO : 횃불 로딩창 변경필요
+        _progressBar.fillAmount = (op2 == null) ? op.progress : op2.progress;
+        _progressPanel.SetActive(false);
+        _loadingText.text = "";
 
         SyncCursorToCurrentScene();
 
+        yield return new WaitUntil(() => op.isDone);
+
+        if (id == ESceneId.Battle)
+        {
+            CCombatManager combatManager = FindObjectOfType<CCombatManager>();
+
+            yield return new WaitUntil(() => combatManager.BattleReady);
+            _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
+            yield return _fadeCoroutine;
+        }
+        else
+        {
+            _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
+            yield return _fadeCoroutine;
+        }
+
+        _loadPanel.SetActive(false);
+        NextLoadSetting(prevId, id);
         _isLoading = false;
+    }
+
+
+    private void CombatBackgroundLoad(ESceneId prevId, out AsyncOperation op)
+    {
+
+        if (prevId == ESceneId.Valley)
+        {
+            _catalog.TryGetSceneName(ESceneId.Combat_Valley, out string sceneName);
+            op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            _addtiveSceneId = ESceneId.Combat_Valley;
+            return;
+        }
+        else if (prevId == ESceneId.Sprawl && _chapterBoss == CBaricadeEncounter.EChapterBoss.None)
+        {
+            _catalog.TryGetSceneName(ESceneId.Combat_Sprawl, out string sceneName);
+            op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            _addtiveSceneId = ESceneId.Combat_Sprawl;
+            return;
+        }
+        else if (prevId == ESceneId.Sprawl && _chapterBoss == CBaricadeEncounter.EChapterBoss.Chapter01)
+        {
+            // TODO : 가능하면 보스 전투씬도 추가
+            _catalog.TryGetSceneName(ESceneId.Combat_Sprawl, out string sceneName);
+            op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            _addtiveSceneId = ESceneId.Combat_Sprawl;
+            return;
+        }
+        else if (prevId == ESceneId.Battle)
+        {
+            _catalog.TryGetSceneName(_addtiveSceneId, out string sceneName);
+            SceneManager.UnloadSceneAsync(sceneName);
+        }
+
+        op = null;
+    }
+    private void PrevLoadSetting(ESceneId prevId, ESceneId nextId)
+    {
+        // 마차 정지
+        if (nextId == ESceneId.Battle)
+        {
+            _returnStageCoach.SetActive(false);
+        }
+    }
+
+    private void NextLoadSetting(ESceneId prevId, ESceneId nextId)
+    {
+        // 게임오버
+        if (prevId == ESceneId.Battle && nextId == ESceneId.Title)
+        {
+            Destroy(_returnStageCoach);
+            _encounterEnemyGroup = null;
+            _encounterEnemyGroup = null;
+            _encounterObjectId = null;
+            CBaricadeEncounter.ResetDestroyBaricade();
+        }
+
+        // 마차 불러오기
+        if (prevId == ESceneId.Battle && (nextId == ESceneId.Valley || nextId == ESceneId.Sprawl))
+        {
+            ReturnField();
+        }
+
     }
 
     private void ReloadScene()
@@ -178,40 +296,58 @@ public class CSceneFlowManager : MonoBehaviour
         LoadScene(id);
     }
 
-    // 일균님이랑 키가 겹칠수 있기 때문에 qwertyu로 배정
     private void HandleHotkeys()
     {
-        if (Keyboard.current.qKey.isPressed)
+        if (!_enableKey)
         {
-            LoadScene(ESceneId.Title);
+            return;
         }
-        if (Keyboard.current.wKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Park);
-        }
-        if (Keyboard.current.eKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Sin_Chapter);
-        }
-        if (Keyboard.current.rKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Sin_TheCrossroads);
-        }
-        if (Keyboard.current.tKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Go);
-        }
-        if (Keyboard.current.yKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Lee);
-        }
-        if (Keyboard.current.uKey.isPressed)
-        {
-            LoadScene(ESceneId.Temp_Jo);
-        }
+
         if (Keyboard.current.enterKey.isPressed)
         {
             ReloadScene();
         }
     }
+
+
+    public void SetEncounterGroup(out CEnemyGroupSO enemyGroupSO)
+    {
+        enemyGroupSO = _encounterEnemyGroup;
+
+        // 데이터 성공적 전달
+        if (enemyGroupSO != null)
+        {
+            _encounterEnemyGroup = null;
+        }
+    }
+
+    public void GetBarigateData(ESceneId loadScene, string id, CEnemyGroupSO enemyGroupSO, CBaricadeEncounter.EChapterBoss isBoss)
+    {
+        _returnFieldSceneId = loadScene;
+        _encounterObjectId = id;
+        _encounterEnemyGroup = enemyGroupSO;
+        _chapterBoss = isBoss;
+
+        if (_encounterEnemyGroup == null)
+        {
+            CPrint.Error("적 그룹 데이터 전달받기 실패.");
+        }
+
+        CBaricadeEncounter.AddDestroyBaricade(_encounterObjectId);
+    }
+
+    public void GetStageCoach(Collider other)
+    {
+        _returnStageCoach = other.transform.root.gameObject;
+
+        DontDestroyOnLoad(_returnStageCoach);
+    }
+
+    public void ReturnField()
+    {
+        SceneManager.MoveGameObjectToScene(_returnStageCoach, SceneManager.GetActiveScene());
+        _returnStageCoach.SetActive(true);
+    }
+
+
 }

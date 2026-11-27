@@ -12196,6 +12196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _partyTest: {fileID: 2119557192}
   _preparation: {fileID: 2119557194}
+  _randomGroupSource: {fileID: 1497308003}
   _selectionRoot: {fileID: 1368610713}
   _groupButtons:
   - {fileID: 198002881}
@@ -14005,6 +14006,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 50dd5b8a68d8fa74bbb1752d3c4d147a, type: 2}
   - {fileID: 11400000, guid: f4840f5f84934a32816eeaf9120f8289, type: 2}
   - {fileID: 11400000, guid: 49e5cdc58c954a18afebd70f87f247e8, type: 2}
+  - {fileID: 11400000, guid: a6795a6b337d4fe5a0305c36efcced23, type: 2}
+  - {fileID: 11400000, guid: b538ed2ff4b64974a3a06017a65dfe77, type: 2}
   _otherPanels:
   - {fileID: 745037724}
   - {fileID: 1497308003}
@@ -16503,6 +16506,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f64655964565a2647a476971998790af, type: 2}
   - {fileID: 11400000, guid: f4840f5f84934a32816eeaf9120f8289, type: 2}
   - {fileID: 11400000, guid: 49e5cdc58c954a18afebd70f87f247e8, type: 2}
+  - {fileID: 11400000, guid: a6795a6b337d4fe5a0305c36efcced23, type: 2}
+  - {fileID: 11400000, guid: b538ed2ff4b64974a3a06017a65dfe77, type: 2}
+  - {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
   _spawnRoot: {fileID: 703342397}
   _rankSlots:
   - {fileID: 1348785775}
@@ -17161,6 +17167,12 @@ MonoBehaviour:
   - {fileID: 331185383}
   - {fileID: 1301238025}
   _heroTest: {fileID: 745037724}
+  _randomEnemyPrefabs:
+  - {fileID: 1462110948690307370, guid: 7fb7f42e50543d74caf9f009b7997154, type: 3}
+  - {fileID: 2481291059542486020, guid: 7070c8cad223112408e443156453e4c0, type: 3}
+  - {fileID: 2052442247830175294, guid: d01a15099c0607f4f955eafa6e128fae, type: 3}
+  - {fileID: 4091325714474303996, guid: 53cfd4189e65b254faea99e5f7b07ddb, type: 3}
+  - {fileID: 7106212797590461559, guid: cd44d6c5c3510e243b4f94b75380d289, type: 3}
 --- !u!4 &1497308004
 Transform:
   m_ObjectHideFlags: 0
@@ -22053,6 +22065,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f4501cb5470c50a49bafe585a719b0c4, type: 2}
   - {fileID: 11400000, guid: f4840f5f84934a32816eeaf9120f8289, type: 2}
   - {fileID: 11400000, guid: 49e5cdc58c954a18afebd70f87f247e8, type: 2}
+  - {fileID: 11400000, guid: a6795a6b337d4fe5a0305c36efcced23, type: 2}
+  - {fileID: 11400000, guid: b538ed2ff4b64974a3a06017a65dfe77, type: 2}
+  - {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
+  - {fileID: 11400000, guid: 63b0045b6ceadef44a3b0f2e5296cbe0, type: 2}
+  - {fileID: 11400000, guid: b4852ee76976c0e4d97148451c0fb1f8, type: 2}
   _otherPanels:
   - {fileID: 1241616898}
   - {fileID: 745037724}

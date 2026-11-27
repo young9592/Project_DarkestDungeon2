@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +6,12 @@ public class CEnemy : CEntity
 {
     [Header("Data")]
     [SerializeField] private CEnemyDataSO _enemyData;
+    private CEnemyDataSO _initialEnemyData;
+    private CFanaticIgnition _ignition;
+    private CSkillDataSO _executingIgnition;
     [Header("Animation")]
     [SerializeField] private CEnemyAttackAnimation _attackAnimation;
+    [SerializeField] private CSkillDataSO _configuredRiposteSkill;
     [Header("Runtime Status")]
     [SerializeField] private int _currentHp;
     private int _remainingDeathArmor;
@@ -15,9 +19,11 @@ public class CEnemy : CEntity
     private bool _isInitialized;
     private readonly List<CEffect> _activeStatusEffects = new List<CEffect>();
     private bool _isStartingTurn;
+    public bool IsStartingTurn { get { return _isStartingTurn; } }
     private readonly CEnemySkillCooldownState _skillCooldowns = new CEnemySkillCooldownState();
     private readonly List<CEntity> _requestedTargets = new List<CEntity>();
     private CEnemyFormationMovement _formationMovement;
+    private CDenialLock _denialLock;
     private CSkillDataSO _movementSkill;
     private CSkillDataSO _selfTokenSkill;
     public CEnemyFormationMovement FormationMovement
@@ -41,10 +47,43 @@ public class CEnemy : CEntity
         get { return _deathPresentation != null && _deathPresentation.IsConfirmed; }
     }
     private bool _isRequestingSkill;
+    public event Action<EEffectType> OnStatusEffectApplied;
+    public event Action OnStatusEffectsCured;
+    public event Action<EEffectType> OnStatusEffectTicked;
     public event Action<CEnemy, CEntity, CSkillDataSO> OnSkillActionRequested;
     public CEnemyDataSO EnemyData
     {
         get { return _enemyData; }
+    }
+
+    public CSkillDataSO AvailableIgnition
+    {
+        get { return _ignition != null ? _ignition.AvailableIgnition : null; }
+    }
+
+    internal CSkillDataSO AvailableDenialOpening
+    {
+        get
+        {
+            if (_denialLock == null) return null;
+            if (ActionState == EEntityActionState.Executing && _denialLock.IsOpeningSkill(ActionSkill))
+                return ActionSkill;
+            return _denialLock.AvailableOpeningSkill;
+        }
+    }
+
+    public bool IsAllySkill(CSkillDataSO skill)
+    {
+        return _ignition != null && _ignition.IsAllySkill(skill);
+    }
+
+    public bool IsSkillTargetAvailable(CSkillDataSO skill, CEntity target)
+    {
+        if (skill != null && skill == AvailableIgnition) return target == this;
+        if (IsAllySkill(skill))
+            return target is CEnemy ally && ally != this && ally.isActiveAndEnabled && !ally.IsDead
+                && !ally.IsDeathPresented && CSkillRankUtility.IsSingleRank(ally.CurrentRank);
+        return CEnemyTargetFilter.IsAvailable(target);
     }
 
     public CEnemyAttackAnimation AttackAnimation
@@ -52,7 +91,7 @@ public class CEnemy : CEntity
         get { return _attackAnimation; }
     }
 
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _currentHp; }
     }
@@ -78,7 +117,10 @@ public class CEnemy : CEntity
 
     protected override void Awake()
     {
+        _initialEnemyData = _enemyData;
+        _ignition = GetComponent<CFanaticIgnition>();
         base.Awake();
+        _denialLock = GetComponent<CDenialLock>();
         _formationMovement = GetComponent<CEnemyFormationMovement>();
         if (_formationMovement == null) _formationMovement = gameObject.AddComponent<CEnemyFormationMovement>();
         _deathPresentation = GetComponent<CEntityDeathPresentation>();
@@ -259,6 +301,18 @@ public class CEnemy : CEntity
         {
             CancelAction();
         }
+
+        if (ActionState == EEntityActionState.Executing && _movementSkill != null
+            && _formationMovement != null && _attackAnimation.IsAttacking)
+        {
+            CEnemySkillRule rule = _enemyData.GetSkillRule(_movementSkill);
+            if (rule != null && rule.AttackMoveDuration > 0.0f)
+            {
+                CSkillDataSO movementSkill = _movementSkill;
+                _movementSkill = null;
+                _formationMovement.TryMove(movementSkill, rule.AttackMoveDuration);
+            }
+        }
     }
 
     protected override bool CanBeginAction()
@@ -275,20 +329,32 @@ public class CEnemy : CEntity
 
     protected override bool CanExecuteRequestedAction()
     {
+        if (ActionSkill != null && ActionSkill == AvailableIgnition) return !_isDead && ActionTarget == this;
         if (_isDead || ActionSkill == null
-            || !GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
-            || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0) return false;
+            || (ActionSkill != AvailableDenialOpening &&
+                (!GetSkillCandidates(ActionTarget.CurrentRank).Contains(ActionSkill)
+                 || CEnemySkillSelector.GetSelectionWeight(_enemyData, ActionSkill, _currentHp) <= 0))) return false;
 
         CEnemyAI ai = GetComponent<CEnemyAI>();
-        if (ai != null && ai.PlannedSkill == ActionSkill && !ai.IsPlanValid()) return false;
+        if (ai != null && ai.PlannedSkill == ActionSkill)
+        {
+            ai.RefreshRequestedGroupTargets();
+            if (!ai.IsPlanValid()) return false;
+        }
 
         for (int i = 0; i < _requestedTargets.Count; i++)
         {
             CEntity target = _requestedTargets[i];
-            if (!CEnemyTargetFilter.IsAvailable(target)
+            if (!IsSkillTargetAvailable(ActionSkill, target)
                 || !CSkillRankUtility.CanTargetSkill(ActionSkill, target.CurrentRank)) return false;
         }
         return true;
+    }
+
+    internal void UpdateRequestedGroupTargets(IReadOnlyList<CEntity> targets)
+    {
+        _requestedTargets.Clear();
+        _requestedTargets.AddRange(targets);
     }
 
     protected override bool TryStartActionPresentation()
@@ -296,7 +362,8 @@ public class CEnemy : CEntity
         if (_requestedTargets.Count == 0) _requestedTargets.Add(ActionTarget);
         bool started = _actionExecution != null && _actionExecution.TryExecute(ActionSkill,
             _requestedTargets, StartAttackPresentation);
-        if (started && !ActionSkill.IsGroupTarget) ActionTarget.TokenManager.ConsumeToken(EEffectType.Taunt);
+        if (started && !ActionSkill.IsGroupTarget && ActionTarget is CPlayer)
+            ActionTarget.TokenManager.ConsumeToken(EEffectType.Taunt);
         return started;
     }
 
@@ -307,6 +374,19 @@ public class CEnemy : CEntity
         ApplySkillSelfToken(selfTokenSkill);
         _requestedTargets.Clear();
         _movementSkill = null;
+        if (_executingIgnition != null)
+        {
+            CEnemyDataSO ignitedData = _ignition.TryIgnite(_executingIgnition);
+            _executingIgnition = null;
+            if (ignitedData != null)
+            {
+                int lostHealth = _enemyData.MaxHealth - _currentHp;
+                _enemyData = ignitedData;
+                if (_ignition.IgnitedRiposteSkill != null) SetRiposteSkill(_ignition.IgnitedRiposteSkill);
+                _currentHp = Mathf.Max(1, _enemyData.MaxHealth - lostHealth);
+                SetExtraAction(true);
+            }
+        }
     }
 
     private bool StartAttackPresentation()
@@ -314,11 +394,19 @@ public class CEnemy : CEntity
         if (!TryPlayAttack(ActionSkill)) return false;
         _movementSkill = ActionSkill;
         _selfTokenSkill = ActionSkill;
+        if (_denialLock != null && _denialLock.IsOpeningSkill(ActionSkill)) _denialLock.ConsumeOpeningSkill();
+        if (ActionSkill == AvailableIgnition)
+        {
+            _executingIgnition = ActionSkill;
+            _ignition.PlayIgnitionEffects();
+        }
         return true;
     }
 
     protected override void OnActionCancelled()
     {
+        if (_executingIgnition != null) _ignition.StopIgnitionEffects();
+        _executingIgnition = null;
         _selfTokenSkill = null;
         _movementSkill = null;
         if (_formationMovement != null)
@@ -403,7 +491,7 @@ public class CEnemy : CEntity
 
     public override bool CanRequestSkillAction(CEntity target, ERank targetRank)
     {
-        if (!CanSendRequest(target))
+        if (target == this || !CanSendRequest(target))
         {
             return false;
         }
@@ -422,7 +510,11 @@ public class CEnemy : CEntity
 
     public bool CanRequestSkillAction(CEntity target, ERank targetRank, CSkillDataSO skill)
     {
-        return CanSendRequest(target)
+        if (skill != null && skill == AvailableIgnition) return target == this && CanSendRequest(target);
+        if (skill != null && skill == AvailableDenialOpening)
+            return CEnemyTargetFilter.IsAvailable(target) && CanSendRequest(target)
+                && CSkillRankUtility.CanTargetSkill(skill, targetRank);
+        return target != this && CanSendRequest(target)
             && skill != null
             && GetSkillCandidates(targetRank).Contains(skill)
             && CEnemySkillSelector.GetSelectionWeight(_enemyData, skill, _currentHp) > 0;
@@ -435,7 +527,6 @@ public class CEnemy : CEntity
             && !_isRequestingSkill
             && CanIssueActionRequest
             && target != null
-            && target != this
             && (!(target is CPlayer player) || !player.IsDeathPresented)
             && target.isActiveAndEnabled
             && _attackAnimation != null
@@ -465,7 +556,7 @@ public class CEnemy : CEntity
         for (int i = 0; i < targets.Count; i++)
         {
             CEntity target = targets[i];
-            if (!CEnemyTargetFilter.IsAvailable(target)
+            if (!IsSkillTargetAvailable(skill, target)
                 || !CSkillRankUtility.CanTargetSkill(skill, target.CurrentRank)) return false;
             if (target == primaryTarget)
             {
@@ -512,23 +603,54 @@ public class CEnemy : CEntity
         }
 
         List<CSkillDataSO> candidates = GetSkillCandidates();
-        if (!candidates.Contains(skill))
+        if (skill != AvailableIgnition && skill != AvailableDenialOpening && !candidates.Contains(skill))
         {
             return false;
         }
 
         // 현재 열에 맞는 스킬 연출 요청
-        if (!_attackAnimation.TryPlayAttack(skill)) return false;
+        CSkillDataSO animationSkill = skill;
+        if (skill == AvailableDenialOpening && !_attackAnimation.CanPlayAttack(skill))
+            animationSkill = _denialLock.UniqueSkill;
+        if (!_attackAnimation.TryPlayAttack(animationSkill)) return false;
         _skillCooldowns.StartCooldown(skill);
         return true;
     }
 
-    public override void TakeDamage(int finalDamage)
+    private CSkillDataSO ConfiguredRiposteSkill
     {
-        ApplyDamage(finalDamage, true);
+        get
+        {
+            return _ignition != null && _ignition.IgnitedRiposteSkill != null
+                ? _ignition.IgnitedRiposteSkill : _configuredRiposteSkill;
+        }
     }
 
-    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    public bool HasConfiguredRiposte
+    {
+        get { return ConfiguredRiposteSkill != null; }
+    }
+
+    public bool TryExecuteConfiguredRiposte(CEntity attacker)
+    {
+        CSkillDataSO skill = ConfiguredRiposteSkill;
+        if (skill == null || attacker == null || attacker == this || attacker.IsDead
+            || IsDead || IsDeathPresented || IsActionActive || _attackAnimation == null
+            || TokenManager == null || !TokenManager.HasToken(EEffectType.Riposte)
+            || TokenManager.HasToken(EEffectType.Stun)) return false;
+
+        if (!_attackAnimation.TryPlayAttack(skill)) return false;
+
+        SetRiposteSkill(skill);
+        return CDamageStrategy.TryExecuteRiposte(this, attacker);
+    }
+
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
+    {
+        base.ApplyDamage(finalDamage, playHitAnimation, 0);
+    }
+
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation, int execution)
     {
         if (!_isInitialized || !isActiveAndEnabled || _isDead || IsDeathPresented || finalDamage == 0)
         {
@@ -546,14 +668,32 @@ public class CEnemy : CEntity
 
         if (_currentHp == 0)
         {
-            if (_remainingDeathArmor > 0)
+            bool isExecuted = finalDamage > 0 && execution > 0
+                && _remainingDeathArmor > 0 && _remainingDeathArmor <= execution;
+
+            if (_remainingDeathArmor > 0 && !isExecuted)
             {
                 _remainingDeathArmor--;
                 _isDeathsDoor = true;
+                CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathArmorBreak);
                 return;
             }
+            
+            if (isExecuted)
+            {
+                CPrint.Log($"[처형 {execution} 발동] [{name}]의 죽음의 값옷({_remainingDeathArmor})을 무시하고 즉시 처치했습니다.");
+                _remainingDeathArmor = 0;
+            }
+
             _isDead = true;
+            if (_ignition != null) _ignition.HideEffects();
             _isDeathsDoor = false;
+
+            TokenManager.ClearAllTokens();
+            _activeStatusEffects.Clear();
+
+            if (_denialLock != null) _denialLock.ApplyDeathEffect(_formationMovement.Members);
+            CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathBlow);
             _deathPresentation.TryPlayConfirmedDeath();
             return;
         }
@@ -574,6 +714,8 @@ public class CEnemy : CEntity
                 && !_activeStatusEffects.Contains(statusEffect))
             {
                 _activeStatusEffects.Add(statusEffect);
+                OnStatusEffectApplied?.Invoke(statusEffect.EffectType);
+                CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
             }
             return;
         }
@@ -600,7 +742,7 @@ public class CEnemy : CEntity
             case EEffectType.Taunt:
             case EEffectType.Immobilize:
             case EEffectType.Combo:
-                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
                 break;
         }
     }
@@ -609,6 +751,7 @@ public class CEnemy : CEntity
     {
         if (!_isInitialized || _isDead || IsDeathPresented) return;
 
+        int previousCount = _activeStatusEffects.Count;
         for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
         {
             CEffect effect = _activeStatusEffects[i];
@@ -618,6 +761,7 @@ public class CEnemy : CEntity
                 _activeStatusEffects.RemoveAt(i);
             }
         }
+        if (_activeStatusEffects.Count < previousCount) OnStatusEffectsCured?.Invoke();
     }
 
     public override void ResetEntityState()
@@ -630,7 +774,15 @@ public class CEnemy : CEntity
 
         if (_corpse != null) _corpse.ResetEntityState();
 
+        if (TryGetComponent(out CEnemyAI ai)) ai.CancelPlan();
         CancelAction();
+        SetExtraAction(false);
+        if (_ignition != null)
+        {
+            _ignition.ResetIgnition();
+            SetRiposteSkill(_configuredRiposteSkill);
+            _enemyData = _initialEnemyData;
+        }
         if (_attackAnimation != null) _attackAnimation.CancelPlayback();
         if (_deathPresentation != null) _deathPresentation.ResetPresentation();
 
@@ -644,6 +796,7 @@ public class CEnemy : CEntity
         if (criticalState != null) criticalState.ClearModifiers();
         _activeStatusEffects.Clear();
         _skillCooldowns.Clear();
+        if (_denialLock != null) _denialLock.ResetBattleState();
     }
 
     // 턴 시작에만 한 번 호출함. 행동 재시도 때는 호출 안 함
@@ -661,6 +814,9 @@ public class CEnemy : CEntity
         }
 
         _isStartingTurn = true;
+        // 현기증으로 밀린 차례는 돌아왔을 때 한 번만 셈
+        if (!isExtraAction && _ignition != null && !TokenManager.HasToken(EEffectType.Daze))
+            _ignition.BeginTurn();
         _skillCooldowns.BeginTurn(isExtraAction);
         CHeroCriticalState critical = GetComponent<CHeroCriticalState>();
         if (!isExtraAction && critical != null) critical.BeginTurn();
@@ -669,6 +825,9 @@ public class CEnemy : CEntity
             if (!isExtraAction)
             {
                 long totalDamage = 0;
+                bool bleedTick = false;
+                bool blightTick = false;
+                bool burnTick = false;
                 for (int i = _activeStatusEffects.Count - 1; i >= 0; i--)
                 {
                     CEffect effect = _activeStatusEffects[i];
@@ -678,6 +837,12 @@ public class CEnemy : CEntity
                         continue;
                     }
 
+                    if (effect.Damage > 0)
+                    {
+                        if (effect.EffectType == EEffectType.Bleed) bleedTick = true;
+                        if (effect.EffectType == EEffectType.Blight) blightTick = true;
+                        if (effect.EffectType == EEffectType.Burn) burnTick = true;
+                    }
                     totalDamage += effect.Damage;
                     effect.DecreaseTurn();
                     if (effect.RemainingTurns <= 0)
@@ -688,17 +853,42 @@ public class CEnemy : CEntity
 
                 if (totalDamage > 0)
                 {
-                    ApplyDamage((int)Math.Min(int.MaxValue, totalDamage), false);
+                    if (bleedTick) OnStatusEffectTicked?.Invoke(EEffectType.Bleed);
+                    if (blightTick) OnStatusEffectTicked?.Invoke(EEffectType.Blight);
+                    if (burnTick) OnStatusEffectTicked?.Invoke(EEffectType.Burn);
+                    ApplyPeriodicDamage((int)Math.Min(int.MaxValue, totalDamage));
                 }
             }
 
             if (!isActiveAndEnabled || _isDead || IsDeathPresented) return false;
+
+            if (!isExtraAction)
+            {
+                TokenManager.TickTokenTurns();
+            }
+
             return !TokenManager.ConsumeToken(EEffectType.Stun);
         }
         finally
         {
             _isStartingTurn = false;
         }
+    }
+
+    public int GetMaxRemainingEffectTurns(EEffectType effectType)
+    {
+        if (effectType == EEffectType.None || _activeStatusEffects == null) return 0;
+
+        int remainingTurns = 0;
+        for (int i = 0; i < _activeStatusEffects.Count; i++)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null || effect.EffectType != effectType) continue;
+
+            remainingTurns = Mathf.Max(remainingTurns, effect.RemainingTurns);
+        }
+
+        return remainingTurns;
     }
 
     public int GetTotalDotDamageByType(EEffectType type)
@@ -727,6 +917,11 @@ public class CEnemy : CEntity
             _activeStatusEffects.RemoveAt(i);
         }
         return (int)Math.Min(int.MaxValue, total);
+    }
+
+    public override int DetonateAllDots()
+    {
+        return ConsumeRemainingDotDamage();
     }
 
     private bool IsDotEffect(EEffectType type)

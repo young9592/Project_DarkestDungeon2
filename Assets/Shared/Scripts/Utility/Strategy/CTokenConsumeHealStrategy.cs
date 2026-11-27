@@ -33,6 +33,6 @@ public class CTokenConsumeHealStrategy : CEffectStrategy
         }
 
         CPrint.Log($"[{effectData.Name}] : 토큰 {consumedCount}개 소모 → [{context.Target.name}] 체력 +{totalHeal} 회복");
-        context.Target.TakeDamage(-totalHeal);
+        context.Target.ApplyHealingEffect(context.Caster, totalHeal, context.IsCrit);
     }
 }

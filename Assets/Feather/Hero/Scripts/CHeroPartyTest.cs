@@ -271,6 +271,7 @@ public class CHeroPartyTest : MonoBehaviour
         _viewRoot.SetActive(true);
         _groupTest.enabled = true;
         _groupTest.ShowControls = false;
+        _groupTest.DenialRestrictionChanged += ApplyDenialRestriction;
         CHeroRunStateTest runState = GetComponent<CHeroRunStateTest>();
         bool activeExpedition = runState != null && runState.IsExpeditionActive;
         CHeroPartySO restored = !activeExpedition && _presets != null ? _presets.RestoreLastApplied() : null;
@@ -347,6 +348,7 @@ public class CHeroPartyTest : MonoBehaviour
         {
             _heroes[i].OnActionRequested += HandleRequest;
         }
+        ApplyDenialRestriction(_groupTest.ActiveDenialRestriction);
 
         UpdatePositions();
         UpdateButtonOrder();
@@ -395,15 +397,18 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool ResumePreview(int groupIndex)
     {
+        if (_groups == null || groupIndex < 0 || groupIndex >= _groups.Length) return false;
+        return ResumePreview(_groups[groupIndex]);
+    }
+
+    public bool ResumePreview(CEnemyGroupSO group)
+    {
         if (!_isOpen
             || !_isPreviewSuspended
             || _activeParty == null
             || !_activeParty.TryValidate(out _)
-            || _groups == null
-            || groupIndex < 0
-            || groupIndex >= _groups.Length
-            || _groups[groupIndex] == null
-            || !_groups[groupIndex].TryValidate(out _))
+            || group == null
+            || !group.TryValidate(out _))
         {
             return false;
         }
@@ -420,7 +425,7 @@ public class CHeroPartyTest : MonoBehaviour
             _presentationRaycaster.enabled = true;
         }
 
-        if (!TryLoadParty(_activeParty) || !SwitchGroup(groupIndex))
+        if (!TryLoadParty(_activeParty) || !SwitchGroup(group))
         {
             SuspendPreview();
             return false;
@@ -529,6 +534,13 @@ public class CHeroPartyTest : MonoBehaviour
         return TrySelectHero(_selectedIndex);
     }
 
+    private void ApplyDenialRestriction(EDenialRestriction restriction)
+    {
+        for (int i = 0; i < _heroes.Count; i++)
+        {
+            if (_heroes[i] != null) _heroes[i].SetDenialRestriction(restriction);
+        }
+    }
     private void BindTargets()
     {
         _input.SetTargets(_groupTest.SpawnedEnemies, _rankStep);
@@ -537,18 +549,15 @@ public class CHeroPartyTest : MonoBehaviour
 
     public bool SwitchGroup(int index)
     {
-        if (!_isOpen
-            || IsPreparing
-            || IsBusy
-            || _groups == null
-            || index < 0
-            || index >= _groups.Length
-            || !_groupTest.TryLoadGroup(_groups[index]))
-        {
-            return false;
-        }
+        if (_groups == null || index < 0 || index >= _groups.Length) return false;
+        return SwitchGroup(_groups[index]);
+    }
 
-        _activeGroup = _groups[index];
+    private bool SwitchGroup(CEnemyGroupSO group)
+    {
+        if (!_isOpen || IsPreparing || IsBusy || !_groupTest.TryLoadGroup(group)) return false;
+
+        _activeGroup = group;
         return RefreshHeroSelection();
     }
 
@@ -598,6 +607,32 @@ public class CHeroPartyTest : MonoBehaviour
         return true;
     }
 
+    // 테스트 씬에서 피해를 받은 적의 전용 반격을 실행함
+    private void BindTestRipostes(CPlayer actor)
+    {
+        var targets = actor.ActionTargets;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!(targets[i] is CEnemy enemy) || !enemy.HasConfiguredRiposte) continue;
+            int healthBefore = enemy.CurrentHp;
+            actor.OnActionCompleted += Complete;
+            actor.OnActionInterrupted += Interrupt;
+
+            void Complete(CEntity entity)
+            {
+                Interrupt(entity);
+                if (enemy != null && enemy.CurrentHp < healthBefore) enemy.TryExecuteConfiguredRiposte(actor);
+            }
+
+            void Interrupt(CEntity entity)
+            {
+                actor.OnActionCompleted -= Complete;
+                actor.OnActionInterrupted -= Interrupt;
+            }
+        }
+    }
+
+
     private void HandleRequest(CEntity actor, CEntity target, CSkillDataSO skill)
     {
         if (!_isOpen || actor != SelectedHero)
@@ -613,6 +648,7 @@ public class CHeroPartyTest : MonoBehaviour
             + " -> "
             + ((CPlayer)actor).ActionTargets.Count
             + " target(s)";
+        BindTestRipostes((CPlayer)actor);
         // 파티 미리보기에서 행동 연출 재생
         actor.TryStartRequestedAction();
     }
@@ -686,6 +722,7 @@ public class CHeroPartyTest : MonoBehaviour
 
     private void ClearParty()
     {
+        ApplyDenialRestriction(EDenialRestriction.None);
         for (int i = 0; i < _heroes.Count; i++)
         {
             if (_heroes[i] == null)
@@ -739,6 +776,7 @@ public class CHeroPartyTest : MonoBehaviour
         ClearParty();
         if (_groupTest != null)
         {
+            _groupTest.DenialRestrictionChanged -= ApplyDenialRestriction;
             _groupTest.ClearGroup();
             _groupTest.enabled = false;
         }

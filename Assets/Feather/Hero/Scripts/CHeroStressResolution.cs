@@ -32,6 +32,7 @@ public class CHeroStressResolution : MonoBehaviour
     }
 
     public event Action<CPlayer> OnRequested;
+    public event Action<CPlayer, EHeroStressResult> OnResultStarted;
     public event Action<CPlayer, EHeroStressResult> OnApplied;
 
     private void Awake()
@@ -79,6 +80,8 @@ public class CHeroStressResolution : MonoBehaviour
 
         _result = result;
         _hasResult = true;
+        if (result == EHeroStressResult.Resolute && _animation != null) _animation.PlayResolute();
+        OnResultStarted?.Invoke(_hero, result);
         return true;
     }
 
@@ -106,6 +109,7 @@ public class CHeroStressResolution : MonoBehaviour
         _hasResult = false;
         _requestId++;
         if (cancelAnimation && _animation != null) _animation.CancelMeltdown();
+        if (_animation != null) _animation.EndResolute();
         return true;
     }
 
@@ -117,6 +121,7 @@ public class CHeroStressResolution : MonoBehaviour
         _hasResult = false;
         _requestId++;
         if (cancelAnimation && _animation != null) _animation.CancelMeltdown();
+        if (_animation != null) _animation.EndResolute();
     }
 
     private bool CanReceiveResult(int requestId)

@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Strategy/Enemy/Pull", fileName = "EnemyPullStrategy_")]
 public class CEnemyPullStrategy : CEffectStrategy
 {
+    [SerializeField] private bool _push;
+
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
         if (context == null || effectData == null || !context.IsHit || context.Caster == null) return;
@@ -20,7 +22,8 @@ public class CEnemyPullStrategy : CEffectStrategy
 
         int currentIndex = GetRankIndex(target.CurrentRank);
         if (currentIndex < 0 || effectData.Damage <= 0) return;
-        int destinationIndex = Mathf.Max(0, currentIndex - effectData.Damage);
+        int direction = _push ? 1 : -1;
+        int destinationIndex = Mathf.Clamp(currentIndex + direction * effectData.Damage, 0, 3);
         if (destinationIndex == currentIndex) return;
 
         CPlayer[] members = new CPlayer[4];
@@ -36,7 +39,7 @@ public class CEnemyPullStrategy : CEffectStrategy
         }
         if (!foundTarget) return;
 
-        for (int i = currentIndex - 1; i >= destinationIndex; i--)
+        for (int i = currentIndex + direction; i != destinationIndex + direction; i += direction)
         {
             CPlayer displaced = members[i];
             if (displaced != null && (displaced.TokenManager == null
@@ -52,10 +55,10 @@ public class CEnemyPullStrategy : CEffectStrategy
         if (Random.Range(1, 101) > chance) return;
 
         target.TrySetRank((ERank)(1 << destinationIndex));
-        for (int i = currentIndex - 1; i >= destinationIndex; i--)
+        for (int i = currentIndex + direction; i != destinationIndex + direction; i += direction)
         {
             CPlayer displaced = members[i];
-            if (displaced != null) displaced.TrySetRank((ERank)(1 << (i + 1)));
+            if (displaced != null) displaced.TrySetRank((ERank)(1 << (i - direction)));
         }
     }
 

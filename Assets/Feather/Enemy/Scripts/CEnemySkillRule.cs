@@ -15,6 +15,17 @@ public class CEnemySkillRule
 {
     [SerializeField] private CSkillDataSO _skill;
     [SerializeField, Range(-3, 3)] private int _rankMovement;
+    [SerializeField, Min(0.0f)] private float _attackMoveDuration;
+    public float AttackMoveDuration
+    {
+        get { return _attackMoveDuration; }
+    }
+    [SerializeField] private bool _preferAvailableMovement;
+    public bool PreferAvailableMovement
+    {
+        get { return _preferAvailableMovement && RankMovement != 0; }
+    }
+
     public int RankMovement
     {
         get { return Mathf.Clamp(_rankMovement, -3, 3); }

@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_Flayer
+  m_EditorClassIdentifier: 
+  _id: enemy_flayer
+  _name: Flayer
+  _enemyCategory: 3
+  _maxHealth: 12
+  _speed: 3
+  _resistance:
+    Bleed: 20
+    Blight: 20
+    Burn: 40
+    Stun: 10
+    Move: 20
+    Debuff: 10
+  _actions: 1
+  _availableSkills:
+  - {fileID: 11400000, guid: 6290779e7a040b84981d5981af507b8a, type: 2}
+  - {fileID: 11400000, guid: 1c14e50faf91a6f478b7d523f8a21da3, type: 2}
+  - {fileID: 11400000, guid: 6d82fcc14984bb9478024c897d900379, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: 1bf6f8106e76dae418b3db86575742ef, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 1f749e4caf4a3724ab04b3d0409c9579, type: 3}
+  _skillSlotBackground: {fileID: 0}
+  _formationSize: 1
+  _deathDoorCount: 0
+  _leavesCorpse: 1
+  _corpseSprite: {fileID: 21300000, guid: 76fa1ef3fef743f68a87ea47430129d0, type: 3}
+  _corpseData: {fileID: 11400000, guid: 7425e5ea1c6f46ceb649a116ea4109f6, type: 2}
+  _corpseHealth: 9
+  _corpseWidth: 0.0125
+  _skillRules:
+  - _skill: {fileID: 11400000, guid: 6d82fcc14984bb9478024c897d900379, type: 2}
+    _rankMovement: -2
+    _attackMoveDuration: 1
+    _preferAvailableMovement: 0
+    _selfToken: 8
+    _selfTokenCount: 1
+    _weight: 1
+    _minHpPercent: 0
+    _maxHpPercent: 100
+    _priority: 0
+    _preferredRanks: 0
+    _condition: 0
+  _targetSelection: 0
+  _comboPrioritySkill: {fileID: 0}
+  _startingToken: 9
+  _startingTokenCount: 1
+  _extraStartingTokenChance: 0

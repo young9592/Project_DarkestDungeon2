@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2ce5e71f7782747bfe8b218fb4c56e, type: 3}
+  m_Name: EnemySO_Denial_stress
+  m_EditorClassIdentifier: 
+  _id: enemy_denial_stress
+  _name: Shackle of Despair
+  _maxHealth: 55
+  _speed: 2
+  _resistance:
+    Bleed: 20
+    Blight: 20
+    Burn: 20
+    Stun: 50
+    Move: 10
+    Debuff: 40
+  _actions: 1
+  _availableSkills:
+  - {fileID: 11400000, guid: a74b9084d86c8a1459e138329dedf490, type: 2}
+  - {fileID: 11400000, guid: 98bb3554aa670b2499a3ea5b289d2821, type: 2}
+  - {fileID: 11400000, guid: 21a31d9d7807ec74b8f7ced8adff0d06, type: 2}
+  _portraitTurnOrder: {fileID: 21300000, guid: dae2241bf960d2046bcb76e0eb003493, type: 3}
+  _portraitInfo: {fileID: 21300000, guid: 89512eac6ca7baa4d985b2fad43465f5, type: 3}
+  _skillSlotBackground: {fileID: 0}
+  _formationSize: 1
+  _deathDoorCount: 0
+  _leavesCorpse: 0
+  _corpseSprite: {fileID: 0}
+  _corpseData: {fileID: 0}
+  _corpseHealth: 5
+  _corpseWidth: 0.014
+  _skillRules: []
+  _targetSelection: 0
+  _startingToken: 0
+  _startingTokenCount: 0
+  _extraStartingTokenChance: 0

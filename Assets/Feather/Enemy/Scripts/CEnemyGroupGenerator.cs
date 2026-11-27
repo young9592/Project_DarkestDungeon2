@@ -24,7 +24,7 @@ public static class CEnemyGroupGenerator
 
     // 생성한 조합은 사용이 끝나면 호출한 쪽에서 제거함
     public static bool TryGenerate(IReadOnlyList<CEnemy> prefabs, int enemyCount, int seed,
-        out CEnemyGroupSO group, bool allowRepeatedEntries = false)
+        out CEnemyGroupSO group, bool allowRepeatedEntries = false, CEnemy requiredEnemy = null)
     {
         group = null;
         if (prefabs == null || enemyCount < 1 || enemyCount > 4) return false;
@@ -42,6 +42,8 @@ public static class CEnemyGroupGenerator
         }
         if (candidates.Count < enemyCount) return false;
 
+        if (requiredEnemy != null && candidates.RemoveAll(enemy => enemy == requiredEnemy) == 0) return false;
+
         Random random = new Random(seed);
         for (int i = candidates.Count - 1; i > 0; i--)
         {
@@ -51,23 +53,25 @@ public static class CEnemyGroupGenerator
             candidates[index] = enemy;
         }
 
+        // 필수 적은 먼저 배치하고 시작 열이 맞지 않으면 다른 열을 시도함
+        if (requiredEnemy != null) candidates.Insert(0, requiredEnemy);
         List<CEnemyGroupEntry> entries = new List<CEnemyGroupEntry>();
-        if (!TryPlace(candidates, enemyCount, 0, entries)) return false;
+        if (!TryPlace(candidates, enemyCount, 0, entries, requiredEnemy)) return false;
         group = CEnemyGroupSO.CreateRuntime(entries);
         return group != null;
     }
 
     private static bool TryPlace(List<CEnemy> candidates, int count, int nextRank,
-        List<CEnemyGroupEntry> entries)
+        List<CEnemyGroupEntry> entries, CEnemy requiredEnemy)
     {
-        if (entries.Count == count) return true;
+        if (entries.Count == count) return requiredEnemy == null;
         if (nextRank + count - entries.Count > 4) return false;
 
         ERank rank = (ERank)(1 << nextRank);
         for (int i = 0; i < candidates.Count; i++)
         {
             CEnemy enemy = candidates[i];
-            if (enemy == null) continue;
+            if (enemy == null || (requiredEnemy != null && entries.Count == count - 1 && enemy != requiredEnemy)) continue;
             CEnemyGroupEntry entry = new CEnemyGroupEntry(enemy, rank);
             if (!entry.TryGetOccupiedRanks(out _)
                 || CEnemySkillFilter.GetCandidates(enemy.EnemyData, rank).Count == 0) continue;
@@ -75,7 +79,8 @@ public static class CEnemyGroupGenerator
             // 뒤쪽 배치가 막히면 앞에서 고른 적을 바꿈
             candidates[i] = null;
             entries.Add(entry);
-            bool placed = TryPlace(candidates, count, nextRank + enemy.EnemyData.FormationSize, entries);
+            CEnemy remainingRequired = enemy == requiredEnemy ? null : requiredEnemy;
+            bool placed = TryPlace(candidates, count, nextRank + enemy.EnemyData.FormationSize, entries, remainingRequired);
             candidates[i] = enemy;
             if (placed) return true;
             entries.RemoveAt(entries.Count - 1);

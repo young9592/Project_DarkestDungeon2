@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +8,21 @@ public class CHealStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
+        if (context == null || context.Target == null || effectData == null) return;
+
+        if (context.Caster != null)
+        {
+            bool hasDenialToken = context.Caster.TokenManager != null &&
+                                  context.Caster.TokenManager.HasToken(EEffectType.DenialOfFortitude);
+            bool hasDenialState = context.Caster is CPlayer casterHero &&
+                                  casterHero.DenialRestriction == EDenialRestriction.Fortitude;
+
+            if (hasDenialToken || hasDenialState)
+            {
+                CPrint.Log($"[{context.Caster.name}] [치유 금지] 상태여서 체력 회복 효과가 차단됩니다.");
+                return;
+            }
+        }
         int healAmount = effectData.RollValue(context.IsCrit); // CEffectSO의 Damage 수치를 회복량으로 사용
 
         if (context.IsCrit)
@@ -18,7 +32,7 @@ public class CHealStrategy : CEffectStrategy
         }
 
         // 지금은 TakeDamage에 음수로 처리중인데 나중에 CEntity Heal() 함수를 파서 할 수도..?
-        context.Target.TakeDamage(-healAmount);
+        context.Target.ApplyHealingEffect(context.Caster, healAmount, context.IsCrit);
         CPrint.Log($"[{context.Caster.name}]가 [{context.Target.name}]의 체력을 [{healAmount}] 회복시켰습니다.");
     }
 }

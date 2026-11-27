@@ -1,7 +1,8 @@
+
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks.Triggers;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ public class CCombatUI : MonoBehaviour
     [SerializeField] private Canvas _canvas;
 
     [Header("CombatMaanger")]
-    [SerializeField] private CBasicCombatManager _combatManager;
+    [SerializeField] private CCombatManager _combatManager;
 
     [Header("Combat Panel")]
     [SerializeField] private GameObject _combatFrontPanel;
@@ -87,8 +88,12 @@ public class CCombatUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _roundText;
 
     [Header("Entity State Prefab")]
-    [SerializeField] private GameObject _entityStateRoot;
-    [SerializeField] private GameObject _entityStatePrefab;
+    [SerializeField] private GameObject _stateRoot;
+    [SerializeField] private GameObject _entitiesStatePrefab;
+
+    [Header("Entity Indicator")]
+    [SerializeField] private GameObject _indicatorRoot;
+    [SerializeField] private GameObject _indicatorPrefab;
 
     // 턴 초상화 이미지 프리팹과 보관 위치
     [Header("Turnorder Prefab")]
@@ -98,26 +103,49 @@ public class CCombatUI : MonoBehaviour
     [Header("Icon Prefab Root")]
     [SerializeField] private GameObject _iconRoot;
 
-    [Header("TurnGuide Root")]
-    [SerializeField] private GameObject _turnGuideRoot;
-
     [Header("Text Prefab Root")]
     [SerializeField] private GameObject _textRoot;
+
+    [Header("Dot/Token Infomation Tooltip")]
+    [SerializeField] private GameObject _dotTooltip;
+    [SerializeField] private GameObject _tokenTooltip;
+    [SerializeField] private GameObject _healthTooltip;
+
+    [Header("EnterEffect")]
+    [SerializeField] private GameObject _enterEffect;
+
+    [Header("Skill Effect Draw Manager")]
+    [SerializeField] private CSkillEffectDrawManager _skillEffectDrawManager;
+
+    [Header("Highwayman DoubleTap")]
+    [SerializeField] private List<CHeroSkillLoadoutSO> _doubleTapAfterSkillLoadoutSOList;
+    [SerializeField] private List<CHeroSkillSO> _doubleTapAfterSkillSOList;
+    [SerializeField] private int _doubleTapTargetRank;
+
+    [Header("Option")]
+    [SerializeField] private float _portraitRemoveDelay = 0.05f;
     #endregion
 
-
-
     #region Field
+    // 상태 리스트
+    private Dictionary<CEntity, CEntityState> _entitiesState = new Dictionary<CEntity, CEntityState>();
+    // 지시등 리스트
+    private Dictionary<CEntity, CIndicator> _entitiesIndicator = new Dictionary<CEntity, CIndicator>();
+    // 초상화 리스트
+    private List<GameObject> _turnPortraitList = new List<GameObject>();
+
     private int _round = 0;
     private bool _pass = false;
     private bool _rankChange = false;
     private bool _cursorRank = false;
+    private Coroutine _indicatorCoroutine = null;
+    // 더블탭 후속타인가?
+    private bool _isDoubleTapAfter = false;
     private List<Object> _checkList = new List<Object>();
     #endregion
 
     #region Property
     public CEntity TurnEntity => _combatManager.MyTurn;
-    
     public bool Pass
     {
         get { return _pass; }
@@ -129,6 +157,12 @@ public class CCombatUI : MonoBehaviour
         set { _rankChange = value; }
     }
     public RectTransform HeroTemptationTextTr => _heroTemptation.gameObject.GetComponent<RectTransform>();
+    public IReadOnlyList<GameObject> TurnPortraitList => _turnPortraitList;
+    public IReadOnlyDictionary<CEntity, CEntityState> EntitiesState => _entitiesState;
+    public IReadOnlyDictionary<CEntity, CIndicator> EntitiesIndicator => _entitiesIndicator;
+    public float PortraitRemoveDelay => _portraitRemoveDelay;
+    public int Round => _round;
+    public bool IsDoubleTapAfter => _isDoubleTapAfter;
     #endregion
 
     private void Awake()
@@ -184,6 +218,18 @@ public class CCombatUI : MonoBehaviour
             _checkList.Add(_skillImage[i]);
         }
 
+        if (_AlliesRank.Count == 0 ||
+            _targetRank.Count == 0 ||
+            _skillSlot.Count == 0 ||
+            _skillImage.Count == 0
+            )
+        {
+            CPrint.Error($"{gameObject.name} 리스트의 갯수가 0개입니다.");
+            enabled = false;
+            return;
+        }
+
+
         _checkList.Add(_combatItemSlot);
         _checkList.Add(_combatItemImage);
 
@@ -212,15 +258,27 @@ public class CCombatUI : MonoBehaviour
 
         _checkList.Add(_roundText);
 
-        _checkList.Add(_entityStateRoot);
-        _checkList.Add(_entityStatePrefab);
+        _checkList.Add(_stateRoot);
+        _checkList.Add(_entitiesStatePrefab);
+
+        _checkList.Add(_indicatorRoot);
+        _checkList.Add(_indicatorPrefab);
 
         _checkList.Add(_turnOrderRoot);
         _checkList.Add(_turnOrderPrefab);
 
         _checkList.Add(_iconRoot);
-        _checkList.Add(_turnGuideRoot);
+        _checkList.Add(_indicatorRoot);
         _checkList.Add(_textRoot);
+
+        _checkList.Add(_combatBorder);
+        _checkList.Add(_combatTriangle);
+
+        _checkList.Add(_dotTooltip);
+        _checkList.Add(_tokenTooltip);
+        _checkList.Add(_healthTooltip);
+
+        _checkList.Add(_enterEffect);
 
         if (CPrint.NullUnityObjectListCheck(gameObject.name, _checkList))
         {
@@ -242,29 +300,111 @@ public class CCombatUI : MonoBehaviour
             CPrint.Log("디스패쳐와 연결 완료");
         }
     }
-
-    /// <summary>
-    /// 엔티티 현재 상태를 확인할 수 있는 UI 추가
-    /// </summary>
-    /// <param name="entity">적용할 대상</param>
-    /// <returns></returns>
-    public CEntityState CreateStateUI(CEntity entity)
+    private void Update()
     {
-        // 엔티티 상태창 추가
-        CEntityState entityState = Instantiate(_entityStatePrefab, _entityStateRoot.transform).GetComponent<CEntityState>();
-        entityState.Initialize(_canvas, entity.gameObject);
+        if (_combatManager == null)
+        {
+            return;
+        }
 
-        return entityState;
+        EnemyInfoDetect();
     }
-    /// <summary>
-    /// 턴순서 초상화 리스트 생성
-    /// </summary>
-    /// <param name="turnList">현재 턴 순서 목록</param>
-    /// <returns></returns>
-    public List<GameObject> CreateTurnOrderPortraitList(List<(int id, CEntity entity, int speed)> turnList)
+    // 전투씬 진입 이펙트 켜기
+    public void OnEnterEffect()
     {
-        List<GameObject> turnPortraitList = new List<GameObject>();
+        _enterEffect.SetActive(true);
+    }
 
+    // 마우스를 통해서 적 정보 확인
+    private void EnemyInfoDetect()
+    {
+        if (_combatManager.MyTurn == null)
+        {
+            return;
+        }
+
+
+        if (_combatManager.MyTurn is not CPlayer)
+        {
+            return;
+        }
+
+        // 충돌감지
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        CEnemy enemy = null;
+        bool isHit = false;
+
+        for (int i = 0; i < _combatManager.EnemyParty.Count; i++)
+        {
+            enemy = _combatManager.EnemyParty[i];
+            isHit = CEnemyBoundRenderer.TryRayHit(ray, enemy);
+
+            if (isHit)
+            {
+                OpenEnemyInfomation(enemy, true);
+                break;
+            }
+
+        }
+
+        if (!isHit)
+        {
+            CloseEnemyInfomation();
+        }
+
+
+    }
+    // 엔티티 현재 상태를 확인할 수 있는 UI 추가
+    public void CreateStateUI(CEntity entity)
+    {
+        CEntityState state = Instantiate(_entitiesStatePrefab, _stateRoot.transform).GetComponent<CEntityState>();
+        state.Initialize(_canvas, _healthTooltip, _tokenTooltip, _dotTooltip, entity.gameObject);
+
+        _entitiesState.Add(entity, state);
+    }
+    public void RemoveStateUI(CEntity entity)
+    {
+        bool containKey = _entitiesState.TryGetValue(entity, out CEntityState state);
+
+        if (containKey)
+        {
+            _entitiesState.Remove(entity);
+        }
+    }
+    public void ReconnectStateUI(CEntity entity)
+    {
+        bool containKey = _entitiesState.TryGetValue(entity, out CEntityState state);
+
+        // 현재는 적밖에 시체가 없다.
+        if (containKey)
+        {
+            _entitiesState.Remove(entity);
+            CEnemyCorpse corpse = (entity as CEnemy).Corpse;
+            state.ReconnectState(corpse.gameObject);
+            _entitiesState.Add(corpse, state);
+        }
+    }
+    // 현재 턴 및 어디를 가리키고 있는지 확인할 수 있는 지시등 UI 추가
+    public void CreateIndicatorUI(CEntity entity)
+    {
+        CIndicator indicator = Instantiate(_indicatorPrefab, _indicatorRoot.transform).GetComponent<CIndicator>();
+        indicator.Initialize(_canvas, entity.gameObject);
+
+        _entitiesIndicator.Add(entity, indicator);
+    }
+    public void RemoveIndicatorUI(CEntity entity)
+    {
+        bool containKey = _entitiesIndicator.TryGetValue(entity, out CIndicator indicator);
+
+        if (containKey)
+        {
+            _entitiesIndicator.Remove(entity);
+        }
+    }
+    // 턴순서 초상화 리스트 생성
+    public void CreateTurnOrderPortraitList(List<(int id, CEntity entity, int speed)> turnList)
+    {
         // 턴 이미지 세팅 및 생성
         for (int i = 0; i < turnList.Count; i++)
         {
@@ -280,46 +420,42 @@ public class CCombatUI : MonoBehaviour
             // 4 3 2 1 초상화 배치 및 이동
             if (i < 4)
             {
-                portraitImage.Initialize(turnList[i].id, 4, entityType, portrait);
+                portraitImage.Initialize(_combatManager, this, turnList[i].id, 4, entityType, portrait);
                 portraitImage.Move(i + 1);
             }
             else
             {
-                portraitImage.Initialize(turnList[i].id, i + 1, entityType, portrait);
+                portraitImage.Initialize(_combatManager, this, turnList[i].id, i + 1, entityType, portrait);
             }
 
-            turnPortraitList.Add(portraitPrefab);
+            _turnPortraitList.Add(portraitPrefab);
         }
-
-        return turnPortraitList;
     }
-    /// <summary>
-    /// 현기증으로 인한 턴 밀림 시 초상화 추가 생성
-    /// </summary>
-    /// <param name="portrait">복사할 대상</param>
-    /// <returns></returns>
-    public GameObject CopyTurnOrderPortrait(GameObject portrait)
+    public void RemoveTurnOrder(int index, float customDelay = -1f)
     {
-        GameObject copyObj = Instantiate(portrait, _turnOrderRoot.transform);
-        return copyObj;
+        Destroy(_turnPortraitList[index], customDelay == -1f ? _portraitRemoveDelay : customDelay);
+        _turnPortraitList.RemoveAt(index);
     }
-    /// <summary>
-    /// 초상화 이동
-    /// </summary>
-    /// <param name="isDirty">죽은 엔티티가 있는지 체크</param>
-    public void MoveTurnOrder(List<GameObject> turnPortraitList, bool isDirty = false)
+    // 현기증으로 인한 턴 밀림 시 초상화 추가 생성
+    public void CopyTurnOrderPortrait()
+    {
+        GameObject copyObj = Instantiate(_turnPortraitList[0], _turnOrderRoot.transform);
+        _turnPortraitList.Add(copyObj);
+    }
+    // 초상화 이동
+    public void MoveTurnOrder(bool isDirty = false)
     {
         // 죽는 상태에선 단순 하나의 요소만 변경되는 것이 아니기 때문에 리스트와 싱크를 맞춰야한다.
         if (isDirty)
         {
-            for (int i = 0; i < turnPortraitList.Count; i++)
+            for (int i = 0; i < _turnPortraitList.Count; i++)
             {
-                if (turnPortraitList.Count - 1 < i)
+                if (_turnPortraitList.Count - 1 < i)
                 {
                     break;
                 }
 
-                CPortraitImage portraitImage = turnPortraitList[i].GetComponent<CPortraitImage>();
+                CPortraitImage portraitImage = _turnPortraitList[i].GetComponent<CPortraitImage>();
 
                 portraitImage.Move(i + 1);
             }
@@ -327,20 +463,19 @@ public class CCombatUI : MonoBehaviour
         }
 
 
-        for (int i = 0; i < turnPortraitList.Count; i++)
+        for (int i = 0; i < _turnPortraitList.Count; i++)
         {
-            if (turnPortraitList.Count - 1 < i)
+            if (_turnPortraitList.Count - 1 < i)
             {
                 break;
             }
 
-            CPortraitImage portraitImage = turnPortraitList[i].GetComponent<CPortraitImage>();
+            CPortraitImage portraitImage = _turnPortraitList[i].GetComponent<CPortraitImage>();
 
             portraitImage.Move(i);
         }
         CPortraitImage.IsDirty = false;
     }
-
     // 다음 라운드로 변경
     public void NextRound(int turnListCount)
     {
@@ -352,8 +487,6 @@ public class CCombatUI : MonoBehaviour
         _round++;
         _roundText.text = _round.ToString();
     }
-
-
     // 버튼을 누른채로 몇초 지나면 패스 적용
     public void OnPressActionPass()
     {
@@ -367,18 +500,41 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
-        RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
-        RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
-        cursorTr.anchoredPosition = rectTr.anchoredPosition;
+        _combatManager.MyTurn.CancelAction();
+        _combatManager.MyTurn.TryBeginAction();
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (_entitiesIndicator.TryGetValue(entity, out CIndicator indicator))
+            {
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(_combatManager.MyTurn))
+                {
+                    indicator.ViewMyturnIndicator();
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
 
         // 커서 이동
+        RectTransform rectTr = _passBtn.GetComponent<RectTransform>();
+        RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
+        cursorTr.position = rectTr.position;
+
         _cursorRank = false;
         _cursorDiamond.SetActive(true);
         _cursorSkill.SetActive(false);
     }
-
     // 턴넘김
-    public void ActionPass()
+    public void PressedPass()
     {
         _pass = true;
         CloseHeroInfomation();
@@ -397,25 +553,80 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
+        _combatManager.MyTurn.CancelAction();
+        _combatManager.MyTurn.TryBeginAction();
+
+        CPlayer myturnHero = _combatManager.MyTurn as CPlayer;
+
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (_entitiesIndicator.TryGetValue(entity, out CIndicator indicator))
+            {
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(myturnHero))
+                {
+                    indicator.ViewMyturnIndicator();
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+        // 현재 위치에서 이동할 수 있는 지시등만 켜기
+        int rankIdx = (int)System.MathF.Log((float)myturnHero.CurrentRank, 2);
+        int forward = myturnHero.HeroData.ForwardMovement;
+        int backward = myturnHero.HeroData.BackwardMovement;
+
+        int start = Mathf.Max(rankIdx - forward, 0);
+        int end = Mathf.Min(rankIdx + backward, 3);
+
+
+        // 본인이 고정 토큰 보유자면 자리교체 불가능
+        if (!myturnHero.TokenManager.HasToken(EEffectType.Immobilize))
+        {
+            for (int i = start; i <= end; i++)
+            {
+                IReadOnlyDictionary<ERank, CPlayer> heroRank = _combatManager.HeroRank;
+
+                if (heroRank.TryGetValue((ERank)(1 << i), out CPlayer hero))
+                {
+                    if (_entitiesIndicator.TryGetValue(hero, out CIndicator indicator))
+                    {
+                        // 본인이면 제외
+                        if (hero.Equals(myturnHero))
+                        {
+                            indicator.ViewMyturnIndicator();
+                            continue;
+                        }
+
+                        // 고정 토큰 보유자랑 자리교체 불가능
+                        if (hero.TokenManager.HasToken(EEffectType.Immobilize))
+                        {
+                            continue;
+                        }
+
+                        indicator.ToggleMouseEvent(true);
+                    }
+                }
+            }
+        }
+
+
+
+        // 커서 이동
         RectTransform rectTr = _rankChangeBtn.GetComponent<RectTransform>();
         RectTransform cursorTr = _cursorDiamond.GetComponent<RectTransform>();
-        cursorTr.anchoredPosition = rectTr.anchoredPosition;
+        cursorTr.position = rectTr.position;
 
         _cursorRank = true;
         _cursorDiamond.SetActive(true);
         _cursorSkill.SetActive(false);
-    }
-
-    // 랭크 변경 시도
-    public void RankChange()
-    {
-        if (!_cursorRank)
-        {
-            return;
-        }
-
-        // TODO 자리변경 시도
-
     }
 
     // 스킬 선택
@@ -436,44 +647,73 @@ public class CCombatUI : MonoBehaviour
             return;
         }
 
-        RectTransform SkillSlot = _skillSlot[idx].GetComponent<RectTransform>();
-        RectTransform cursorRectTr = _cursorSkill.GetComponent<RectTransform>();
-        cursorRectTr.anchoredPosition = SkillSlot.anchoredPosition;
-
         CPlayer hero = TurnEntity as CPlayer;
 
+
+        // 히어로가 장착한 스킬보다 높은 인덱스 가져오려고 하면 return
+        if (idx > hero.EquippedSkills.Count)
+        {
+            return;
+        }
+
+        _cursorSkillName.text = "";
+        _heroSkillMainDesc.text = "";
+        _heroSkillSubDesc.text = "";
+
+        // 더블탭일시 모든 스킬슬롯 및 자리이동이 닫히고 오로지 해당 스킬만 On
+        if (_isDoubleTapAfter)
+        {
+            idx = 0;
+        }
+
+        RectTransform SkillSlot = _skillSlot[idx].GetComponent<RectTransform>();
+        RectTransform cursorRectTr = _cursorSkill.GetComponent<RectTransform>();
+        cursorRectTr.position = SkillSlot.position;
+
         CSkillDataSO skillSO = hero.EquippedSkills[idx];
+
         ERank usableRank = skillSO.UsableRank;
         ERank targetRank = skillSO.TargetableRank;
 
         _cursorSkillName.text = skillSO.SkillName;
+        _heroSkillMainDesc.text = (skillSO as CHeroSkillSO).MainDescription;
+        _heroSkillSubDesc.text = (skillSO as CHeroSkillSO).SubDescription;
 
         CHeroSkillSO heroSkillSO = skillSO as CHeroSkillSO;
 
+        // 현재 스킬의 랭크 표시
+        bool aliyRank1 = ((usableRank & ERank.Rank1) != 0);
+        bool aliyRank2 = ((usableRank & ERank.Rank2) != 0);
+        bool aliyRank3 = ((usableRank & ERank.Rank3) != 0);
+        bool aliyRank4 = ((usableRank & ERank.Rank4) != 0);
+
+        bool targetRank1 = ((targetRank & ERank.Rank1) != 0);
+        bool targetRank2 = ((targetRank & ERank.Rank2) != 0);
+        bool targetRank3 = ((targetRank & ERank.Rank3) != 0);
+        bool targetRank4 = ((targetRank & ERank.Rank4) != 0);
+
+        List<bool> alliesRankList = new List<bool> { aliyRank1, aliyRank2, aliyRank3, aliyRank4 };
+        List<bool> targetRankList = new List<bool> { targetRank1, targetRank2, targetRank3, targetRank4 };
+
         if (heroSkillSO.Target != EHeroSkillTarget.Self)
         {
-            _AlliesRank[0].enabled = ((usableRank & ERank.Rank1) != 0 ? true : false);
-            _AlliesRank[1].enabled = ((usableRank & ERank.Rank2) != 0 ? true : false);
-            _AlliesRank[2].enabled = ((usableRank & ERank.Rank3) != 0 ? true : false);
-            _AlliesRank[3].enabled = ((usableRank & ERank.Rank4) != 0 ? true : false);
-
-            _targetRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-            _targetRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-            _targetRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-            _targetRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            for (int i = 0; i < alliesRankList.Count; i++)
+            {
+                _AlliesRank[i].enabled = alliesRankList[i];
+                _targetRank[i].enabled = targetRankList[i];
+            }
 
             _targetRankPanel.SetActive((targetRank & (ERank.Rank1 | ERank.Rank2 | ERank.Rank3 | ERank.Rank4)) == 0 ? false : true);
         }
         else
         {
-            _AlliesRank[0].enabled = ((targetRank & ERank.Rank1) != 0 ? true : false);
-            _AlliesRank[1].enabled = ((targetRank & ERank.Rank2) != 0 ? true : false);
-            _AlliesRank[2].enabled = ((targetRank & ERank.Rank3) != 0 ? true : false);
-            _AlliesRank[3].enabled = ((targetRank & ERank.Rank4) != 0 ? true : false);
+            for (int i = 0; i < alliesRankList.Count; i++)
+            {
+                _AlliesRank[i].enabled = targetRankList[i];
+            }
+
             _targetRankPanel.SetActive(false);
         }
-
-
 
         _cursorSkillInfo.SetActive(true);
         _cursorSkill.SetActive(true);
@@ -482,12 +722,91 @@ public class CCombatUI : MonoBehaviour
 
         // 영웅의 스킬 사전준비 모션
         hero.SelectSkill(idx);
+
+        if (_indicatorCoroutine == null)
+        {
+            _indicatorCoroutine = StartCoroutine(CoViewTarget(heroSkillSO));
+        }
+        else
+        {
+            StopCoroutine(_indicatorCoroutine);
+            _indicatorCoroutine = null;
+            _indicatorCoroutine = StartCoroutine(CoViewTarget(heroSkillSO));
+        }
     }
-    /// <summary>
-    /// 영웅 정보 및 스킬 인터페이스 활성화
-    /// </summary>
-    /// <param name="entity">엔티티 대상</param>
-    public void OpenHeroInfomation(CPlayer hero, CHeroBattleInput battleInput)
+
+    private IEnumerator CoViewTarget(CHeroSkillSO heroSkillSO)
+    {
+        // 지시등 초기화
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            CEntity entity = _combatManager.EntityList[i].entity;
+
+            if (_entitiesIndicator.TryGetValue(entity, out CIndicator indicator))
+            {
+                CHeroTargetView view = entity.gameObject.GetComponent<CHeroTargetView>();
+
+                yield return null;
+
+                indicator.SetView(view);
+                indicator.ToggleMouseEvent(false);
+
+                // 본인이면 제외
+                if (entity.Equals(_combatManager.MyTurn))
+                {
+                    continue;
+                }
+
+                indicator.HideIndicator();
+            }
+        }
+
+        // 자신의 스킬이 어떤 종류인지에 따라 지시등이 변합니다.
+        if (
+            heroSkillSO.Target == EHeroSkillTarget.Self ||
+            heroSkillSO.Target == EHeroSkillTarget.Ally ||
+            heroSkillSO.Target == EHeroSkillTarget.AllyOrSelf ||
+            heroSkillSO.Target == EHeroSkillTarget.AllAllies
+          )
+        {
+            _combatManager.MyTurnIndicator.ViewBuffIndicator();
+        }
+        else
+        {
+            _combatManager.MyTurnIndicator.ViewMyturnIndicator();
+        }
+
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            if (_entitiesIndicator.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
+            {
+                if (_combatManager.EntityList[i].entity == _combatManager.MyTurn)
+                {
+                    continue;
+                }
+
+                if (indicator.isHighlight)
+                {
+                    indicator.ViewTargetIndicator();
+                }
+            }
+        }
+    }
+
+    public void HideAllIndicator()
+    {
+        for (int i = 0; i < _combatManager.EntityList.Count; i++)
+        {
+            if (_entitiesIndicator.TryGetValue(_combatManager.EntityList[i].entity, out CIndicator indicator))
+            {
+                indicator.HideIndicator();
+                indicator.ToggleMouseEvent(false);
+            }
+        }
+    }
+
+    // 영웅 정보 및 스킬 인터페이스 활성화
+    public void OpenHeroInfomation(CPlayer hero)
     {
         if (hero == null)
         {
@@ -498,9 +817,14 @@ public class CCombatUI : MonoBehaviour
 
         for (int i = 0; i < _skillSlot.Count; i++)
         {
+            if (_isDoubleTapAfter && i >= 1)
+            {
+                _skillSlot[i].SetActive(false);
+                continue;
+            }
             _skillSlot[i].GetComponent<Image>().sprite = heroSO.SkillSlotBackground;
             _skillImage[i].sprite = hero.EquippedSkills[i].SkillIcon;
-            battleInput.SelectSkill(i);
+            _skillSlot[i].SetActive(true);
         }
 
         _heroName.text = heroSO.DefaultName;
@@ -509,6 +833,27 @@ public class CCombatUI : MonoBehaviour
         _heroInfo.SetActive(true);
         _skillListPanel.SetActive(true);
         _infoTriangle.SetActive(true);
+
+        if (!_isDoubleTapAfter)
+        {
+            _rankChangeBtn.SetActive(true);
+            _passBtn.SetActive(true);
+        }
+        else
+        {
+            _rankChangeBtn.SetActive(false);
+            _passBtn.SetActive(false);
+        }
+    }
+    // 살아남은 적만 노려야하기 때문에 so의 타겟을 변경해줘야합니다.
+    public void DoubleTapSetTarget(CPlayer hero, ERank rank)
+    {
+        _doubleTapTargetRank = (int)System.MathF.Log((float)rank, 2);
+
+        // 확인사살만 장착하도록
+        hero.TrySetTemporarySkillLoadout(_doubleTapAfterSkillLoadoutSOList[_doubleTapTargetRank]);
+
+        _isDoubleTapAfter = true;
     }
     public void CloseHeroInfomation()
     {
@@ -519,12 +864,27 @@ public class CCombatUI : MonoBehaviour
         _cursorSkill.SetActive(false);
         _cursorDiamond.SetActive(false);
         _currentSkillName.gameObject.SetActive(false);
+
     }
-    /// <summary>
-    /// 적 정보 탭 활성화
-    /// </summary>
-    /// <param name="enemy">마우스로 바라보는 대상</param>
-    /// <param name="isFullInfomation">플레이어 차례 : 모든정보 / 적 차례 : 저항정보 제외</param>
+
+    public void ResetSkillLoadoutSO(CPlayer hero)
+    {
+        if (!_isDoubleTapAfter)
+        {
+            return;
+        }
+
+        CPrint.Warn("Return SKILL");
+        CPrint.Log("Return State : " + hero.TryRestoreTemporarySkillLoadout().ToString());
+
+        for (int i = 0; i < hero.EquippedSkills.Count; i++)
+        {
+            CPrint.Log($"Return SKILL : {hero.EquippedSkills[i].SkillName}");
+        }
+        _isDoubleTapAfter = false;
+    }
+
+    // 적 정보 탭 활성화
     public void OpenEnemyInfomation(CEnemy enemy, bool isFullInfomation)
     {
         if (enemy == null)
@@ -560,15 +920,19 @@ public class CCombatUI : MonoBehaviour
         _enemyResistStatus.SetActive(false);
     }
     // 스킬 사용 시 처리
-    public void UseSkill(CSkillDataSO skillDataSO)
+    public void UseSkill(CSkillDataSO skillDataSO, bool onlyUseSkillName = false)
     {
         CloseHeroInfomation();
 
         _currentSkillName.text = skillDataSO.SkillName;
         OpenCombatPanel();
-        _combatBorder.SetActive(true);
-        _combatTriangle.SetActive(true);
         _currentSkillName.gameObject.SetActive(true);
+
+        if (!onlyUseSkillName)
+        {
+            _combatBorder.SetActive(true);
+            _combatTriangle.SetActive(true);
+        }
     }
     // 전투 패널 활성화
     public void OpenCombatPanel()
@@ -595,6 +959,7 @@ public class CCombatUI : MonoBehaviour
         _meltDownFront.SetActive(false);
         _resoluteFront.SetActive(false);
     }
+    // 타격 시 연출
     public void AttackLeft()
     {
         _rightHit.SetActive(false);
@@ -605,7 +970,7 @@ public class CCombatUI : MonoBehaviour
         _rightHit.SetActive(true);
         _leftHit.SetActive(false);
     }
-    // 누군가의 의지가 시험받고 있습니다.
+    // 영웅의 의지 시험
     public void OpenTemptation(CPlayer hero)
     {
         ResetCombatPanel();
@@ -618,7 +983,7 @@ public class CCombatUI : MonoBehaviour
     public void OpenMeltDown()
     {
         ResetCombatPanel();
-        
+
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
         _meltdownPanel.SetActive(true);
@@ -632,7 +997,7 @@ public class CCombatUI : MonoBehaviour
     public void OpenResolute()
     {
         ResetCombatPanel();
-        
+
         _heroTemptationResult.gameObject.SetActive(true);
         _combatFrontPanel.SetActive(true);
         _resolutePanel.SetActive(true);
@@ -646,17 +1011,38 @@ public class CCombatUI : MonoBehaviour
     public void TogglePrefabRoot(bool toggle)
     {
         _turnOrderRoot.SetActive(toggle);
-        _entityStateRoot.SetActive(toggle);
+        _stateRoot.SetActive(toggle);
         _iconRoot.SetActive(toggle);
         _textRoot.SetActive(toggle);
-        _turnGuideRoot.SetActive(toggle);
-    }
-    public void ToggleTurnGuideRoot(bool toggle)
-    {
-        _turnGuideRoot.SetActive(toggle);
+        _indicatorRoot.SetActive(toggle);
     }
     public void ToggleEntityStateRoot(bool toggle)
     {
-        _entityStateRoot.SetActive(toggle);
+        _stateRoot.SetActive(toggle);
+    }
+
+    public void ToggleIndicatorRoot(bool toggle)
+    {
+        _indicatorRoot.SetActive(toggle);
+    }
+
+    public void DisableTooltip()
+    {
+        _tokenTooltip.SetActive(false);
+        _dotTooltip.SetActive(false);
+    }
+    // 스킬 이펙트 그리기
+    public void DrawSkillEffect(string skillName, CEntity actor,  List<Transform> transforms, bool isRiposte)
+    {
+        _skillEffectDrawManager.DrawEffect(skillName, actor.gameObject.transform, transforms, isRiposte);
+    }
+    public void DrawRiposteSkillEffect(string skillName, CEntity actor, CEntity riposteEntity)
+    {
+        _skillEffectDrawManager.DrawEffect(skillName, actor, riposteEntity);
+    }
+    // 이펙트 즉시 가리기
+    public void DisableDrawSkillEffect()
+    {
+        _skillEffectDrawManager.DisableAllEffect();
     }
 }

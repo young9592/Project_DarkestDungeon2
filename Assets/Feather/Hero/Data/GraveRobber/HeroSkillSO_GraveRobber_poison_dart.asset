@@ -12,19 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_GraveRobber_poison_dart
   m_EditorClassIdentifier: 
-  _skillName: Poison Dart
+  _skillName: "\uB9F9\uB3C5 \uB2E4\uD2B8"
   _skillIcon: {fileID: 21300000, guid: fd81623e80fa80b4bab5ea758b5733ad, type: 3}
   _useableRank: 14
-  _targetableRank: 15
+  _targetableRank: -1
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: b51e2f10a2f740e9be3c61c6f231b095, type: 2}
-  - {fileID: 11400000, guid: 226bb9dd42324877bf79d8bcd643078b, type: 2}
+  - {fileID: 11400000, guid: e7191e1e4616079489aade63792049ff, type: 2}
+  - {fileID: 11400000, guid: 8df3726aea3c48439e25a67270b0529e, type: 2}
+  - {fileID: 11400000, guid: 6d21b364b69e97d43bb108744aa26722, type: 2}
+  _critChance: 5
+  _mainDescription: "\ud53c\ud574: 2-4 \uce58\uba85\ud0c0: 5%\n\ub300\uc0c1\uc5d0 <sprite=21> \uc788\uc73c\uba74 <sprite=13> <color=#FFFF00>2</color>"
+  _subDescription: "<color=#2c4a75>\ub300\uc0c1: </color><sprite=13><color=#FFFF00>2</color>"
+  _denialCategories: 2
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_GraveRobber_poison_dart
   _endState: Base Layer.OriginalRecover_GraveRobber_poison_dart
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_dart
   _selectionHoldState: Base Layer.SourceReady_dart
   _executionStartState: Base Layer.OriginalAction_GraveRobber_poison_dart

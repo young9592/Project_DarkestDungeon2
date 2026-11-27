@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_Flayer_IgnitedBladeTornado
+  m_EditorClassIdentifier: 
+  _skillName: Blade Tornado
+  _skillIcon: {fileID: 0}
+  _useableRank: 3
+  _targetableRank: 3
+  _isGroupTarget: 1
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: ffcf4a1d986e49ee938bfac574164aaa, type: 2}
+  - {fileID: 11400000, guid: a683cc4e42f748c0a65a3db893db6588, type: 2}
+  - {fileID: 11400000, guid: 2a7b3041a62f46e8ab636358a32f2002, type: 2}
+  - {fileID: 11400000, guid: c7ce0fd870544d378dc546c828a70aba, type: 2}

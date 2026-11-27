@@ -100,7 +100,7 @@ public class CDiamondButton : MonoBehaviour, IPointerUpHandler, IPointerDownHand
             yield return null;
         }
 
-        _combatUI.ActionPass();
+        _combatUI.PressedPass();
         _backEffect.fillAmount = 0;
         _isPress = false;
         _pressCoroutine = null;

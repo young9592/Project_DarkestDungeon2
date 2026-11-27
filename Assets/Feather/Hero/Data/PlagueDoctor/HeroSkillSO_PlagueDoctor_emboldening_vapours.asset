@@ -12,15 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_emboldening_vapours
   m_EditorClassIdentifier: 
-  _skillName: Emboldening Vapours
+  _skillName: "\uAC15\uD654 \uC791\uC6A9\uC81C"
   _skillIcon: {fileID: 21300000, guid: 3c40af37d1d06aa4aa9cd9a001410d67, type: 3}
   _useableRank: -1
   _targetableRank: -1
   _isGroupTarget: 0
   _cooldown: 1
   _effectList:
-  - {fileID: 11400000, guid: b1156b49ec2541888d1599dec8633afd, type: 2}
-  - {fileID: 11400000, guid: 884f122e9d514ebcb971aae9f41bd016, type: 2}
+  - {fileID: 11400000, guid: 24eb3deb44d16c34989ee10164cf2219, type: 2}
+  - {fileID: 11400000, guid: e21826cb18f500a418742090bf99f3c6, type: 2}
+  _critChance: 0
+  _mainDescription: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04: 1"
+  _subDescription: "<color=#816b44>\uB300\uC0C1: </color> <sprite=0>, <sprite=7>"
+  _denialCategories: 0
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

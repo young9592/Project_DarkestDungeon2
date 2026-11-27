@@ -8,6 +8,8 @@ public class CHeroStressRecoveryStrategy : CEffectStrategy
         if (context == null || effectData == null || !(context.Target is CPlayer hero)
             || hero.IsDead || hero.CurrentStress < 5 || (!context.IsHit && context.Caster != hero)) return;
 
+        if (context.Caster is CPlayer caster && caster.DenialRestriction == EDenialRestriction.Reason) return;
+
         hero.ModifyStress(-Mathf.Abs(effectData.Damage));
     }
 }

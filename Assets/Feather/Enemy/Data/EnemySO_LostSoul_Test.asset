@@ -43,6 +43,7 @@ MonoBehaviour:
     _condition: 4
   - _skill: {fileID: 11400000, guid: ff21d6052ba34d7e93fc07c24aa72f83, type: 2}
     _rankMovement: -2
+    _attackMoveDuration: 1.05
     _weight: 1
     _minHpPercent: 0
     _maxHpPercent: 100
@@ -54,7 +55,7 @@ MonoBehaviour:
   _corpseSprite: {fileID: 21300000, guid: 7d58255767df402b9e2d4ca98e7b9509, type: 3}
   _corpseData: {fileID: 11400000, guid: 002c15588bb24c07b5d0f192aae84264, type: 2}
   _corpseHealth: 5
-  _corpseWidth: 0.014
+  _corpseWidth: 0.011
   _startingToken: 0
   _startingTokenCount: 0
   _extraStartingTokenChance: 0

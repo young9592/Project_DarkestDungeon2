@@ -6,28 +6,25 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Build.unity
-    guid: 95a0c843afb92444fa43c875b5ac5a8c
-  - enabled: 1
     path: Assets/Scenes/Main/Title.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Park.unity
+    path: Assets/Scenes/Main/Valley.unity
     guid: d31241fee07789346ae163c34546c8de
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Sin/Temp_Sin_Chapter.unity
-    guid: 812dbc0c3baa09246be4bbb8132581ed
+    path: Assets/Scenes/Main/Sprawl.unity
+    guid: 0996e5c9f68282d40a61d98aae93560c
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Sin/Temp_Sin_TheCrossroads.unity
-    guid: 960abbe9ba8a43144a3605d635d42051
+    path: Assets/Scenes/Main/Inn.unity
+    guid: 2166bfb4de2f7da46b7a0c528cb9c2f6
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Go/Temp_Go.unity
-    guid: 67379238b5a90174e9e40c7458858458
+    path: Assets/Scenes/Main/Battle.unity
+    guid: 04cb103b579eb7546af2a7862a1933d2
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Lee.unity
-    guid: aad721ed710a41c4485304a0f1b374a1
+    path: Assets/Scenes/Main/Combat/Combat_Valley.unity
+    guid: 9d09dd26212716542aa10a3e6b38bd6d
   - enabled: 1
-    path: Assets/Scenes/Test/Temp_Jo.unity
-    guid: 80c2dac491e1df944bb109f58d93d474
+    path: Assets/Scenes/Main/Combat/Combat_Sprawl.unity
+    guid: 61ae3f5c743673b4f880d3d0c5569258
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 46c6450c7f4b47047a70b95cd25808bd, type: 2}

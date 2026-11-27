@@ -76,7 +76,8 @@ public class CHeroSkillMovement
         for (int i = 0; i < _movedMembers.Count; i++)
         {
             CPlayer member = _movedMembers[i];
-            if (member != null && member.RankPresentation != null)
+            if (member != null && member.RankPresentation != null
+                && member.RankPresentation.HasPendingMovement())
             {
                 member.RankPresentation.SnapToRank();
             }

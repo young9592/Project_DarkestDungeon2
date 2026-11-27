@@ -12,13 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_ounce_of_prevention
   m_EditorClassIdentifier: 
-  _skillName: Ounce of Prevention
+  _skillName: "\uC608\uBC29 \uC870\uCE58"
   _skillIcon: {fileID: 21300000, guid: 5a23097b9c9c3e34ea57515b283c10d4, type: 3}
   _useableRank: 12
   _targetableRank: -1
-  _isGroupTarget: 0
+  _isGroupTarget: 1
   _cooldown: 3
-  _effectList: []
+  _effectList:
+  - {fileID: 11400000, guid: 0257f1c29c3daaf4db75a5f7d63be2ab, type: 2}
+  - {fileID: 11400000, guid: 76b40915af8aa0b489085d48b3e55689, type: 2}
+  _critChance: 0
+  _mainDescription: "\uc7ac\uc0ac\uc6a9 \ub300\uae30\uc2dc\uac04: 3"
+  _subDescription: "<color=#816b44>\uB300\uC0C1: </color><sprite=8>-1, <sprite=20>\n"
+  _denialCategories: 8
   _usesPerBattle: 0
   _moveForwardOneRank: 0
   _rankMovement: 0

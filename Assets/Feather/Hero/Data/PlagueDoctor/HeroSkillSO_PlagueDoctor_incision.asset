@@ -12,19 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_PlagueDoctor_incision
   m_EditorClassIdentifier: 
-  _skillName: Incision
+  _skillName: "\uC808\uAC1C"
   _skillIcon: {fileID: 21300000, guid: fd2979c17340b1447a7f4c15415d3e89, type: 3}
   _useableRank: 7
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 79d8a10f786d411f9258b21cc60cd9dc, type: 2}
-  - {fileID: 11400000, guid: 9ae8aeb5758645a4ae0f8ef739953ced, type: 2}
+  - {fileID: 11400000, guid: 8f42f12d820c43178872745de713a4e8, type: 2}
+  - {fileID: 11400000, guid: ed49da046106fbb458b1d349148d5d92, type: 2}
+  - {fileID: 11400000, guid: 3fa5b1c9a4a12b64592bd36abaa243a0, type: 2}
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 3-6 \uce58\uba85\ud0c0:10%\n\ub300\uc0c1\uc5d0 <sprite=21>\uc788\uc73c\uba74 <sprite=14> <color=#6c0618>4</color>"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color> <sprite=14> <color=#6c0618>3</color>"
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_PlagueDoctor_incision
   _endState: Base Layer.OriginalRecover_PlagueDoctor_incision
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_knifeslash
   _selectionHoldState: Base Layer.SourceReady_knifeslash
   _executionStartState: Base Layer.OriginalAction_PlagueDoctor_incision

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_GraveRobber_poison_dart_M
+  m_EditorClassIdentifier: 
+  _skillName: "\uB9F9\uB3C5 \uB2E4\uD2B8"
+  _skillIcon: {fileID: 21300000, guid: fd81623e80fa80b4bab5ea758b5733ad, type: 3}
+  _useableRank: 14
+  _targetableRank: -1
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 73267c491f03414cad6abc610e975af4, type: 2}
+  - {fileID: 11400000, guid: 45c094f12a580d34f968bbb4dcdbbcb4, type: 2}
+  - {fileID: 11400000, guid: bd232492223f0b44382672c062e29148, type: 2}
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 2-5 \uce58\uba85\ud0c0: 10%\n\ub300\uc0c1\uc5d0 <sprite=21> \uc788\uc73c\uba74 <sprite=13> <color=#FFFF00>4</color>"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=13><color=#FFFF00>4</color>"
+  _denialCategories: 2
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 2157bec6dae0d1149b5a5cbb9e0a9f31, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_GraveRobber_poison_dart
+  _endState: Base Layer.OriginalRecover_GraveRobber_poison_dart
+  _presentationNote: 
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_dart
+  _selectionHoldState: Base Layer.SourceReady_dart
+  _executionStartState: Base Layer.OriginalAction_GraveRobber_poison_dart
+  _feedback: {fileID: 11400000, guid: 1ad418725bf6fe14c835550bc3ec5250, type: 2}

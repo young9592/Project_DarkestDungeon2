@@ -7,6 +7,7 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     [SerializeField] private CHeroFeedbackVisual _launch;
     [SerializeField] private CHeroFeedbackVisual _projectile;
     [SerializeField] private CHeroFeedbackVisual _impact;
+    [SerializeField] private bool _playGroupImpactOnRelease;
     [SerializeField, Range(0.0f, 0.8f)] private float _releaseTime = 0.1f;
     [SerializeField, Range(1, 3)] private int _shotCount = 1;
     [SerializeField, Range(0.05f, 0.25f)] private float _shotSpacing = 0.15f;
@@ -15,6 +16,38 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     [SerializeField] private AudioClip _launchSound;
     [SerializeField] private AudioClip _impactSound;
     [SerializeField, Range(0.0f, 1.0f)] private float _volume = 0.5f;
+    [Header("Skill Audio")]
+    [SerializeField] private AudioClip _preparationSound;
+    [SerializeField] private AudioClip _preparationLoopSound;
+    [SerializeField] private AudioClip _useSound;
+    [SerializeField] private AudioClip _missSound;
+    [SerializeField] private AudioClip _returnSound;
+
+    [Header("Sound Timing (Seconds)")]
+    [SerializeField] private CSkillAudioTiming _audioTiming = new CSkillAudioTiming();
+
+    public CSkillAudioTiming AudioTiming { get { return _audioTiming; } }
+
+    public AudioClip PreparationSound
+    {
+        get { return _preparationSound; }
+    }
+    public AudioClip PreparationLoopSound
+    {
+        get { return _preparationLoopSound; }
+    }
+    public AudioClip UseSound
+    {
+        get { return _useSound; }
+    }
+    public AudioClip MissSound
+    {
+        get { return _missSound; }
+    }
+    public AudioClip ReturnSound
+    {
+        get { return _returnSound; }
+    }
 
     public CHeroFeedbackVisual Launch
     {
@@ -27,6 +60,10 @@ public class CHeroSkillFeedbackSO : ScriptableObject
     public CHeroFeedbackVisual Impact
     {
         get { return _impact; }
+    }
+    public bool PlayGroupImpactOnRelease
+    {
+        get { return _playGroupImpactOnRelease; }
     }
     public float ReleaseTime
     {

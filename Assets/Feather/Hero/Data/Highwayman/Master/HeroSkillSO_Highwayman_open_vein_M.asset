@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_Highwayman_open_vein_M
+  m_EditorClassIdentifier: 
+  _skillName: "\uC815\uB9E5 \uC808\uAC1C"
+  _skillIcon: {fileID: 21300000, guid: f3f8ead65e17e4e4c97b626ee343a3e3, type: 3}
+  _useableRank: 7
+  _targetableRank: 3
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: abf4422b3b464c43950417c3b23fbbeb, type: 2}
+  - {fileID: 11400000, guid: ed49da046106fbb458b1d349148d5d92, type: 2}
+  - {fileID: 11400000, guid: 8006c2c7292a5124faf023d0c97fd017, type: 2}
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 4-6 \uce58\uba85\ud0c0: 10%\n\ub300\uc0c1\uc5d0 <sprite=21>\uc788\uc73c\uba74 <sprite=14> <color=#6c0618>3</color>"
+  _subDescription: "<color=#2c4a75>\uB300\uC0C1: </color><sprite=14> <color=#6c0618>3(3\uD134)</color>"
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 6d45ddd1737e39d4e8a0669d89dc427d, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_Highwayman_open_vein
+  _endState: Base Layer.OriginalRecover_Highwayman_open_vein
+  _presentationNote: Shares the Wicked Slice motion.
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_wicked_slice
+  _selectionHoldState: Base Layer.SourceReady_wicked_slice
+  _executionStartState: Base Layer.OriginalAction_Highwayman_open_vein
+  _feedback: {fileID: 11400000, guid: 112e8eddcfc6773409039aba2cf72de7, type: 2}

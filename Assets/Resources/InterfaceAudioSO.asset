@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd347ec741e31504384baaaafbcc92df, type: 3}
+  m_Name: InterfaceAudioSO
+  m_EditorClassIdentifier: 
+  _volume: 0.5
+  _actors: []
+  _sounds:
+  - _key: select
+    _clip: {fileID: 8300000, guid: 705058c85a137f046bfb0b4e32686fa0, type: 3}
+  - _key: cancel
+    _clip: {fileID: 8300000, guid: b24c3d43adeafd547955938619bb0a9d, type: 3}
+  - _key: hover
+    _clip: {fileID: 8300000, guid: c97d3e1bb97ec2c4f9cf9a1076903447, type: 3}
+  - _key: invalid
+    _clip: {fileID: 8300000, guid: c8bd85c2d146aeb4ca27ab68515442d7, type: 3}
+  - _key: menu_open
+    _clip: {fileID: 8300000, guid: f15b8560c10b75f41b36307e8d007cba, type: 3}
+  - _key: menu_close
+    _clip: {fileID: 8300000, guid: 2792d2306371dfe4cb30f040511355d6, type: 3}
+  - _key: skill_equip
+    _clip: {fileID: 8300000, guid: 0405dbb7aabcfc448aba29adf79bb6d4, type: 3}
+  - _key: skill_unequip
+    _clip: {fileID: 8300000, guid: ebb77300c182c9a41a689416070b6250, type: 3}
+  - _key: inventory_open
+    _clip: {fileID: 8300000, guid: f500d1c30ea7e1941b0ad142d8e652a5, type: 3}
+  - _key: inventory_close
+    _clip: {fileID: 8300000, guid: f76d0aa20f57ae447b9e94978268cac0, type: 3}
+  - _key: title_intro
+    _clip: {fileID: 8300000, guid: 4878b3f379cd684418596b94faf9606b, type: 3}
+  - _key: title_loop
+    _clip: {fileID: 8300000, guid: 753efd0cdd1993442b226f320389ddcf, type: 3}

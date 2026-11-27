@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec55831651844b40a5e9f1c4d9d6625, type: 3}
+  m_Name: HeroPartySO_mam
+  m_EditorClassIdentifier: 
+  _members:
+  - _prefab: {fileID: 1657393592531052659, guid: 2dd9a98bf47f0ba4b84cdafc07d2d12a, type: 3}
+    _rank: 1
+    _loadout: {fileID: 11400000, guid: fe1b7bb862a2c5143a8e5b2364243744, type: 2}
+  - _prefab: {fileID: 1657393592531052659, guid: 2dd9a98bf47f0ba4b84cdafc07d2d12a, type: 3}
+    _rank: 2
+    _loadout: {fileID: 11400000, guid: 34899e1e7ddd9fb4c84036de3d8c563b, type: 2}
+  - _prefab: {fileID: 1657393592531052659, guid: 2dd9a98bf47f0ba4b84cdafc07d2d12a, type: 3}
+    _rank: 4
+    _loadout: {fileID: 11400000, guid: d1abbb3ba6dc48b4e80a225d624ce72a, type: 2}
+  - _prefab: {fileID: 1657393592531052659, guid: 2dd9a98bf47f0ba4b84cdafc07d2d12a, type: 3}
+    _rank: 8
+    _loadout: {fileID: 11400000, guid: 4e42173661a2a5d46a3787cfad327c63, type: 2}

@@ -1,5 +1,15 @@
 using UnityEngine;
 
+[System.Flags]
+public enum EHeroDenialCategory
+{
+    None = 0,
+    Melee = 1,
+    Ranged = 2,
+    HealthRecovery = 4,
+    StressRecovery = 8
+}
+
 public enum EHeroSkillTarget
 {
     Enemy,
@@ -13,6 +23,36 @@ public enum EHeroSkillTarget
 [CreateAssetMenu(menuName = "Data/Hero/Skill", fileName = "HeroSkillSO_")]
 public class CHeroSkillSO : CSkillDataSO
 {
+    [Header("Description & Crit")]
+    [SerializeField, Range(0, 100)] private int _critChance = 5;
+    [TextArea(2, 4)]
+    [SerializeField] private string _mainDescription;
+    [TextArea(2, 4)]
+    [SerializeField] private string _subDescription;
+
+    public int CritChance
+    {
+        get { return _critChance; }
+    }
+
+    public string MainDescription
+    {
+        get { return _mainDescription; }
+    }
+
+    public string SubDescription
+    {
+        get { return _subDescription; }
+    }
+
+    [Header("Denial")]
+    [SerializeField] private EHeroDenialCategory _denialCategories;
+
+    public EHeroDenialCategory DenialCategories
+    {
+        get { return BaseSkill._denialCategories; }
+    }
+
     [Header("Battle Limits")]
     [SerializeField, Min(0)] private int _usesPerBattle;
 
@@ -139,7 +179,7 @@ public class CHeroSkillSO : CSkillDataSO
 
         if ((actor is CPlayer heroActor && heroActor.IsDeathPresented)
             || (target is CPlayer heroTarget && heroTarget.IsDeathPresented)
-            || (target is CEnemy enemyTarget && enemyTarget.IsDeathPresented))
+            || (target is CEnemy enemyTarget && (enemyTarget.IsDead || enemyTarget.IsDeathPresented)))
         {
             return false;
         }
@@ -149,16 +189,11 @@ public class CHeroSkillSO : CSkillDataSO
             for (int i = 0; i < EffectList.Count; i++)
             {
                 CEffectSO effect = EffectList[i];
-                if (effect == null || !(effect.Strategy is CHeroScienceHealStrategy)) continue;
+                if (effect == null || !(effect.Strategy is CHeroScienceHealStrategy)
+                    && !(effect.Strategy is CTokenConsumeHealStrategy)) continue;
                 if (!(target is CPlayer scienceTarget) || scienceTarget.HeroData == null
                     || (long)scienceTarget.CurrentHp * 2 >= scienceTarget.HeroData.MaxHealth) return false;
             }
-        }
-
-        CEnemy enemy = target as CEnemy;
-        if (enemy != null && enemy.CurrentHp <= 0)
-        {
-            return false;
         }
 
         // 사망 시스템 연결 전까지 시체 대상 스킬 사용 막기
@@ -195,6 +230,69 @@ public class CHeroSkillSO : CSkillDataSO
         for (int i = 0; i < EffectList.Count; i++)
         {
             if (EffectList[i] != null && EffectList[i].EffectType == EEffectType.Damage) return true;
+        }
+        return false;
+    }
+
+    public bool IsBlockedByDenial(CTokenManager tokenManager)
+    {
+        if (tokenManager == null) return false;
+
+        EHeroDenialCategory categories = DenialCategories;
+
+        if (tokenManager.HasToken(EEffectType.DenialOfArms) &&
+            (categories & EHeroDenialCategory.Melee) != 0)
+        {
+            return true;
+        }
+
+        if (tokenManager.HasToken(EEffectType.DenialOfReach) &&
+            (categories & EHeroDenialCategory.Ranged) != 0)
+        {
+            return true;
+        }
+
+        if (tokenManager.HasToken(EEffectType.DenialOfFortitude) &&
+            ((categories & EHeroDenialCategory.HealthRecovery) != 0 || HasHealEffect()))
+        {
+            return true;
+        }
+
+        if (tokenManager.HasToken(EEffectType.DenialOfReason) &&
+            ((categories & EHeroDenialCategory.StressRecovery) != 0 || HasStressHealEffect()))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HasHealEffect()
+    {
+        if (EffectList == null) return false;
+        for (int i = 0; i < EffectList.Count; i++)
+        {
+            CEffectSO effect = EffectList[i];
+            if (effect == null) continue;
+            if (effect.EffectType == EEffectType.Heal && effect.Condition == EEffectCondition.None)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool HasStressHealEffect()
+    {
+        if (EffectList == null) return false;
+        for (int i = 0; i < EffectList.Count; i++)
+        {
+            CEffectSO effect = EffectList[i];
+            if (effect == null) continue;
+            if (effect.EffectType == EEffectType.Stress && effect.Damage < 0 && effect.Condition == EEffectCondition.None)
+            {
+                return true;
+            }
         }
         return false;
     }

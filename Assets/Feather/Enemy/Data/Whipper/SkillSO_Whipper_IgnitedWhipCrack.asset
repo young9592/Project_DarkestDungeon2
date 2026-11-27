@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b477d65fd85814282aa653d72e352f, type: 3}
+  m_Name: SkillSO_Whipper_IgnitedWhipCrack
+  m_EditorClassIdentifier: 
+  _skillName: Whip Crack
+  _skillIcon: {fileID: 0}
+  _useableRank: 3
+  _targetableRank: 7
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 4326b3f81d08ac340af88774b053e0a6, type: 2}
+  - {fileID: 11400000, guid: c2214d4d935ea4145afe0918f56cc439, type: 2}
+  - {fileID: 11400000, guid: f7db700286aa27540bc769138fd7e129, type: 2}

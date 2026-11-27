@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
+  m_Name: HeroSkillSO_Highwayman_pistol_shot_M
+  m_EditorClassIdentifier: 
+  _skillName: "\uAD8C\uCD1D \uC0AC\uACA9"
+  _skillIcon: {fileID: 21300000, guid: 1344bdc7ea21b9041856fb7ff9261415, type: 3}
+  _useableRank: 14
+  _targetableRank: 14
+  _isGroupTarget: 0
+  _cooldown: 0
+  _effectList:
+  - {fileID: 11400000, guid: 66122660ac354435a8fc8358a9653bbb, type: 2}
+  - {fileID: 11400000, guid: d70d998d2deb402469f035b0a7575341, type: 2}
+  _critChance: 15
+  _mainDescription: "\ud53c\ud574: 5-8 \uce58\uba85\ud0c0: 15%\n\ub300\uc0c1\uc5d0 <sprite=21>\uc788\uc73c\uba74 <sprite=24>"
+  _subDescription: 
+  _denialCategories: 2
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 11400000, guid: 5014933490c21d14e8e06d3df48d5448, type: 2}
+  _target: 0
+  _startState: Base Layer.OriginalAntic_Highwayman_pistol_shot
+  _endState: Base Layer.OriginalRecover_Highwayman_pistol_shot
+  _presentationNote: 
+  _requiresCorpse: 0
+  _clearsCorpses: 0
+  _selectionStartState: Base Layer.SourceSelect_point_blank_shot
+  _selectionHoldState: Base Layer.SourceReady_point_blank_shot
+  _executionStartState: Base Layer.OriginalAction_Highwayman_pistol_shot
+  _feedback: {fileID: 11400000, guid: b2432bda5093cb64e823b411810ebf71, type: 2}

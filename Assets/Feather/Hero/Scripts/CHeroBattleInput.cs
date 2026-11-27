@@ -225,6 +225,11 @@ public class CHeroBattleInput : MonoBehaviour
         }
 
         CSkillDataSO skill = skills[index];
+        if (_hero.IsSkillDenied(skill))
+        {
+            return "Blocked by Denial of " + _hero.DenialRestriction;
+        }
+
         if (_hero.SkillUses.GetRemaining(skill) == 0)
         {
             return "No uses remaining this battle";

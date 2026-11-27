@@ -8,7 +8,7 @@ public class CDotDetonateStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
-        if (context == null || context.Target == null) return;
+        if (context == null || context.Target == null || effectData == null) return;
 
         if (!context.IsHit)
         {
@@ -25,6 +25,6 @@ public class CDotDetonateStrategy : CEffectStrategy
         }
 
         CPrint.Log($"[{context.Caster.name}] 의 <{effectData.Name}> 발동! [{context.Target.name}] 의 남은 도트 데미지를 폭발시켜 [{burstDamage}] 데미지를 입힙니다.");
-        context.Target.TakeDamage(burstDamage);
+        context.Target.ApplyDamageEffect(context.Caster, burstDamage, false, effectData.Execution);
     }
 }

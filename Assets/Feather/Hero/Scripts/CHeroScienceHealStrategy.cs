@@ -25,7 +25,7 @@ public class CHeroScienceHealStrategy : CEffectStrategy
         int percent = 10 + ConsumeTokens(hero.TokenManager, _positiveTokens) * 10;
         if (_removeNegativeTokens) percent += ConsumeTokens(hero.TokenManager, _negativeTokens) * 5;
         int amount = Mathf.RoundToInt(hero.HeroData.MaxHealth * (percent / 100f));
-        if (amount > 0) hero.TakeDamage(-amount);
+        if (amount > 0) hero.ApplyHealingEffect(context.Caster, amount, false);
     }
 
     private int ConsumeTokens(CTokenManager manager, EEffectType[] types)

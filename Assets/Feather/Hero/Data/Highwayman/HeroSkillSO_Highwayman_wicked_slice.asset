@@ -12,18 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_wicked_slice
   m_EditorClassIdentifier: 
-  _skillName: Wicked Slice
+  _skillName: "\uC57C\uBE44\uD55C \uCE7C\uC9C8"
   _skillIcon: {fileID: 21300000, guid: 042f50d83c4f16248ae39adab582ecf0, type: 3}
   _useableRank: 7
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: ef735276807e42e89b95a7aec07579e4, type: 2}
+  - {fileID: 11400000, guid: cbe7f1101d6bce24b8dc82d7b139dc92, type: 2}
+  _critChance: 15
+  _mainDescription: "\ud53c\ud574: 4-8, \uce58\uba85\ud0c0: 15%\n<color=#816b44>\ucc98\ud615</color> 1"
+  _subDescription: 
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_wicked_slice
   _endState: Base Layer.OriginalRecover_Highwayman_wicked_slice
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_wicked_slice
   _selectionHoldState: Base Layer.SourceReady_wicked_slice
   _executionStartState: Base Layer.OriginalAction_Highwayman_wicked_slice

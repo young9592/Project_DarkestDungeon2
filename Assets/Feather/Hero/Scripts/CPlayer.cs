@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Security.Cryptography;
@@ -24,6 +24,7 @@ public class CPlayer : CEntity
 
     // 전투에 들고 온 장착할 스킬 리스트
     private List<CSkillDataSO> _equippedSkills = new List<CSkillDataSO>();
+    private List<CSkillDataSO> _originalEquippedSkills;
     // 유저가 클릭해서 실행 대기 중인 스킬
     private CSkillDataSO _selectedSkill;
     // 몸에 걸리는 상태이상 인스턴스 목록
@@ -33,10 +34,16 @@ public class CPlayer : CEntity
     #region Events
     // 스킬 타케팅까지 완료되었을시 BattleCore에 '행동 실행' 요청 이벤트
     public event Action<CPlayer, CEntity, CSkillDataSO> OnSkillActionRequested;
+    public event Action<EEffectType> OnStatusEffectApplied;
+    public event Action OnStatusEffectsCured;
+    public event Action OnDeathblowResisted;
+    public event Action<EEffectType> OnStatusEffectTicked;
 
     // 배틀 상태 변화 이벤트
     public event Action<CPlayer, int, int> OnHealthChanged;
     public event Action<CPlayer, int, int> OnStressChanged;
+    // 실제 증가량은 양수, 회복량은 음수. 마지막 값은 공포로 인한 변화 여부.
+    public event Action<CPlayer, int, bool> OnStressEffectResolved;
     public event Action<CPlayer, bool> OnDeathDoorChanged;
     public event Action<CPlayer> OnMeltdownTriggered;
     public event Action<CPlayer> OnResoluteTriggered;
@@ -46,7 +53,9 @@ public class CPlayer : CEntity
 
     private bool _isRequesting;
     private bool _isStartingTurn;
+    public bool IsStartingTurn { get { return _isStartingTurn; } }
     private bool _isTurnSkipped;
+    private EDenialRestriction _denialRestriction;
     private readonly CHeroSkillUseState _skillUses = new CHeroSkillUseState();
     private readonly CHeroSkillMovement _skillMovement = new CHeroSkillMovement();
     public CHeroSkillUseState SkillUses
@@ -86,7 +95,7 @@ public class CPlayer : CEntity
     {
         get { return _actionTargets; }
     }
-    public int CurrentHp
+    public override int CurrentHp
     {
         get { return _currentHp; }
     }
@@ -113,6 +122,16 @@ public class CPlayer : CEntity
         get { return _equippedSkills; }
     }
 
+    public bool HasTemporarySkillLoadout
+    {
+        get { return _originalEquippedSkills != null; }
+    }
+
+    public IReadOnlyList<CSkillDataSO> PersistentEquippedSkills
+    {
+        get { return _originalEquippedSkills != null ? _originalEquippedSkills : _equippedSkills; }
+    }
+
     public override CEntityDataSO EntityData
     {
         get { return _heroData; }
@@ -135,6 +154,118 @@ public class CPlayer : CEntity
         CancelSkillSelection();
     }
 
+    public EDenialRestriction DenialRestriction
+    {
+        get
+        {
+            if (_denialRestriction != EDenialRestriction.None)
+            {
+                return _denialRestriction;
+            }
+
+            if (TokenManager != null)
+            {
+                if (TokenManager.HasToken(EEffectType.DenialOfArms)) return EDenialRestriction.Arms;
+                if (TokenManager.HasToken(EEffectType.DenialOfReach)) return EDenialRestriction.Reach;
+                if (TokenManager.HasToken(EEffectType.DenialOfFortitude)) return EDenialRestriction.Fortitude;
+                if (TokenManager.HasToken(EEffectType.DenialOfReason)) return EDenialRestriction.Reason;
+            }
+
+            return EDenialRestriction.None;
+        }
+    }
+    public void SetDenialRestriction(EDenialRestriction restriction, int duration = 2)
+    {
+        _denialRestriction = restriction;
+
+        if (TokenManager != null)
+        {
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfArms);
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfReach);
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfFortitude);
+            TokenManager.RemoveTokenAll(EEffectType.DenialOfReason);
+
+            if (!_isDead && restriction != EDenialRestriction.None)
+            {
+                EEffectType denialToken = GetDenialTokenType(restriction);
+                if (denialToken != EEffectType.None)
+                {
+                    TokenManager.AddToken(denialToken, 1, Mathf.Max(1, duration));
+                }
+            }
+        }
+
+        if (_selectedSkill != null && IsSkillDenied(_selectedSkill))
+        {
+            CancelSkillSelection();
+        }
+    }
+
+    public static void ApplyPartyDenialRestriction(IReadOnlyList<CPlayer> party, EDenialRestriction restriction, int duration = 2)
+    {
+        if (party == null) return;
+
+        for (int i = 0; i < party.Count; i++)
+        {
+            CPlayer hero = party[i];
+            if (hero == null || hero.IsDead) continue;
+
+            hero.SetDenialRestriction(restriction, duration);
+        }
+    }
+
+    private static EEffectType GetDenialTokenType(EDenialRestriction restriction)
+    {
+        switch (restriction)
+        {
+            case EDenialRestriction.Arms:       return EEffectType.DenialOfArms;
+            case EDenialRestriction.Reach:      return EEffectType.DenialOfReach;
+            case EDenialRestriction.Fortitude:  return EEffectType.DenialOfFortitude;
+            case EDenialRestriction.Reason:     return EEffectType.DenialOfReason;
+            default:                            return EEffectType.None;
+        }
+    }
+
+    private bool HasAnyDenialToken()
+    {
+        if (TokenManager == null) return false;
+        return TokenManager.HasToken(EEffectType.DenialOfArms)
+            || TokenManager.HasToken(EEffectType.DenialOfReach)
+            || TokenManager.HasToken(EEffectType.DenialOfFortitude)
+            || TokenManager.HasToken(EEffectType.DenialOfReason);
+    }
+
+    public bool IsSkillDenied(CSkillDataSO skill)
+    {
+        if (!(skill is CHeroSkillSO heroSkill)) return false;
+
+        EHeroDenialCategory blockedCategories = EHeroDenialCategory.None;
+
+        switch (_denialRestriction)
+        {
+            case EDenialRestriction.Arms: blockedCategories |= EHeroDenialCategory.Melee; break;
+            case EDenialRestriction.Reach: blockedCategories |= EHeroDenialCategory.Ranged; break;
+            case EDenialRestriction.Fortitude: blockedCategories |= EHeroDenialCategory.HealthRecovery; break;
+            case EDenialRestriction.Reason: blockedCategories |= EHeroDenialCategory.StressRecovery; break;
+        }
+
+        if (TokenManager !=  null)
+        {
+            if (TokenManager.HasToken(EEffectType.DenialOfArms))
+                blockedCategories |= EHeroDenialCategory.Melee;
+            if (TokenManager.HasToken(EEffectType.DenialOfReach))
+                blockedCategories |= EHeroDenialCategory.Ranged;
+            if (TokenManager.HasToken(EEffectType.DenialOfFortitude))
+                blockedCategories |= EHeroDenialCategory.HealthRecovery;
+            if (TokenManager.HasToken(EEffectType.DenialOfReason))
+                blockedCategories |= EHeroDenialCategory.StressRecovery;
+        }
+
+        if (blockedCategories == EHeroDenialCategory.None) return false;
+
+        return (heroSkill.DenialCategories & blockedCategories) != EHeroDenialCategory.None;
+    }
+
     protected override bool CanExecuteRequestedAction()
     {
         return !_isTurnSkipped && !IsDead && !IsDeathPresented && ActionTarget != null
@@ -142,6 +273,7 @@ public class CPlayer : CEntity
             && AreActionTargetsValid()
             && CanChooseTarget(ActionSkill, ActionTarget)
             && ActionSkill != null
+            && !IsSkillDenied(ActionSkill)
             && _skillUses.CanUse(ActionSkill)
             && _equippedSkills.Contains(ActionSkill)
             && CSkillRankUtility.CanUseSkill(ActionSkill, _currentRank)
@@ -173,6 +305,60 @@ public class CPlayer : CEntity
         return true;
     }
 
+    public bool TrySetTemporarySkillLoadout(CHeroSkillLoadoutSO loadout)
+    {
+        return loadout != null && TrySetTemporarySkills(loadout.Skills);
+    }
+
+    public bool TrySetTemporarySkills(IReadOnlyList<CSkillDataSO> skills)
+    {
+        if (!CanChangeTemporarySkills() || skills == null || skills.Count == 0 || skills.Count > 5)
+            return false;
+
+        List<CSkillDataSO> temporarySkills = new List<CSkillDataSO>();
+        for (int i = 0; i < skills.Count; i++)
+        {
+            CSkillDataSO skill = skills[i];
+            if (skill == null) return false;
+            for (int j = 0; j < temporarySkills.Count; j++)
+            {
+                if (CHeroSkillSO.GetBaseSkill(temporarySkills[j]) == CHeroSkillSO.GetBaseSkill(skill))
+                    return false;
+            }
+            temporarySkills.Add(skill);
+        }
+
+        // 여러 번 교체해도 처음 장착 목록을 복구할 수 있게 보관함
+        if (_originalEquippedSkills == null)
+            _originalEquippedSkills = new List<CSkillDataSO>(_equippedSkills);
+        CancelSkillSelection();
+        _equippedSkills.Clear();
+        _equippedSkills.AddRange(temporarySkills);
+        return true;
+    }
+
+    public bool TryRestoreTemporarySkillLoadout()
+    {
+        if (!CanChangeTemporarySkills() || _originalEquippedSkills == null) return false;
+        CancelSkillSelection();
+        RestoreTemporarySkills();
+        return true;
+    }
+
+    private bool CanChangeTemporarySkills()
+    {
+        return isActiveAndEnabled && !IsDead && !IsDeathPresented && !_isRequesting
+            && (ActionState == EEntityActionState.Idle || ActionState == EEntityActionState.Selecting);
+    }
+
+    private void RestoreTemporarySkills()
+    {
+        if (_originalEquippedSkills == null) return;
+        _equippedSkills.Clear();
+        _equippedSkills.AddRange(_originalEquippedSkills);
+        _originalEquippedSkills = null;
+    }
+
     private void SetEquippedLoadout(CHeroSkillLoadoutSO loadout)
     {
         _equippedSkills.Clear();
@@ -182,6 +368,7 @@ public class CPlayer : CEntity
         }
 
         _skillLoadout = loadout;
+        _originalEquippedSkills = null;
         CancelSkillSelection();
     }
 
@@ -212,6 +399,12 @@ public class CPlayer : CEntity
     public bool CanPlayAttackPresentation(CSkillDataSO skill)
     {
         return isActiveAndEnabled && _actionAnimation != null && _actionAnimation.CanPlayAttack(skill);
+    }
+
+    public bool TryQueueRipostePresentation()
+    {
+        return isActiveAndEnabled && !IsDead && !IsDeathPresented
+            && _actionAnimation != null && _actionAnimation.TryQueueRiposte();
     }
 
     public bool CanPlayHitPresentation()
@@ -338,6 +531,8 @@ public class CPlayer : CEntity
 
     protected override void OnDisable()
     {
+        RestoreTemporarySkills();
+        SetDenialRestriction(EDenialRestriction.None);
         if (_stressResolution != null) _stressResolution.ResetState();
         base.OnDisable();
         if (_actionAnimation != null)
@@ -460,6 +655,7 @@ public class CPlayer : CEntity
     public bool TryRestoreRunState(CHeroRunMemberState state)
     {
         if (!CanRestoreRunState(state)) return false;
+        SetDenialRestriction(EDenialRestriction.None);
         if (_stressResolution != null) _stressResolution.ResetState();
         CancelAction();
         CancelSkillSelection();
@@ -503,7 +699,7 @@ public class CPlayer : CEntity
         }
 
         CSkillDataSO skill = _equippedSkills[skillIndex];
-        if (!_skillUses.CanUse(skill) || !CSkillRankUtility.CanUseSkill(skill, _currentRank))
+        if (IsSkillDenied(skill) || !_skillUses.CanUse(skill) || !CSkillRankUtility.CanUseSkill(skill, _currentRank))
         {
             CancelSkillSelection();
             return false;
@@ -628,6 +824,11 @@ public class CPlayer : CEntity
         }
 
         CHeroSkillSO heroSkill = skill as CHeroSkillSO;
+        if (HasTemporarySkillLoadout && target is CEnemyCorpse
+            && (heroSkill == null || !heroSkill.RequiresCorpse && !heroSkill.ClearsCorpses))
+        {
+            return false;
+        }
         return heroSkill == null ? target != this : heroSkill.CanChooseTarget(this, target);
     }
 
@@ -644,6 +845,7 @@ public class CPlayer : CEntity
             && !_isRequesting
             && CanIssueActionRequest
             && _selectedSkill != null
+            && !IsSkillDenied(_selectedSkill)
             && _skillUses.CanUse(_selectedSkill)
             && target != null
             && target.isActiveAndEnabled
@@ -720,12 +922,7 @@ public class CPlayer : CEntity
 
     #region CEntity Overrides, DOT, Stress & Death's Door Logic
     // Effect Core 파이프라인에서 최종 연산된 데미지를 받음
-    public override void TakeDamage(int finalDamage)
-    {
-        ApplyDamage(finalDamage, true);
-    }
-
-    private void ApplyDamage(int finalDamage, bool playHitAnimation)
+    protected override void ApplyDamage(int finalDamage, bool playHitAnimation)
     {
         if (!isActiveAndEnabled || _isDead || _heroData == null || finalDamage == 0)
         {
@@ -795,7 +992,8 @@ public class CPlayer : CEntity
                 || _activeStatusEffects.Contains(statusEffect)) return;
 
             _activeStatusEffects.Add(statusEffect);
-            if (_statusMessage != null) _statusMessage.ShowAdded(statusEffect.EffectType);
+            OnStatusEffectApplied?.Invoke(statusEffect.EffectType);
+            CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, statusEffect.EffectType, statusEffect.Damage);
 
             int currentTotalDamage = GetTotalDotDamageByType(statusEffect.EffectType);
             CPrint.Log($"[{_heroData.DefaultName}] 에게 [{statusEffect.EffectType}] 추가 부여 \n" +
@@ -826,8 +1024,11 @@ public class CPlayer : CEntity
             case EEffectType.Taunt:
             case EEffectType.Immobilize:
             case EEffectType.Combo:
-                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage));
-                if (_statusMessage != null && TokenManager.HasToken(tokenType)) _statusMessage.ShowAdded(tokenType);
+            case EEffectType.DenialOfArms:
+            case EEffectType.DenialOfReach:
+            case EEffectType.DenialOfFortitude:
+            case EEffectType.DenialOfReason:
+                TokenManager.AddToken(tokenType, Mathf.Max(1, statusEffect.Damage), statusEffect.Data.Duration);
                 break;
         }
     }
@@ -835,17 +1036,26 @@ public class CPlayer : CEntity
     // 스트레스 수치 증감
     public override void ModifyStress(int stressAmount)
     {
+        ApplyStressChange(stressAmount, false);
+    }
+
+    private void ApplyStressChange(int stressAmount, bool isHorror)
+    {
         if (!isActiveAndEnabled || _isDead || _heroData == null || stressAmount == 0)
         {
             return;
         }
 
         int previousStress = _currentStress;
-        _currentStress = Mathf.Clamp(_currentStress + stressAmount, 0, MAX_STRESS);
+        _currentStress = (int)Math.Max(0L, Math.Min(MAX_STRESS, (long)previousStress + stressAmount));
+        int appliedAmount = _currentStress - previousStress;
 
-        if (_currentStress != previousStress)
+        if (appliedAmount != 0)
         {
             OnStressChanged?.Invoke(this, previousStress, _currentStress);
+            OnStressEffectResolved?.Invoke(this, appliedAmount, isHorror);
+            EDamageType type = appliedAmount > 0 ? EDamageType.Stress : EDamageType.Stress_Heal;
+            CCombatFloatingMessageManager.ShowDamage(gameObject, type, Mathf.Abs(appliedAmount));
             CPrint.Log($"[{_heroData.DefaultName}] 스트레스 변화: {previousStress} → {_currentStress}/{MAX_STRESS}");
         }
 
@@ -854,15 +1064,17 @@ public class CPlayer : CEntity
 
     public bool HasHorror
     {
-        get { return GetTotalDotDamageByType(EEffectType.Stress) > 0; }
+        get { return GetTotalDotDamageByType(EEffectType.Horror) > 0; }
     }
 
     internal void ApplyHorror(CEffectSO effectData)
     {
         if (!isActiveAndEnabled || _isDead || IsDeathPresented || effectData == null
-            || effectData.EffectType != EEffectType.Stress || effectData.Damage <= 0 || effectData.Duration <= 0) return;
+            || effectData.EffectType != EEffectType.Horror || effectData.Damage <= 0 || effectData.Duration <= 0) return;
 
         _activeStatusEffects.Add(new CEffect(effectData));
+        OnStatusEffectApplied?.Invoke(EEffectType.Horror);
+        CCombatFloatingMessageManager.ShowDot(gameObject, EDotType.Add, EEffectType.Horror, effectData.Damage);
     }
 
     public void OnTurnStart()
@@ -903,7 +1115,12 @@ public class CPlayer : CEntity
                         case EEffectType.Bleed: bleedDamage += effect.Damage; break;
                         case EEffectType.Blight: blightDamage += effect.Damage; break;
                         case EEffectType.Burn: burnDamage += effect.Damage; break;
-                        case EEffectType.Stress: horrorStress += effect.Damage; break;
+                        case EEffectType.Horror:
+                            if (UnityEngine.Random.value < 0.5f)
+                            {
+                                horrorStress += effect.Damage;
+                            }
+                            break;
                     }
 
                     effect.DecreaseTurn();
@@ -921,7 +1138,10 @@ public class CPlayer : CEntity
                     CPrint.Log($"[{_heroData.DefaultName}] 턴 시작 도트 피해 정산 → " +
                         $"출혈({bleedDamage}) + 중독({blightDamage}) + 화상({burnDamage}) = 총 [{totalTickDamage}] 데미지");
 
-                    ApplyDamage(totalTickDamage, false);
+                    if (bleedDamage > 0) OnStatusEffectTicked?.Invoke(EEffectType.Bleed);
+                    if (blightDamage > 0) OnStatusEffectTicked?.Invoke(EEffectType.Blight);
+                    if (burnDamage > 0) OnStatusEffectTicked?.Invoke(EEffectType.Burn);
+                    ApplyPeriodicDamage(totalTickDamage);
 
                     if (_isDead) return;
                 }
@@ -929,8 +1149,15 @@ public class CPlayer : CEntity
                 // 공포는 일반 턴 시작에 스트레스로 적용함
                 if (horrorStress > 0)
                 {
-                    ModifyStress(horrorStress);
+                    ApplyStressChange(horrorStress, true);
                 }
+            }
+
+            TokenManager.TickTokenTurns();
+
+            if (_denialRestriction != EDenialRestriction.None && !HasAnyDenialToken())
+            {
+                _denialRestriction = EDenialRestriction.None;
             }
 
             if (TokenManager.HasToken(EEffectType.Stun))
@@ -950,6 +1177,22 @@ public class CPlayer : CEntity
     }
 
     // 특정 도트 합산 데미지 반환
+    public int GetMaxRemainingEffectTurns(EEffectType effectType)
+    {
+        if (effectType == EEffectType.None || _activeStatusEffects == null) return 0;
+
+        int remainingTurns = 0;
+        for (int i = 0; i < _activeStatusEffects.Count; i++)
+        {
+            CEffect effect = _activeStatusEffects[i];
+            if (effect == null || effect.Data == null || effect.EffectType != effectType) continue;
+
+            remainingTurns = Mathf.Max(remainingTurns, effect.RemainingTurns);
+        }
+
+        return remainingTurns;
+    }
+
     public int GetTotalDotDamageByType(EEffectType dotType)
     {
         int total = 0;
@@ -977,6 +1220,7 @@ public class CPlayer : CEntity
 
         TokenManager.AddToken(EEffectType.Weak, 1);
 
+        CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
         OnDeathDoorChanged?.Invoke(this, true);
     }
 
@@ -1000,6 +1244,8 @@ public class CPlayer : CEntity
 
         if (randomRoll <= deathblowResist)
         {
+            OnDeathblowResisted?.Invoke();
+            CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathDoor);
             CPrint.Log($"[{_heroData.DefaultName}] 죽음의 일격을 버텼습니다.");
         }
         else
@@ -1016,6 +1262,7 @@ public class CPlayer : CEntity
         _isDeathsDoor = false;
         _currentHp = 0;
 
+        SetDenialRestriction(EDenialRestriction.None);
         TokenManager.ClearAllTokens();
         CHeroCriticalState criticalState = GetComponent<CHeroCriticalState>();
         if (criticalState != null) criticalState.ClearModifiers();
@@ -1025,6 +1272,7 @@ public class CPlayer : CEntity
 
         CPrint.Log($"[{_heroData.DefaultName}] 사망.. 전투 불능 상태가 되었습니다.");
 
+        CCombatFloatingMessageManager.ShowDeath(gameObject, EEntityState.DeathBlow);
         OnPlayerDied?.Invoke(this);
     }
 
@@ -1078,7 +1326,7 @@ public class CPlayer : CEntity
         {
             EEffectType currentType = _activeStatusEffects[i].EffectType;
 
-            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Stress))
+            if (currentType == targetType || (targetType == EEffectType.None && currentType != EEffectType.Horror))
             {
                 _activeStatusEffects.RemoveAt(i);
                 removedCount++;
@@ -1087,6 +1335,7 @@ public class CPlayer : CEntity
 
         if (removedCount > 0)
         {
+            OnStatusEffectsCured?.Invoke();
             string targetName = targetType == EEffectType.None ? "모든 지속 피해" : targetType.ToString();
             CPrint.Log($"[{_heroData.DefaultName}] 상태이상 치료 성공" +
                 $"제거된 [{targetName}] 인스턴스 : {removedCount}개");
@@ -1099,6 +1348,7 @@ public class CPlayer : CEntity
 
     public override void ResetEntityState()
     {
+        SetDenialRestriction(EDenialRestriction.None);
         if (_heroData == null) return;
         if (_stressResolution != null) _stressResolution.ResetState();
 
@@ -1106,6 +1356,8 @@ public class CPlayer : CEntity
 
         CancelAction();
         CancelSkillSelection();
+        RestoreTemporarySkills();
+        SetExtraAction(false);
         if (_actionAnimation != null) _actionAnimation.CancelPlayback();
         if (_deathPresentation != null) _deathPresentation.ResetPresentation();
 

@@ -12,18 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_CourageousAbandon
   m_EditorClassIdentifier: 
-  _skillName: Courageous Abandon
+  _skillName: "\uACFC\uAC10\uD55C \uB9F9\uACF5"
   _skillIcon: {fileID: 21300000, guid: 04ee4ccec23976c4c94ad5cfa6aba2d0, type: 3}
-  _useableRank: 1
-  _targetableRank: 1
+  _useableRank: 3
+  _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 0e654f1227b44e96a72728f1cdf915d4, type: 2}
+  - {fileID: 11400000, guid: 8a1b16076bde4333851efd373a13ffe4, type: 2}
+  - {fileID: 11400000, guid: 0d00428a28e39ab42997fc341d0ccfcd, type: 2}
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 6-8 \uce58\uba85\ud0c0: 10%\n\n<sprite=20> \uc18c\ubaa8 \uc2dc \ud53c\ud574\ub7c9 +50%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color> <sprite=23> , \uC81C\uAC70
+    : <sprite=20>"
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_CourageousAbandon
   _endState: Base Layer.OriginalRecover_ManAtArms_CourageousAbandon
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_bash
   _selectionHoldState: Base Layer.SourceReady_bash
   _executionStartState: Base Layer.OriginalAction_ManAtArms_CourageousAbandon

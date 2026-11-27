@@ -12,21 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_ManAtArms_HoldtheLine
   m_EditorClassIdentifier: 
-  _skillName: Hold the Line
+  _skillName: "\uC804\uC120 \uC720\uC9C0"
   _skillIcon: {fileID: 21300000, guid: bb350019259f5b24897c6e9c5e89e10d, type: 3}
   _useableRank: 14
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
-  _rankMovement: -3
   _effectList:
-  - {fileID: 11400000, guid: 13340db5bcb54e20af2c206430653429, type: 2}
-  - {fileID: 11400000, guid: 150c3111766f48ff948dfc583428bb91, type: 2}
-  - {fileID: 11400000, guid: 480c575406374e3f95654996459a5e42, type: 2}
+  - {fileID: 11400000, guid: 8f42f12d820c43178872745de713a4e8, type: 2}
+  - {fileID: 11400000, guid: 00bb991afea4b2147a76da19cba29274, type: 2}
+  - {fileID: 11400000, guid: a83bd9c2a96261e458b4d012f3077996, type: 2}
+  - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
+  _critChance: 10
+  _mainDescription: "\ud53c\ud574: 3-6 \uce58\uba85\ud0c0: 10%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0: </color> <color=#484166>\uC804\uC9C4</color>3,
+    <sprite=20>, <sprite=29>\n"
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_ManAtArms_HoldtheLine
   _endState: Base Layer.OriginalRecover_ManAtArms_HoldtheLine
   _presentationNote: 
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_ram
   _selectionHoldState: Base Layer.SourceReady_ram
   _executionStartState: Base Layer.OriginalAction_ManAtArms_HoldtheLine

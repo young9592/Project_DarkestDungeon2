@@ -12,19 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7140b9a4ee3034cbaf2ff350d3d7a6, type: 3}
   m_Name: HeroSkillSO_Highwayman_double_cross
   m_EditorClassIdentifier: 
-  _skillName: Double Cross
+  _skillName: "\uB4A4\uD1B5\uC218 \uCE58\uAE30"
   _skillIcon: {fileID: 21300000, guid: dd5c992813af96a4c9dec25a956b068a, type: 3}
   _useableRank: 3
   _targetableRank: 3
+  _isGroupTarget: 0
   _cooldown: 0
   _effectList:
-  - {fileID: 11400000, guid: 60c4cb1f0729427e8f3eecdf577b39de, type: 2}
-  - {fileID: 11400000, guid: 8065851c7ff046d1ab15bed3943d902d, type: 2}
+  - {fileID: 11400000, guid: f62d69d045ed4758af5d29704bf874f7, type: 2}
+  - {fileID: 11400000, guid: 05ccbedeca32273418b86e724a3b2c15, type: 2}
+  - {fileID: 11400000, guid: 7cb948bfdcc07fe439c2cf5d5da947c3, type: 2}
+  _critChance: 5
+  _mainDescription: "\ud53c\ud574: 2-4 \uce58\uba85\ud0c0: 5%"
+  _subDescription: "<color=#816b44>\uC790\uC2E0</color> : <sprite=20>\n<color=#2c4a75>\uB300\uC0C1</color>
+    : \uC81C\uAC70 : <sprite=20>,  <sprite=23> \n"
+  _denialCategories: 1
+  _usesPerBattle: 0
+  _moveForwardOneRank: 0
+  _rankMovement: 0
+  _baseSkill: {fileID: 0}
   _target: 0
   _startState: Base Layer.OriginalAntic_Highwayman_double_cross
   _endState: Base Layer.OriginalRecover_Highwayman_double_cross
   _presentationNote: Shares the Double Tap motion.
   _requiresCorpse: 0
+  _clearsCorpses: 0
   _selectionStartState: Base Layer.SourceSelect_double
   _selectionHoldState: Base Layer.SourceReady_double
   _executionStartState: Base Layer.OriginalAction_Highwayman_double_cross
