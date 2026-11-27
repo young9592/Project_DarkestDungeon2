@@ -795,7 +795,6 @@ MonoBehaviour:
   _chapterMenu: {fileID: 0}
   _chapterAnimation: {fileID: 0}
   _chapterText: {fileID: 0}
-  _chapterIndex: 0
   _signature: {fileID: 0}
   _signatureWhite: {fileID: 0}
   _signatureEffect: {fileID: 0}
@@ -6080,8 +6079,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uACE0\uD574"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 91e00658b8420a8428fdc7fe7a156715, type: 2}
-  m_sharedMaterial: {fileID: -6074535975408312259, guid: 91e00658b8420a8428fdc7fe7a156715, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d06dffa1ac7773f4595e6784d90a4e41, type: 2}
+  m_sharedMaterial: {fileID: -6074535975408312259, guid: d06dffa1ac7773f4595e6784d90a4e41, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
