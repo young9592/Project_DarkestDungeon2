@@ -20,8 +20,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: DMG 2-3; CRIT 5%
-    _masteredReference: DMG 3-4; CRIT 10%
+    _baseReference: "\ud53c\ud574 2~3 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \uc911\ub3c5 4 (3\ud134) \u00b7 \uc5f0\uacc4 1\uac1c"
+    _masteredReference: "\ud53c\ud574 3~4 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc911\ub3c5 5 (3\ud134) \u00b7 \uc5f0\uacc4 1\uac1c \u00b7 \uc57d\ud654 1\uac1c"
     _remainingEffects: Combo resistance piercing/duration
   - _id: pd.blinding_gas
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -30,8 +30,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: Blind; Combo 25%
-    _masteredReference: Blind, Daze; Combo 33%
+    _baseReference: "\ub300\uc0c1: \uc2e4\uba85 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc2e4\uba85 1\uac1c \u00b7 \uc57d\ud654 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: critical chance and non-damage hit checks; cooldown
   - _id: pd.incision
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -40,8 +40,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: DMG 3-6; CRIT 10%
-    _masteredReference: DMG 4-7; CRIT 15%
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \ucd9c\ud608 3 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 4 (3\ud134)"
+    _masteredReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 15%\n\ub300\uc0c1: \ucd9c\ud608 4 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 4 (3\ud134)"
     _remainingEffects: Combo resistance piercing/duration
   - _id: pd.battlefield_medicine
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -50,8 +50,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: 'Below 50%: heal 20%; cleanse'
-    _masteredReference: 'Below 50%: heal 25%; cleanse'
+    _baseReference: "\ub300\uc0c1: \ud68c\ubcf5 4~6 \u00b7 \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc790\uc2e0: \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc804\ud22c\ub2f9 3\ud68c"
+    _masteredReference: "\ub300\uc0c1: \ud68c\ubcf5 6~9 \u00b7 \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc790\uc2e0: \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc804\ud22c\ub2f9 3\ud68c"
     _remainingEffects: use limit
   - _id: pd.ounce_of_prevention
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -60,9 +60,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: DOT resistance 20%; disease resistance 15%
-    _masteredReference: DOT/disease resistance 30%; additional resistance 10% (type
-      unverified)
+    _baseReference: "\uc544\uad70 \uc804\uccb4: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 1 \u00b7 \ubc29\uc5b4 1\uac1c\n\uc7ac\uc0ac\uc6a9 3\ud134"
+    _masteredReference: "\uc544\uad70 \uc804\uccb4: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 2 \u00b7 \ubc29\uc5b4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: resistance buffs, cooldown
   - _id: pd.plague_grenade
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -71,8 +70,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: DMG 1-2; CRIT 5%
-    _masteredReference: DMG 2-3; CRIT 10%
+    _baseReference: "\ud53c\ud574 1~2 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \uc911\ub3c5 3 (3\ud134) \u00b7 \ucde8\uc57d 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 2~3 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc911\ub3c5 4 (3\ud134) \u00b7 \ucde8\uc57d 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: cooldown
   - _id: pd.emboldening_vapours
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -81,8 +80,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: Remove Daze; Strength 2
-    _masteredReference: Remove Daze/Stun; Strength 2, Speed
+    _baseReference: "\ub300\uc0c1: \ud798 1\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \ud798 2\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: cooldown
   - _id: pd.disorienting_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -91,8 +90,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: Shuffle, Daze; remove Guard
-    _masteredReference: Shuffle, Daze, Weak; Combo Stun; remove Guard
+    _baseReference: "\ub300\uc0c1: \uc790\ub9ac \ubb34\uc791\uc704 \uc774\ub3d9 \u00b7 \uc57d\ud654 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
+    _masteredReference: "\ub300\uc0c1: \uc790\ub9ac \ubb34\uc791\uc704 \uc774\ub3d9 \u00b7 \uc57d\ud654 1\uac1c \u00b7 \uc2e4\uba85 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
     _remainingEffects: critical chance; shuffle, Guard piercing/removal, cooldown
   - _id: pd.indiscriminate_science
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -101,9 +100,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: 'Below 50%: heal 10% +10% per positive token'
-    _masteredReference: 'Below 50%: heal 10% +10% per positive, +5% per negative
-      token'
+    _baseReference: "\ub300\uc0c1: \uc5f0\uacc4 \uc81c\uc678 \ud1a0\ud070 \uc18c\ubaa8 \u00b7 1\uac1c\ub2f9 \ud68c\ubcf5 3\n\ub300\uc0c1 \uccb4\ub825 50% \ubbf8\ub9cc \ud544\uc694\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc5f0\uacc4 \uc81c\uc678 \ud1a0\ud070 \uc18c\ubaa8 \u00b7 1\uac1c\ub2f9 \ud68c\ubcf5 5\n\ub300\uc0c1 \uccb4\ub825 50% \ubbf8\ub9cc \ud544\uc694\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: cooldown; heal rounding unverified
   - _id: pd.cause_of_death
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -112,8 +110,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: Remaining DOT damage 100%
-    _masteredReference: Remaining DOT damage 125%; Execution 1
+    _baseReference: "\ub300\uc0c1: \ub0a8\uc740 \uc9c0\uc18d \ud53c\ud574\ub97c \uc989\uc2dc \uc801\uc6a9\u00b7\uc81c\uac70\n\uc7ac\uc0ac\uc6a9 2\ud134\n\ucc98\ud615 1"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 0%\n\ud0c0\uaca9\ub2f9 \ucc98\ud615 1\n\ub300\uc0c1: \ub0a8\uc740 \uc9c0\uc18d \ud53c\ud574\ub97c \uc989\uc2dc \uc801\uc6a9\u00b7\uc81c\uac70\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: Execution 1, cooldown; conversion rounding unverified
   - _id: pd.magnesium_rain
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -122,6 +120,6 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29
-    _baseReference: Burn 3; clear corpses
-    _masteredReference: Burn 3; clear corpses; reset cooldowns after clear
+    _baseReference: "\ub300\uc0c1: \ud654\uc0c1 3 (3\ud134)\n\uc2dc\uccb4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\ub300\uc0c1: \ud654\uc0c1 3 (3\ud134) \u00b7 \ud68c\ud53c \uc81c\uac70\n\uc2dc\uccb4 \uc81c\uac70\n\uc2dc\uccb4 \uc81c\uac70 \uc2dc \uc7ac\uc0ac\uc6a9 \ucd08\uae30\ud654\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: 

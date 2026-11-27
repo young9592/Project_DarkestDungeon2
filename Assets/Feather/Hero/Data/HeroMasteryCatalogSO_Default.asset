@@ -20,8 +20,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 4-6; CRIT 5%"
-    _masteredReference: "DMG 5-7; CRIT 5%"
+    _baseReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 5%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 4~6"
+    _masteredReference: "\ud53c\ud574 5~7 \u00b7 \uce58\uba85\ud0c0 5%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 5~7"
     _remainingEffects: "none in configured basic effects"
   - _id: maa.rampart
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -30,8 +30,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 5%"
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\uc790\uc2e0: \uc804\uc9c4 1\n\ub300\uc0c1: \ubc00\uce58\uae30 1\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 5%\n\uc790\uc2e0: \uc804\uc9c4 1\n\ub300\uc0c1: \ubc00\uce58\uae30 1\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
     _remainingEffects: "movement, Daze, Combo Stun"
   - _id: maa.defender
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -40,8 +40,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Guarded 2; self Block 2"
-    _masteredReference: "Guarded 3; self Block+ 2"
+    _baseReference: "\ub300\uc0c1: \ubcf4\ud638 2\ud68c\n\uc790\uc2e0: \ubc29\uc5b4+ 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \ubcf4\ud638 3\ud68c\n\uc790\uc2e0: \ubc29\uc5b4+ 2\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "guard redirection, cooldown, three-token cap"
   - _id: maa.bolster
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -50,8 +50,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Stress 5+: recover 1, caster and ally"
-    _masteredReference: "Stress 5+: recover 2, caster and ally"
+    _baseReference: "\ub300\uc0c1: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 2\n\uc790\uc2e0: \ubc29\uc5b4 1\uac1c \u00b7 \uc5f0\uacc4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 3\n\uc790\uc2e0: \ubc29\uc5b4+ 1\uac1c \u00b7 \uc5f0\uacc4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "cooldown"
   - _id: maa.holdtheline
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -60,8 +60,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 3-6; CRIT 10%"
-    _masteredReference: "DMG 4-7; CRIT 10%"
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \uc804\uc9c4 3 \u00b7 \uc774\ub3d9 \ubd88\uac00 1\uac1c \u00b7 \ubc29\uc5b4 1\uac1c"
+    _masteredReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \uc804\uc9c4 3 \u00b7 \uc774\ub3d9 \ubd88\uac00 1\uac1c \u00b7 \ubc29\uc5b4+ 2\uac1c"
     _remainingEffects: "movement, Combo Stun"
   - _id: maa.bellow
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -70,8 +70,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Remove Riposte; speed -2"
-    _masteredReference: "Remove Riposte/Crit; speed -3"
+    _baseReference: "\ub300\uc0c1: \uc57d\ud654 1\uac1c \u00b7 \uce58\uba85\ud0c0 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc57d\ud654 1\uac1c \u00b7 \ubc18\uaca9 \uc81c\uac70 \u00b7 \uce58\uba85\ud0c0 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "critical chance; speed debuff, cooldown"
   - _id: maa.retribution
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -80,8 +80,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Riposte 2, Taunt 2; cooldown 2"
-    _masteredReference: "Riposte 2, Taunt 2; cooldown 1"
+    _baseReference: "\uc790\uc2e0: \ub3c4\ubc1c 2\uac1c \u00b7 \ubc18\uaca9 2\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \ub3c4\ubc1c 2\uac1c \u00b7 \ubc18\uaca9 2\uac1c \u00b7 \ubc29\uc5b4+ 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "automatic Riposte, cooldown"
   - _id: maa.command
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -90,8 +90,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Remove Blind; Strength 1"
-    _masteredReference: "Remove Blind; Strength 2"
+    _baseReference: "\uc790\uc2e0: \ubd80\uc815\uc801 \ud1a0\ud070 \uc81c\uac70 \u00b7 \ud798 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\uc790\uc2e0: \ubd80\uc815\uc801 \ud1a0\ud070 \uc81c\uac70\n\ub300\uc0c1: \ud798 1\uac1c \u00b7 \uce58\uba85\ud0c0 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "cooldown"
   - _id: maa.standfast
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -100,8 +100,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "Block 2, Taunt 2; turn-start Block"
-    _masteredReference: "Block+ 2, Taunt 2; turn-start Block"
+    _baseReference: "\uc790\uc2e0: \ubc29\uc5b4+ 1\uac1c \u00b7 \ubc29\uc5b4 1\uac1c\n\uc7ac\uc0ac\uc6a9 3\ud134"
+    _masteredReference: "\uc790\uc2e0: \ubc29\uc5b4+ 2\uac1c \u00b7 \uc5f0\uacc4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 3\ud134"
     _remainingEffects: "turn-start Block renewal, cooldown"
   - _id: maa.courageousabandon
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -110,8 +110,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 6-8; CRIT 10%"
-    _masteredReference: "DMG 8-10; CRIT 20%"
+    _baseReference: "\ud53c\ud574 6~8 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0 \ubc29\uc5b4 \uc18c\ubaa8 \uc2dc \ud53c\ud574 +50%"
+    _masteredReference: "\ud53c\ud574 8~10 \u00b7 \uce58\uba85\ud0c0 20%\n\uc790\uc2e0: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0 \ubc29\uc5b4 \uc18c\ubaa8 \uc2dc \ud53c\ud574 +50%"
     _remainingEffects: "Block requirement, Block multiplier, piercing, Execution, Block lockout"
   - _id: maa.strategicwithdrawal
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -120,8 +120,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sergeant"
-    _baseReference: "DMG 3-6; CRIT 5%"
-    _masteredReference: "DMG 4-7; CRIT 10%"
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 5%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 4~6\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c\n\uc790\uc2e0: \ud6c4\ud1f4 1\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 10%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 5~7\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c\n\uc790\uc2e0: \uc18d\ub3c4 1\uac1c \u00b7 \ud6c4\ud1f4 1\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "movement, Combo, cooldown, Death Door token"
   - _id: hwm.wicked_slice
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -130,8 +130,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 4-8; CRIT 15%"
-    _masteredReference: "DMG 6-9; CRIT 20%"
+    _baseReference: "\ud53c\ud574 4~8 \u00b7 \uce58\uba85\ud0c0 15%\n\ucc98\ud615 1"
+    _masteredReference: "\ud53c\ud574 6~9 \u00b7 \uce58\uba85\ud0c0 20%\n\ucc98\ud615 2"
     _remainingEffects: "Execution"
   - _id: hwm.pistol_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -140,8 +140,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-6; CRIT 10%"
-    _masteredReference: "DMG 5-8; CRIT 15%"
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
+    _masteredReference: "\ud53c\ud574 5~8 \u00b7 \uce58\uba85\ud0c0 15%\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
     _remainingEffects: "Combo Daze/Stun"
   - _id: hwm.duelists_advance
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -150,8 +150,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 10%"
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\uc790\uc2e0: \uc804\uc9c4 1 \u00b7 \ubc18\uaca9 2\uac1c"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \uc804\uc9c4 1 \u00b7 \ubc18\uaca9 3\uac1c \u00b7 \ud68c\ud53c 1\uac1c"
     _remainingEffects: "movement, Riposte execution, three-token cap"
   - _id: hwm.tracking_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -160,8 +160,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge"
-    _masteredReference: "Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus for 2 rounds; ignores Dodge"
+    _baseReference: "\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70 \u00b7 \uc5f0\uacc4 1\uac1c"
+    _masteredReference: "\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70 \u00b7 \uc740\uc2e0 \uc81c\uac70 \u00b7 \uc5f0\uacc4 1\uac1c"
     _remainingEffects: "Dodge/DodgePlus gain prevention for 2 rounds"
   - _id: hwm.take_aim
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -170,8 +170,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "Remove Blind; Crit 1"
-    _masteredReference: "Remove Blind; Crit 2"
+    _baseReference: "\uc790\uc2e0: \uc2e4\uba85 \uc81c\uac70 \u00b7 \uce58\uba85\ud0c0 1\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \uc2e4\uba85 \uc81c\uac70 \u00b7 \uce58\uba85\ud0c0 2\uac1c \u00b7 \ud68c\ud53c 1\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: "cooldown"
   - _id: hwm.point_blank_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -180,8 +180,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 6-10; CRIT 10%"
-    _masteredReference: "DMG 10-13; CRIT 15%"
+    _baseReference: "\ud53c\ud574 6~10 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c \u00b7 \ubc00\uce58\uae30 1\n\uc790\uc2e0: \ud6c4\ud1f4 1"
+    _masteredReference: "\ud53c\ud574 10~13 \u00b7 \uce58\uba85\ud0c0 15%\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c \u00b7 \ubc00\uce58\uae30 1\n\uc790\uc2e0: \ud6c4\ud1f4 1"
     _remainingEffects: "movement, knockback, Combo"
   - _id: hwm.grapeshot_blast
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -190,8 +190,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 10%"
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\uce58\uba85\ud0c0 \uc2dc \uc790\uc2e0: \ud798 1\uac1c"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uce58\uba85\ud0c0 \uc2dc \uc790\uc2e0: \ud798 1\uac1c"
     _remainingEffects: "speed debuff, one Strength per critical target"
   - _id: hwm.open_vein
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -200,8 +200,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 3-5; CRIT 5%"
-    _masteredReference: "DMG 4-6; CRIT 10%"
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \ucd9c\ud608 2 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 2 (3\ud134)"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \ucd9c\ud608 3 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 3 (3\ud134)"
     _remainingEffects: "Combo Bleed multiplier"
   - _id: hwm.double_tap
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -210,8 +210,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 4-8; CRIT 5%"
-    _masteredReference: "DMG 6-9; CRIT 10%"
+    _baseReference: "\ud53c\ud574 2~4 (2\ud68c) \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1 \uc0dd\uc874 \uc2dc \ucd94\uac00 \uc0ac\uaca9\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 4~6 (2\ud68c) \u00b7 \uce58\uba85\ud0c0 10%\n\ud0c0\uaca9\ub2f9 \ucc98\ud615 1\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "low-HP damage multiplier, Execution"
   - _id: hwm.highway_robbery
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -220,8 +220,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "Remove 2 positive tokens; target crit -5%"
-    _masteredReference: "Steal 2 positive tokens; target crit -5%, self +5%"
+    _baseReference: "\ub300\uc0c1: \uae0d\uc815\uc801 \ud1a0\ud070 \ucd5c\ub300 2\uc885 \uac15\ud0c8\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uae0d\uc815\uc801 \ud1a0\ud070 \ucd5c\ub300 3\uc885 \uac15\ud0c8\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "cooldown; original token selection order and critical duration extension unverified; shared token cap"
   - _id: hwm.double_cross
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -230,8 +230,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Sharpshot"
-    _baseReference: "DMG 2-4; CRIT 5%"
-    _masteredReference: "DMG 3-5; CRIT 10%"
+    _baseReference: "\ud53c\ud574 2~4 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0: \ubc29\uc5b4 1\uac1c\n\ubc29\uc5b4 \ubb34\uc2dc"
+    _masteredReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0: \ubc29\uc5b4 1\uac1c\n\ubc29\uc5b4 \ubb34\uc2dc"
     _remainingEffects: "piercing, target Block removal"
   - _id: gr.pick_to_the_face
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -240,8 +240,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 4-7; CRIT 15%"
-    _masteredReference: "DMG 5-9; CRIT 20%"
+    _baseReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 15%\n\ubc29\uc5b4 \ubb34\uc2dc"
+    _masteredReference: "\ud53c\ud574 5~9 \u00b7 \uce58\uba85\ud0c0 20%\n\ubc29\uc5b4 \ubb34\uc2dc"
     _remainingEffects: "Block piercing, Combo crit, critical Block removal"
   - _id: gr.thrown_dagger
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -250,8 +250,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 3-6; CRIT 15%"
-    _masteredReference: "DMG 4-8; CRIT 30%"
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 15%\n\uc790\uc2e0: \uce58\uba85\ud0c0 1\uac1c\n\ud68c\ud53c\u00b7\ubcf4\ud638 \ubb34\uc2dc"
+    _masteredReference: "\ud53c\ud574 4~8 \u00b7 \uce58\uba85\ud0c0 30%\n\uc790\uc2e0: \uce58\uba85\ud0c0 1\uac1c\n\ud68c\ud53c\u00b7\ubcf4\ud638 \ubb34\uc2dc"
     _remainingEffects: "Guard/Dodge piercing, Combo crit"
   - _id: gr.flashing_daggers
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -260,8 +260,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 3-5; CRIT 15%"
-    _masteredReference: "DMG 4-6; CRIT 20%"
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 15%\n\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 20%\n\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70"
     _remainingEffects: "Stealth Dodge piercing"
   - _id: gr.poison_dart
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -270,8 +270,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 2-4; CRIT 5%"
-    _masteredReference: "DMG 2-5; CRIT 10%"
+    _baseReference: "\ud53c\ud574 2~4 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \uc911\ub3c5 2 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \uc911\ub3c5 2 (3\ud134)"
+    _masteredReference: "\ud53c\ud574 2~5 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc911\ub3c5 4 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \uc911\ub3c5 4 (3\ud134)"
     _remainingEffects: "Combo crit, critical DOT duration"
   - _id: gr.artemisia
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -280,8 +280,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "Below 33%: heal 33%; Dodge 3, Speed"
-    _masteredReference: "Below 33%: heal 33%; Dodge+ 3, Speed"
+    _baseReference: "\uc790\uc2e0: \ud68c\ubcf5 4~6 \u00b7 \ud68c\ud53c 3\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc804\ud22c\ub2f9 3\ud68c"
+    _masteredReference: "\uc790\uc2e0: \ud68c\ubcf5 6~8 \u00b7 \ud68c\ud53c+ 3\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc804\ud22c\ub2f9 3\ud68c"
     _remainingEffects: "use limit, three-token cap; base Dodge evasion is missing in shared damage"
   - _id: gr.dead_of_night
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -290,8 +290,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "Clear corpse; heal 33%"
-    _masteredReference: "Clear corpse; heal 50%; Stealth 2; recover 1 stress"
+    _baseReference: "\uc2dc\uccb4 \uc81c\uac70 \u00b7 \uc790\uc2e0 \ud68c\ubcf5 33%\n\uc790\uc2e0: \uc740\uc2e0 2\uac1c\n\uc804\ud22c\ub2f9 3\ud68c"
+    _masteredReference: "\uc2dc\uccb4 \uc81c\uac70 \u00b7 \uc790\uc2e0 \ud68c\ubcf5 50%\n\uc790\uc2e0: \uc740\uc2e0 3\uac1c \u00b7 \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 4\n\uc804\ud22c\ub2f9 3\ud68c"
     _remainingEffects: ""
   - _id: gr.glint_in_the_dark
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -300,8 +300,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 4-7; CRIT 5%"
-    _masteredReference: "DMG 6-9; CRIT 10%"
+    _baseReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 5%\n\ucc98\ud615 1\n\ub300\uc0c1: \uc740\uc2e0 \uc81c\uac70\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd\n\uc740\uc2e0 \uc18c\ubaa8 \uc2dc \ucc98\ud615 3"
+    _masteredReference: "\ud53c\ud574 6~9 \u00b7 \uce58\uba85\ud0c0 10%\n\ucc98\ud615 1\n\ub300\uc0c1: \uc740\uc2e0 \uc81c\uac70\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd\n\uc740\uc2e0 \uc18c\ubaa8 \uc2dc \ucc98\ud615 3"
     _remainingEffects: "Stealth piercing/removal, Execution"
   - _id: gr.lunge
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -310,8 +310,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 5-8; CRIT 20%"
-    _masteredReference: "DMG 7-11; CRIT 30%"
+    _baseReference: "\ud53c\ud574 5~8 \u00b7 \uce58\uba85\ud0c0 20%\n\uc790\uc2e0: \uc804\uc9c4 2\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd"
+    _masteredReference: "\ud53c\ud574 7~11 \u00b7 \uce58\uba85\ud0c0 30%\n\uc790\uc2e0: \uc804\uc9c4 2\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd"
     _remainingEffects: "movement, conditional piercing, critical knockback"
   - _id: gr.pirouette
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -320,8 +320,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "DMG 4-7; CRIT 10%"
-    _masteredReference: "DMG 6-9; CRIT 15%"
+    _baseReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \ud68c\ud53c 1\uac1c \u00b7 \uc57d\ud654 1\uac1c \u00b7 \ud6c4\ud1f4 3\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 6~9 \u00b7 \uce58\uba85\ud0c0 15%\n\uc790\uc2e0: \ud6c4\ud1f4 3 \u00b7 \ud68c\ud53c+ 1\uac1c \u00b7 \uc57d\ud654 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "movement, Stealth-conditioned Daze/Weak, cooldown"
   - _id: gr.repartee
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -330,8 +330,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "Dodge 3, Taunt 2"
-    _masteredReference: "Dodge+ 3, Taunt 2; conditional on-miss Dodge"
+    _baseReference: "\uc790\uc2e0: \uc740\uc2e0 \uc81c\uac70 \u00b7 \ub3c4\ubc1c 2\uac1c \u00b7 \ud68c\ud53c 3\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \uc740\uc2e0 \uc81c\uac70 \u00b7 \ub3c4\ubc1c 2\uac1c \u00b7 \ud68c\ud53c+ 3\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: "on-miss Dodge buff, Stealth removal, cooldown, three-token cap; base Dodge evasion is missing in shared damage"
   - _id: gr.shadow_fade
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -340,8 +340,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Deadeye"
-    _baseReference: "Back 2; Stealth 2"
-    _masteredReference: "Back 2; Stealth 2, Strength 1"
+    _baseReference: "\uc790\uc2e0: \ud6c4\ud1f4 2 \u00b7 \uc740\uc2e0 2\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \ud6c4\ud1f4 2 \u00b7 \uc740\uc2e0 2\uac1c \u00b7 \uc18d\ub3c4 1\uac1c \u00b7 \ud798 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: "movement, cooldown"
   - _id: pd.noxious_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -350,8 +350,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DMG 2-3; CRIT 5%"
-    _masteredReference: "DMG 3-4; CRIT 10%"
+    _baseReference: "\ud53c\ud574 2~3 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \uc911\ub3c5 4 (3\ud134) \u00b7 \uc5f0\uacc4 1\uac1c"
+    _masteredReference: "\ud53c\ud574 3~4 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc911\ub3c5 5 (3\ud134) \u00b7 \uc5f0\uacc4 1\uac1c \u00b7 \uc57d\ud654 1\uac1c"
     _remainingEffects: "Combo resistance piercing/duration"
   - _id: pd.blinding_gas
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -360,8 +360,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Blind; Combo 25%"
-    _masteredReference: "Blind, Daze; Combo 33%"
+    _baseReference: "\ub300\uc0c1: \uc2e4\uba85 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc2e4\uba85 1\uac1c \u00b7 \uc57d\ud654 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "critical chance and non-damage hit checks; cooldown"
   - _id: pd.incision
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -370,8 +370,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DMG 3-6; CRIT 10%"
-    _masteredReference: "DMG 4-7; CRIT 15%"
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \ucd9c\ud608 3 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 4 (3\ud134)"
+    _masteredReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 15%\n\ub300\uc0c1: \ucd9c\ud608 4 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 4 (3\ud134)"
     _remainingEffects: "Combo resistance piercing/duration"
   - _id: pd.battlefield_medicine
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -380,8 +380,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Below 50%: heal 20%; cleanse"
-    _masteredReference: "Below 50%: heal 25%; cleanse"
+    _baseReference: "\ub300\uc0c1: \ud68c\ubcf5 4~6 \u00b7 \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc790\uc2e0: \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc804\ud22c\ub2f9 3\ud68c"
+    _masteredReference: "\ub300\uc0c1: \ud68c\ubcf5 6~9 \u00b7 \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc790\uc2e0: \ucd9c\ud608\u00b7\uc911\ub3c5\u00b7\ud654\uc0c1 \uce58\ub8cc\n\uc804\ud22c\ub2f9 3\ud68c"
     _remainingEffects: "use limit"
   - _id: pd.ounce_of_prevention
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -390,8 +390,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DOT resistance 20%; disease resistance 15%"
-    _masteredReference: "DOT/disease resistance 30%; additional resistance 10% (type unverified)"
+    _baseReference: "\uc544\uad70 \uc804\uccb4: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 1 \u00b7 \ubc29\uc5b4 1\uac1c\n\uc7ac\uc0ac\uc6a9 3\ud134"
+    _masteredReference: "\uc544\uad70 \uc804\uccb4: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 2 \u00b7 \ubc29\uc5b4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: "resistance buffs, cooldown"
   - _id: pd.plague_grenade
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -400,8 +400,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "DMG 1-2; CRIT 5%"
-    _masteredReference: "DMG 2-3; CRIT 10%"
+    _baseReference: "\ud53c\ud574 1~2 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \uc911\ub3c5 3 (3\ud134) \u00b7 \ucde8\uc57d 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 2~3 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc911\ub3c5 4 (3\ud134) \u00b7 \ucde8\uc57d 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "cooldown"
   - _id: pd.emboldening_vapours
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -410,8 +410,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Remove Daze; Strength 2"
-    _masteredReference: "Remove Daze/Stun; Strength 2, Speed"
+    _baseReference: "\ub300\uc0c1: \ud798 1\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \ud798 2\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: "cooldown"
   - _id: pd.disorienting_blast
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -420,8 +420,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Shuffle, Daze; remove Guard"
-    _masteredReference: "Shuffle, Daze, Weak; Combo Stun; remove Guard"
+    _baseReference: "\ub300\uc0c1: \uc790\ub9ac \ubb34\uc791\uc704 \uc774\ub3d9 \u00b7 \uc57d\ud654 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
+    _masteredReference: "\ub300\uc0c1: \uc790\ub9ac \ubb34\uc791\uc704 \uc774\ub3d9 \u00b7 \uc57d\ud654 1\uac1c \u00b7 \uc2e4\uba85 1\uac1c\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
     _remainingEffects: "critical chance; shuffle, Guard piercing/removal, cooldown"
   - _id: pd.indiscriminate_science
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -430,8 +430,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Below 50%: heal 10% +10% per positive token"
-    _masteredReference: "Below 50%: heal 10% +10% per positive, +5% per negative token"
+    _baseReference: "\ub300\uc0c1: \uc5f0\uacc4 \uc81c\uc678 \ud1a0\ud070 \uc18c\ubaa8 \u00b7 1\uac1c\ub2f9 \ud68c\ubcf5 3\n\ub300\uc0c1 \uccb4\ub825 50% \ubbf8\ub9cc \ud544\uc694\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc5f0\uacc4 \uc81c\uc678 \ud1a0\ud070 \uc18c\ubaa8 \u00b7 1\uac1c\ub2f9 \ud68c\ubcf5 5\n\ub300\uc0c1 \uccb4\ub825 50% \ubbf8\ub9cc \ud544\uc694\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: "cooldown; heal rounding unverified"
   - _id: pd.cause_of_death
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -440,8 +440,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Remaining DOT damage 100%"
-    _masteredReference: "Remaining DOT damage 125%; Execution 1"
+    _baseReference: "\ub300\uc0c1: \ub0a8\uc740 \uc9c0\uc18d \ud53c\ud574\ub97c \uc989\uc2dc \uc801\uc6a9\u00b7\uc81c\uac70\n\uc7ac\uc0ac\uc6a9 2\ud134\n\ucc98\ud615 1"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 0%\n\ud0c0\uaca9\ub2f9 \ucc98\ud615 1\n\ub300\uc0c1: \ub0a8\uc740 \uc9c0\uc18d \ud53c\ud574\ub97c \uc989\uc2dc \uc801\uc6a9\u00b7\uc81c\uac70\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: "Execution 1, cooldown; conversion rounding unverified"
   - _id: pd.magnesium_rain
     _hero: {fileID: 11400000, guid: 018844e272f2ec443b2e922654edeef7, type: 2}
@@ -450,6 +450,6 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: "https://darkestdungeon.wiki.gg/wiki/Plague_Doctor_%28Darkest_Dungeon_II%29"
-    _baseReference: "Burn 3; clear corpses"
-    _masteredReference: "Burn 3; clear corpses; reset cooldowns after clear"
+    _baseReference: "\ub300\uc0c1: \ud654\uc0c1 3 (3\ud134)\n\uc2dc\uccb4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\ub300\uc0c1: \ud654\uc0c1 3 (3\ud134) \u00b7 \ud68c\ud53c \uc81c\uac70\n\uc2dc\uccb4 \uc81c\uac70\n\uc2dc\uccb4 \uc81c\uac70 \uc2dc \uc7ac\uc0ac\uc6a9 \ucd08\uae30\ud654\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: ""
