@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8104373609162565865}
   - component: {fileID: 3640565537409597673}
   m_Layer: 5
-  m_Name: TakeAimRingEffect
+  m_Name: RingEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

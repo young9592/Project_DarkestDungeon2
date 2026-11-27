@@ -84,7 +84,11 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [Header("Bolster")]
     [SerializeField] private GameObject _backBolster;
 
-    [Header("")]
+    [Header("HoldLine")]
+    [SerializeField] private GameObject _frontHoldLine;
+    [SerializeField] private GameObject _backHoldLine;
+
+
     [Header("")]
 
 
@@ -185,12 +189,19 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "전선 유지")
         {
+            GameObject front = Instantiate(_frontHoldLine, _frontEffect.transform);
+            GameObject back = Instantiate(_backHoldLine, _backEffect.transform);
 
+            draws.Add(front);
+            draws.Add(back);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "성채의 일격")
         {
             GameObject front = Instantiate(_frontRampart, _frontEffect.transform);
-            GameObject back = Instantiate(_backRampart, _frontEffect.transform);
+            GameObject back = Instantiate(_backRampart, _backEffect.transform);
 
             draws.Add(front);
             draws.Add(back);
