@@ -178,7 +178,7 @@ public class CSceneFlowManager : MonoBehaviour
         _progressPanel.SetActive(true);
 
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-        CombatBackgroundLoad(prevId, out AsyncOperation op2);
+        CombatBackgroundLoad(prevId, id, out AsyncOperation op2);
 
         while (op.progress < 0.9f)
         {
@@ -208,37 +208,41 @@ public class CSceneFlowManager : MonoBehaviour
             yield return new WaitUntil(() => combatManager.BattleReady);
             _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
             yield return _fadeCoroutine;
+            _loadPanel.SetActive(false);
+            NextLoadSetting(prevId, id);
+            _isLoading = false;
         }
         else
         {
+            NextLoadSetting(prevId, id);
             _fadeCoroutine = StartCoroutine(_transition.CoFadeIn(prevId, id, _loadPanel));
             yield return _fadeCoroutine;
+            _loadPanel.SetActive(false);
+            _isLoading = false;
         }
 
-        _loadPanel.SetActive(false);
-        NextLoadSetting(prevId, id);
-        _isLoading = false;
+
     }
 
 
-    private void CombatBackgroundLoad(ESceneId prevId, out AsyncOperation op)
+    private void CombatBackgroundLoad(ESceneId prevId, ESceneId nextId, out AsyncOperation op)
     {
 
-        if (prevId == ESceneId.Valley)
+        if (prevId == ESceneId.Valley && nextId == ESceneId.Battle)
         {
             _catalog.TryGetSceneName(ESceneId.Combat_Valley, out string sceneName);
             op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             _addtiveSceneId = ESceneId.Combat_Valley;
             return;
         }
-        else if (prevId == ESceneId.Sprawl && _chapterBoss == CBaricadeEncounter.EChapterBoss.None)
+        else if (prevId == ESceneId.Sprawl && nextId == ESceneId.Battle && _chapterBoss == CBaricadeEncounter.EChapterBoss.None)
         {
             _catalog.TryGetSceneName(ESceneId.Combat_Sprawl, out string sceneName);
             op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             _addtiveSceneId = ESceneId.Combat_Sprawl;
             return;
         }
-        else if (prevId == ESceneId.Sprawl && _chapterBoss == CBaricadeEncounter.EChapterBoss.Chapter01)
+        else if (prevId == ESceneId.Sprawl && nextId == ESceneId.Battle && _chapterBoss == CBaricadeEncounter.EChapterBoss.Chapter01)
         {
             // TODO : 가능하면 보스 전투씬도 추가
             _catalog.TryGetSceneName(ESceneId.Combat_Sprawl, out string sceneName);
@@ -281,6 +285,16 @@ public class CSceneFlowManager : MonoBehaviour
             ReturnField();
         }
 
+        if (prevId == ESceneId.Sprawl && nextId == ESceneId.Title)
+        {
+            bool trySceneName = _catalog.TryGetSceneName(_addtiveSceneId, out string sceneName);
+
+            if (trySceneName)
+            {
+                SceneManager.UnloadSceneAsync(sceneName);
+            }
+
+        }
     }
 
     private void ReloadScene()

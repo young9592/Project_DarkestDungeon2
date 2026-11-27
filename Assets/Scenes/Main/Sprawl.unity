@@ -392,6 +392,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f92e48c84d0db2b4b9ca8f4fdfb81f19, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1319601765}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f92e48c84d0db2b4b9ca8f4fdfb81f19, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 152330923}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f92e48c84d0db2b4b9ca8f4fdfb81f19, type: 3}
       insertIndex: -1
@@ -422,7 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d0e12b11c183247b88c67b0857d0a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: Spawl_01
+  _id: Spawl_02
   _loadScene: 3
   _enemyGroupSO: {fileID: 11400000, guid: 8af1ceece1a2c6e4db4defc89f29b1a9, type: 2}
   _chapterBoss: 1
@@ -442,11 +445,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5, y: 3, z: 5}
+  m_Size: {x: 5, y: 3, z: 10}
   m_Center: {x: 0, y: 1, z: 1}
 --- !u!1001 &40119635
 PrefabInstance:
@@ -888,6 +891,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f92e48c84d0db2b4b9ca8f4fdfb81f19, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1867963371}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f92e48c84d0db2b4b9ca8f4fdfb81f19, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1667413116}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f92e48c84d0db2b4b9ca8f4fdfb81f19, type: 3}
       insertIndex: -1
@@ -930,6 +936,59 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147491273}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5, y: 3, z: 10}
+  m_Center: {x: 0, y: 1, z: 1}
+--- !u!1 &152330922
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 152330923}
+  - component: {fileID: 152330924}
+  m_Layer: 0
+  m_Name: CrashCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &152330923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152330922}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 23992614}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &152330924
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152330922}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2510,6 +2569,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 278943335345023797, guid: f7fc19659642a52439c9fecb3aea568f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 862016973835130838, guid: f7fc19659642a52439c9fecb3aea568f, type: 3}
+      propertyPath: _desireSceneId
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2976232991640786617, guid: f7fc19659642a52439c9fecb3aea568f, type: 3}
@@ -6498,6 +6561,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 453c89c82b2a8a445985da6d9ab85746, type: 3}
   m_PrefabInstance: {fileID: 1665627220}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1667413115
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1667413116}
+  - component: {fileID: 1667413117}
+  m_Layer: 0
+  m_Name: CrashCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1667413116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667413115}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 147491272}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1667413117
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667413115}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5, y: 3, z: 5}
+  m_Center: {x: 0, y: 1, z: 1}
 --- !u!1001 &1685665330
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -514,7 +514,8 @@ public class CEntityState : MonoBehaviour
         }
         else if (_prevHealth == -1)
         {
-            _hpFill.fillAmount = 1;
+            float currentHpClamp = Mathf.Clamp01((float)curHealth / (float)maxHealth);
+            _hpFill.fillAmount = currentHpClamp;
         }
         // 데미지를 입은 상황
         else if (_prevHealth > curHealth)
@@ -562,6 +563,7 @@ public class CEntityState : MonoBehaviour
                 _againCoroutine = true;
             }
         }
+
 
         _prevHealth = curHealth;
 
