@@ -20,8 +20,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 4-7; CRIT 15%
-    _masteredReference: DMG 5-9; CRIT 20%
+    _baseReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 15%\n\ubc29\uc5b4 \ubb34\uc2dc"
+    _masteredReference: "\ud53c\ud574 5~9 \u00b7 \uce58\uba85\ud0c0 20%\n\ubc29\uc5b4 \ubb34\uc2dc"
     _remainingEffects: Block piercing, Combo crit, critical Block removal
   - _id: gr.thrown_dagger
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -30,8 +30,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 3-6; CRIT 15%
-    _masteredReference: DMG 4-8; CRIT 30%
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 15%\n\uc790\uc2e0: \uce58\uba85\ud0c0 1\uac1c\n\ud68c\ud53c\u00b7\ubcf4\ud638 \ubb34\uc2dc"
+    _masteredReference: "\ud53c\ud574 4~8 \u00b7 \uce58\uba85\ud0c0 30%\n\uc790\uc2e0: \uce58\uba85\ud0c0 1\uac1c\n\ud68c\ud53c\u00b7\ubcf4\ud638 \ubb34\uc2dc"
     _remainingEffects: Guard/Dodge piercing, Combo crit
   - _id: gr.flashing_daggers
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -40,8 +40,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 3-5; CRIT 15%
-    _masteredReference: DMG 4-6; CRIT 20%
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 15%\n\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 20%\n\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70"
     _remainingEffects: Stealth Dodge piercing
   - _id: gr.poison_dart
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -50,8 +50,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 2-4; CRIT 5%
-    _masteredReference: DMG 2-5; CRIT 10%
+    _baseReference: "\ud53c\ud574 2~4 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \uc911\ub3c5 2 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \uc911\ub3c5 2 (3\ud134)"
+    _masteredReference: "\ud53c\ud574 2~5 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc911\ub3c5 4 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \uc911\ub3c5 4 (3\ud134)"
     _remainingEffects: Combo crit, critical DOT duration
   - _id: gr.absinthe
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -60,8 +60,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: 'Below 33%: heal 33%; Dodge 3, Speed'
-    _masteredReference: 'Below 33%: heal 33%; Dodge+ 3, Speed'
+    _baseReference: "\uc790\uc2e0: \ud68c\ubcf5 4~6 \u00b7 \ud68c\ud53c 3\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc804\ud22c\ub2f9 3\ud68c"
+    _masteredReference: "\uc790\uc2e0: \ud68c\ubcf5 6~8 \u00b7 \ud68c\ud53c+ 3\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc804\ud22c\ub2f9 3\ud68c"
     _remainingEffects: use limit, three-token cap; base Dodge evasion is missing
       in shared damage
   - _id: gr.dead_of_night
@@ -71,8 +71,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: Clear corpse; heal 33%
-    _masteredReference: Clear corpse; heal 50%; Stealth 2; recover 1 stress
+    _baseReference: "\uc2dc\uccb4 \uc81c\uac70 \u00b7 \uc790\uc2e0 \ud68c\ubcf5 33%\n\uc790\uc2e0: \uc740\uc2e0 2\uac1c\n\uc804\ud22c\ub2f9 3\ud68c"
+    _masteredReference: "\uc2dc\uccb4 \uc81c\uac70 \u00b7 \uc790\uc2e0 \ud68c\ubcf5 50%\n\uc790\uc2e0: \uc740\uc2e0 3\uac1c \u00b7 \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 4\n\uc804\ud22c\ub2f9 3\ud68c"
     _remainingEffects: 
   - _id: gr.glint_in_the_dark
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -81,8 +81,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 4-7; CRIT 5%
-    _masteredReference: DMG 6-9; CRIT 10%
+    _baseReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 5%\n\ucc98\ud615 1\n\ub300\uc0c1: \uc740\uc2e0 \uc81c\uac70\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd\n\uc740\uc2e0 \uc18c\ubaa8 \uc2dc \ucc98\ud615 3"
+    _masteredReference: "\ud53c\ud574 6~9 \u00b7 \uce58\uba85\ud0c0 10%\n\ucc98\ud615 1\n\ub300\uc0c1: \uc740\uc2e0 \uc81c\uac70\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd\n\uc740\uc2e0 \uc18c\ubaa8 \uc2dc \ucc98\ud615 3"
     _remainingEffects: Stealth piercing/removal, Execution
   - _id: gr.lunge
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -91,8 +91,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 5-8; CRIT 20%
-    _masteredReference: DMG 7-11; CRIT 30%
+    _baseReference: "\ud53c\ud574 5~8 \u00b7 \uce58\uba85\ud0c0 20%\n\uc790\uc2e0: \uc804\uc9c4 2\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd"
+    _masteredReference: "\ud53c\ud574 7~11 \u00b7 \uce58\uba85\ud0c0 30%\n\uc790\uc2e0: \uc804\uc9c4 2\n\uc790\uc2e0 \uc740\uc2e0 \uc18c\ubaa8: \uce58\uba85\ud0c0\u00b7\ud798 \ud68d\ub4dd"
     _remainingEffects: movement, conditional piercing, critical knockback
   - _id: gr.pirouette
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -101,8 +101,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: DMG 4-7; CRIT 10%
-    _masteredReference: DMG 6-9; CRIT 15%
+    _baseReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \ud68c\ud53c 1\uac1c \u00b7 \uc57d\ud654 1\uac1c \u00b7 \ud6c4\ud1f4 3\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 6~9 \u00b7 \uce58\uba85\ud0c0 15%\n\uc790\uc2e0: \ud6c4\ud1f4 3 \u00b7 \ud68c\ud53c+ 1\uac1c \u00b7 \uc57d\ud654 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: movement, Stealth-conditioned Daze/Weak, cooldown
   - _id: gr.repartee
     _hero: {fileID: 11400000, guid: add734ee06bf32141b5a1679008bd005, type: 2}
@@ -111,8 +111,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: Dodge 3, Taunt 2
-    _masteredReference: Dodge+ 3, Taunt 2; conditional on-miss Dodge
+    _baseReference: "\uc790\uc2e0: \uc740\uc2e0 \uc81c\uac70 \u00b7 \ub3c4\ubc1c 2\uac1c \u00b7 \ud68c\ud53c 3\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \uc740\uc2e0 \uc81c\uac70 \u00b7 \ub3c4\ubc1c 2\uac1c \u00b7 \ud68c\ud53c+ 3\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: on-miss Dodge buff, Stealth removal, cooldown, three-token
       cap; base Dodge evasion is missing in shared damage
   - _id: gr.shadow_fade
@@ -122,6 +122,6 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Deadeye
-    _baseReference: Back 2; Stealth 2
-    _masteredReference: Back 2; Stealth 2, Strength 1
+    _baseReference: "\uc790\uc2e0: \ud6c4\ud1f4 2 \u00b7 \uc740\uc2e0 2\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \ud6c4\ud1f4 2 \u00b7 \uc740\uc2e0 2\uac1c \u00b7 \uc18d\ub3c4 1\uac1c \u00b7 \ud798 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: movement, cooldown

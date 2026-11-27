@@ -20,8 +20,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 4-8; CRIT 15%
-    _masteredReference: DMG 6-9; CRIT 20%
+    _baseReference: "\ud53c\ud574 4~8 \u00b7 \uce58\uba85\ud0c0 15%\n\ucc98\ud615 1"
+    _masteredReference: "\ud53c\ud574 6~9 \u00b7 \uce58\uba85\ud0c0 20%\n\ucc98\ud615 2"
     _remainingEffects: Execution
   - _id: hwm.pistol_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -30,8 +30,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 3-6; CRIT 10%
-    _masteredReference: DMG 5-8; CRIT 15%
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
+    _masteredReference: "\ud53c\ud574 5~8 \u00b7 \uce58\uba85\ud0c0 15%\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
     _remainingEffects: Combo Daze/Stun
   - _id: hwm.duelists_advance
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -40,8 +40,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 3-5; CRIT 5%
-    _masteredReference: DMG 4-6; CRIT 10%
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\uc790\uc2e0: \uc804\uc9c4 1 \u00b7 \ubc18\uaca9 2\uac1c"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \uc804\uc9c4 1 \u00b7 \ubc18\uaca9 3\uac1c \u00b7 \ud68c\ud53c 1\uac1c"
     _remainingEffects: movement, Riposte execution, three-token cap
   - _id: hwm.tracking_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -50,9 +50,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: Remove Dodge/DodgePlus/Stealth; apply Combo; ignores Dodge
-    _masteredReference: Remove Dodge/DodgePlus/Stealth; apply Combo; prevent Dodge/DodgePlus
-      for 2 rounds; ignores Dodge
+    _baseReference: "\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70 \u00b7 \uc5f0\uacc4 1\uac1c"
+    _masteredReference: "\ub300\uc0c1: \ud68c\ud53c \uc81c\uac70 \u00b7 \uc740\uc2e0 \uc81c\uac70 \u00b7 \uc5f0\uacc4 1\uac1c"
     _remainingEffects: Dodge/DodgePlus gain prevention for 2 rounds
   - _id: hwm.take_aim
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -61,8 +60,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: Remove Blind; Crit 1
-    _masteredReference: Remove Blind; Crit 2
+    _baseReference: "\uc790\uc2e0: \uc2e4\uba85 \uc81c\uac70 \u00b7 \uce58\uba85\ud0c0 1\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \uc2e4\uba85 \uc81c\uac70 \u00b7 \uce58\uba85\ud0c0 2\uac1c \u00b7 \ud68c\ud53c 1\uac1c \u00b7 \uc18d\ub3c4 1\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
     _remainingEffects: cooldown
   - _id: hwm.point_blank_shot
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -71,8 +70,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 6-10; CRIT 10%
-    _masteredReference: DMG 10-13; CRIT 15%
+    _baseReference: "\ud53c\ud574 6~10 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c \u00b7 \ubc00\uce58\uae30 1\n\uc790\uc2e0: \ud6c4\ud1f4 1"
+    _masteredReference: "\ud53c\ud574 10~13 \u00b7 \uce58\uba85\ud0c0 15%\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c \u00b7 \ubc00\uce58\uae30 1\n\uc790\uc2e0: \ud6c4\ud1f4 1"
     _remainingEffects: movement, knockback, Combo
   - _id: hwm.grapeshot_blast
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -81,8 +80,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 3-5; CRIT 5%
-    _masteredReference: DMG 4-6; CRIT 10%
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\uce58\uba85\ud0c0 \uc2dc \uc790\uc2e0: \ud798 1\uac1c"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uce58\uba85\ud0c0 \uc2dc \uc790\uc2e0: \ud798 1\uac1c"
     _remainingEffects: speed debuff, one Strength per critical target
   - _id: hwm.open_vein
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -91,8 +90,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 3-5; CRIT 5%
-    _masteredReference: DMG 4-6; CRIT 10%
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \ucd9c\ud608 2 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 2 (3\ud134)"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \ucd9c\ud608 3 (3\ud134)\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \ucd94\uac00 \ucd9c\ud608 3 (3\ud134)"
     _remainingEffects: Combo Bleed multiplier
   - _id: hwm.double_tap
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -101,8 +100,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 4-8; CRIT 5%
-    _masteredReference: DMG 6-9; CRIT 10%
+    _baseReference: "\ud53c\ud574 2~4 (2\ud68c) \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1 \uc0dd\uc874 \uc2dc \ucd94\uac00 \uc0ac\uaca9\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 4~6 (2\ud68c) \u00b7 \uce58\uba85\ud0c0 10%\n\ud0c0\uaca9\ub2f9 \ucc98\ud615 1\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: low-HP damage multiplier, Execution
   - _id: hwm.highway_robbery
     _hero: {fileID: 11400000, guid: 890e8929e74e1ec42a3e3c3ecd35f612, type: 2}
@@ -111,8 +110,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: Remove 2 positive tokens; target crit -5%
-    _masteredReference: Steal 2 positive tokens; target crit -5%, self +5%
+    _baseReference: "\ub300\uc0c1: \uae0d\uc815\uc801 \ud1a0\ud070 \ucd5c\ub300 2\uc885 \uac15\ud0c8\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uae0d\uc815\uc801 \ud1a0\ud070 \ucd5c\ub300 3\uc885 \uac15\ud0c8\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: cooldown; original token selection order and critical duration
       extension unverified; shared token cap
   - _id: hwm.double_cross
@@ -122,6 +121,6 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sharpshot
-    _baseReference: DMG 2-4; CRIT 5%
-    _masteredReference: DMG 3-5; CRIT 10%
+    _baseReference: "\ud53c\ud574 2~4 \u00b7 \uce58\uba85\ud0c0 5%\n\ub300\uc0c1: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0: \ubc29\uc5b4 1\uac1c\n\ubc29\uc5b4 \ubb34\uc2dc"
+    _masteredReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 10%\n\ub300\uc0c1: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0: \ubc29\uc5b4 1\uac1c\n\ubc29\uc5b4 \ubb34\uc2dc"
     _remainingEffects: piercing, target Block removal

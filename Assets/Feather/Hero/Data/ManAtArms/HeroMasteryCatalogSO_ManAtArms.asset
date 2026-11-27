@@ -20,8 +20,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: DMG 4-6; CRIT 5%
-    _masteredReference: DMG 5-7; CRIT 5%
+    _baseReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 5%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 4~6"
+    _masteredReference: "\ud53c\ud574 5~7 \u00b7 \uce58\uba85\ud0c0 5%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 5~7"
     _remainingEffects: none in configured basic effects
   - _id: maa.rampart
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -30,8 +30,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: DMG 3-5; CRIT 5%
-    _masteredReference: DMG 4-6; CRIT 5%
+    _baseReference: "\ud53c\ud574 3~5 \u00b7 \uce58\uba85\ud0c0 5%\n\uc790\uc2e0: \uc804\uc9c4 1\n\ub300\uc0c1: \ubc00\uce58\uae30 1\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
+    _masteredReference: "\ud53c\ud574 4~6 \u00b7 \uce58\uba85\ud0c0 5%\n\uc790\uc2e0: \uc804\uc9c4 1\n\ub300\uc0c1: \ubc00\uce58\uae30 1\n\uc5f0\uacc4 \uc2dc \ub300\uc0c1: \uae30\uc808 1\uac1c"
     _remainingEffects: movement, Daze, Combo Stun
   - _id: maa.defender
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -40,8 +40,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: Guarded 2; self Block 2
-    _masteredReference: Guarded 3; self Block+ 2
+    _baseReference: "\ub300\uc0c1: \ubcf4\ud638 2\ud68c\n\uc790\uc2e0: \ubc29\uc5b4+ 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \ubcf4\ud638 3\ud68c\n\uc790\uc2e0: \ubc29\uc5b4+ 2\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: guard redirection, cooldown, three-token cap
   - _id: maa.bolster
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -50,8 +50,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: 'Stress 5+: recover 1, caster and ally'
-    _masteredReference: 'Stress 5+: recover 2, caster and ally'
+    _baseReference: "\ub300\uc0c1: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 2\n\uc790\uc2e0: \ubc29\uc5b4 1\uac1c \u00b7 \uc5f0\uacc4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc2a4\ud2b8\ub808\uc2a4 \ud68c\ubcf5 3\n\uc790\uc2e0: \ubc29\uc5b4+ 1\uac1c \u00b7 \uc5f0\uacc4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: cooldown
   - _id: maa.holdtheline
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -60,8 +60,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: DMG 3-6; CRIT 10%
-    _masteredReference: DMG 4-7; CRIT 10%
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \uc804\uc9c4 3 \u00b7 \uc774\ub3d9 \ubd88\uac00 1\uac1c \u00b7 \ubc29\uc5b4 1\uac1c"
+    _masteredReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \uc804\uc9c4 3 \u00b7 \uc774\ub3d9 \ubd88\uac00 1\uac1c \u00b7 \ubc29\uc5b4+ 2\uac1c"
     _remainingEffects: movement, Combo Stun
   - _id: maa.bellow
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -70,8 +70,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: Remove Riposte; speed -2
-    _masteredReference: Remove Riposte/Crit; speed -3
+    _baseReference: "\ub300\uc0c1: \uc57d\ud654 1\uac1c \u00b7 \uce58\uba85\ud0c0 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ub300\uc0c1: \uc57d\ud654 1\uac1c \u00b7 \ubc18\uaca9 \uc81c\uac70 \u00b7 \uce58\uba85\ud0c0 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: critical chance; speed debuff, cooldown
   - _id: maa.retribution
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -80,8 +80,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: Riposte 2, Taunt 2; cooldown 2
-    _masteredReference: Riposte 2, Taunt 2; cooldown 1
+    _baseReference: "\uc790\uc2e0: \ub3c4\ubc1c 2\uac1c \u00b7 \ubc18\uaca9 2\uac1c\n\uc7ac\uc0ac\uc6a9 2\ud134"
+    _masteredReference: "\uc790\uc2e0: \ub3c4\ubc1c 2\uac1c \u00b7 \ubc18\uaca9 2\uac1c \u00b7 \ubc29\uc5b4+ 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: automatic Riposte, cooldown
   - _id: maa.command
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -90,8 +90,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: Remove Blind; Strength 1
-    _masteredReference: Remove Blind; Strength 2
+    _baseReference: "\uc790\uc2e0: \ubd80\uc815\uc801 \ud1a0\ud070 \uc81c\uac70 \u00b7 \ud798 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\uc790\uc2e0: \ubd80\uc815\uc801 \ud1a0\ud070 \uc81c\uac70\n\ub300\uc0c1: \ud798 1\uac1c \u00b7 \uce58\uba85\ud0c0 1\uac1c\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: cooldown
   - _id: maa.standfast
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -100,8 +100,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: Block 2, Taunt 2; turn-start Block
-    _masteredReference: Block+ 2, Taunt 2; turn-start Block
+    _baseReference: "\uc790\uc2e0: \ubc29\uc5b4+ 1\uac1c \u00b7 \ubc29\uc5b4 1\uac1c\n\uc7ac\uc0ac\uc6a9 3\ud134"
+    _masteredReference: "\uc790\uc2e0: \ubc29\uc5b4+ 2\uac1c \u00b7 \uc5f0\uacc4 \uc81c\uac70\n\uc7ac\uc0ac\uc6a9 3\ud134"
     _remainingEffects: turn-start Block renewal, cooldown
   - _id: maa.courageousabandon
     _hero: {fileID: 11400000, guid: d90a3b73ff1d70540b4b5b8c39593526, type: 2}
@@ -110,8 +110,8 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: DMG 6-8; CRIT 10%
-    _masteredReference: DMG 8-10; CRIT 20%
+    _baseReference: "\ud53c\ud574 6~8 \u00b7 \uce58\uba85\ud0c0 10%\n\uc790\uc2e0: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0 \ubc29\uc5b4 \uc18c\ubaa8 \uc2dc \ud53c\ud574 +50%"
+    _masteredReference: "\ud53c\ud574 8~10 \u00b7 \uce58\uba85\ud0c0 20%\n\uc790\uc2e0: \ucde8\uc57d 1\uac1c\n\uc790\uc2e0 \ubc29\uc5b4 \uc18c\ubaa8 \uc2dc \ud53c\ud574 +50%"
     _remainingEffects: Block requirement, Block multiplier, piercing, Execution,
       Block lockout
   - _id: maa.strategicwithdrawal
@@ -121,6 +121,6 @@ MonoBehaviour:
     _cost: 1
     _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
-    _baseReference: DMG 3-6; CRIT 5%
-    _masteredReference: DMG 4-7; CRIT 10%
+    _baseReference: "\ud53c\ud574 3~6 \u00b7 \uce58\uba85\ud0c0 5%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 4~6\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c\n\uc790\uc2e0: \ud6c4\ud1f4 1\n\uc7ac\uc0ac\uc6a9 1\ud134"
+    _masteredReference: "\ud53c\ud574 4~7 \u00b7 \uce58\uba85\ud0c0 10%\n\uc5f0\uacc4 \uc2dc \uc790\uc2e0: \ud68c\ubcf5 5~7\n\ub300\uc0c1: \uc5f0\uacc4 1\uac1c\n\uc790\uc2e0: \uc18d\ub3c4 1\uac1c \u00b7 \ud6c4\ud1f4 1\n\uc7ac\uc0ac\uc6a9 1\ud134"
     _remainingEffects: movement, Combo, cooldown, Death Door token
