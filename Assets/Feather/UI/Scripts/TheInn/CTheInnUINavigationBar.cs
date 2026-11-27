@@ -105,40 +105,6 @@ public class CTheInnUINavigationBar : MonoBehaviour
 
     }
 
-    public void ToggleUpgradeUI(GameObject targetUI, string titleText)
-    {
-        if (_currentOpenObject == targetUI)
-        {
-            targetUI.SetActive(false);
-            _currentOpenObject = null;
-
-            SetUIOpen(false);
-            _charactorStateUI.SetActive(true);
-            RestoreNavigationTitleText();
-
-            return;
-        }
-
-        if (_currentOpenObject != null)
-        {
-            if (_currentOpenObject == _upgradeUI)
-            {
-                _theInnUpgrade.OnCloseUpgradeUI();
-                Debug.Log("¾÷±ÛUI ´Ý±â");
-            }
-
-            _currentOpenObject.SetActive(false);
-        }
-
-        targetUI.SetActive(true);
-        _currentOpenObject = targetUI;
-
-        SetUIOpen(true);
-        _charactorStateUI.SetActive(false);
-        UpdateNavigationTitleText(titleText);
-    }
-
-
     public void UpdateNavigationTitleText(string text)
     {
         _navigationTitleText.text = text;

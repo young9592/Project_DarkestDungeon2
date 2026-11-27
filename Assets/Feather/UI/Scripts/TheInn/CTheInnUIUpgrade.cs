@@ -28,13 +28,13 @@ public class CTheInnUIUpgrade : MonoBehaviour
         if (_upgradeUI.activeSelf)
         {
             _theInnUpgrade.OnCloseUpgradeUI();
-            _navigationBar.ToggleUpgradeUI(_upgradeUI, _titleText);
+            _navigationBar.ToggleUI(_upgradeUI, _titleText);
             return;
         }
 
         if (_theInnUpgrade.TryOpenTraining())
         {
-            _navigationBar.ToggleUpgradeUI(_upgradeUI, _titleText);
+            _navigationBar.ToggleUI(_upgradeUI, _titleText);
         }
     }
 

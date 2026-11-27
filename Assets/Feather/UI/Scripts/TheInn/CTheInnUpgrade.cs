@@ -39,20 +39,7 @@ public class CTheInnUpgrade : MonoBehaviour
     {
         UpdateHeroSkill(_currentHeroIndex);
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Debug.Log("1키 눌림");
-            PrepareTestPartyForUI();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            Debug.Log("2키 눌림");
-            TestEndSession();
-        }
-    }
+  
     public bool TryOpenTraining()
     {
         if (_heroInnMastery == null)
