@@ -190,30 +190,45 @@ public abstract class CEntity : MonoBehaviour
     /// </summary>
     public void TakeDamage(int finalDamage)
     {
-        ResolveHealthEffect(null, finalDamage, finalDamage < 0, false, false);
+        ResolveHealthEffect(null, finalDamage, finalDamage < 0, false, false, 0);
+    }
+
+    public void TakeDamage(int finalDamage, int execution)
+    {
+        ResolveHealthEffect(null, finalDamage, finalDamage < 0, false, false, Mathf.Max(0, execution));
     }
 
     protected abstract void ApplyDamage(int finalDamage, bool playHitAnimation);
 
+    protected virtual void ApplyDamage(int finalDamage, bool playHitAnimation, int execution)
+    {
+        ApplyDamage(finalDamage, playHitAnimation);
+    }
+
     protected void ApplyPeriodicDamage(int amount)
     {
-        ResolveHealthEffect(null, amount, false, false, true);
+        ResolveHealthEffect(null, amount, false, false, true, 0);
     }
 
     internal void ApplyDamageEffect(CEntity source, int amount, bool isCritical)
     {
-        ResolveHealthEffect(source, amount, false, isCritical, false);
+        ResolveHealthEffect(source, amount, false, isCritical, false, 0);
+    }
+
+    internal void ApplyDamageEffect(CEntity source, int amount, bool isCritical, int execution)
+    {
+        ResolveHealthEffect(source, amount, false, isCritical, false, Mathf.Max(0, execution));
     }
 
     internal void ApplyHealingEffect(CEntity source, int amount, bool isCritical)
     {
-        ResolveHealthEffect(source, -amount, true, isCritical, false);
+        ResolveHealthEffect(source, -amount, true, isCritical, false, 0);
     }
 
-    private void ResolveHealthEffect(CEntity source, int finalDamage, bool isHealing, bool isCritical, bool isPeriodic)
+    private void ResolveHealthEffect(CEntity source, int finalDamage, bool isHealing, bool isCritical, bool isPeriodic, int execution = 0)
     {
         int previousHp = CurrentHp;
-        ApplyDamage(finalDamage, !isPeriodic);
+        ApplyDamage(finalDamage, !isPeriodic, execution);
         int appliedAmount = isHealing ? CurrentHp - previousHp : previousHp - CurrentHp;
         OnHealthEffectResolved?.Invoke(new CHealthEffectResult(source, this, appliedAmount, isHealing, isCritical, false, isPeriodic));
     }

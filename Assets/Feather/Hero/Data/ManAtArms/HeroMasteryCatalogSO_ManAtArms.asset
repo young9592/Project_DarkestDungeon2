@@ -78,7 +78,7 @@ MonoBehaviour:
     _baseSkill: {fileID: 11400000, guid: a9624f22000e32f45bdae798895dcd72, type: 2}
     _masteredSkill: {fileID: 11400000, guid: 1806306c2be0f774eae6db502dec4b76, type: 2}
     _cost: 1
-    _isAvailable: 0
+    _isAvailable: 1
     _referenceUrl: https://darkestdungeon.wiki.gg/wiki/Sergeant
     _baseReference: Riposte 2, Taunt 2; cooldown 2
     _masteredReference: Riposte 2, Taunt 2; cooldown 1

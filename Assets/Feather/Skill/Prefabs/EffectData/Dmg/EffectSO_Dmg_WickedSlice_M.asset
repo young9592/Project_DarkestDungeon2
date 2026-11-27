@@ -22,3 +22,4 @@ MonoBehaviour:
   _tokenType: 0
   _condition: 0
   _strategy: {fileID: 11400000, guid: 726c06a055131cd4fba3e14ff3123750, type: 2}
+  _execution: 2

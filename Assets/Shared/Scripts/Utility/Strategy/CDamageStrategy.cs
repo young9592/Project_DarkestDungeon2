@@ -6,7 +6,13 @@ public class CDamageStrategy : CEffectStrategy
 {
     public override void Apply(CEffectContext context, CEffectSO effectData)
     {
-        if (context == null || context.Caster == null || context.Target == null) return;
+        if (effectData == null) return;
+        ApplyDamageInternal(context, effectData, effectData.Execution);
+    }
+
+    protected void ApplyDamageInternal(CEffectContext context, CEffectSO effectData, int execution)
+    {
+        if (context == null || context.Caster == null || context.Target == null || effectData == null) return;
 
         CEntity attacker = context.Caster;
         CEntity defender = context.Target;
@@ -57,7 +63,7 @@ public class CDamageStrategy : CEffectStrategy
         else if (defender.TokenManager.ConsumeToken(EEffectType.Dodge))
         {
             CPrint.Log($"[{defender.name}] 의 [회피] 토큰 소모");
-            if (Random.Range(1, 101) <= 75)
+            if (Random.Range(1, 101) <= 50)
             {
                 CPrint.Log($"[{defender.name}] 의 [회피] 토큰으로 공격을 회피했습니다.");
                 context.IsHit = false;
@@ -132,7 +138,7 @@ public class CDamageStrategy : CEffectStrategy
         int calculatedDamage = Mathf.RoundToInt(finalDamage);
         CPrint.Log($"[{attacker.name}]가 [{defender.name}]에게 최종 데미지 [{calculatedDamage}]를 입혔습니다.");
         // 계산이 다 끝난 최종 데미지 수치만 전달받음
-        defender.ApplyDamageEffect(attacker, calculatedDamage, context.IsCrit);
+        defender.ApplyDamageEffect(attacker, calculatedDamage, context.IsCrit, execution);
 
         //TryTriggerRiposte(defender, attacker);
     }

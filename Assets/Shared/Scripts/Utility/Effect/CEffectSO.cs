@@ -47,6 +47,9 @@ public class CEffectSO : ScriptableObject
     // 효과가 발동될 때 실행될 실제 로직
     [Header("Strategy")]
     [SerializeField] private CEffectStrategy _strategy;
+
+    // 처형 수치
+    [SerializeField, Min(0)] private int _execution = 0;
     #endregion
 
     #region Property
@@ -62,6 +65,8 @@ public class CEffectSO : ScriptableObject
     public EEffectCondition Condition => _condition;
 
     public CEffectStrategy Strategy => _strategy;
+
+    public int Execution => _execution;
     #endregion
 
     /// <summary>
