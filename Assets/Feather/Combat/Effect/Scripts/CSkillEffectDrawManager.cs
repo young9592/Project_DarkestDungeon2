@@ -108,6 +108,10 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [SerializeField] private GameObject _frontAbsinthe;
     [SerializeField] private GameObject _backAbsinthe;
 
+    [Header("FlashingDaggers")]
+    [SerializeField] private GameObject _frontFlashingDagger;
+    [SerializeField] private GameObject _backFlashingDagger;
+
 
 
 
@@ -221,7 +225,18 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "¹ø¶àÀÌ´Â ºñµµ")
         {
+            for (int i = 1; i < entitiesTr.Count; i++)
+            {
+                DrawBloodEffect(draws, entitiesTr[i], false);
+                DrawTargetEffect(draws, _daggerHitEffect, ESelectRoot.Front, entitiesTr[i], ERendererPositionOption.CenterUp);
+                DrawTargetEffect(draws, _daggerHitEffect, ESelectRoot.Front, entitiesTr[i], ERendererPositionOption.Center);
+            }
 
+
+            DrawTargetEffect(draws, _frontFlashingDagger, ESelectRoot.Front, actor, ERendererPositionOption.Center);
+            DrawTargetEffect(draws, _backFlashingDagger, ESelectRoot.Back, actor, ERendererPositionOption.Center);
+
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "¾îµÒ ¼ÓÀÇ ¹ø¶àÀÓ")
         {

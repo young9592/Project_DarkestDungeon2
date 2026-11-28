@@ -11767,6 +11767,8 @@ MonoBehaviour:
   _daggerHitEffect: {fileID: 4412159598845633692, guid: 88694e25652a7d6469ba6b5569aac970, type: 3}
   _frontAbsinthe: {fileID: 0}
   _backAbsinthe: {fileID: 0}
+  _frontFlashingDagger: {fileID: 1371893658535277506, guid: 0e268d1d9d29d7742a8b39fcb56e3d7d, type: 3}
+  _backFlashingDagger: {fileID: 3223167630474023758, guid: 9bb04ab09c722924aba6f5f914616217, type: 3}
 --- !u!1 &1304939398
 GameObject:
   m_ObjectHideFlags: 0
