@@ -13,6 +13,7 @@ public class CHeroBattleSaveData
     public CHeroMasterySaveData Mastery;
     public string BattleId;
     public bool IsBattleFinished;
+    public bool HasReceivedValleyMastery;
 }
 
 public class CHeroBattleSaveStore

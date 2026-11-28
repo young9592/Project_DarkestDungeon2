@@ -111,7 +111,9 @@ public class CHeroExpeditionState : MonoBehaviour
 
     public bool TryCompleteBattle(string runId, string battleId, IReadOnlyList<CPlayer> heroes)
     {
-        return _service != null && _service.TryCompleteBattle(runId, battleId, heroes, out _notice);
+        CSceneFlowManager sceneFlow = CSceneFlowManager.Instance;
+        bool isValleyBattle = sceneFlow != null && sceneFlow.ReturnFieldSceneId == ESceneId.Valley;
+        return _service != null && _service.TryCompleteBattle(runId, battleId, heroes, isValleyBattle, out _notice);
     }
 
     // 전투 밖에서 세팅을 확정한 파티는 현재 열과 장착 목록을 넘김
