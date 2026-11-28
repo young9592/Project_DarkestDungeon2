@@ -11769,6 +11769,8 @@ MonoBehaviour:
   _backAbsinthe: {fileID: 0}
   _frontFlashingDagger: {fileID: 1371893658535277506, guid: 0e268d1d9d29d7742a8b39fcb56e3d7d, type: 3}
   _backFlashingDagger: {fileID: 3223167630474023758, guid: 9bb04ab09c722924aba6f5f914616217, type: 3}
+  _backPoisonDart: {fileID: 4456737382689222790, guid: 59f187b75f4703b48a0bebc79968bda0, type: 3}
+  _poisonDartEffect: {fileID: 3981132971973093680, guid: 9f7edee6b4938ca4983c2d29848127cd, type: 3}
 --- !u!1 &1304939398
 GameObject:
   m_ObjectHideFlags: 0

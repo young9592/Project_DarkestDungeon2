@@ -112,6 +112,10 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [SerializeField] private GameObject _frontFlashingDagger;
     [SerializeField] private GameObject _backFlashingDagger;
 
+    [Header("PoisonDart")]
+    [SerializeField] private GameObject _backPoisonDart;
+    [SerializeField] private GameObject _poisonDartEffect;
+
 
 
 
@@ -232,7 +236,6 @@ public class CSkillEffectDrawManager : MonoBehaviour
                 DrawTargetEffect(draws, _daggerHitEffect, ESelectRoot.Front, entitiesTr[i], ERendererPositionOption.Center);
             }
 
-
             DrawTargetEffect(draws, _frontFlashingDagger, ESelectRoot.Front, actor, ERendererPositionOption.Center);
             DrawTargetEffect(draws, _backFlashingDagger, ESelectRoot.Back, actor, ERendererPositionOption.Center);
 
@@ -260,7 +263,16 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "¸Íµ¶ ´ÙÆ®")
         {
+            GameObject front = Instantiate(_backPoisonDart, _backEffect.transform);
 
+            DrawTargetEffect(draws, _poisonDartEffect, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterUp);
+            DrawTargetEffect(draws, _poisonDartEffect, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.Center);
+            DrawTargetEffect(draws, _poisonDartEffect, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterDown);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+
+            draws.Add(front);
+
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "Á¶·Õ")
         {
