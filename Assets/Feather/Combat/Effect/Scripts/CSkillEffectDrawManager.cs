@@ -96,6 +96,20 @@ public class CSkillEffectDrawManager : MonoBehaviour
     #endregion
     // µµ±º≤€
     #region GraveRobber
+    [Header("PickToTheFace")]
+    [SerializeField] private GameObject _frontPickAxe;
+
+    [Header("ThrownDagger")]
+    [SerializeField] private GameObject _frontDagger;
+    [SerializeField] private GameObject _backDagger;
+    [SerializeField] private GameObject _daggerHitEffect;
+
+    [Header("Absinthe")]
+    [SerializeField] private GameObject _frontAbsinthe;
+    [SerializeField] private GameObject _backAbsinthe;
+
+
+
 
     #endregion
     // ø™∫¥¿«ªÁ
@@ -219,7 +233,11 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "∞Ó±™¿Ã ¬Ô±‚")
         {
+            GameObject front = Instantiate(_frontPickAxe, _frontEffect.transform);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+            draws.Add(front);
 
+            SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "πﬂ≥Ó∏≤")
         {
@@ -239,7 +257,15 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "¥‹∞À ≈ı√¥")
         {
+            GameObject front = Instantiate(_frontDagger, _frontEffect.transform);
+            GameObject back = Instantiate(_backDagger, _backEffect.transform);
+            DrawBloodEffect(draws, entitiesTr[1], false);
+            DrawTargetEffect(draws, _daggerHitEffect, ESelectRoot.Front, entitiesTr[1], ERendererPositionOption.CenterUp);
 
+            draws.Add(front);
+            draws.Add(back);
+
+            SetRiposteSetting(isRiposte, draws);
         }
     }
     private void ManAtArmsEffect(List<GameObject> draws, string skillName, Transform actor, List<Transform> entitiesTr, bool isRiposte)
@@ -465,12 +491,12 @@ public class CSkillEffectDrawManager : MonoBehaviour
     }
 
     // ««∞› ¿Ã∆Â∆Æ √≥∏Æ
-    private void DrawBloodEffect(List<GameObject> draws, Transform tr, bool _moveLeft)
+    private void DrawBloodEffect(List<GameObject> draws, Transform targetEntityTr, bool _moveLeft)
     {
         GameObject hitEnemy = Instantiate(_hitPrefab, _backEffect.transform);
 
-        SkinnedMeshRenderer renderer = tr.GetComponentInChildren<SkinnedMeshRenderer>();
-        Vector3 vec = renderer != null ? renderer.bounds.center : tr.position;
+        SkinnedMeshRenderer renderer = targetEntityTr.GetComponentInChildren<SkinnedMeshRenderer>();
+        Vector3 vec = renderer != null ? renderer.bounds.center : targetEntityTr.position;
         Vector3 screenPos = _highlightCamera.WorldToScreenPoint(vec);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_backCanvas.GetComponent<RectTransform>(), screenPos, _backCanvas.worldCamera, out Vector2 uiLocalPos);
         hitEnemy.GetComponent<RectTransform>().anchoredPosition = uiLocalPos;
@@ -485,13 +511,13 @@ public class CSkillEffectDrawManager : MonoBehaviour
     }
 
     // ≈∏∞Ÿ ¿Ã∆Â∆Æ √≥∏Æ
-    private void DrawTargetEffect(List<GameObject> draws, GameObject prefab, ESelectRoot root, Transform tr, ERendererPositionOption positionOption)
+    private void DrawTargetEffect(List<GameObject> draws, GameObject prefab, ESelectRoot drawRoot, Transform targetEntityTr, ERendererPositionOption positionOption)
     {
-        GameObject hitEnemy = Instantiate(prefab, SelectRoot(root));
+        GameObject hitEnemy = Instantiate(prefab, SelectRoot(drawRoot));
 
-        SkinnedMeshRenderer renderer = tr.GetComponentInChildren<SkinnedMeshRenderer>();
+        SkinnedMeshRenderer renderer = targetEntityTr.GetComponentInChildren<SkinnedMeshRenderer>();
 
-        Vector3 vec = renderer != null ? renderer.bounds.center + RendererPosition(renderer, positionOption) : tr.position;
+        Vector3 vec = renderer != null ? renderer.bounds.center + RendererPosition(renderer, positionOption) : targetEntityTr.position;
         Vector3 screenPos = _highlightCamera.WorldToScreenPoint(vec);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_backCanvas.GetComponent<RectTransform>(), screenPos, _backCanvas.worldCamera, out Vector2 uiLocalPos);
         hitEnemy.GetComponent<RectTransform>().anchoredPosition = uiLocalPos;
