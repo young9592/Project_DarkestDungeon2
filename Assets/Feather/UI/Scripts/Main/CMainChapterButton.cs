@@ -2,12 +2,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-//버튼 클릭 처리 자신이 선택됐을 때 메뉴에 알림
 public class CMainChapterButton : MonoBehaviour
 {
     #region Inspector
     //챕터가 열릴때마다 갱신용
-    [SerializeField] private TMP_Text[] _chapterTextButton = new TMP_Text[5];
+    //[SerializeField] private TMP_Text[] _chapterTextButton = new TMP_Text[5];
 
     //시작 글씨
     [SerializeField] private GameObject _signature;
@@ -44,6 +43,13 @@ public class CMainChapterButton : MonoBehaviour
        
     }
 
+    public void OnClickESCBtn()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //if ()
+        }
+    }
     public void OnClickConfession()     // 고해 버튼 클릭
     {
         if (_mainMenuA != null)
@@ -95,7 +101,7 @@ public class CMainChapterButton : MonoBehaviour
         Debug.Log("게임 종료 아이콘 눌림");
     }
 
-    public void OnClickExitCancel()      // 게임 종료버튼 No 눌렀을때
+    public void OnClickExitNoBtn()      // 게임 종료버튼 No 눌렀을때
     {
         if (_exitTitle != null)
         {
@@ -104,7 +110,7 @@ public class CMainChapterButton : MonoBehaviour
         Debug.Log("게임종료버튼 취소");
     }
 
-    public void OnClickExit()           // 게임 종료버튼 Yes 눌렀을때
+    public void OnClickExitYesBtn()           // 게임 종료버튼 Yes 눌렀을때
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPaused = false;
