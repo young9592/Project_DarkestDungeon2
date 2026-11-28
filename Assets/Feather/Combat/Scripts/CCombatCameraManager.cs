@@ -450,6 +450,10 @@ public class CCombatCameraManager : MonoBehaviour
                 {
                     _combatUI.DrawRiposteSkillEffect("노상강도", actor, riposteEntity);
                 }
+                else if (riposteEntity.EntityData.Id == "hero_man_at_arms")
+                {
+                    _combatUI.DrawRiposteSkillEffect("중보병", actor, riposteEntity);
+                }
             }
             else
             {

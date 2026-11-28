@@ -116,13 +116,21 @@ public class CSkillEffectDrawManager : MonoBehaviour
     [SerializeField] private GameObject _backPoisonDart;
     [SerializeField] private GameObject _poisonDartEffect;
 
-
-
-
     #endregion
     // 역병의사
     #region PlagueDoctor
-
+    [Header("BattlefieldMedicine")]
+    [SerializeField] private GameObject _frontBattlefieldMedicine;
+    [SerializeField] private GameObject _backBattlefieldMedicine;
+    [Header("NoxiousBlast")]
+    [SerializeField] private GameObject _hitNoxiousBlast;
+    [Header("BlindingGas")]
+    [SerializeField] private GameObject _hitBlindingGas;
+    [Header("Incision")]
+    [SerializeField] private GameObject _frontIncision;
+    [Header("Ounce of Prevention")]
+    [SerializeField] private GameObject _handPrevention;
+    [SerializeField] private GameObject _backPrevention;
     #endregion
 
     // 잃은 영혼
@@ -205,7 +213,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "예방 조치")
         {
-
+            DrawTargetEffect(draws, _handPrevention, ESelectRoot.Back, actor, ERendererPositionOption.CenterUp);
+            DrawTargetEffect(draws, _backPrevention, ESelectRoot.Back, actor, ERendererPositionOption.Center);
         }
         else if (skillName == "역병 수류탄")
         {
@@ -306,9 +315,7 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
         if (skillName == "분쇄")
         {
-            GameObject front = Instantiate(_frontCrash, _frontEffect.transform);
-
-            draws.Add(front);
+            DrawTargetEffect(draws, _frontCrash, ESelectRoot.Front, actor, ERendererPositionOption.Center);
             DrawBloodEffect(draws, entitiesTr[1], false);
 
             SetRiposteSetting(isRiposte, draws);
@@ -405,11 +412,9 @@ public class CSkillEffectDrawManager : MonoBehaviour
         }
         else if (skillName == "야비한 칼질")
         {
-            GameObject front = Instantiate(_frontSlice, _frontEffect.transform);
+            DrawTargetEffect(draws, _frontSlice, ESelectRoot.Front, actor.gameObject.transform, ERendererPositionOption.Center);
             DrawBloodEffect(draws, entitiesTr[1], false);
-
-            draws.Add(front);
-
+        
             SetRiposteSetting(isRiposte, draws);
         }
         else if (skillName == "정맥 절개")
@@ -502,14 +507,15 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
         if (skillName == "노상강도")
         {
-            GameObject front = Instantiate(_frontSlice, _frontEffect.transform);
+            DrawTargetEffect(draws, _frontSlice, ESelectRoot.Front, riposteEntity.gameObject.transform, ERendererPositionOption.Center);
             DrawBloodEffect(draws, actor.gameObject.transform, false);
-
-            draws.Add(front);
+            SetRiposteSetting(true, draws);
         }
         else if (skillName == "중보병")
         {
-
+            DrawTargetEffect(draws, _frontCrash , ESelectRoot.Front, riposteEntity.gameObject.transform, ERendererPositionOption.Center);
+            DrawBloodEffect(draws, actor.gameObject.transform, false);
+            SetRiposteSetting(true, draws);
         }
         else if (skillName == "적 반격01")
         {

@@ -12,6 +12,7 @@ public class CDirectionMoveOff : CSkillEffectPart
     [Header("Option")]
     [SerializeField] private float _delay = 1.5f;
     [SerializeField] private float _dirMoveSpeed = 0.3f;
+    [SerializeField] private Vector3 _moveDir = Vector3.right;
     #endregion
 
     #region Field
@@ -38,6 +39,6 @@ public class CDirectionMoveOff : CSkillEffectPart
         _image.color = new Color(_initColor.r, _initColor.g, _initColor.b, Mathf.Lerp(_initColor.a, 0, t));
 
         _tr.Translate(Vector3.right * _moveSpeed * Time.deltaTime, Space.World);
-        _tr.Translate(Vector3.right * _dirMoveSpeed * Time.deltaTime, Space.Self);
+        _tr.Translate(_moveDir * _dirMoveSpeed * Time.deltaTime, Space.Self);
     }
 }
