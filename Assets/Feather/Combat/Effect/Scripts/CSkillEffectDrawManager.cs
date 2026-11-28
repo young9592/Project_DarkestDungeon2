@@ -221,6 +221,8 @@ public class CSkillEffectDrawManager : MonoBehaviour
 
         if (skillName == "¾Ð»ýÆ®")
         {
+            DrawTargetEffect(draws, _frontAbsinthe, ESelectRoot.Front, actor, ERendererPositionOption.Center);
+            DrawTargetEffect(draws, _backAbsinthe, ESelectRoot.Back, actor, ERendererPositionOption.Center);
 
         }
         else if (skillName == "¹ãÀÇ ¸ÁÀÚ")
