@@ -125,6 +125,12 @@ public class CHeroBattleStateService
 
     public bool TryCompleteBattle(string runId, string battleId, IReadOnlyList<CPlayer> heroes, out string message)
     {
+        return TryCompleteBattle(runId, battleId, heroes, false, out message);
+    }
+
+    public bool TryCompleteBattle(string runId, string battleId, IReadOnlyList<CPlayer> heroes,
+        bool isValleyBattle, out string message)
+    {
         message = "Battle is unavailable, already saved, or still acting.";
         if (!CanSaveBattle(runId, battleId) || CompletedBattles == int.MaxValue
             || heroes == null || heroes.Count > _data.Heroes.Members.Length) return false;
@@ -149,6 +155,16 @@ public class CHeroBattleStateService
         next.IsBattleFinished = true;
         next.Heroes.CompletedBattles++;
         next.Heroes.LastBattleId = battleId;
+        if (isValleyBattle && !next.HasReceivedValleyMastery)
+        {
+            if (next.Mastery.Points > int.MaxValue - 5)
+            {
+                message = "Mastery points cannot exceed the limit.";
+                return false;
+            }
+            next.Mastery.Points += 5;
+            next.HasReceivedValleyMastery = true;
+        }
         for (int i = 0; i < next.Heroes.Members.Length; i++)
         {
             CHeroRunMemberState original = next.Heroes.Members[i];
@@ -164,6 +180,7 @@ public class CHeroBattleStateService
         }
         if (!_store.TryWrite(next, _data.SaveId, out message)) return false;
         _data = next;
+        _mastery.TryRestoreCheckpoint(next.Mastery);
         _fallenMembers.Clear();
         _isReadyForBattle = false;
         return true;
@@ -403,6 +420,7 @@ public class CHeroBattleStateService
         {
             SaveId = _data.SaveId,
             BattleId = _data.BattleId, IsBattleFinished = _data.IsBattleFinished,
+            HasReceivedValleyMastery = _data.HasReceivedValleyMastery,
             Heroes = new CHeroRunSaveData
             {
                 RunId = RunId, CompletedBattles = CompletedBattles,
